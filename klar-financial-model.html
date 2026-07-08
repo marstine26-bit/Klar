@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klar — Financial Model &amp; Investment Thesis</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#07070A;--surface:#0D0D14;--panel:#0B0B10;
+    --border:#1E1E2E;--border2:#161622;
+    --t1:#F0F0EE;--t2:#8A8A98;--t3:#52525E;
+    --violet:#9B7FD4;--violet-dim:rgba(123,94,167,.12);
+    --green:#4CAF50;--red:#F5534F;--amber:#F5A623;--blue:#4F8EF7;
+    --grad:linear-gradient(135deg,#7B5EA7,#5B7FD4);
+  }
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;padding:0}
+
+  /* ── Print ── */
+  @media print{
+    .no-print{display:none!important}
+    body{background:#fff;color:#000}
+    .card{background:#f8f8f8;border-color:#ddd}
+    :root{--t1:#111;--t2:#444;--t3:#666;--surface:#f0f0f0;--bg:#fff;--border:#ddd}
+    canvas{max-width:100%}
+  }
+
+  /* ── Layout ── */
+  .cover{
+    min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;
+    padding:60px 24px;text-align:center;
+    background:radial-gradient(ellipse 80% 50% at 50% 20%,rgba(123,94,167,.22) 0%,transparent 70%),
+               radial-gradient(ellipse 60% 40% at 80% 80%,rgba(79,142,247,.12) 0%,transparent 70%);
+    position:relative;overflow:hidden;
+  }
+  .cover::before{
+    content:'';position:absolute;inset:0;
+    background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239B7FD4' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events:none;
+  }
+  .cover-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--violet-dim);border:1px solid rgba(155,127,212,.25);
+    border-radius:100px;padding:6px 16px;font-size:11px;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--violet);
+    margin-bottom:32px;
+  }
+  .cover-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--violet);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .cover h1{font-size:clamp(42px,8vw,80px);font-weight:900;letter-spacing:-.04em;line-height:1;margin-bottom:16px}
+  .cover h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .cover-sub{font-size:18px;color:var(--t2);max-width:520px;line-height:1.6;margin-bottom:48px}
+  .cover-meta{display:flex;gap:40px;flex-wrap:wrap;justify-content:center}
+  .cover-meta-item{text-align:center}
+  .cover-meta-item .val{font-size:28px;font-weight:800;letter-spacing:-.03em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .cover-meta-item .lbl{font-size:11px;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-top:4px}
+  .cover-meta-div{width:1px;background:var(--border);align-self:stretch}
+
+  .wrap{max-width:1100px;margin:0 auto;padding:40px 24px 80px}
+  .section{margin-bottom:60px}
+  .section-title{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--violet);margin-bottom:24px;display:flex;align-items:center;gap:10px}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border2)}
+  h2{font-size:28px;font-weight:800;letter-spacing:-.03em;margin-bottom:8px}
+  h3{font-size:16px;font-weight:700;letter-spacing:-.01em;margin-bottom:16px}
+
+  .card{background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:28px}
+  .card+.card{margin-top:16px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media(max-width:700px){.grid2,.grid3,.grid4{grid-template-columns:1fr}.cover-meta{gap:24px}}
+
+  /* ── KPI tiles ── */
+  .kpi{background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:20px 22px}
+  .kpi-lbl{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--t3);margin-bottom:10px}
+  .kpi-val{font-size:26px;font-weight:800;letter-spacing:-.04em;color:var(--t1)}
+  .kpi-sub{font-size:12px;color:var(--t2);margin-top:4px}
+  .kpi-delta{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:100px;margin-top:6px}
+  .kpi-delta.up{background:rgba(76,175,80,.12);color:var(--green)}
+  .kpi-delta.down{background:rgba(245,83,79,.12);color:var(--red)}
+
+  /* ── Scenario tabs ── */
+  .scenario-tabs{display:flex;gap:0;border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin-bottom:24px;width:fit-content}
+  .scenario-tab{padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--t2);border:none;transition:all .2s}
+  .scenario-tab.active{background:var(--violet-dim);color:var(--violet)}
+  .scenario-tab:hover:not(.active){background:rgba(255,255,255,.03);color:var(--t1)}
+
+  /* ── Scenario badge ── */
+  .s-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:100px;margin-bottom:16px}
+  .s-badge.conservative{background:rgba(79,142,247,.12);color:var(--blue)}
+  .s-badge.base{background:var(--violet-dim);color:var(--violet)}
+  .s-badge.optimistic{background:rgba(76,175,80,.12);color:var(--green)}
+
+  /* ── Table ── */
+  .tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border2)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{background:var(--panel);padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);white-space:nowrap}
+  td{padding:10px 14px;border-top:1px solid var(--border2);color:var(--t1);white-space:nowrap}
+  tr:hover td{background:rgba(255,255,255,.02)}
+  .num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+  .highlight-row td{background:var(--violet-dim)!important;color:var(--violet);font-weight:700}
+  .dim{color:var(--t3)}
+
+  /* ── Progress bar ── */
+  .prog-bar{height:6px;background:var(--border2);border-radius:3px;overflow:hidden;margin-top:8px}
+  .prog-fill{height:100%;border-radius:3px;background:var(--grad);transition:width .6s}
+
+  /* ── IC tile ── */
+  .ic{border-radius:10px;padding:16px 18px;border-left:3px solid var(--violet);background:rgba(123,94,167,.07);margin-bottom:12px}
+  .ic.g{border-left-color:var(--green);background:rgba(76,175,80,.07)}
+  .ic.r{border-left-color:var(--red);background:rgba(245,83,79,.07)}
+  .ic.a{border-left-color:var(--amber);background:rgba(245,166,35,.07)}
+  .ic.b{border-left-color:var(--blue);background:rgba(79,142,247,.07)}
+  .ic-title{font-size:12px;font-weight:700;margin-bottom:4px}
+  .ic-body{font-size:13px;color:var(--t2);line-height:1.6}
+
+  /* ── Competitor grid ── */
+  .comp-card{background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:20px}
+  .comp-name{font-size:15px;font-weight:700;margin-bottom:6px}
+  .comp-price{font-size:13px;color:var(--amber);font-weight:600;margin-bottom:10px}
+  .comp-tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;background:var(--border2);color:var(--t2);margin:2px 2px 2px 0}
+  .comp-klar{border-color:var(--violet)}
+  .comp-klar .comp-name{color:var(--violet)}
+
+  /* ── Funnel ── */
+  .funnel-row{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+  .funnel-bar-wrap{flex:1;height:32px;background:var(--border2);border-radius:6px;overflow:hidden;position:relative}
+  .funnel-bar{height:100%;border-radius:6px;display:flex;align-items:center;padding:0 12px;font-size:12px;font-weight:700;color:#fff;white-space:nowrap}
+  .funnel-lbl{min-width:140px;font-size:12px;color:var(--t2)}
+  .funnel-num{min-width:70px;text-align:right;font-size:13px;font-weight:700}
+
+  /* ── Print button ── */
+  .dl-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--grad);color:#fff;border:none;
+    padding:14px 28px;border-radius:10px;font-size:14px;font-weight:700;
+    cursor:pointer;text-decoration:none;
+    box-shadow:0 4px 22px rgba(123,94,167,.35);
+    transition:all .2s;
+  }
+  .dl-btn:hover{transform:translateY(-1px);box-shadow:0 8px 32px rgba(123,94,167,.45)}
+  .dl-btn-wrap{text-align:center;padding:40px 0 0}
+
+  /* ── Chart containers ── */
+  .chart-wrap{position:relative;height:300px;margin-top:20px}
+  .chart-wrap-sm{position:relative;height:220px;margin-top:16px}
+
+  /* ── Milestone ── */
+  .milestone{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--border2)}
+  .milestone:last-child{border-bottom:none}
+  .milestone-mo{min-width:48px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--violet);padding-top:2px}
+  .milestone-body{flex:1}
+  .milestone-title{font-size:14px;font-weight:600;margin-bottom:2px}
+  .milestone-sub{font-size:12px;color:var(--t2)}
+
+  /* ── Disclaimer ── */
+  .disclaimer{font-size:11px;color:var(--t3);line-height:1.6;padding:20px;background:var(--panel);border-radius:10px;margin-top:40px;text-align:center}
+
+  /* ── Assumption Sliders Panel ── */
+  .slider-panel{
+    background:var(--surface);border:1px solid rgba(155,127,212,.25);border-radius:16px;
+    padding:28px 32px;margin-bottom:40px;
+  }
+  .slider-panel-header{
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+    margin-bottom:24px;
+  }
+  .slider-panel-title{
+    display:flex;align-items:center;gap:10px;
+  }
+  .slider-panel-title h2{font-size:18px;font-weight:700;letter-spacing:-.02em;margin:0}
+  .slider-panel-subtitle{font-size:13px;color:var(--t2);margin-top:2px}
+  .reset-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    background:transparent;border:1px solid var(--border);color:var(--t2);
+    padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;
+    cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;
+  }
+  .reset-btn:hover{border-color:var(--violet);color:var(--violet);background:var(--violet-dim)}
+  .slider-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px 32px;
+  }
+  .slider-item{display:flex;flex-direction:column;gap:6px}
+  .slider-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
+  .slider-lbl{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3)}
+  .slider-val{
+    font-size:14px;font-weight:800;letter-spacing:-.02em;
+    background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    min-width:48px;text-align:right;
+  }
+  input[type=range]{
+    -webkit-appearance:none;appearance:none;
+    width:100%;height:4px;border-radius:2px;
+    background:var(--border);outline:none;cursor:pointer;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;
+    width:16px;height:16px;border-radius:50%;
+    background:var(--violet);border:2px solid var(--bg);
+    cursor:pointer;transition:transform .15s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
+  input[type=range]::-moz-range-thumb{
+    width:16px;height:16px;border-radius:50%;
+    background:var(--violet);border:2px solid var(--bg);cursor:pointer;
+  }
+  .slider-range-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--t3);margin-top:1px}
+  .custom-badge{
+    display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;
+    letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:100px;
+    background:rgba(245,166,35,.12);color:var(--amber);margin-bottom:16px;
+  }
+  .live-kpi-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;
+    margin-top:24px;padding-top:24px;border-top:1px solid var(--border2);
+  }
+  .live-kpi{background:var(--panel);border:1px solid var(--border2);border-radius:10px;padding:14px 16px}
+  .live-kpi-lbl{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+  .live-kpi-val{font-size:20px;font-weight:800;letter-spacing:-.03em;color:var(--t1)}
+  .live-kpi-sub{font-size:11px;color:var(--t2);margin-top:3px}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ COVER ═══════════════════════════ -->
+<div class="cover">
+  <div class="cover-badge">
+    <span>Confidential</span>
+  </div>
+  <div class="cover-badge" style="margin-bottom:20px;margin-top:-8px;background:rgba(76,175,80,.08);border-color:rgba(76,175,80,.2);color:var(--green)">
+    Financial Model &amp; Investment Thesis · June 2026
+  </div>
+  <h1><em>Klar</em><br>Financial Model</h1>
+  <p class="cover-sub">Three-scenario analysis covering Conservative, Base, and Optimistic paths to £1M ARR. UK personal finance SaaS.</p>
+  <div class="cover-meta">
+    <div class="cover-meta-item">
+      <div class="val">£1M</div>
+      <div class="lbl">Base ARR Target</div>
+    </div>
+    <div class="cover-meta-div"></div>
+    <div class="cover-meta-item">
+      <div class="val">22mo</div>
+      <div class="lbl">Base Timeline</div>
+    </div>
+    <div class="cover-meta-div"></div>
+    <div class="cover-meta-item">
+      <div class="val">13,900</div>
+      <div class="lbl">Paid Users (Base)</div>
+    </div>
+    <div class="cover-meta-div"></div>
+    <div class="cover-meta-item">
+      <div class="val">£200K</div>
+      <div class="lbl">Recommended Raise</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ BODY ═══════════════════════════ -->
+<div class="wrap">
+
+  <!-- ── ASSUMPTION SLIDERS ── -->
+  <div class="slider-panel no-print">
+    <div class="slider-panel-header">
+      <div>
+        <div class="slider-panel-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2.2"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><line x1="14" y1="12" x2="21" y2="12"/><line x1="14" y1="5" x2="21" y2="5"/><line x1="14" y1="19" x2="21" y2="19"/><line x1="3" y1="12" x2="7" y2="12"/><line x1="3" y1="5" x2="7" y2="5"/><line x1="3" y1="19" x2="7" y2="19"/></svg>
+          <h2>Adjust Assumptions</h2>
+        </div>
+        <div class="slider-panel-subtitle">Drag sliders to recompute the Base Case model in real time. Conservative &amp; Optimistic remain fixed for reference.</div>
+      </div>
+      <button class="reset-btn" onclick="resetSliders()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-5.83"/></svg>
+        Reset to defaults
+      </button>
+    </div>
+
+    <div class="slider-grid">
+      <div class="slider-item">
+        <div class="slider-row">
+          <span class="slider-lbl">Monthly Churn</span>
+          <span class="slider-val" id="val-churn">3.5%</span>
+        </div>
+        <input type="range" id="sl-churn" min="0.5" max="15" step="0.5" value="3.5">
+        <div class="slider-range-labels"><span>0.5%</span><span>15%</span></div>
+      </div>
+
+      <div class="slider-item">
+        <div class="slider-row">
+          <span class="slider-lbl">Essential ARPU</span>
+          <span class="slider-val" id="val-arpu-ess">£3.99</span>
+        </div>
+        <input type="range" id="sl-arpu-ess" min="1" max="10" step="0.01" value="3.99">
+        <div class="slider-range-labels"><span>£1</span><span>£10</span></div>
+      </div>
+
+      <div class="slider-item">
+        <div class="slider-row">
+          <span class="slider-lbl">Pro ARPU</span>
+          <span class="slider-val" id="val-arpu-pro">£7.99</span>
+        </div>
+        <input type="range" id="sl-arpu-pro" min="3" max="20" step="0.01" value="7.99">
+        <div class="slider-range-labels"><span>£3</span><span>£20</span></div>
+      </div>
+
+      <div class="slider-item">
+        <div class="slider-row">
+          <span class="slider-lbl">Monthly Growth Rate</span>
+          <span class="slider-val" id="val-growth">25%</span>
+        </div>
+        <input type="range" id="sl-growth" min="5" max="100" step="1" value="25">
+        <div class="slider-range-labels"><span>5%</span><span>100%</span></div>
+      </div>
+
+      <div class="slider-item">
+        <div class="slider-row">
+          <span class="slider-lbl">Avg. CAC</span>
+          <span class="slider-val" id="val-cac">£12</span>
+        </div>
+        <input type="range" id="sl-cac" min="2" max="50" step="1" value="12">
+        <div class="slider-range-labels"><span>£2</span><span>£50</span></div>
+      </div>
+
+      <div class="slider-item">
+        <div class="slider-row">
+          <span class="slider-lbl">Free→Paid Conv.</span>
+          <span class="slider-val" id="val-conv">8%</span>
+        </div>
+        <input type="range" id="sl-conv" min="1" max="25" step="0.5" value="8">
+        <div class="slider-range-labels"><span>1%</span><span>25%</span></div>
+      </div>
+
+      <div class="slider-item">
+        <div class="slider-row">
+          <span class="slider-lbl">Essential mix (rest = Pro)</span>
+          <span class="slider-val" id="val-mix">60%</span>
+        </div>
+        <input type="range" id="sl-mix" min="10" max="90" step="5" value="60">
+        <div class="slider-range-labels"><span>10% Ess</span><span>90% Ess</span></div>
+      </div>
+    </div>
+
+    <!-- Live KPI row -->
+    <div class="live-kpi-grid">
+      <div class="live-kpi">
+        <div class="live-kpi-lbl">Blended ARPU</div>
+        <div class="live-kpi-val" id="lk-arpu">£6.00</div>
+        <div class="live-kpi-sub">Custom scenario</div>
+      </div>
+      <div class="live-kpi">
+        <div class="live-kpi-lbl">MRR at M12</div>
+        <div class="live-kpi-val" id="lk-mrr12">—</div>
+        <div class="live-kpi-sub">Custom scenario</div>
+      </div>
+      <div class="live-kpi">
+        <div class="live-kpi-lbl">MRR at M24</div>
+        <div class="live-kpi-val" id="lk-mrr24">—</div>
+        <div class="live-kpi-sub">Custom scenario</div>
+      </div>
+      <div class="live-kpi">
+        <div class="live-kpi-lbl">Months to £1M ARR</div>
+        <div class="live-kpi-val" id="lk-t1m">—</div>
+        <div class="live-kpi-sub">Custom scenario</div>
+      </div>
+      <div class="live-kpi">
+        <div class="live-kpi-lbl">LTV</div>
+        <div class="live-kpi-val" id="lk-ltv">—</div>
+        <div class="live-kpi-sub">at churn rate</div>
+      </div>
+      <div class="live-kpi">
+        <div class="live-kpi-lbl">LTV : CAC</div>
+        <div class="live-kpi-val" id="lk-ltvrac">—</div>
+        <div class="live-kpi-sub">ratio</div>
+      </div>
+      <div class="live-kpi">
+        <div class="live-kpi-lbl">Payback Period</div>
+        <div class="live-kpi-val" id="lk-payback">—</div>
+        <div class="live-kpi-sub">months</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 1. EXECUTIVE SUMMARY ── -->
+  <div class="section">
+    <div class="section-title">01 — Executive Summary</div>
+    <h2>The Opportunity</h2>
+    <p style="color:var(--t2);line-height:1.7;margin-bottom:24px;max-width:780px">Klar is a zero-bank personal finance platform built for the UK mass market. Unlike bank-tied apps or expensive advisors, Klar gives anyone a complete financial command centre — budgeting, investments, debt, tax and AI coaching — at under £10/month. This model covers three scenarios for reaching sustainable revenue.</p>
+
+    <div class="grid3" style="margin-bottom:24px">
+      <div class="card">
+        <div class="s-badge conservative">Conservative</div>
+        <div style="font-size:28px;font-weight:800;letter-spacing:-.03em;color:var(--blue)">£330K</div>
+        <div style="font-size:13px;color:var(--t2);margin-top:4px">ARR at Month 24</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:8px">5,000 paid users · £5.50 ARPU · £200K raise at M18</div>
+      </div>
+      <div class="card" style="border-color:rgba(155,127,212,.3)">
+        <div class="s-badge base">Base Case</div>
+        <div style="font-size:28px;font-weight:800;letter-spacing:-.03em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">£1.0M</div>
+        <div style="font-size:13px;color:var(--t2);margin-top:4px">ARR at Month 22</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:8px">13,900 paid users · £6.00 ARPU · £200K raise at M9</div>
+      </div>
+      <div class="card">
+        <div class="s-badge optimistic">Optimistic</div>
+        <div style="font-size:28px;font-weight:800;letter-spacing:-.03em;color:var(--green)">£1.1M</div>
+        <div style="font-size:13px;color:var(--t2);margin-top:4px">ARR at Month 14</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:8px">14,200 paid users · £6.50 ARPU · £200K raise at M6</div>
+      </div>
+    </div>
+
+    <div class="ic">
+      <div class="ic-title">Why now?</div>
+      <div class="ic-body">The UK has 54M adults, ~15M of whom are "financially engaged" but underserved by banks. Open Banking mandates, rising cost-of-living, and the collapse of Lumio/Yolt left a gap. Klar enters post-gap with native AI, no-bank-deal model, and dual UK+SA market validation.</div>
+    </div>
+    <div class="ic g">
+      <div class="ic-title">Key differentiator vs. Emma / YNAB / Plum</div>
+      <div class="ic-body">Klar is the only UK app covering budgeting + investments + debt + AI advisor + stokvel/group savings + cross-border (UK+SA) in one tool, with no transaction upsell. Competitors charge £5–£15/mo for a subset of these features.</div>
+    </div>
+  </div>
+
+  <!-- ── 2. ARR PROGRESSION CHART ── -->
+  <div class="section">
+    <div class="section-title">02 — ARR Progression (3 Scenarios)</div>
+    <div class="card">
+      <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <h3 style="margin:0">Monthly Recurring Revenue — 24 Month Projection</h3>
+        <div style="display:flex;gap:16px;font-size:12px">
+          <span style="color:var(--blue)">◆ Conservative</span>
+          <span style="color:var(--violet)">◆ Base</span>
+          <span style="color:var(--green)">◆ Optimistic</span>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="arrChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 3. UNIT ECONOMICS ── -->
+  <div class="section">
+    <div class="section-title">03 — Unit Economics</div>
+    <div class="grid2">
+      <div>
+        <div class="grid2" style="gap:12px;margin-bottom:16px">
+          <div class="kpi">
+            <div class="kpi-lbl">Blended ARPU</div>
+            <div class="kpi-val">£6.00</div>
+            <div class="kpi-sub">per user / month (base)</div>
+            <span class="kpi-delta up">↑ vs £4.99 market avg</span>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Target CAC</div>
+            <div class="kpi-val">£10</div>
+            <div class="kpi-sub">UK digital acquisition</div>
+            <span class="kpi-delta up">2 mo payback</span>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">LTV (24 mo)</div>
+            <div class="kpi-val">£88</div>
+            <div class="kpi-sub">at 5% monthly churn</div>
+            <span class="kpi-delta up">LTV:CAC = 8.8x</span>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Gross Margin</div>
+            <div class="kpi-val">~82%</div>
+            <div class="kpi-sub">SaaS infra + Supabase</div>
+            <span class="kpi-delta up">↑ at scale</span>
+          </div>
+        </div>
+        <div class="ic a">
+          <div class="ic-title">Payback period sensitivity</div>
+          <div class="ic-body">At £6 ARPU and £10 CAC: payback in 1.7 months. If CAC rises to £20 (paid social): 3.3 months — still excellent for SaaS. Break-even per user at month 2 is a structural advantage over bank-tied apps that need transaction volume.</div>
+        </div>
+      </div>
+      <div>
+        <h3>Pricing Architecture</h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Plan</th><th>Monthly</th><th>Annual</th><th>Key Gate</th></tr></thead>
+            <tbody>
+              <tr><td>Free</td><td class="num dim">—</td><td class="num dim">—</td><td>Core tracking only</td></tr>
+              <tr><td>Essential</td><td class="num">£3.99</td><td class="num">£39</td><td>Budgets + cloud sync</td></tr>
+              <tr class="highlight-row"><td>Pro ★</td><td class="num">£7.99</td><td class="num">£79</td><td>AI advisor + investments</td></tr>
+              <tr><td>Family</td><td class="num">£12.99</td><td class="num">£129</td><td>Multi-user + stokvels</td></tr>
+              <tr><td>ZAR Essential</td><td class="num">R69</td><td class="num">R690</td><td>SA market</td></tr>
+              <tr><td>ZAR Pro</td><td class="num">R149</td><td class="num">R1,490</td><td>SA market</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:12px;font-size:12px;color:var(--t3)">★ Pro is the anchor plan — blended mix drives £6/mo average</div>
+
+        <h3 style="margin-top:20px">Assumed Plan Mix (Base Case)</h3>
+        <div>
+          <div class="funnel-row">
+            <div class="funnel-lbl">Free (churned)</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:40%;background:var(--border)">40%</div>
+            </div>
+            <div class="funnel-num dim">40%</div>
+          </div>
+          <div class="funnel-row">
+            <div class="funnel-lbl">Essential</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:30%;background:var(--blue)">30%</div>
+            </div>
+            <div class="funnel-num">£3.99</div>
+          </div>
+          <div class="funnel-row">
+            <div class="funnel-lbl">Pro</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:55%;background:var(--violet)">55%</div>
+            </div>
+            <div class="funnel-num">£7.99</div>
+          </div>
+          <div class="funnel-row">
+            <div class="funnel-lbl">Family</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:15%;background:var(--amber)">15%</div>
+            </div>
+            <div class="funnel-num">£12.99</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 4. MONTHLY PROJECTIONS ── -->
+  <div class="section">
+    <div class="section-title">04 — Monthly Projections</div>
+    <div class="scenario-tabs no-print">
+      <button class="scenario-tab active" onclick="showScenario('base')">Base Case</button>
+      <button class="scenario-tab" onclick="showScenario('conservative')">Conservative</button>
+      <button class="scenario-tab" onclick="showScenario('optimistic')">Optimistic</button>
+    </div>
+
+    <!-- Base -->
+    <div id="tbl-base">
+      <div class="s-badge base">Base Case — £200K raise at Month 9</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Month</th><th class="num">Paid Users</th><th class="num">MRR (£)</th><th class="num">ARR (£)</th><th class="num">New Users</th><th class="num">Churned</th><th>Phase</th></tr></thead>
+          <tbody id="tbl-base-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Conservative -->
+    <div id="tbl-conservative" style="display:none">
+      <div class="s-badge conservative">Conservative — £200K raise at Month 18 · Higher churn</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Month</th><th class="num">Paid Users</th><th class="num">MRR (£)</th><th class="num">ARR (£)</th><th class="num">New Users</th><th class="num">Churned</th><th>Phase</th></tr></thead>
+          <tbody id="tbl-cons-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Optimistic -->
+    <div id="tbl-optimistic" style="display:none">
+      <div class="s-badge optimistic">Optimistic — £200K raise at Month 6 · Viral + low churn</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Month</th><th class="num">Paid Users</th><th class="num">MRR (£)</th><th class="num">ARR (£)</th><th class="num">New Users</th><th class="num">Churned</th><th>Phase</th></tr></thead>
+          <tbody id="tbl-opt-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 5. CHURN & RETENTION ── -->
+  <div class="section">
+    <div class="section-title">05 — Churn &amp; Retention Analysis</div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Monthly Churn Assumptions</h3>
+        <div class="tbl-wrap" style="margin-top:12px">
+          <table>
+            <thead><tr><th>Scenario</th><th class="num">Churn/mo</th><th class="num">Implied LTV</th><th class="num">12mo Retention</th></tr></thead>
+            <tbody>
+              <tr><td><span class="s-badge conservative" style="margin:0;font-size:10px;padding:2px 8px">Conservative</span></td><td class="num">7%</td><td class="num">£79</td><td class="num">43%</td></tr>
+              <tr class="highlight-row"><td><span class="s-badge base" style="margin:0;font-size:10px;padding:2px 8px">Base</span></td><td class="num">5%</td><td class="num">£120</td><td class="num">54%</td></tr>
+              <tr><td><span class="s-badge optimistic" style="margin:0;font-size:10px;padding:2px 8px">Optimistic</span></td><td class="num">2%</td><td class="num">£325</td><td class="num">79%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ic b" style="margin-top:16px">
+          <div class="ic-title">Benchmark context</div>
+          <div class="ic-body">Emma reports ~4% monthly churn. YNAB has 2–3% due to deep habit formation. At 5% Klar sits in the realistic middle. Annual plan promotion (currently 18% saving) is the primary churn-reduction lever.</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Churn Reduction Levers</h3>
+        <div class="milestone" style="padding-top:0">
+          <div class="milestone-mo">M1-6</div>
+          <div class="milestone-body">
+            <div class="milestone-title">Habit formation</div>
+            <div class="milestone-sub">Daily Active Use streak, weekly insights email, budget alert nudges. Target: 60% of paid users open app 3×/week</div>
+          </div>
+        </div>
+        <div class="milestone">
+          <div class="milestone-mo">M6-12</div>
+          <div class="milestone-body">
+            <div class="milestone-title">Annual plan push</div>
+            <div class="milestone-sub">In-app prompt at 3-month mark. 18% saving → 40% of paid convert to annual = immediate churn lock-in</div>
+          </div>
+        </div>
+        <div class="milestone">
+          <div class="milestone-mo">M12+</div>
+          <div class="milestone-body">
+            <div class="milestone-title">Stokvel &amp; family plans</div>
+            <div class="milestone-sub">Multi-person plans have near-zero churn (social commitment). Target 15% of users on Family plan by M18</div>
+          </div>
+        </div>
+        <div class="milestone">
+          <div class="milestone-mo">Ongoing</div>
+          <div class="milestone-body">
+            <div class="milestone-title">AI personalization</div>
+            <div class="milestone-sub">Groq-powered "Your Financial Week" becomes a sticky daily touchpoint — comparable to Duolingo streaks</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 6. FUNDING STRATEGY ── -->
+  <div class="section">
+    <div class="section-title">06 — Funding Strategy</div>
+    <div class="grid2">
+      <div>
+        <div class="card" style="border-color:rgba(155,127,212,.3);margin-bottom:16px">
+          <div class="s-badge base" style="margin-bottom:12px">Recommended: £200K Pre-Seed</div>
+          <div style="font-size:22px;font-weight:800;margin-bottom:4px">£1.5M Pre-money Valuation</div>
+          <div style="font-size:13px;color:var(--t2);margin-bottom:16px">12.5% dilution · Seedrs crowdfunding + SEIS/EIS</div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Allocation</th><th class="num">Amount</th><th class="num">%</th></tr></thead>
+              <tbody>
+                <tr><td>Paid acquisition (UK Meta/TikTok)</td><td class="num">£90,000</td><td class="num">45%</td></tr>
+                <tr><td>SEO &amp; content (12 months)</td><td class="num">£30,000</td><td class="num">15%</td></tr>
+                <tr><td>Infra &amp; tooling scale-up</td><td class="num">£20,000</td><td class="num">10%</td></tr>
+                <tr><td>Part-time developer (contractor)</td><td class="num">£40,000</td><td class="num">20%</td></tr>
+                <tr><td>Legal, compliance, FCA filing</td><td class="num">£12,000</td><td class="num">6%</td></tr>
+                <tr><td>Reserve / contingency</td><td class="num">£8,000</td><td class="num">4%</td></tr>
+                <tr class="highlight-row"><td><strong>Total</strong></td><td class="num"><strong>£200,000</strong></td><td class="num"><strong>100%</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="ic">
+          <div class="ic-title">Seedrs vs. Angel vs. VC — Why Seedrs</div>
+          <div class="ic-body">At pre-seed with a consumer fintech, Seedrs provides SEIS/EIS tax relief (50% / 30% back to investors), marketing via investor community, and no single investor concentration risk. Target: 200 investors at avg £1,000. FCA registration not required at this stage (information only, no regulated advice).</div>
+        </div>
+      </div>
+      <div>
+        <h3>SEIS / EIS Tax Advantage</h3>
+        <div class="tbl-wrap" style="margin-bottom:16px">
+          <table>
+            <thead><tr><th>Investor</th><th class="num">SEIS Relief</th><th class="num">EIS Relief</th></tr></thead>
+            <tbody>
+              <tr><td>Income Tax</td><td class="num">50%</td><td class="num">30%</td></tr>
+              <tr><td>CGT disposal</td><td class="num">0%</td><td class="num">0%</td></tr>
+              <tr><td>CGT deferral</td><td class="num">—</td><td class="num">✓</td></tr>
+              <tr><td>Loss relief</td><td class="num">Up to 73.5%</td><td class="num">Up to 61.5%</td></tr>
+              <tr><td>Max per investor</td><td class="num">£100K</td><td class="num">£1M</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ic g">
+          <div class="ic-title">Action required: SEIS/EIS Advance Assurance</div>
+          <div class="ic-body">Apply to HMRC for advance assurance before opening the Seedrs round. Typically 4–8 weeks. Required info: company structure, business plan, intended investors. This is not optional — assurance converts "risk capital" investors into tax-advantaged ones and dramatically improves round fill rate.</div>
+        </div>
+
+        <h3 style="margin-top:20px">Future Rounds</h3>
+        <div class="milestone" style="padding-top:0">
+          <div class="milestone-mo">M24</div>
+          <div class="milestone-body">
+            <div class="milestone-title">Series A — £1–2M at £8–12M valuation</div>
+            <div class="milestone-sub">Triggered by: 10K+ paid users, £500K+ ARR, &lt;4% monthly churn. Use: SA market expansion, bank partnership, FCA authorisation</div>
+          </div>
+        </div>
+        <div class="milestone">
+          <div class="milestone-mo">M36</div>
+          <div class="milestone-body">
+            <div class="milestone-title">Revenue-based financing or Series B</div>
+            <div class="milestone-sub">At £2M+ ARR, shift to RBF (Pipe/Capchase) for non-dilutive growth capital. UK bank partnerships become viable at this scale</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 7. MARKET SIZING ── -->
+  <div class="section">
+    <div class="section-title">07 — Market Sizing</div>
+    <div class="grid3" style="margin-bottom:24px">
+      <div class="card">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);margin-bottom:8px">TAM — Total Addressable</div>
+        <div style="font-size:30px;font-weight:800;letter-spacing:-.04em;color:var(--blue)">£1.8B</div>
+        <div style="font-size:13px;color:var(--t2);margin-top:4px">UK personal finance subscriptions (54M adults)</div>
+        <div class="prog-bar" style="margin-top:12px"><div class="prog-fill" style="width:100%;background:var(--blue)"></div></div>
+      </div>
+      <div class="card">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);margin-bottom:8px">SAM — Serviceable</div>
+        <div style="font-size:30px;font-weight:800;letter-spacing:-.04em;color:var(--violet)">£300M</div>
+        <div style="font-size:13px;color:var(--t2);margin-top:4px">Financially engaged, smartphone-first, 25–50 age</div>
+        <div class="prog-bar" style="margin-top:12px"><div class="prog-fill" style="width:17%;"></div></div>
+      </div>
+      <div class="card">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);margin-bottom:8px">SOM — 5-Year Realistic</div>
+        <div style="font-size:30px;font-weight:800;letter-spacing:-.04em;color:var(--green)">£30M</div>
+        <div style="font-size:13px;color:var(--t2);margin-top:4px">0.1% market share = 50K paid users at £50 ARPU</div>
+        <div class="prog-bar" style="margin-top:12px"><div class="prog-fill" style="width:2%;background:var(--green)"></div></div>
+      </div>
+    </div>
+    <div class="ic">
+      <div class="ic-title">Why 0.1% SOM is conservative</div>
+      <div class="ic-body">Emma reached 500K registered users in 3 years. Cleo hit 4M users (mostly free). Klar's all-in-one approach and AI differentiation should outpace single-feature competitors. A 0.5% SOM scenario (250K paid users × £6/mo) yields £18M ARR — a credible Series B trajectory.</div>
+    </div>
+  </div>
+
+  <!-- ── 8. COMPETITIVE LANDSCAPE ── -->
+  <div class="section">
+    <div class="section-title">08 — Competitive Landscape</div>
+    <div class="grid3">
+      <div class="comp-card comp-klar">
+        <div class="comp-name">Klar ★</div>
+        <div class="comp-price">£3.99 – £12.99/mo</div>
+        <span class="comp-tag">AI Advisor</span>
+        <span class="comp-tag">Investments</span>
+        <span class="comp-tag">Budgets</span>
+        <span class="comp-tag">Debt</span>
+        <span class="comp-tag">Stokvels</span>
+        <span class="comp-tag">UK+SA</span>
+        <span class="comp-tag">Open Banking</span>
+        <div style="margin-top:12px;font-size:12px;color:var(--violet);font-weight:600">Only all-in-one at this price</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">Emma</div>
+        <div class="comp-price">£4.99 – £9.99/mo</div>
+        <span class="comp-tag">Budgets</span>
+        <span class="comp-tag">Subscriptions</span>
+        <span class="comp-tag">Open Banking</span>
+        <div style="margin-top:12px;font-size:12px;color:var(--t3)">No AI. No investments. No debt tracking. UK only.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">YNAB</div>
+        <div class="comp-price">£14.99/mo</div>
+        <span class="comp-tag">Zero-Based Budget</span>
+        <span class="comp-tag">Education</span>
+        <div style="margin-top:12px;font-size:12px;color:var(--t3)">No Open Banking sync. US-centric UX. No investments, no AI.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">Plum</div>
+        <div class="comp-price">£2.99 – £9.99/mo</div>
+        <span class="comp-tag">Auto-save</span>
+        <span class="comp-tag">Investments</span>
+        <span class="comp-tag">Cashback</span>
+        <div style="margin-top:12px;font-size:12px;color:var(--t3)">Bank-lite model. Needs banking licence. No budgeting depth.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">Cleo</div>
+        <div class="comp-price">Free / £5.99/mo</div>
+        <span class="comp-tag">AI Chat</span>
+        <span class="comp-tag">Budgets</span>
+        <span class="comp-tag">Credit Builder</span>
+        <div style="margin-top:12px;font-size:12px;color:var(--t3)">US focus. Gamified but shallow. No investments, no tax.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">Moneyhub</div>
+        <div class="comp-price">£1.49/mo</div>
+        <span class="comp-tag">Open Banking</span>
+        <span class="comp-tag">Pensions</span>
+        <div style="margin-top:12px;font-size:12px;color:var(--t3)">Very low price → low ARPU → requires massive user volume. No AI.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 9. GROWTH LEVERS ── -->
+  <div class="section">
+    <div class="section-title">09 — Growth Levers &amp; Milestones</div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Acquisition channels (ranked by CAC)</h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Channel</th><th class="num">Est. CAC</th><th class="num">Volume</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>SEO / organic</td><td class="num">£2</td><td class="num">High</td><td>12–18 mo to ramp</td></tr>
+              <tr><td>Referral programme</td><td class="num">£4</td><td class="num">Medium</td><td>1 month free per referral</td></tr>
+              <tr><td>Reddit / community</td><td class="num">£5</td><td class="num">Medium</td><td>r/UKPersonalFinance (2M)</td></tr>
+              <tr><td>TikTok (FinTok)</td><td class="num">£8</td><td class="num">High</td><td>Viral potential</td></tr>
+              <tr class="highlight-row"><td>Meta paid (retarget)</td><td class="num">£12</td><td class="num">High</td><td>Primary paid channel</td></tr>
+              <tr><td>Press / PR</td><td class="num">£15</td><td class="num">Burst</td><td>MSE, Which?, ThisIsMoney</td></tr>
+              <tr><td>Podcast sponsorship</td><td class="num">£20</td><td class="num">Low</td><td>Finance podcasts M12+</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Key Milestones (Base Case)</h3>
+        <div class="milestone" style="padding-top:0">
+          <div class="milestone-mo">M3</div>
+          <div class="milestone-body">
+            <div class="milestone-title">22 paid users · £132 MRR</div>
+            <div class="milestone-sub">Friends, LinkedIn, ProductHunt. Validate willingness to pay.</div>
+          </div>
+        </div>
+        <div class="milestone">
+          <div class="milestone-mo">M6</div>
+          <div class="milestone-body">
+            <div class="milestone-title">67 paid users · £402 MRR</div>
+            <div class="milestone-sub">First press mention. SEO content published. Begin Seedrs prep.</div>
+          </div>
+        </div>
+        <div class="milestone">
+          <div class="milestone-mo">M9</div>
+          <div class="milestone-body">
+            <div class="milestone-title">200 paid users · £1,200 MRR · RAISE</div>
+            <div class="milestone-sub">£200K raised on Seedrs. Paid acquisition begins. SEIS advance assurance in hand.</div>
+          </div>
+        </div>
+        <div class="milestone">
+          <div class="milestone-mo">M12</div>
+          <div class="milestone-body">
+            <div class="milestone-title">1,100 paid users · £6,600 MRR</div>
+            <div class="milestone-sub">Paid CAC established at £10. Annual plan promotion launched.</div>
+          </div>
+        </div>
+        <div class="milestone">
+          <div class="milestone-mo">M18</div>
+          <div class="milestone-body">
+            <div class="milestone-title">8,000 paid users · £48,000 MRR</div>
+            <div class="milestone-sub">Open Banking fully live. Referral programme driving 25% of new users.</div>
+          </div>
+        </div>
+        <div class="milestone">
+          <div class="milestone-mo">M22</div>
+          <div class="milestone-body">
+            <div class="milestone-title">13,900 paid users · £83,400 MRR · £1M ARR</div>
+            <div class="milestone-sub">Series A raise begins at £8–10M valuation. Team hire: Growth + Support.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 10. SENSITIVITY ── -->
+  <div class="section">
+    <div class="section-title">10 — Sensitivity Analysis</div>
+    <div class="card">
+      <h3>ARR at Month 22 under different ARPU + Paid User combinations</h3>
+      <div class="tbl-wrap" style="margin-top:16px">
+        <table>
+          <thead>
+            <tr>
+              <th>Users \ ARPU</th>
+              <th class="num">£4.00</th>
+              <th class="num">£5.00</th>
+              <th class="num">£6.00</th>
+              <th class="num">£7.00</th>
+              <th class="num">£8.00</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>5,000</td><td class="num dim">£240K</td><td class="num dim">£300K</td><td class="num">£360K</td><td class="num">£420K</td><td class="num">£480K</td></tr>
+            <tr><td>8,000</td><td class="num dim">£384K</td><td class="num">£480K</td><td class="num">£576K</td><td class="num">£672K</td><td class="num">£768K</td></tr>
+            <tr class="highlight-row"><td>13,900</td><td class="num">£667K</td><td class="num">£834K</td><td class="num">£1.0M ★</td><td class="num">£1.17M</td><td class="num">£1.34M</td></tr>
+            <tr><td>18,000</td><td class="num">£864K</td><td class="num">£1.08M</td><td class="num">£1.3M</td><td class="num">£1.5M</td><td class="num">£1.73M</td></tr>
+            <tr><td>25,000</td><td class="num">£1.2M</td><td class="num">£1.5M</td><td class="num">£1.8M</td><td class="num">£2.1M</td><td class="num">£2.4M</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="font-size:12px;color:var(--t3);margin-top:12px">★ Base case scenario. Values are Annual Run Rate (MRR × 12).</div>
+    </div>
+
+    <div class="grid2" style="margin-top:16px">
+      <div class="ic r">
+        <div class="ic-title">Downside risks</div>
+        <div class="ic-body">
+          <strong>Churn spikes:</strong> If monthly churn hits 10%, LTV falls to £36 — below £10 CAC threshold by only 3.6x. Mitigate with annual plan push.<br><br>
+          <strong>CAC inflation:</strong> UK Meta CPMs rising ~20%/yr. At £25 CAC, the £90K acquisition budget yields 3,600 users, not 9,000. Organic/SEO becomes critical.<br><br>
+          <strong>FCA scrutiny:</strong> Any AI "advice" framing risks classification as regulated advice. Current positioning as "information and tools" should hold, but requires legal review at £500K ARR.
+        </div>
+      </div>
+      <div class="ic g">
+        <div class="ic-title">Upside catalysts</div>
+        <div class="ic-body">
+          <strong>MSE / Which? feature:</strong> A single MoneySavingExpert article drove 50K signups for Emma. One review of this type is worth 6 months of paid ads.<br><br>
+          <strong>SA diaspora community:</strong> 250K South Africans in the UK are natural early adopters — they need cross-currency tracking that no UK competitor offers.<br><br>
+          <strong>B2B white-label:</strong> Credit unions and smaller building societies can't afford to build their own app. Klar at £2–5/user/mo white-label = high-margin channel at M18+.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DOWNLOAD ── -->
+  <div class="dl-btn-wrap no-print">
+    <button class="dl-btn" onclick="window.print()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Save as PDF / Print
+    </button>
+    <p style="font-size:12px;color:var(--t3);margin-top:10px">Use browser print → Save as PDF for best results. Ctrl+P / Cmd+P</p>
+  </div>
+
+  <div class="disclaimer">
+    This document contains forward-looking projections based on assumptions as of June 2026. Actual results may differ materially. Not financial advice. For investor discussion purposes only. Confidential — do not distribute without permission.
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+// ═══════════════════════ DATA ENGINE ═══════════════════════
+
+// Base scenario
+const BASE = (function(){
+  const ARPU = 6, CHURN = 0.05;
+  const phases = [
+    // [startMonth, endMonth, newUsersPerMonth growth factor]
+    // Phase 1: Bootstrap (M1-8)
+    {m:[1,8], fn: m => Math.round(3 * Math.pow(1.30, m-1)), phase:'Bootstrap / Organic'},
+    // Phase 2: Post-raise acceleration (M9-13)
+    {m:[9,13], fn: m => Math.round(80 + (m-9)*100), phase:'Post-raise Scale'},
+    // Phase 3: Paid acquisition flywheel (M14-22)
+    {m:[14,22], fn: m => Math.round(600 + (m-14)*180), phase:'Flywheel'},
+  ];
+  const rows = [];
+  let users = 0;
+  for(let m=1; m<=24; m++){
+    const phase_obj = phases.find(p => m >= p.m[0] && m <= p.m[1]);
+    const newU = phase_obj ? phase_obj.fn(m) : Math.round(600 + (m-14)*180);
+    const churned = Math.round(users * CHURN);
+    users = Math.max(0, users - churned + newU);
+    const mrr = Math.round(users * ARPU);
+    rows.push({m, users, mrr, arr:mrr*12, newU, churned, phase: phase_obj ? phase_obj.phase : 'Flywheel'});
+  }
+  return rows;
+})();
+
+// Conservative
+const CONS = (function(){
+  const ARPU = 5.5, CHURN = 0.07;
+  const rows = [];
+  let users = 0;
+  for(let m=1; m<=24; m++){
+    const newU = m <= 17 ? Math.round(2 * Math.pow(1.18, m-1)) : Math.round(2 * Math.pow(1.18, 16) + (m-17)*60);
+    const churned = Math.round(users * CHURN);
+    users = Math.max(0, users - churned + newU);
+    const mrr = Math.round(users * ARPU);
+    const phase = m <= 17 ? 'Organic only' : 'Post-raise';
+    rows.push({m, users, mrr, arr:mrr*12, newU, churned, phase});
+  }
+  return rows;
+})();
+
+// Optimistic
+const OPT = (function(){
+  const ARPU = 6.5, CHURN = 0.02;
+  const phases = [
+    {m:[1,5], fn: m => Math.round(5 * Math.pow(1.45, m-1)), phase:'Bootstrap'},
+    {m:[6,10], fn: m => Math.round(150 + (m-6)*200), phase:'Post-raise'},
+    {m:[11,18], fn: m => Math.round(1100 + (m-11)*250), phase:'Viral Flywheel'},
+    {m:[19,24], fn: m => Math.round(3100 + (m-19)*120), phase:'Scale'},
+  ];
+  const rows = [];
+  let users = 0;
+  for(let m=1; m<=24; m++){
+    const po = phases.find(p => m >= p.m[0] && m <= p.m[1]);
+    const newU = po ? po.fn(m) : 3720;
+    const churned = Math.round(users * CHURN);
+    users = Math.max(0, users - churned + newU);
+    const mrr = Math.round(users * ARPU);
+    rows.push({m, users, mrr, arr:mrr*12, newU, churned, phase: po ? po.phase : 'Scale'});
+  }
+  return rows;
+})();
+
+// ═══════════════════════ CHART ═══════════════════════
+
+const ctx = document.getElementById('arrChart').getContext('2d');
+const arrChart = new Chart(ctx, {
+  type:'line',
+  data:{
+    labels: BASE.map(r => 'M'+r.m),
+    datasets:[
+      {
+        label:'Conservative ARR',
+        data: CONS.map(r => r.arr),
+        borderColor:'#4F8EF7',
+        backgroundColor:'rgba(79,142,247,.05)',
+        borderWidth:2,
+        tension:.4,
+        pointRadius:2,
+        fill:false,
+      },
+      {
+        label:'Base ARR',
+        data: BASE.map(r => r.arr),
+        borderColor:'#9B7FD4',
+        backgroundColor:'rgba(123,94,167,.08)',
+        borderWidth:2.5,
+        tension:.4,
+        pointRadius:2,
+        fill:true,
+      },
+      {
+        label:'Optimistic ARR',
+        data: OPT.map(r => r.arr),
+        borderColor:'#4CAF50',
+        backgroundColor:'rgba(76,175,80,.05)',
+        borderWidth:2,
+        tension:.4,
+        pointRadius:2,
+        fill:false,
+      }
+    ]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        backgroundColor:'rgba(13,13,20,.95)',
+        borderColor:'#1E1E2E',
+        borderWidth:1,
+        titleColor:'#F0F0EE',
+        bodyColor:'#8A8A98',
+        callbacks:{
+          label: ctx => `${ctx.dataset.label}: £${(ctx.parsed.y/1000).toFixed(0)}K ARR`
+        }
+      }
+    },
+    scales:{
+      x:{
+        grid:{color:'rgba(255,255,255,.04)'},
+        ticks:{color:'#52525E',font:{size:11}},
+      },
+      y:{
+        grid:{color:'rgba(255,255,255,.04)'},
+        ticks:{
+          color:'#52525E',font:{size:11},
+          callback: v => v >= 1000000 ? '£'+v/1000000+'M' : '£'+v/1000+'K'
+        },
+        beginAtZero:true,
+      }
+    }
+  }
+});
+
+// ═══════════════════════ TABLES ═══════════════════════
+
+function fmt(n){ return n.toLocaleString('en-GB') }
+function fmtMRR(n){ return '£'+fmt(n) }
+
+function renderTable(rows, tbodyId){
+  const MILESTONE_MONTHS = {9:'★ RAISE', 12:'', 18:'', 22:'★ £1M ARR'};
+  const tb = document.getElementById(tbodyId);
+  tb.innerHTML = rows.map((r,i) => {
+    const isMilestone = [9,12,18,22].includes(r.m);
+    return `<tr class="${isMilestone?'highlight-row':''}">
+      <td><strong>M${r.m}</strong> ${MILESTONE_MONTHS[r.m]||''}</td>
+      <td class="num">${fmt(r.users)}</td>
+      <td class="num">${fmtMRR(r.mrr)}</td>
+      <td class="num">${fmtMRR(r.arr)}</td>
+      <td class="num">+${fmt(r.newU)}</td>
+      <td class="num dim">-${fmt(r.churned)}</td>
+      <td class="dim" style="font-size:11px">${r.phase}</td>
+    </tr>`;
+  }).join('');
+}
+
+renderTable(BASE, 'tbl-base-body');
+renderTable(CONS, 'tbl-cons-body');
+renderTable(OPT, 'tbl-opt-body');
+
+// ═══════════════════════ TABS ═══════════════════════
+
+function showScenario(s){
+  ['base','conservative','optimistic'].forEach(id => {
+    document.getElementById('tbl-'+id).style.display = id===s ? '' : 'none';
+  });
+  document.querySelectorAll('.scenario-tab').forEach((el,i) => {
+    el.classList.toggle('active', ['base','conservative','optimistic'][i]===s);
+  });
+}
+
+// ═══════════════════════ SLIDER ENGINE ═══════════════════════
+
+const SLIDER_DEFAULTS = {
+  churn:  3.5,
+  arpuEss: 3.99,
+  arpuPro: 7.99,
+  growth:  25,
+  cac:     12,
+  conv:    8,
+  mix:     60,   // % Essential (rest = Pro)
+};
+
+function getSliderValues() {
+  return {
+    churn:   parseFloat(document.getElementById('sl-churn').value),
+    arpuEss: parseFloat(document.getElementById('sl-arpu-ess').value),
+    arpuPro: parseFloat(document.getElementById('sl-arpu-pro').value),
+    growth:  parseFloat(document.getElementById('sl-growth').value),
+    cac:     parseFloat(document.getElementById('sl-cac').value),
+    conv:    parseFloat(document.getElementById('sl-conv').value),
+    mix:     parseFloat(document.getElementById('sl-mix').value),
+  };
+}
+
+function computeCustom(p) {
+  // Blended ARPU from Essential:Pro split
+  const essShare = p.mix / 100;
+  const proShare = 1 - essShare;
+  const blendedARPU = essShare * p.arpuEss + proShare * p.arpuPro;
+
+  const churnRate = p.churn / 100;
+  const growthRate = p.growth / 100;
+
+  // New-user acquisition model:
+  // Month 1 starts with a small seed; grows each month by the growth rate slider.
+  // We replicate the three-phase shape but parameterised:
+  //   Phase 1 (M1-8):  organic seed = 3, grows at growthRate each month
+  //   Phase 2 (M9-13): post-raise step-up — baseline +150% of M8 level, linear ramp
+  //   Phase 3 (M14+):  flywheel — continues compounding at growthRate
+  const seed = 3;
+  const m8organic = Math.round(seed * Math.pow(1 + growthRate, 7));
+
+  const rows = [];
+  let users = 0;
+
+  for (let m = 1; m <= 24; m++) {
+    let newU;
+    let phase;
+    if (m <= 8) {
+      newU = Math.round(seed * Math.pow(1 + growthRate, m - 1));
+      phase = 'Bootstrap / Organic';
+    } else if (m <= 13) {
+      // post-raise: linear ramp from 1.5× m8organic up to 3× m8organic
+      const postBase = Math.round(m8organic * 1.5);
+      const postStep = Math.round(m8organic * 0.3);
+      newU = postBase + (m - 9) * postStep;
+      phase = 'Post-raise Scale';
+    } else {
+      // flywheel: continues from post-raise peak, growing each month
+      const flywheelBase = Math.round(m8organic * 1.5) + 4 * Math.round(m8organic * 0.3);
+      newU = Math.round(flywheelBase * Math.pow(1 + growthRate * 0.5, m - 14));
+      phase = 'Flywheel';
+    }
+
+    const churned = Math.round(users * churnRate);
+    users = Math.max(0, users - churned + newU);
+    const mrr = Math.round(users * blendedARPU);
+    rows.push({ m, users, mrr, arr: mrr * 12, newU, churned, phase });
+  }
+
+  // Derived metrics
+  const mrr12 = rows[11].mrr;
+  const mrr24 = rows[23].mrr;
+  const t1m = rows.findIndex(r => r.arr >= 1000000);  // 0-based index → month = +1
+  const ltvMonths = churnRate > 0 ? 1 / churnRate : 999;
+  const ltv = blendedARPU * ltvMonths;
+  const ltvCac = ltv / p.cac;
+  const payback = p.cac / blendedARPU;
+
+  return { rows, blendedARPU, mrr12, mrr24, t1m, ltv, ltvCac, payback };
+}
+
+function recompute(animated) {
+  const p = getSliderValues();
+  const { rows, blendedARPU, mrr12, mrr24, t1m, ltv, ltvCac, payback } = computeCustom(p);
+
+  // — Update live KPIs —
+  document.getElementById('lk-arpu').textContent    = '£' + blendedARPU.toFixed(2);
+  document.getElementById('lk-mrr12').textContent   = '£' + fmt(mrr12);
+  document.getElementById('lk-mrr24').textContent   = '£' + fmt(mrr24);
+  document.getElementById('lk-t1m').textContent     = t1m >= 0 ? 'M' + (t1m + 1) : '>24';
+  document.getElementById('lk-ltv').textContent     = '£' + Math.round(ltv).toLocaleString('en-GB');
+  document.getElementById('lk-ltvrac').textContent  = ltvCac.toFixed(1) + 'x';
+  document.getElementById('lk-payback').textContent = payback.toFixed(1) + ' mo';
+
+  // — Update chart dataset index 1 (Base / Custom) —
+  arrChart.data.datasets[1].data = rows.map(r => r.arr);
+  arrChart.data.datasets[1].label = 'Custom ARR';
+  if (!animated) {
+    arrChart.options.animation = false;
+  } else {
+    arrChart.options.animation = { duration: 400 };
+  }
+  arrChart.update();
+
+  // — Update Base table body —
+  renderTable(rows, 'tbl-base-body');
+}
+
+function updateSliderDisplay() {
+  const p = getSliderValues();
+  document.getElementById('val-churn').textContent    = p.churn + '%';
+  document.getElementById('val-arpu-ess').textContent = '£' + p.arpuEss.toFixed(2);
+  document.getElementById('val-arpu-pro').textContent = '£' + p.arpuPro.toFixed(2);
+  document.getElementById('val-growth').textContent   = p.growth + '%';
+  document.getElementById('val-cac').textContent      = '£' + p.cac;
+  document.getElementById('val-conv').textContent     = p.conv + '%';
+  document.getElementById('val-mix').textContent      = p.mix + '%';
+}
+
+function resetSliders() {
+  document.getElementById('sl-churn').value    = SLIDER_DEFAULTS.churn;
+  document.getElementById('sl-arpu-ess').value = SLIDER_DEFAULTS.arpuEss;
+  document.getElementById('sl-arpu-pro').value = SLIDER_DEFAULTS.arpuPro;
+  document.getElementById('sl-growth').value   = SLIDER_DEFAULTS.growth;
+  document.getElementById('sl-cac').value      = SLIDER_DEFAULTS.cac;
+  document.getElementById('sl-conv').value     = SLIDER_DEFAULTS.conv;
+  document.getElementById('sl-mix').value      = SLIDER_DEFAULTS.mix;
+  updateSliderDisplay();
+  recompute(true);
+}
+
+// Wire up all sliders
+['sl-churn','sl-arpu-ess','sl-arpu-pro','sl-growth','sl-cac','sl-conv','sl-mix'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('input', () => {
+    updateSliderDisplay();
+    recompute(false);   // no animation during drag
+  });
+  el.addEventListener('change', () => {
+    recompute(true);    // smooth animation on release
+  });
+});
+
+// Initial compute on load
+recompute(true);
+</script>
+</body>
+</html>

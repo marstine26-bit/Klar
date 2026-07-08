@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Klar</title>
+<meta name="description" content="Klar privacy policy — how your financial data is stored, processed, and protected.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #07070A;
+    --bg1: #0D0D14;
+    --b1: #161622;
+    --b2: #1E1E2E;
+    --t1: #F0F0EE;
+    --t2: #B8B8C0;
+    --t3: #8A8A98;
+    --t4: #52525E;
+    --accent: #9B7FD4;
+    --green: #4CAF50;
+    --amber: #F5A623;
+    --red: #F5534F;
+    --ff: 'Geist', system-ui, sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--t2);
+    font-family: var(--ff);
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  a:hover { opacity: .8; }
+
+  /* Nav */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(7,7,10,.92); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--b1);
+    display: flex; align-items: center; gap: 20px;
+    padding: 14px 40px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .nav-logo-text { font-size: 17px; font-weight: 800; letter-spacing: -.04em; color: var(--t1); }
+  .nav-links { margin-left: auto; display: flex; gap: 20px; }
+  .nav-links a { font-size: 13px; color: var(--t3); text-decoration: none; }
+  .nav-links a:hover { color: var(--t1); }
+  .nav-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 8px; border: 1px solid var(--b2);
+    font-size: 13px; color: var(--t2); text-decoration: none; transition: all .15s;
+  }
+  .nav-back:hover { background: var(--b1); color: var(--t1); }
+
+  /* Page */
+  .page-wrap {
+    max-width: 740px; margin: 0 auto;
+    padding: 56px 24px 100px;
+  }
+  .page-eyebrow {
+    font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 12px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 800; letter-spacing: -.05em;
+    color: var(--t1); margin-bottom: 8px; line-height: 1.1;
+  }
+  .meta {
+    font-size: 13px; color: var(--t4); margin-bottom: 48px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .meta-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 20px;
+    background: rgba(155,127,212,.12); border: 1px solid rgba(155,127,212,.25);
+    color: var(--accent); font-size: 11px; font-weight: 700;
+  }
+
+  /* TOC */
+  .toc {
+    background: var(--bg1); border: 1px solid var(--b1); border-radius: 14px;
+    padding: 22px 26px; margin-bottom: 48px;
+  }
+  .toc-title { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--t4); margin-bottom: 12px; }
+  .toc ol { padding-left: 20px; display: flex; flex-direction: column; gap: 5px; }
+  .toc li { font-size: 13.5px; }
+  .toc a { color: var(--t2); text-decoration: none; }
+  .toc a:hover { color: var(--accent); }
+
+  /* Sections */
+  .section { margin-bottom: 44px; }
+  h2 {
+    font-size: 17px; font-weight: 700; color: var(--t1);
+    margin-bottom: 14px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--b1);
+    scroll-margin-top: 80px;
+  }
+  p { margin-bottom: 14px; font-size: 14.5px; }
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { margin-bottom: 6px; font-size: 14.5px; }
+  strong { color: var(--t1); font-weight: 600; }
+
+  /* Flag rows */
+  .flag-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 16px; border-radius: 10px;
+    background: var(--bg1); border: 1px solid var(--b1);
+    margin-bottom: 10px; font-size: 14px;
+  }
+  .flag-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+  /* Processor table */
+  table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 13.5px; }
+  th {
+    text-align: left; padding: 9px 12px;
+    background: var(--b1); color: var(--t3);
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  }
+  th:first-child { border-radius: 8px 0 0 8px; }
+  th:last-child  { border-radius: 0 8px 8px 0; }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--b1); color: var(--t2); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+
+  /* Rights grid */
+  .rights-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; margin-bottom: 14px;
+  }
+  .right-card {
+    background: var(--bg1); border: 1px solid var(--b1); border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .right-title { font-size: 13px; font-weight: 700; color: var(--t1); margin-bottom: 4px; }
+  .right-how  { font-size: 12px; color: var(--t3); line-height: 1.55; }
+
+  /* Callout */
+  .callout {
+    padding: 16px 20px; border-radius: 12px; margin-bottom: 16px;
+    background: rgba(155,127,212,.07); border-left: 3px solid var(--accent);
+    font-size: 14px;
+  }
+  .callout.green { background: rgba(76,175,80,.07); border-left-color: var(--green); }
+  .callout.amber { background: rgba(245,166,35,.07); border-left-color: var(--amber); }
+
+  /* Contact */
+  .contact-box {
+    background: var(--bg1); border: 1px solid var(--b1); border-radius: 14px;
+    padding: 24px 28px; margin-top: 48px; text-align: center;
+  }
+  .contact-box h3 { font-size: 16px; font-weight: 700; color: var(--t1); margin-bottom: 8px; }
+  .contact-box p { font-size: 13.5px; color: var(--t3); margin-bottom: 14px; }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--b1); padding: 28px 40px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    font-size: 12px; color: var(--t4);
+  }
+  footer a { color: var(--t4); text-decoration: none; }
+  footer a:hover { color: var(--t2); }
+  .footer-links { display: flex; gap: 20px; }
+
+  @media (max-width: 600px) {
+    nav { padding: 14px 20px; }
+    .page-wrap { padding: 36px 20px 80px; }
+    h1 { font-size: 26px; }
+    .rights-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="26" height="26" rx="6" fill="#0D0D14"/>
+      <g transform="translate(13,13) rotate(-9) translate(-13,-13)">
+        <rect x="5" y="4" width="5.5" height="14.5" rx="2.75" fill="#9B7FD4"/>
+        <rect x="15" y="6.5" width="5.5" height="12" rx="2.75" fill="#5B7FD4"/>
+      </g>
+    </svg>
+    <span class="nav-logo-text">Klar</span>
+  </a>
+  <div class="nav-links">
+    <a href="/terms.html">Terms</a>
+    <a href="/privacy.html">Privacy</a>
+    <a href="/">Open App</a>
+  </div>
+  <a href="/" class="nav-back">← Back to app</a>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-eyebrow">Legal</div>
+  <h1>Privacy Policy</h1>
+  <div class="meta">
+    <span class="meta-badge">Version 1</span>
+    <span>Effective 14 June 2026</span>
+    <span>Last updated: 14 June 2026</span>
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <ol>
+      <li><a href="#s1">Introduction</a></li>
+      <li><a href="#s2">Data We Process</a></li>
+      <li><a href="#s3">Where Your Data Lives</a></li>
+      <li><a href="#s4">Third-Party Processors</a></li>
+      <li><a href="#s5">Legal Basis for Processing</a></li>
+      <li><a href="#s6">Your Rights</a></li>
+      <li><a href="#s7">Data Retention</a></li>
+      <li><a href="#s8">Security</a></li>
+      <li><a href="#s9">Cross-Border Transfers</a></li>
+      <li><a href="#s10">Children's Data</a></li>
+      <li><a href="#s11">Responsible Party (POPIA)</a></li>
+      <li><a href="#s12">Changes to This Policy</a></li>
+      <li><a href="#s13">Contact</a></li>
+    </ol>
+  </div>
+
+  <div class="callout green">
+    <strong>TL;DR:</strong> Klar stores your data on your device. Nothing is sent anywhere unless you opt in to cloud sync or AI features. We don't sell data. You can delete everything at any time.
+  </div>
+
+  <div class="section" id="s1">
+    <h2>1. Introduction</h2>
+    <p>Klar ("we", "us", "our") is a personal finance management application that runs entirely in your web browser. This Privacy Policy explains how your personal and financial information is handled when you use Klar at <a href="https://klarmoney.netlify.app">klarmoney.netlify.app</a> or any associated domains.</p>
+    <p>Klar is built on a <strong>local-first</strong> principle: your data stays on your device unless you explicitly choose to enable optional cloud sync or AI features. We process your data only as described in this policy.</p>
+    <p>By using Klar, you agree to this Privacy Policy. If you do not agree, please stop using the app and clear your browser's localStorage for this site.</p>
+  </div>
+
+  <div class="section" id="s2">
+    <h2>2. Data We Process</h2>
+    <p>Klar processes information that <strong>you enter</strong>:</p>
+    <ul>
+      <li>Financial transactions (amounts, dates, categories, merchants, notes)</li>
+      <li>Bank account names and balances you choose to record</li>
+      <li>Budget limits and spending history</li>
+      <li>Savings goals and progress</li>
+      <li>Debt records and repayment plans</li>
+      <li>Subscriptions and recurring bills</li>
+      <li>Personal preferences (theme, currency, region)</li>
+      <li>Receipt photo images you choose to attach (stored locally as base64)</li>
+    </ul>
+    <p>Klar does <strong>not</strong> collect:</p>
+    <ul>
+      <li>Government ID numbers (NI, SARS, passport)</li>
+      <li>Full bank account or card numbers</li>
+      <li>Biometric data</li>
+      <li>HMRC or SARS login credentials</li>
+      <li>Device identifiers, IP addresses, or browser fingerprints (beyond what Supabase receives if you use cloud sync)</li>
+    </ul>
+  </div>
+
+  <div class="section" id="s3">
+    <h2>3. Where Your Data Lives</h2>
+    <div class="flag-row">
+      <span class="flag-icon">📱</span>
+      <span><strong>Local only (default):</strong> All data is stored in your browser's localStorage on this device. Nothing is sent to any external server. You can clear it at any time via Settings → Data Management → Reset all data, or by clearing your browser's site data.</span>
+    </div>
+    <div class="flag-row">
+      <span class="flag-icon">☁</span>
+      <span><strong>Cloud Sync (optional — opt-in):</strong> If you sign in, your data is encrypted in transit (TLS 1.2+) and stored in a Supabase PostgreSQL database. Each user's data is protected by Row Level Security (RLS) — only you can access your data. You can delete your cloud data at any time from Settings → Privacy → Delete cloud data.</span>
+    </div>
+    <div class="flag-row">
+      <span class="flag-icon">🤖</span>
+      <span><strong>AI Advisor (optional — opt-in):</strong> When you send a message to the AI Advisor, a <em>financial summary only</em> (average monthly income, average monthly expenses, account count, debt count, region) is sent to Groq Inc's API. Raw transactions, descriptions, names, and account numbers are <em>never</em> transmitted to Groq.</span>
+    </div>
+    <div class="flag-row">
+      <span class="flag-icon">🤖</span>
+      <span><strong>Automated decision-making:</strong> Klar's AI Advisor uses automated processing to generate personalised financial insights and recommendations based on your transaction data. This processing does not produce legal or similarly significant effects — all AI outputs are advisory only and require your review before any action is taken. You may opt out of AI features at any time by not using the AI Advisor functionality.</span>
+    </div>
+    <div class="flag-row">
+      <span class="flag-icon">💳</span>
+      <span><strong>Payments (optional — opt-in):</strong> Subscription billing is handled by Paddle.com. Clicking a subscription button opens Paddle's hosted checkout. Klar never receives or stores your payment card details. Refer to Paddle's <a href="https://www.paddle.com/legal/privacy" target="_blank" rel="noopener">privacy policy</a>.</span>
+    </div>
+    <div class="flag-row">
+      <span class="flag-icon">💬</span>
+      <span><strong>Support chat (optional):</strong> If you use the in-app chat support (Crisp), your messages and your email address (if provided) are processed by Crisp Chat. Refer to <a href="https://crisp.chat/en/privacy/" target="_blank" rel="noopener">Crisp's privacy policy</a>.</span>
+    </div>
+    <div class="flag-row">
+      <span class="flag-icon">📊</span>
+      <span><strong>Analytics (optional):</strong> We use PostHog (EU-hosted) to collect anonymised usage events (page views, feature use, plan selected). No financial data is included. You can opt out by blocking analytics in your browser or ad-blocker.</span>
+    </div>
+  </div>
+
+  <div class="section" id="s4">
+    <h2>4. Third-Party Processors</h2>
+    <table>
+      <thead>
+        <tr><th>Service</th><th>Purpose</th><th>Data sent</th><th>Location</th><th>When active</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Supabase</strong></td><td>Cloud backup &amp; auth</td><td>Encrypted app data, email</td><td>EU / USA</td><td>Only if signed in</td></tr>
+        <tr><td><strong>Groq</strong></td><td>AI Advisor responses</td><td>Financial summary only</td><td>USA</td><td>Only when you query AI</td></tr>
+        <tr><td><strong>Paddle</strong></td><td>Subscription billing</td><td>Email, payment details</td><td>Global</td><td>Only when subscribing</td></tr>
+        <tr><td><strong>Saltedge</strong></td><td>UK bank feeds</td><td>OAuth token, account list</td><td>EU</td><td>Only if bank feed connected</td></tr>
+        <tr><td><strong>Frankfurter</strong></td><td>Live FX rates</td><td>Currency pair (no personal data)</td><td>EU</td><td>When FX conversion active</td></tr>
+        <tr><td><strong>Crisp</strong></td><td>Support chat</td><td>Chat messages, email (optional)</td><td>EU</td><td>When chat opened</td></tr>
+        <tr><td><strong>PostHog EU</strong></td><td>Product analytics</td><td>Anonymised events, region, plan tier</td><td>EU</td><td>Always (anonymised)</td></tr>
+      </tbody>
+    </table>
+    <p>All third-party services operate under their own privacy policies and are bound by applicable data-protection law. None are active unless you use the specific feature (except PostHog, which is anonymised).</p>
+  </div>
+
+  <div class="section" id="s5">
+    <h2>5. Legal Basis for Processing</h2>
+    <div class="flag-row">
+      <span class="flag-icon">🇿🇦</span>
+      <span><strong>POPIA (South Africa):</strong> Processing is lawful under §11(1)(a) (consent) and §11(1)(f) (legitimate interest). Local processing of your own personal financial records may also fall under the personal or household activity exemption of POPIA §6(1)(e).</span>
+    </div>
+    <div class="flag-row">
+      <span class="flag-icon">🇬🇧</span>
+      <span><strong>UK GDPR / DPA 2018:</strong> Article 6(1)(a) — Consent for optional cloud/AI/analytics features. Article 6(1)(f) — Legitimate interests for local processing of your own data. As a data controller, we are assessing our ICO registration obligations. If you have questions about our regulatory status, please contact us at <a href="mailto:privacy@klarmoney.app">privacy@klarmoney.app</a>.</span>
+    </div>
+    <div class="flag-row">
+      <span class="flag-icon">🇪🇺</span>
+      <span><strong>EU GDPR:</strong> Article 6(1)(a) consent; Article 6(1)(f) legitimate interests. Where applicable, Article 9 is not engaged as we do not process special-category data.</span>
+    </div>
+    <div class="flag-row">
+      <span class="flag-icon">🌍</span>
+      <span><strong>Other jurisdictions (CCPA, LGPD, PDPA, PIPEDA):</strong> Klar does not sell personal information. Consent and purpose-limitation principles are implemented by design. Rights under each applicable law are available via Settings → Privacy.</span>
+    </div>
+  </div>
+
+  <div class="section" id="s6">
+    <h2>6. Your Rights</h2>
+    <p>You have the following rights with respect to your personal data, exercisable at any time:</p>
+    <div class="rights-grid">
+      <div class="right-card">
+        <div class="right-title">✅ Access</div>
+        <div class="right-how">Settings → Data Management → Full data backup (JSON)</div>
+      </div>
+      <div class="right-card">
+        <div class="right-title">✏️ Rectification</div>
+        <div class="right-how">Edit any transaction, account, or record directly in the app</div>
+      </div>
+      <div class="right-card">
+        <div class="right-title">🗑️ Erasure (local)</div>
+        <div class="right-how">Settings → Data Management → Reset all data</div>
+      </div>
+      <div class="right-card">
+        <div class="right-title">🗑️ Erasure (cloud)</div>
+        <div class="right-how">Settings → Privacy → Delete cloud data</div>
+      </div>
+      <div class="right-card">
+        <div class="right-title">📦 Portability</div>
+        <div class="right-how">Export as JSON, CSV, or Excel via Settings → Data Management</div>
+      </div>
+      <div class="right-card">
+        <div class="right-title">🚫 Restriction / Withdrawal</div>
+        <div class="right-how">Sign out of cloud sync; remove API key to disable AI; decline analytics</div>
+      </div>
+      <div class="right-card">
+        <div class="right-title">⚖️ Complaint — UK</div>
+        <div class="right-how">Information Commissioner's Office: <a href="https://ico.org.uk" target="_blank" rel="noopener">ico.org.uk</a></div>
+      </div>
+      <div class="right-card">
+        <div class="right-title">⚖️ Complaint — SA</div>
+        <div class="right-how">Information Regulator: <a href="https://www.inforeg.org.za" target="_blank" rel="noopener">inforeg.org.za</a></div>
+      </div>
+    </div>
+    <p>To exercise any right not directly actionable in the app, contact us at <a href="mailto:privacy@klarmoney.app">privacy@klarmoney.app</a>. We will respond within 30 days.</p>
+  </div>
+
+  <div class="section" id="s7">
+    <h2>7. Data Retention</h2>
+    <p>You control all data retention:</p>
+    <ul>
+      <li><strong>Local data</strong> persists in your browser's localStorage until you clear it or reset the app.</li>
+      <li><strong>Cloud data</strong> (Supabase) persists until you delete your account or use Settings → Privacy → Delete cloud data.</li>
+      <li><strong>AI query context</strong> is not retained by Groq beyond the API response cycle (per Groq's privacy policy).</li>
+      <li><strong>Support chat</strong> transcripts are retained by Crisp subject to their data retention policy.</li>
+      <li><strong>Analytics events</strong> are retained by PostHog for up to 12 months in anonymised form.</li>
+    </ul>
+  </div>
+
+  <div class="section" id="s8">
+    <h2>8. Security</h2>
+    <ul>
+      <li><strong>Local data:</strong> stored in browser localStorage, accessible only to the origin serving the app. We recommend using the app PIN lock (Settings → App Lock) if you share a device.</li>
+      <li><strong>Cloud data:</strong> transmitted via TLS 1.2+; stored with Supabase's encryption-at-rest (AES-256). Row Level Security ensures only you can read your data.</li>
+      <li><strong>AI data:</strong> transmitted via TLS to Groq's API; only a minimal financial summary is sent — no raw transaction data.</li>
+      <li><strong>Payments:</strong> all card data is handled by Paddle's PCI-DSS-compliant infrastructure. We never see your card details.</li>
+    </ul>
+    <div class="callout amber">
+      <strong>Your responsibility:</strong> Keep your sign-in credentials secure. Do not share your Klar access with others on shared devices without using the PIN lock feature.
+    </div>
+  </div>
+
+  <div class="section" id="s9">
+    <h2>9. Cross-Border Data Transfers</h2>
+    <p>If you use optional features, your data may be transferred to servers outside your country of residence:</p>
+    <ul>
+      <li><strong>Supabase</strong> — EU-hosted by default; may also use USA infrastructure. Supabase maintains GDPR Standard Contractual Clauses (SCCs) and is certified under the EU-US Data Privacy Framework.</li>
+      <li><strong>Groq</strong> — USA. By enabling the AI Advisor, you consent to the transfer of a financial summary to Groq's USA servers.</li>
+      <li><strong>Paddle</strong> — Global. Paddle is GDPR-compliant and maintains SCCs for cross-border transfers.</li>
+    </ul>
+    <p>By enabling these optional features, you consent to the associated cross-border transfers described above.</p>
+  </div>
+
+  <div class="section" id="s10">
+    <h2>10. Children's Data</h2>
+    <p>Klar is not intended for persons under 18 years of age. We do not knowingly collect personal information from minors. If you believe a minor has used this app and entered personal data, please clear all data via Settings → Data Management → Reset all data, and contact us at <a href="mailto:privacy@klarmoney.app">privacy@klarmoney.app</a>.</p>
+  </div>
+
+  <div class="section" id="s11">
+    <h2>11. Responsible Party / Data Controller</h2>
+    <p>For POPIA purposes, and to the extent Klar operates as a data processor: <strong>Klar Money</strong> is the data controller. For personal use of the app where you are processing solely your own financial data for personal and household purposes, you are both the data subject and responsible party.</p>
+    <p>Contact: <a href="mailto:privacy@klarmoney.app">privacy@klarmoney.app</a></p>
+  </div>
+
+  <div class="section" id="s12">
+    <h2>12. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. Material changes will be presented for your consent on the next app launch (the version number will increment). Minor clarifications may be made without notice. The version number and effective date are always shown at the top of this document.</p>
+    <p>Continued use of Klar after a version change constitutes acceptance of the updated policy.</p>
+  </div>
+
+  <div class="section" id="cookies">
+    <h2>13. Cookies &amp; Local Storage</h2>
+    <p>Klar does <strong>not</strong> use advertising cookies or cross-site tracking cookies.</p>
+    <p>We use the following browser storage mechanisms:</p>
+    <ul>
+      <li><strong>localStorage</strong> — Your financial data, preferences, and app state are stored in your browser's localStorage on your device only. This is not a cookie and is not transmitted to any server by default. You can clear it at any time via Settings → Data Management → Reset all data.</li>
+      <li><strong>sessionStorage</strong> — Temporary session data (e.g. draft form values) may be stored for the duration of your browser session and cleared when you close the tab.</li>
+      <li><strong>Analytics (optional)</strong> — If analytics is active, we use PostHog in cookieless, memory-only mode (no persistent cookie, no cross-site tracking, PECR compliant). No personal data is included in analytics events.</li>
+      <li><strong>Supabase auth (optional)</strong> — If you sign in for cloud sync, your authentication token is stored in localStorage to keep you signed in. You can sign out at any time.</li>
+    </ul>
+    <p>No third-party advertising networks, social media trackers, or behavioural profiling cookies are used on this site.</p>
+  </div>
+
+  <div class="section" id="s13">
+    <h2>14. Contact Us</h2>
+    <p>For any privacy questions, rights requests, or concerns:</p>
+    <ul>
+      <li><strong>Email:</strong> <a href="mailto:privacy@klarmoney.app">privacy@klarmoney.app</a></li>
+      <li><strong>In-app:</strong> Settings → Support or use the chat icon</li>
+    </ul>
+    <p>We aim to respond to all requests within <strong>30 days</strong>.</p>
+  </div>
+
+  <div class="contact-box">
+    <h3>Questions about your data?</h3>
+    <p>We're here to help. Reach us at <a href="mailto:privacy@klarmoney.app">privacy@klarmoney.app</a> or use the in-app support chat.</p>
+    <a href="/" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:linear-gradient(135deg,#7B5EA7,#5B7FD4);color:#fff;border-radius:10px;text-decoration:none;font-size:13.5px;font-weight:700;margin-top:4px">Open Klar →</a>
+  </div>
+
+</div>
+
+<footer>
+  <span>© 2026 Klar Money · <a href="mailto:privacy@klarmoney.app">privacy@klarmoney.app</a></span>
+  <div class="footer-links">
+    <a href="/privacy.html">Privacy Policy</a>
+    <a href="/terms.html">Terms of Service</a>
+    <a href="/">Open App</a>
+  </div>
+</footer>
+
+</body>
+</html>

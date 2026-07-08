@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service — Klar</title>
+<meta name="description" content="Klar Terms of Service — the rules governing your use of the Klar personal finance app.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #07070A; --bg1: #0D0D14; --b1: #161622; --b2: #1E1E2E;
+    --t1: #F0F0EE; --t2: #B8B8C0; --t3: #8A8A98; --t4: #52525E;
+    --accent: #9B7FD4; --green: #4CAF50; --amber: #F5A623; --red: #F5534F;
+    --ff: 'Geist', system-ui, sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--t2); font-family: var(--ff); font-size: 15px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  a:hover { opacity: .8; }
+
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(7,7,10,.92); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--b1);
+    display: flex; align-items: center; gap: 20px; padding: 14px 40px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .nav-logo-text { font-size: 17px; font-weight: 800; letter-spacing: -.04em; color: var(--t1); }
+  .nav-links { margin-left: auto; display: flex; gap: 20px; }
+  .nav-links a { font-size: 13px; color: var(--t3); text-decoration: none; }
+  .nav-links a:hover { color: var(--t1); }
+  .nav-back { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; border: 1px solid var(--b2); font-size: 13px; color: var(--t2); text-decoration: none; transition: all .15s; }
+  .nav-back:hover { background: var(--b1); color: var(--t1); }
+
+  .page-wrap { max-width: 740px; margin: 0 auto; padding: 56px 24px 100px; }
+  .page-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+  h1 { font-size: 36px; font-weight: 800; letter-spacing: -.05em; color: var(--t1); margin-bottom: 8px; line-height: 1.1; }
+  .meta { font-size: 13px; color: var(--t4); margin-bottom: 48px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .meta-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; background: rgba(155,127,212,.12); border: 1px solid rgba(155,127,212,.25); color: var(--accent); font-size: 11px; font-weight: 700; }
+
+  .toc { background: var(--bg1); border: 1px solid var(--b1); border-radius: 14px; padding: 22px 26px; margin-bottom: 48px; }
+  .toc-title { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--t4); margin-bottom: 12px; }
+  .toc ol { padding-left: 20px; display: flex; flex-direction: column; gap: 5px; }
+  .toc li { font-size: 13.5px; }
+  .toc a { color: var(--t2); text-decoration: none; }
+  .toc a:hover { color: var(--accent); }
+
+  .section { margin-bottom: 44px; }
+  h2 { font-size: 17px; font-weight: 700; color: var(--t1); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--b1); scroll-margin-top: 80px; }
+  h3 { font-size: 14px; font-weight: 700; color: var(--t1); margin: 16px 0 8px; }
+  p { margin-bottom: 14px; font-size: 14.5px; }
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { margin-bottom: 6px; font-size: 14.5px; }
+  strong { color: var(--t1); font-weight: 600; }
+
+  .callout { padding: 16px 20px; border-radius: 12px; margin-bottom: 16px; background: rgba(155,127,212,.07); border-left: 3px solid var(--accent); font-size: 14px; }
+  .callout.amber { background: rgba(245,166,35,.07); border-left-color: var(--amber); }
+  .callout.red { background: rgba(245,83,79,.07); border-left-color: var(--red); }
+  .callout.green { background: rgba(76,175,80,.07); border-left-color: var(--green); }
+
+  .plan-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 13.5px; }
+  .plan-table th { text-align: left; padding: 9px 12px; background: var(--b1); color: var(--t3); font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
+  .plan-table th:first-child { border-radius: 8px 0 0 8px; }
+  .plan-table th:last-child  { border-radius: 0 8px 8px 0; }
+  .plan-table td { padding: 10px 12px; border-bottom: 1px solid var(--b1); color: var(--t2); vertical-align: top; }
+  .plan-table tr:last-child td { border-bottom: none; }
+
+  .contact-box { background: var(--bg1); border: 1px solid var(--b1); border-radius: 14px; padding: 24px 28px; margin-top: 48px; text-align: center; }
+  .contact-box h3 { font-size: 16px; font-weight: 700; color: var(--t1); margin-bottom: 8px; }
+  .contact-box p { font-size: 13.5px; color: var(--t3); margin-bottom: 14px; }
+
+  footer { border-top: 1px solid var(--b1); padding: 28px 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--t4); }
+  footer a { color: var(--t4); text-decoration: none; }
+  footer a:hover { color: var(--t2); }
+  .footer-links { display: flex; gap: 20px; }
+
+  @media (max-width: 600px) {
+    nav { padding: 14px 20px; }
+    .page-wrap { padding: 36px 20px 80px; }
+    h1 { font-size: 26px; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="26" height="26" rx="6" fill="#0D0D14"/>
+      <g transform="translate(13,13) rotate(-9) translate(-13,-13)">
+        <rect x="5" y="4" width="5.5" height="14.5" rx="2.75" fill="#9B7FD4"/>
+        <rect x="15" y="6.5" width="5.5" height="12" rx="2.75" fill="#5B7FD4"/>
+      </g>
+    </svg>
+    <span class="nav-logo-text">Klar</span>
+  </a>
+  <div class="nav-links">
+    <a href="/terms.html">Terms</a>
+    <a href="/privacy.html">Privacy</a>
+    <a href="/">Open App</a>
+  </div>
+  <a href="/" class="nav-back">← Back to app</a>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-eyebrow">Legal</div>
+  <h1>Terms of Service</h1>
+  <div class="meta">
+    <span class="meta-badge">Version 1.0</span>
+    <span>Effective 14 June 2026</span>
+    <span>Last updated: 14 June 2026</span>
+  </div>
+
+  <div class="callout">
+    <strong>Plain-English summary:</strong> Klar is a personal finance tool. Use it honestly, don't abuse it, and don't rely on it for regulated financial advice. Free plan is free forever. Paid plans are billed via Paddle — cancel any time. We're not liable for financial decisions you make based on Klar's data or AI responses.
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <ol>
+      <li><a href="#s1">Acceptance of Terms</a></li>
+      <li><a href="#s2">Who We Are</a></li>
+      <li><a href="#s3">The Service</a></li>
+      <li><a href="#s4">Account Registration</a></li>
+      <li><a href="#s5">Subscriptions &amp; Billing</a></li>
+      <li><a href="#s6">Free Plan</a></li>
+      <li><a href="#s7">Acceptable Use</a></li>
+      <li><a href="#s8">Your Data &amp; Content</a></li>
+      <li><a href="#s9">AI Advisor Disclaimer</a></li>
+      <li><a href="#s10">Third-Party Services</a></li>
+      <li><a href="#s11">Intellectual Property</a></li>
+      <li><a href="#s12">Disclaimers &amp; Liability</a></li>
+      <li><a href="#s13">Indemnification</a></li>
+      <li><a href="#s14">Termination</a></li>
+      <li><a href="#s15">Governing Law &amp; Disputes</a></li>
+      <li><a href="#s16">Changes to Terms</a></li>
+      <li><a href="#s17">Contact</a></li>
+    </ol>
+  </div>
+
+  <div class="section" id="s1">
+    <h2>1. Acceptance of Terms</h2>
+    <p>By accessing or using Klar at <a href="https://klarmoney.netlify.app">klarmoney.netlify.app</a> (the "Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree, do not use the Service.</p>
+    <p>These Terms form a legally binding agreement between you ("User", "you") and Klar Money ("Klar", "we", "us"). Your use of Klar is also governed by our <a href="/privacy.html">Privacy Policy</a>, which is incorporated into these Terms by reference.</p>
+    <p>If you are using Klar on behalf of an organisation, you represent that you have authority to bind that organisation to these Terms.</p>
+  </div>
+
+  <div class="section" id="s2">
+    <h2>2. Who We Are</h2>
+    <p><strong>Klar Money</strong> operates the Klar personal finance application. For support and legal queries, contact us at <a href="mailto:hello@klarmoney.app">hello@klarmoney.app</a>.</p>
+    <p>Klar is not a bank, financial institution, investment adviser, or credit provider. We are a software application that helps you organise and visualise your own financial data.</p>
+  </div>
+
+  <div class="section" id="s3">
+    <h2>3. The Service</h2>
+    <p>Klar provides a personal finance management web application with features including (but not limited to):</p>
+    <ul>
+      <li>Transaction tracking, categorisation, and budgeting</li>
+      <li>Savings goals, debt tracking, and subscription management</li>
+      <li>Net worth tracking and financial health scoring</li>
+      <li>Cash flow forecasting and insights</li>
+      <li>AI-powered financial guidance (via Groq)</li>
+      <li>UK Open Banking bank feeds (via Saltedge)</li>
+      <li>Multi-currency support with live FX rates</li>
+      <li>Cloud sync and backup (via Supabase)</li>
+    </ul>
+    <p>Features may vary by subscription plan and region. We reserve the right to modify, add, or remove features at any time. We will provide reasonable notice of material changes.</p>
+  </div>
+
+  <div class="section" id="s4">
+    <h2>4. Account Registration</h2>
+    <p>Klar can be used without registration (local-only mode). To enable cloud sync and certain premium features, you must create an account using a valid email address.</p>
+    <p>You are responsible for:</p>
+    <ul>
+      <li>Maintaining the confidentiality of your login credentials</li>
+      <li>All activity that occurs under your account</li>
+      <li>Notifying us immediately of any unauthorised access at <a href="mailto:hello@klarmoney.app">hello@klarmoney.app</a></li>
+    </ul>
+    <p>You must be at least 18 years old to create an account. By registering, you confirm that you meet this requirement.</p>
+  </div>
+
+  <div class="section" id="s5">
+    <h2>5. Subscriptions &amp; Billing</h2>
+    <p>Paid plans are processed by <strong>Paddle.com Market Ltd</strong> ("Paddle"), our Merchant of Record. By subscribing, you agree to Paddle's <a href="https://www.paddle.com/legal/checkout-buyer-terms" target="_blank" rel="noopener">Buyer Terms</a> in addition to these Terms.</p>
+
+    <h3>Available Plans</h3>
+    <table class="plan-table">
+      <thead><tr><th>Plan</th><th>Price (UK)</th><th>Price (SA)</th><th>Billed</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Free</strong></td><td>£0</td><td>R0</td><td>Never</td></tr>
+        <tr><td><strong>Essential (monthly)</strong></td><td>£3.99/mo</td><td>R49/mo</td><td>Monthly</td></tr>
+        <tr><td><strong>Essential (annual)</strong></td><td>£34.99/yr</td><td>R499/yr</td><td>Annually</td></tr>
+        <tr><td><strong>Pro (monthly)</strong></td><td>£7.99/mo</td><td>R89/mo</td><td>Monthly</td></tr>
+        <tr><td><strong>Pro (annual)</strong></td><td>£64.99/yr</td><td>R899/yr</td><td>Annually</td></tr>
+      </tbody>
+    </table>
+    <p>Prices are inclusive of applicable VAT where Paddle is required to charge it.</p>
+
+    <h3>14-Day Free Trial</h3>
+    <p>New subscribers to paid plans receive a 14-day free trial. You will not be charged until the trial ends. Cancel any time during the trial to avoid charges.</p>
+
+    <h3>Renewals</h3>
+    <p>Subscriptions renew automatically at the end of each billing cycle unless cancelled. You authorise Paddle to charge your payment method on a recurring basis.</p>
+
+    <h3>Cancellation</h3>
+    <p>You may cancel at any time via <strong>Settings → Manage Subscription &amp; Billing</strong> (Paddle Customer Portal). Cancellation takes effect at the end of the current billing period. Access to paid features continues until then. No partial refunds are issued for unused time in a billing period.</p>
+
+    <h3>Refunds</h3>
+    <p>All sales are final except where required by applicable consumer protection law. UK users have the right to cancel within 14 days of purchase under the Consumer Contracts Regulations 2013, unless digital content delivery has begun with your consent. SA users have rights under the Consumer Protection Act 68 of 2008. To request a refund, email <a href="mailto:billing@klarmoney.app">billing@klarmoney.app</a>. Approved refunds will be processed by Paddle within 5–10 business days to your original payment method.</p>
+
+    <h3>Price Changes</h3>
+    <p>We may change subscription prices. We will give you at least 30 days' notice before any price change takes effect. Continued use after the change date constitutes acceptance of the new pricing.</p>
+  </div>
+
+  <div class="section" id="s6">
+    <h2>6. Free Plan</h2>
+    <p>The Free plan is available at no cost and includes core transaction tracking, budgeting, and savings features. It is limited to 6 months of transaction history and local storage only (no cloud sync).</p>
+    <p>We reserve the right to modify Free plan features. We will provide at least 30 days' notice before removing a feature that was previously available on the Free plan.</p>
+  </div>
+
+  <div class="section" id="s7">
+    <h2>7. Acceptable Use</h2>
+    <p>You agree not to:</p>
+    <ul>
+      <li>Use Klar for any unlawful purpose or in violation of any applicable law (including anti-money-laundering, tax, and financial crime legislation)</li>
+      <li>Attempt to reverse-engineer, decompile, or extract source code from the app</li>
+      <li>Scrape, crawl, or automate access to Klar's servers or APIs without written permission</li>
+      <li>Introduce viruses, malware, or malicious code</li>
+      <li>Use the AI Advisor to generate advice for other people on a commercial basis without our written consent</li>
+      <li>Circumvent subscription gating through technical means</li>
+      <li>Impersonate another person or entity</li>
+      <li>Share your account credentials with others</li>
+    </ul>
+    <p>Violation of these restrictions may result in immediate termination of your account without refund.</p>
+  </div>
+
+  <div class="section" id="s8">
+    <h2>8. Your Data &amp; Content</h2>
+    <p>You own all financial data you enter into Klar. We do not claim ownership of your transactions, budgets, goals, or any other content you create.</p>
+    <p>By enabling cloud sync, you grant Klar a limited licence to store and process your data solely to provide the Service to you. This licence terminates when you delete your cloud data or close your account.</p>
+    <p>You are responsible for ensuring that the data you enter does not infringe the rights of others (e.g. entering another person's financial details without their consent).</p>
+    <p>You can export all your data at any time via Settings → Data Management. You can delete all data via Settings → Data Management → Reset all data.</p>
+  </div>
+
+  <div class="section" id="s9">
+    <h2>9. AI Advisor Disclaimer</h2>
+    <div class="callout red">
+      <strong>Important:</strong> The AI Advisor is not a regulated financial adviser. Responses are generated by a large language model (Groq / LLaMA) and may be inaccurate, incomplete, or unsuitable for your specific circumstances. Do not make significant financial decisions — including investment, tax, debt, or pension decisions — based solely on Klar AI responses.
+    </div>
+    <p>Klar's AI Advisor is provided for general informational and educational purposes only. It does not constitute:</p>
+    <ul>
+      <li>Regulated financial advice under the Financial Services and Markets Act 2000 (UK)</li>
+      <li>Tax advice under HMRC guidelines or SARS regulations</li>
+      <li>Investment advice under the Financial Advisory and Intermediary Services Act 37 of 2002 (SA)</li>
+      <li>Legal or accounting advice</li>
+    </ul>
+    <p>Always consult a qualified, FCA-authorised (UK) or FSP-licensed (SA) professional for advice tailored to your situation.</p>
+  </div>
+
+  <div class="section" id="s10">
+    <h2>10. Third-Party Services</h2>
+    <p>Klar integrates with third-party services including Supabase, Groq, Paddle, Saltedge, Frankfurter, Crisp, and PostHog. Your use of these services is governed by their respective terms of service and privacy policies. We are not responsible for the content, practices, or availability of third-party services.</p>
+    <p>Bank feeds (UK) are provided via Saltedge and are subject to FCA Open Banking regulations. Klar has read-only access to your bank data — we cannot initiate payments or move funds on your behalf.</p>
+  </div>
+
+  <div class="section" id="s11">
+    <h2>11. Intellectual Property</h2>
+    <p>The Klar application, including its design, code, branding, and content (excluding your personal data), is owned by Klar Money and protected by copyright and other intellectual property laws.</p>
+    <p>You are granted a limited, non-exclusive, non-transferable, revocable licence to use Klar solely for personal, non-commercial financial management purposes.</p>
+    <p>You may not copy, modify, distribute, sell, sublicence, or create derivative works from the Klar application without our express written permission.</p>
+  </div>
+
+  <div class="section" id="s12">
+    <h2>12. Disclaimers &amp; Limitation of Liability</h2>
+
+    <h3>No Warranty</h3>
+    <p>Klar is provided <strong>"as is"</strong> and <strong>"as available"</strong> without warranties of any kind, express or implied. We do not warrant that the Service will be uninterrupted, error-free, or completely secure. Financial calculations are estimates only and may not reflect your actual bank balances.</p>
+
+    <div class="callout amber">
+      <strong>Not a financial record:</strong> Klar is a personal budgeting tool. Do not rely on Klar as your official financial record for tax, legal, or regulatory purposes. Always verify important figures against your official bank statements and consult a qualified accountant.
+    </div>
+
+    <h3>Limitation of Liability</h3>
+    <p>To the maximum extent permitted by applicable law, Klar Money shall not be liable for:</p>
+    <ul>
+      <li>Any indirect, incidental, special, consequential, or punitive damages</li>
+      <li>Loss of profits, revenue, data, goodwill, or savings</li>
+      <li>Financial losses arising from decisions made based on Klar's data, forecasts, or AI responses</li>
+      <li>Service interruptions, data loss, or security breaches outside our reasonable control</li>
+      <li>Actions of third-party services (Groq, Supabase, Paddle, Saltedge, etc.)</li>
+    </ul>
+    <p>Our total aggregate liability to you for any claims arising under or in connection with these Terms shall not exceed the greater of: (a) the total fees you paid to Klar in the 12 months preceding the claim; or (b) £50 / R1,000.</p>
+
+    <h3>Consumer Rights</h3>
+    <p>Nothing in these Terms limits or excludes our liability for death or personal injury caused by our negligence, for fraud or fraudulent misrepresentation, or for any liability that cannot lawfully be excluded under applicable consumer protection law (including the Consumer Rights Act 2015 (UK) and the Consumer Protection Act 68 of 2008 (SA)).</p>
+  </div>
+
+  <div class="section" id="s13">
+    <h2>13. Indemnification</h2>
+    <p>You agree to indemnify and hold harmless Klar Money, its officers, directors, employees, and agents from any claims, losses, damages, liabilities, and expenses (including reasonable legal fees) arising from: (a) your use of the Service in violation of these Terms; (b) your violation of any applicable law; or (c) your infringement of any third-party rights.</p>
+  </div>
+
+  <div class="section" id="s14">
+    <h2>14. Termination</h2>
+    <p><strong>By you:</strong> You may stop using Klar at any time. To cancel a paid subscription, use the Paddle Customer Portal (Settings → Manage Subscription). To delete your account and cloud data, use Settings → Privacy → Delete cloud data.</p>
+    <p><strong>By us:</strong> We may suspend or terminate your account if you violate these Terms, engage in fraudulent activity, or for any other reason with reasonable notice. In the event of termination for cause, no refund will be issued. We will endeavour to give you 14 days' notice for terminations not caused by a breach.</p>
+    <p><strong>Effect of termination:</strong> Upon termination, your right to use the Service ceases. Your local data remains on your device until you clear it. Sections 8 (Your Data), 9 (AI Disclaimer), 11 (IP), 12 (Liability), 13 (Indemnification), and 15 (Governing Law) survive termination.</p>
+  </div>
+
+  <div class="section" id="s15">
+    <h2>15. Governing Law &amp; Disputes</h2>
+    <p>These Terms are governed by and construed in accordance with the laws of <strong>England and Wales</strong>, without regard to conflict-of-law principles.</p>
+    <p>For users in South Africa, you may also have rights under South African law. Nothing in these Terms limits the application of South African consumer protection law to South African users.</p>
+    <h3>Dispute Resolution</h3>
+    <p>We prefer to resolve disputes informally. Please email <a href="mailto:hello@klarmoney.app">hello@klarmoney.app</a> first and we will attempt to resolve the matter within 30 days.</p>
+    <p>If informal resolution fails:</p>
+    <ul>
+      <li><strong>UK users:</strong> may refer disputes to the courts of England and Wales, or to an appropriate ADR scheme</li>
+      <li><strong>SA users:</strong> may refer disputes to the applicable South African courts or the National Consumer Commission</li>
+      <li><strong>EU users:</strong> may use the EU Online Dispute Resolution platform at <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a></li>
+    </ul>
+  </div>
+
+  <div class="section" id="s16">
+    <h2>16. Changes to Terms</h2>
+    <p>We may update these Terms from time to time. We will notify you of material changes by:</p>
+    <ul>
+      <li>Displaying a notice in the app on your next login</li>
+      <li>Updating the "Last updated" date at the top of this page</li>
+    </ul>
+    <p>Continued use of Klar after the effective date of any changes constitutes your acceptance of the updated Terms. If you do not agree to the updated Terms, you must stop using the Service.</p>
+  </div>
+
+  <div class="section" id="s17">
+    <h2>17. Contact Us</h2>
+    <p>For any questions about these Terms:</p>
+    <ul>
+      <li><strong>General:</strong> <a href="mailto:hello@klarmoney.app">hello@klarmoney.app</a></li>
+      <li><strong>Billing:</strong> <a href="mailto:billing@klarmoney.app">billing@klarmoney.app</a></li>
+      <li><strong>Privacy:</strong> <a href="mailto:privacy@klarmoney.app">privacy@klarmoney.app</a></li>
+      <li><strong>In-app:</strong> Settings → Support, or use the chat icon</li>
+    </ul>
+  </div>
+
+  <div class="contact-box">
+    <h3>Questions about these Terms?</h3>
+    <p>Email us at <a href="mailto:hello@klarmoney.app">hello@klarmoney.app</a> and we'll get back to you within 2 business days.</p>
+    <a href="/" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:linear-gradient(135deg,#7B5EA7,#5B7FD4);color:#fff;border-radius:10px;text-decoration:none;font-size:13.5px;font-weight:700;margin-top:4px">Open Klar →</a>
+  </div>
+
+</div>
+
+<footer>
+  <span>© 2026 Klar Money · <a href="mailto:hello@klarmoney.app">hello@klarmoney.app</a></span>
+  <div class="footer-links">
+    <a href="/privacy.html">Privacy Policy</a>
+    <a href="/terms.html">Terms of Service</a>
+    <a href="/">Open App</a>
+  </div>
+</footer>
+
+</body>
+</html>

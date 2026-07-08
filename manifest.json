@@ -1,0 +1,48 @@
+{
+  "name": "Klar — Personal Finance",
+  "short_name": "Klar",
+  "description": "Personal finance tracker with budgets, goals, bill hub and AI advisor. Built for SA & UK.",
+  "id": "/app",
+  "start_url": "/app",
+  "display": "standalone",
+  "background_color": "#07070A",
+  "theme_color": "#9B7FD4",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/klar-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/klar-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/klar-256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/klar-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='38' fill='%230B0B10'/><rect x='44' y='44' width='18' height='104' rx='6' fill='%239B7FD4'/><rect x='44' y='44' width='18' height='104' rx='6' fill='%235B7FD4' opacity='.5'/><polygon points='62,96 130,44 130,148' fill='%239B7FD4'/></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["finance", "productivity"],
+  "lang": "en",
+  "dir": "ltr",
+  "scope": "/",
+  "screenshots": []
+}

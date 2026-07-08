@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Klar — Asset Generator</title>
+<style>
+  body{font-family:system-ui,sans-serif;background:#07070A;color:#F0F0EE;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;padding:40px;box-sizing:border-box}
+  h1{font-size:22px;font-weight:700;margin-bottom:6px;color:#9B7FD4}
+  p{font-size:13px;color:#8A8A98;margin-bottom:32px}
+  .grid{display:flex;gap:24px;flex-wrap:wrap;justify-content:center;margin-bottom:40px}
+  .cell{display:flex;flex-direction:column;align-items:center;gap:10px}
+  canvas{border-radius:12px;image-rendering:pixelated}
+  button{background:linear-gradient(135deg,#7B5EA7,#5B7FD4);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.3px}
+  button:hover{opacity:.85}
+  .lbl{font-size:10px;color:#52525E;font-family:monospace}
+  #og-wrap{width:100%;max-width:760px;margin-bottom:24px}
+  #og-wrap canvas{width:100%;height:auto;border-radius:12px}
+  .section{color:#52525E;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}
+  .dl-all{background:rgba(155,127,212,.12);border:1px solid #9B7FD4;color:#9B7FD4;padding:12px 28px;font-size:13px;margin-bottom:40px;border-radius:10px}
+  .dl-all:hover{background:rgba(155,127,212,.2)}
+</style>
+</head>
+<body>
+<h1>Klar Asset Generator</h1>
+<p>Opens in browser → click "Download All" to save every file into your icons/ folder and og-image.png.</p>
+<button class="dl-all" onclick="downloadAll()">↓ Download All Assets</button>
+
+<div class="section">PWA Icons</div>
+<div class="grid" id="icon-grid"></div>
+
+<div class="section" style="margin-top:16px">Open Graph Image (1200 × 630)</div>
+<div id="og-wrap"><canvas id="og-canvas" width="1200" height="630"></canvas></div>
+<button onclick="dl('og-canvas','og-image.png')">↓ Download og-image.png</button>
+
+<script>
+/* ── Logo drawing helper ── */
+function drawLogo(ctx, cx, cy, size) {
+  const s = size / 24; // scale factor (design is 24px native)
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(-9 * Math.PI / 180);
+
+  // Left bar — iris violet
+  const lx = (5.5 - 12) * s, ly = (4 - 12) * s, lw = 5 * s, lh = 13.5 * s, lr = 2.5 * s;
+  roundRect(ctx, lx, ly, lw, lh, lr, '#9B7FD4');
+
+  // Right bar — blue-violet
+  const rx = (13.5 - 12) * s, ry = (6 - 12) * s, rw = 5 * s, rh = 11 * s, rr = 2.5 * s;
+  roundRect(ctx, rx, ry, rw, rh, rr, '#5B7FD4');
+
+  ctx.restore();
+}
+
+function roundRect(ctx, x, y, w, h, r, fill) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+  ctx.fillStyle = fill;
+  ctx.fill();
+}
+
+/* ── Draw icon at given size ── */
+function drawIcon(canvas, size) {
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+
+  // Background with rounded corners
+  const r = size * 0.22; // ~22% corner radius = iOS style
+  roundRect(ctx, 0, 0, size, size, r, '#07070A');
+
+  // Subtle glow behind logo
+  const grd = ctx.createRadialGradient(size * 0.55, size * 0.4, 0, size * 0.55, size * 0.4, size * 0.5);
+  grd.addColorStop(0, 'rgba(123,94,167,0.18)');
+  grd.addColorStop(1, 'rgba(123,94,167,0)');
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, 0, size, size);
+
+  // Logo mark (centred, logo occupies ~56% of canvas)
+  const logoSize = size * 0.56;
+  drawLogo(ctx, size / 2, size / 2, logoSize);
+}
+
+/* ── Draw og-image (1200×630) ── */
+function drawOG(canvas) {
+  const W = 1200, H = 630;
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  ctx.fillStyle = '#07070A';
+  ctx.fillRect(0, 0, W, H);
+
+  // Gradient glow — top right
+  const g1 = ctx.createRadialGradient(W * 0.78, H * 0.2, 0, W * 0.78, H * 0.2, H * 0.65);
+  g1.addColorStop(0, 'rgba(123,94,167,0.22)');
+  g1.addColorStop(1, 'rgba(123,94,167,0)');
+  ctx.fillStyle = g1;
+  ctx.fillRect(0, 0, W, H);
+
+  // Bottom left glow — blue
+  const g2 = ctx.createRadialGradient(W * 0.12, H * 0.85, 0, W * 0.12, H * 0.85, H * 0.5);
+  g2.addColorStop(0, 'rgba(79,142,247,0.12)');
+  g2.addColorStop(1, 'rgba(79,142,247,0)');
+  ctx.fillStyle = g2;
+  ctx.fillRect(0, 0, W, H);
+
+  // Subtle grid lines — horizontal
+  ctx.strokeStyle = 'rgba(30,30,46,0.7)';
+  ctx.lineWidth = 1;
+  for (let y = 0; y <= H; y += 60) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+  for (let x = 0; x <= W; x += 60) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+
+  // Card-like content area
+  const cx = 88, cy = 80, cw = W - 176, ch = H - 160;
+  roundRect(ctx, cx, cy, cw, ch, 20, 'rgba(13,13,20,0.92)');
+  // Card border
+  ctx.strokeStyle = '#1E1E2E';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.roundRect(cx, cy, cw, ch, 20);
+  ctx.stroke();
+
+  // Logo mark — left side
+  const logoSize = 160;
+  drawLogo(ctx, 200, H / 2, logoSize);
+
+  // Divider
+  const divX = 310;
+  const grad = ctx.createLinearGradient(divX, cy + 40, divX, cy + ch - 40);
+  grad.addColorStop(0, 'rgba(155,127,212,0)');
+  grad.addColorStop(0.5, 'rgba(155,127,212,0.4)');
+  grad.addColorStop(1, 'rgba(155,127,212,0)');
+  ctx.strokeStyle = grad;
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(divX, cy + 40); ctx.lineTo(divX, cy + ch - 40); ctx.stroke();
+
+  // Eyebrow
+  ctx.fillStyle = '#9B7FD4';
+  ctx.font = '700 15px system-ui';
+  ctx.letterSpacing = '3px';
+  ctx.fillText('PERSONAL FINANCE', 360, H / 2 - 118);
+
+  // Main headline "Klar"
+  ctx.fillStyle = '#F0F0EE';
+  ctx.font = '800 112px system-ui';
+  ctx.letterSpacing = '-4px';
+  ctx.fillText('Klar', 356, H / 2 - 6);
+
+  // Accent on "K"
+  ctx.fillStyle = '#9B7FD4';
+  ctx.font = '800 112px system-ui';
+  ctx.fillText('K', 356, H / 2 - 6);
+  ctx.fillStyle = '#F0F0EE';
+  ctx.fillText('lar', 434, H / 2 - 6);
+
+  // Tagline
+  ctx.font = '400 26px system-ui';
+  ctx.letterSpacing = '0px';
+  ctx.fillStyle = '#8A8A98';
+  ctx.fillText('Know your money. Clear as day.', 360, H / 2 + 60);
+
+  // Feature pills
+  const pills = ['Budget', 'Invest', 'Tax', 'Net Worth', 'AI Advisor'];
+  let px = 360;
+  pills.forEach(label => {
+    ctx.font = '600 13px system-ui';
+    const tw = ctx.measureText(label).width;
+    const pw = tw + 24, ph = 30, py = H / 2 + 100, pr = 8;
+    roundRect(ctx, px, py, pw, ph, pr, 'rgba(155,127,212,0.12)');
+    ctx.strokeStyle = 'rgba(155,127,212,0.3)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.roundRect(px, py, pw, ph, pr); ctx.stroke();
+    ctx.fillStyle = '#9B7FD4';
+    ctx.fillText(label, px + 12, py + 20);
+    px += pw + 10;
+  });
+
+  // URL / brand
+  ctx.font = '500 16px system-ui';
+  ctx.fillStyle = '#52525E';
+  ctx.fillText('klarmoney.app', cx + cw - 160, cy + ch - 28);
+}
+
+/* ── Render all ── */
+const SIZES = [128, 180, 256, 512];
+const grid = document.getElementById('icon-grid');
+
+SIZES.forEach(size => {
+  const cell = document.createElement('div');
+  cell.className = 'cell';
+  const canvas = document.createElement('canvas');
+  canvas.id = `icon-${size}`;
+  canvas.style.width = Math.min(size, 128) + 'px';
+  canvas.style.height = Math.min(size, 128) + 'px';
+  drawIcon(canvas, size);
+  const lbl = document.createElement('div');
+  lbl.className = 'lbl';
+  lbl.textContent = `${size}×${size}`;
+  const btn = document.createElement('button');
+  btn.textContent = `↓ klar-${size}.png`;
+  btn.onclick = () => dl(`icon-${size}`, `klar-${size}.png`);
+  cell.appendChild(canvas);
+  cell.appendChild(lbl);
+  cell.appendChild(btn);
+  grid.appendChild(cell);
+});
+
+drawOG(document.getElementById('og-canvas'));
+
+/* ── Download helpers ── */
+function dl(canvasId, filename) {
+  const canvas = document.getElementById(canvasId);
+  const a = document.createElement('a');
+  a.download = filename;
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+function downloadAll() {
+  SIZES.forEach((size, i) => {
+    setTimeout(() => dl(`icon-${size}`, `klar-${size}.png`), i * 200);
+  });
+  setTimeout(() => dl('og-canvas', 'og-image.png'), SIZES.length * 200 + 200);
+}
+</script>
+</body>
+</html>

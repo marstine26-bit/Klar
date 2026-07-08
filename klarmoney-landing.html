@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Klar — The money app that tells you the truth</title>
+  <meta name="description" content="Personal finance built for UK and South Africa. AI advisor, bank feeds, budgets, and net worth tracking — in one clean app." />
+  <!-- Open Graph / social preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://klarmoney.netlify.app/" />
+  <meta property="og:title" content="Klar — The money app that tells you the truth" />
+  <meta property="og:description" content="Personal finance built for UK and South Africa. AI advisor, bank feeds, budgets, and net worth tracking — in one clean app." />
+  <meta property="og:image" content="https://klarmoney.netlify.app/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Klar — The money app that tells you the truth" />
+  <meta name="twitter:description" content="Personal finance built for UK and South Africa. AI advisor, bank feeds, budgets, and net worth tracking — in one clean app." />
+  <meta name="twitter:image" content="https://klarmoney.netlify.app/og-image.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #07070A;
+      --panel:      #0B0B10;
+      --card:       #0D0D14;
+      --border:     #161622;
+      --border2:    #1E1E2E;
+      --text:       #F0F0EE;
+      --text-sec:   #8A8A98;
+      --text-muted: #52525E;
+      --accent:     #9B7FD4;
+      --accent-dim: #7B5EA7;
+      --grad:       linear-gradient(135deg, #7B5EA7, #5B7FD4);
+      --gold:       #F5A623;
+      --green:      #4CAF50;
+      --red:        #F5534F;
+      --blue:       #4F8EF7;
+      --radius:     12px;
+      --radius-sm:  8px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+    /* ── UTILS ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+    .chip {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .04em;
+    }
+    .chip-violet { background: rgba(155,127,212,.15); color: var(--accent); border: 1px solid rgba(155,127,212,.3); }
+    .chip-gold   { background: rgba(245,166,35,.12);  color: var(--gold);   border: 1px solid rgba(245,166,35,.3); }
+    .chip-green  { background: rgba(76,175,80,.12);   color: var(--green);  border: 1px solid rgba(76,175,80,.3); }
+    .chip-muted  { background: transparent; color: var(--text-muted); border: 1px solid var(--border2); }
+
+    /* ── ANIMATE ON SCROLL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+    .reveal-delay-1 { transition-delay: .1s; }
+    .reveal-delay-2 { transition-delay: .2s; }
+    .reveal-delay-3 { transition-delay: .3s; }
+    .reveal-delay-4 { transition-delay: .4s; }
+    .reveal-delay-5 { transition-delay: .5s; }
+
+    /* ══════════════════════════════
+       NAV
+    ══════════════════════════════ */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 24px;
+      height: 60px;
+      display: flex; align-items: center;
+      border-bottom: 1px solid transparent;
+      transition: background .3s, border-color .3s, backdrop-filter .3s;
+    }
+    .nav.scrolled {
+      background: rgba(7,7,10,.8);
+      border-color: var(--border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .nav-inner {
+      max-width: 1100px; width: 100%; margin: 0 auto;
+      display: flex; align-items: center; gap: 32px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none; font-weight: 800; font-size: 18px; color: var(--text);
+      letter-spacing: -.02em; flex-shrink: 0;
+    }
+    .nav-logo svg { display: block; }
+    .nav-links {
+      display: flex; align-items: center; gap: 28px;
+      list-style: none; margin-left: auto;
+    }
+    .nav-links a {
+      text-decoration: none; color: var(--text-sec);
+      font-size: 14px; font-weight: 500;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 18px; border-radius: var(--radius-sm);
+      font-family: inherit; font-size: 14px; font-weight: 600;
+      cursor: pointer; text-decoration: none;
+      transition: opacity .2s, transform .15s;
+      border: none; white-space: nowrap;
+    }
+    .btn:hover { opacity: .88; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn-primary { background: var(--grad); color: #fff; }
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border2); }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-gold { background: rgba(245,166,35,.12); color: var(--gold); border: 1px solid rgba(245,166,35,.35); }
+
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+    }
+
+    /* ══════════════════════════════
+       HERO
+    ══════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 100px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 900px;
+      background: radial-gradient(ellipse at center, rgba(155,127,212,.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      max-width: 1100px; margin: 0 auto; width: 100%;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px; align-items: center;
+    }
+    .hero-eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: .15em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 20px;
+    }
+    .hero-headline {
+      font-size: clamp(36px, 5vw, 58px);
+      font-weight: 800; line-height: 1.1; letter-spacing: -.03em;
+      margin-bottom: 20px;
+    }
+    .hero-headline span {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 17px; color: var(--text-sec); line-height: 1.65;
+      max-width: 440px; margin-bottom: 36px;
+    }
+    .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-ctas .btn { font-size: 15px; padding: 12px 22px; }
+
+    /* ── MOCKUP CARD ── */
+    .hero-mockup {
+      position: relative; display: flex; justify-content: center;
+    }
+    .mock-card {
+      width: 100%; max-width: 380px;
+      background: var(--card);
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 40px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(155,127,212,.1);
+      position: relative;
+    }
+    .mock-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(155,127,212,.5), transparent);
+      border-radius: 20px 20px 0 0;
+    }
+    .mock-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 24px;
+    }
+    .mock-label { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-bottom: 4px; }
+    .mock-amount {
+      font-size: 36px; font-weight: 800; letter-spacing: -.03em;
+    }
+    .mock-amount span { color: var(--green); }
+    .mock-change {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: rgba(76,175,80,.12); color: var(--green);
+      padding: 4px 10px; border-radius: 100px;
+      font-size: 12px; font-weight: 600;
+    }
+    .mock-bars {
+      display: flex; gap: 6px; align-items: flex-end;
+      height: 80px; margin-bottom: 28px;
+    }
+    .mock-bar {
+      flex: 1; border-radius: 4px 4px 0 0;
+      background: var(--border2);
+      position: relative; overflow: hidden;
+    }
+    .mock-bar::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: var(--grad);
+      border-radius: 4px 4px 0 0;
+      animation: barRise .8s ease forwards;
+      animation-delay: calc(var(--i) * .08s);
+      height: 0%;
+    }
+    .mock-bar:nth-child(1) { --i: 0; } .mock-bar:nth-child(1)::after { --h: 45%; }
+    .mock-bar:nth-child(2) { --i: 1; } .mock-bar:nth-child(2)::after { --h: 68%; }
+    .mock-bar:nth-child(3) { --i: 2; } .mock-bar:nth-child(3)::after { --h: 52%; }
+    .mock-bar:nth-child(4) { --i: 3; } .mock-bar:nth-child(4)::after { --h: 78%; }
+    .mock-bar:nth-child(5) { --i: 4; } .mock-bar:nth-child(5)::after { --h: 60%; }
+    .mock-bar:nth-child(6) { --i: 5; } .mock-bar:nth-child(6)::after { --h: 88%; opacity: 1; background: var(--accent); }
+    @keyframes barRise {
+      from { height: 0%; }
+      to { height: var(--h); }
+    }
+    .mock-divider { height: 1px; background: var(--border); margin-bottom: 20px; }
+    .mock-tx {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 14px;
+    }
+    .mock-tx:last-child { margin-bottom: 0; }
+    .mock-tx-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .mock-tx-info { flex: 1; }
+    .mock-tx-name { font-size: 13px; font-weight: 600; }
+    .mock-tx-date { font-size: 11px; color: var(--text-muted); }
+    .mock-tx-amount { font-size: 13px; font-weight: 700; }
+    .mock-tx-amount.neg { color: var(--red); }
+    .mock-tx-amount.pos { color: var(--green); }
+    .mock-glow {
+      position: absolute; bottom: -80px; right: -80px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(91,127,212,.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    @media (max-width: 768px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .hero-mockup { order: -1; }
+      .mock-card { max-width: 100%; }
+    }
+
+    /* ══════════════════════════════
+       SECTION SHARED
+    ══════════════════════════════ */
+    section { padding: 96px 0; }
+    .section-label {
+      font-size: 11px; font-weight: 700; letter-spacing: .15em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 14px;
+    }
+    .section-title {
+      font-size: clamp(28px, 3.5vw, 42px);
+      font-weight: 800; letter-spacing: -.03em; line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: 16px; color: var(--text-sec); max-width: 520px;
+      line-height: 1.65;
+    }
+
+    /* ══════════════════════════════
+       FEATURES
+    ══════════════════════════════ */
+    .features { background: var(--panel); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .features-header { text-align: center; margin-bottom: 64px; }
+    .features-header .section-sub { margin: 0 auto; }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .feature-card {
+      background: var(--card);
+      padding: 32px 28px;
+      transition: background .2s;
+    }
+    .feature-card:hover { background: #101018; }
+    .feature-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: rgba(155,127,212,.12);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 18px;
+      font-size: 20px;
+    }
+    .feature-title {
+      font-size: 15px; font-weight: 700;
+      margin-bottom: 8px; letter-spacing: -.01em;
+    }
+    .feature-desc { font-size: 14px; color: var(--text-sec); line-height: 1.6; }
+
+    @media (max-width: 900px) { .features-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 580px) { .features-grid { grid-template-columns: 1fr; } }
+
+    /* ══════════════════════════════
+       TRUST BAR
+    ══════════════════════════════ */
+    .trust { padding: 48px 0; border-bottom: 1px solid var(--border); }
+    .trust-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      justify-content: center;
+    }
+    .trust-label { font-size: 12px; color: var(--text-muted); margin-right: 8px; }
+    .trust-chip {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 100px;
+      border: 1px solid var(--border2); background: var(--panel);
+      font-size: 12px; font-weight: 500; color: var(--text-sec);
+    }
+    .trust-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ══════════════════════════════
+       PRICING
+    ══════════════════════════════ */
+    .pricing-header { text-align: center; margin-bottom: 56px; }
+    .pricing-header .section-sub { margin: 0 auto; }
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 16px; align-items: start;
+    }
+    .price-card {
+      border-radius: 16px; padding: 32px 28px;
+      position: relative; display: flex; flex-direction: column;
+    }
+    .price-card-free    { background: var(--card);  border: 1px solid var(--border2); }
+    .price-card-mid     { background: var(--card);  border: 2px solid var(--accent); }
+    .price-card-pro     { background: var(--card);  border: 1px solid rgba(245,166,35,.4); }
+    .price-badge {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      padding: 4px 14px; border-radius: 100px;
+      font-size: 11px; font-weight: 700; letter-spacing: .06em;
+      white-space: nowrap;
+    }
+    .badge-popular { background: var(--accent); color: #fff; }
+    .badge-power   { background: rgba(245,166,35,.15); color: var(--gold); border: 1px solid rgba(245,166,35,.4); }
+    .price-tier { font-size: 13px; font-weight: 600; color: var(--text-sec); margin-bottom: 12px; text-transform: uppercase; letter-spacing: .08em; }
+    .price-amount {
+      font-size: 42px; font-weight: 800; letter-spacing: -.04em; margin-bottom: 2px;
+    }
+    .price-amount sup { font-size: 20px; font-weight: 700; vertical-align: top; margin-top: 8px; }
+    .price-amount .per { font-size: 15px; font-weight: 500; color: var(--text-sec); }
+    .price-zar { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+    .price-divider { height: 1px; background: var(--border); margin-bottom: 24px; }
+    .price-features { list-style: none; flex: 1; margin-bottom: 28px; }
+    .price-features li {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 14px; color: var(--text-sec); margin-bottom: 12px;
+    }
+    .price-features li::before {
+      content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; margin-top: 1px;
+    }
+    .price-features li.dim::before { content: '—'; color: var(--text-muted); }
+    .price-features li.dim { color: var(--text-muted); }
+    .price-card .btn { width: 100%; justify-content: center; margin-top: auto; }
+    .price-coming-soon {
+      position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%);
+      background: var(--panel); border: 1px solid var(--border2);
+      padding: 4px 12px; border-radius: 100px;
+      font-size: 11px; color: var(--text-muted); white-space: nowrap;
+    }
+    .pricing-family-note {
+      text-align: center; margin-top: 40px;
+      font-size: 13px; color: var(--text-muted);
+    }
+
+    @media (max-width: 768px) { .pricing-grid { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; } }
+
+    /* ══════════════════════════════
+       WHY KLAR WINS
+    ══════════════════════════════ */
+    .why { background: var(--panel); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .why-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px; align-items: start;
+    }
+    .why-text .section-sub { margin-bottom: 28px; }
+    .why-detail {
+      font-size: 15px; color: var(--text-sec); line-height: 1.7;
+    }
+    .compare-table {
+      width: 100%; border-collapse: collapse;
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .compare-table th, .compare-table td {
+      padding: 12px 14px; text-align: center;
+      font-size: 13px; border-bottom: 1px solid var(--border);
+    }
+    .compare-table th {
+      background: var(--card); color: var(--text-sec);
+      font-weight: 600; font-size: 12px;
+    }
+    .compare-table th:first-child, .compare-table td:first-child {
+      text-align: left; color: var(--text-sec);
+    }
+    .compare-table th.klar-col, .compare-table td.klar-col {
+      background: rgba(155,127,212,.07); color: var(--text);
+    }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table td { background: var(--card); color: var(--text-muted); }
+    .compare-table td.klar-col { font-weight: 600; }
+    .c-yes { color: var(--green) !important; font-size: 16px; }
+    .c-no  { color: var(--red)   !important; font-size: 16px; }
+    .c-wait { color: var(--gold) !important; font-size: 12px; font-weight: 500; }
+
+    @media (max-width: 860px) {
+      .why-inner { grid-template-columns: 1fr; gap: 40px; }
+    }
+
+    /* ══════════════════════════════
+       INVESTORS
+    ══════════════════════════════ */
+    .investors {
+      background: var(--bg); position: relative; overflow: hidden;
+    }
+    .investors::before {
+      content: '';
+      position: absolute; top: -150px; right: -150px;
+      width: 500px; height: 500px;
+      background: radial-gradient(ellipse, rgba(245,166,35,.05) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .investors-inner {
+      max-width: 760px; margin: 0 auto; text-align: center;
+    }
+    .investors-inner .section-title { margin-bottom: 12px; }
+    .investors-inner .section-sub { margin: 0 auto 40px; }
+    .investor-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 16px; margin-bottom: 40px;
+    }
+    .stat-card {
+      background: var(--card); border: 1px solid var(--border2);
+      border-radius: var(--radius); padding: 24px 20px;
+    }
+    .stat-number {
+      font-size: 28px; font-weight: 800; letter-spacing: -.03em;
+      background: var(--grad); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 4px;
+    }
+    .stat-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+    .investors-badges {
+      display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 36px;
+    }
+    .investors-links {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px;
+    }
+    .investors-email {
+      font-size: 14px; color: var(--text-muted);
+    }
+    .investors-email a { color: var(--accent); text-decoration: none; }
+    .investors-email a:hover { text-decoration: underline; }
+
+    @media (max-width: 580px) {
+      .investor-stats { grid-template-columns: 1fr; }
+    }
+
+    /* ══════════════════════════════
+       FAQ
+    ══════════════════════════════ */
+    .faq-item {
+      background: var(--panel);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .faq-q {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 22px;
+      font-size: 15px; font-weight: 600; color: var(--text);
+      cursor: pointer; list-style: none;
+      gap: 12px;
+    }
+    .faq-q::-webkit-details-marker { display: none; }
+    .faq-q::after {
+      content: '+';
+      font-size: 20px; font-weight: 400;
+      color: var(--text-muted); flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    details[open] .faq-q::after { content: '−'; }
+    .faq-a {
+      padding: 0 22px 18px;
+      font-size: 14px; line-height: 1.65; color: var(--text-sec);
+      margin: 0;
+    }
+
+    /* ══════════════════════════════
+       FOOTER
+    ══════════════════════════════ */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-left { font-size: 13px; color: var(--text-muted); }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a {
+      font-size: 13px; color: var(--text-muted); text-decoration: none;
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: var(--text-sec); }
+    .footer-right { font-size: 12px; color: var(--text-muted); }
+
+    /* ══════════════════════════════
+       AI ADVISOR HIGHLIGHT STRIP
+    ══════════════════════════════ */
+    .ai-strip {
+      padding: 64px 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .ai-strip-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 24px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+    }
+    .ai-chat {
+      background: var(--card); border: 1px solid var(--border2);
+      border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 16px;
+    }
+    .ai-chat-header {
+      display: flex; align-items: center; gap: 10px;
+      padding-bottom: 16px; border-bottom: 1px solid var(--border);
+    }
+    .ai-avatar {
+      width: 32px; height: 32px; border-radius: 10px;
+      background: var(--grad); display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+    .ai-name { font-size: 13px; font-weight: 600; }
+    .ai-status { font-size: 11px; color: var(--green); }
+    .ai-bubble {
+      padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.5;
+      max-width: 85%;
+    }
+    .ai-bubble.user { background: rgba(155,127,212,.15); color: var(--text); margin-left: auto; border-radius: 12px 2px 12px 12px; }
+    .ai-bubble.bot  { background: var(--panel); color: var(--text-sec); border: 1px solid var(--border); border-radius: 2px 12px 12px 12px; }
+    .ai-bubble.bot strong { color: var(--text); }
+
+    @media (max-width: 768px) {
+      .ai-strip-inner { grid-template-columns: 1fr; gap: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAV ══════════════════════════════════════════════ -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="11" height="26" rx="3" fill="#9B7FD4"/>
+        <rect x="13" y="0" width="13" height="11" rx="3" fill="#5B7FD4"/>
+        <rect x="13" y="15" width="13" height="11" rx="3" fill="#7B5EA7"/>
+      </svg>
+      Klar
+    </a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#investors">For Investors</a></li>
+    </ul>
+    <a href="/app" class="btn btn-primary" style="margin-left: auto;">Launch App →</a>
+  </div>
+</nav>
+
+<!-- ══ HERO ══════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-copy reveal">
+      <p class="hero-eyebrow">Personal finance. Finally clear.</p>
+      <h1 class="hero-headline">The money app that<br><span>tells you the truth</span></h1>
+      <p class="hero-sub">
+        Full-picture finance tracking for UK and South Africa. AI advisor that reads your real numbers — not a chatbot with a script.
+      </p>
+      <div class="hero-ctas">
+        <a href="/app" class="btn btn-primary">Start free</a>
+        <a href="#features" class="btn btn-ghost">See how it works ↓</a>
+      </div>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:10px">Works in your browser — no download, no install.</p>
+    </div>
+
+    <!-- MOCKUP CARD -->
+    <div class="hero-mockup reveal reveal-delay-2">
+      <div class="mock-card">
+        <div class="mock-header">
+          <div>
+            <div class="mock-label">Net Worth</div>
+            <div class="mock-amount"><span>£42,816</span></div>
+          </div>
+          <span class="mock-change">↑ 3.2%</span>
+        </div>
+        <div class="mock-bars">
+          <div class="mock-bar"></div>
+          <div class="mock-bar"></div>
+          <div class="mock-bar"></div>
+          <div class="mock-bar"></div>
+          <div class="mock-bar"></div>
+          <div class="mock-bar"></div>
+        </div>
+        <div class="mock-divider"></div>
+        <div class="mock-tx">
+          <div class="mock-tx-icon" style="background:rgba(79,142,247,.12);">🏢</div>
+          <div class="mock-tx-info">
+            <div class="mock-tx-name">Salary — Barclays</div>
+            <div class="mock-tx-date">Today</div>
+          </div>
+          <div class="mock-tx-amount pos">+£3,450</div>
+        </div>
+        <div class="mock-tx">
+          <div class="mock-tx-icon" style="background:rgba(245,83,79,.1);">🛒</div>
+          <div class="mock-tx-info">
+            <div class="mock-tx-name">Waitrose</div>
+            <div class="mock-tx-date">Yesterday</div>
+          </div>
+          <div class="mock-tx-amount neg">−£84.20</div>
+        </div>
+        <div class="mock-tx">
+          <div class="mock-tx-icon" style="background:rgba(155,127,212,.12);">📱</div>
+          <div class="mock-tx-info">
+            <div class="mock-tx-name">Klar Essential</div>
+            <div class="mock-tx-date">14 Jun</div>
+          </div>
+          <div class="mock-tx-amount neg">−£3.99</div>
+        </div>
+        <div class="mock-glow"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TRUST BAR ══════════════════════════════════════════ -->
+<div class="trust">
+  <div class="trust-inner">
+    <span class="trust-label">Powered by</span>
+    <div class="trust-chip"><span class="trust-dot" style="background:#4CAF50;"></span>Open Banking ready</div>
+    <div class="trust-chip"><span class="trust-dot" style="background:#F5A623;"></span>SEIS / EIS applied for</div>
+    <div class="trust-chip"><span class="trust-dot" style="background:#3ECF8E;"></span>Supabase cloud sync</div>
+    <div class="trust-chip"><span class="trust-dot" style="background:#F55036;"></span>Groq AI — sub-second</div>
+    <div class="trust-chip"><span class="trust-dot" style="background:#00AD9F;"></span>Netlify hosted</div>
+    <div class="trust-chip"><span class="trust-dot" style="background:#9B7FD4;"></span>Salt Edge bank feeds</div>
+    <div class="trust-chip"><span class="trust-dot" style="background:#2196F3;"></span>GDPR compliant</div>
+    <div class="trust-chip"><span class="trust-dot" style="background:#2196F3;"></span>POPIA compliant</div>
+  </div>
+</div>
+
+<!-- ══ FEATURES ══════════════════════════════════════════ -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header reveal">
+      <p class="section-label">What you get</p>
+      <h2 class="section-title">Everything in one place</h2>
+      <p class="section-sub">No scattered apps. No manual reconciliation. Klar pulls your full financial picture into a single, honest view.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon">🤖</div>
+        <div class="feature-title">AI Financial Advisor</div>
+        <p class="feature-desc">Ask anything. Get honest answers, not sales pitches. Powered by Groq and LLaMA — your actual numbers feed every answer.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Track Everything</div>
+        <p class="feature-desc">Transactions, budgets, debt, savings goals, investments, insurance. One screen. Zero gaps.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon">🌍</div>
+        <div class="feature-title">UK &amp; South Africa</div>
+        <p class="feature-desc">Built for both markets. Switch regions in one tap. Currency follows you — GBP and ZAR handled natively.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-title">Privacy First</div>
+        <p class="feature-desc">Your data stays yours. No ads. No selling your behaviour. No third-party analytics watching what you click.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon">☁️</div>
+        <div class="feature-title">Cloud Sync</div>
+        <p class="feature-desc">Pick up where you left off on any device. Automatic and silent — backed by Supabase with row-level access security.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon">✨</div>
+        <div class="feature-title">Free to Start</div>
+        <p class="feature-desc">Core features free forever. Upgrade when you're ready — no credit card required, no dark patterns.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ AI ADVISOR STRIP ══════════════════════════════════ -->
+<section class="ai-strip">
+  <div class="ai-strip-inner">
+    <div class="reveal">
+      <p class="section-label">AI Advisor</p>
+      <h2 class="section-title">Your numbers. Real answers.</h2>
+      <p class="section-sub" style="margin-bottom:20px;">Klar's AI reads your actual transactions, balances, and goals before it answers. No generic tips. No upsells. Just honesty.</p>
+      <a href="/app" class="btn btn-primary">Try the advisor</a>
+    </div>
+    <div class="ai-chat reveal reveal-delay-2">
+      <div class="ai-chat-header">
+        <div class="ai-avatar">✦</div>
+        <div>
+          <div class="ai-name">Klar AI</div>
+          <div class="ai-status">● Online</div>
+        </div>
+      </div>
+      <div class="ai-bubble user">Am I on track to pay off my credit card by December?</div>
+      <div class="ai-bubble bot">Based on your current balance of <strong>£2,340</strong> and your average monthly payment of <strong>£380</strong>, you'll clear it by <strong>November</strong> — one month early. If you redirect your Netflix and Spotify spend (£26/mo) to the card, you could shave off another 2 weeks.</div>
+      <div class="ai-bubble user">What's my biggest unnecessary expense this month?</div>
+      <div class="ai-bubble bot">Your <strong>food delivery spend</strong> jumped to <strong>£214</strong> — up 68% from your 3-month average of £127. Everything else is within normal range.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PRICING ══════════════════════════════════════════ -->
+<section id="pricing" style="background: var(--panel); border-top: 1px solid var(--border);">
+  <div class="container">
+    <div class="pricing-header reveal">
+      <p class="section-label">Pricing</p>
+      <h2 class="section-title">Simple, honest pricing</h2>
+      <p class="section-sub">No hidden fees. No bait-and-switch. Pay for what you actually use.</p>
+    </div>
+    <div class="pricing-grid">
+
+      <!-- FREE -->
+      <div class="price-card price-card-free reveal">
+        <div class="price-tier">Free</div>
+        <div class="price-amount">£<span style="font-size:42px;font-weight:800;">0</span><span class="per"> /mo</span></div>
+        <div class="price-zar">R0 / month</div>
+        <div class="price-divider"></div>
+        <ul class="price-features">
+          <li>Core transaction tracking</li>
+          <li>Budget management</li>
+          <li>Manual CSV import</li>
+          <li>Spending breakdown charts</li>
+          <li class="dim">Net worth tracker</li>
+          <li class="dim">AI advisor</li>
+          <li class="dim">Cloud sync &amp; bank feeds</li>
+        </ul>
+        <a href="/app" class="btn btn-ghost">Start free</a>
+      </div>
+
+      <!-- ESSENTIAL -->
+      <div class="price-card price-card-mid reveal reveal-delay-1">
+        <span class="price-badge badge-popular">Most popular</span>
+        <div class="price-tier">Essential</div>
+        <div class="price-amount"><sup>£</sup>3.99<span class="per"> /mo</span></div>
+        <div class="price-zar">R49 / month</div>
+        <div class="price-divider"></div>
+        <ul class="price-features">
+          <li>Everything in Free</li>
+          <li>Cloud sync across devices</li>
+          <li>Net worth tracker</li>
+          <li>AI Financial Advisor</li>
+          <li>Salt Edge live bank feeds (UK)</li>
+          <li>Financial health score</li>
+          <li>Cashflow forecast</li>
+        </ul>
+        <a href="/app" class="btn btn-primary">Get Essential</a>
+      </div>
+
+      <!-- PRO -->
+      <div class="price-card price-card-pro reveal reveal-delay-2">
+        <span class="price-badge badge-power">Full power</span>
+        <div class="price-tier">Pro</div>
+        <div class="price-amount"><sup>£</sup>7.99<span class="per"> /mo</span></div>
+        <div class="price-zar">R89 / month</div>
+        <div class="price-divider"></div>
+        <ul class="price-features">
+          <li>Everything in Essential</li>
+          <li>UK Student Loan tracker</li>
+          <li>Investment &amp; holdings tracking</li>
+          <li>Multi-currency portfolio tracker</li>
+          <li>Spending anomaly detection</li>
+          <li>Annual tax summary export</li>
+          <li>Priority support (24h)</li>
+        </ul>
+        <a href="/app" class="btn btn-gold">Get Pro</a>
+      </div>
+
+    </div>
+    <p class="pricing-family-note reveal">Family plan — coming soon &nbsp;·&nbsp; Cancel anytime &nbsp;·&nbsp; No credit card required for free tier</p>
+  </div>
+</section>
+
+<!-- ══ WHY KLAR ══════════════════════════════════════════ -->
+<section class="why" id="why">
+  <div class="container">
+    <div class="why-inner">
+      <div class="why-text reveal">
+        <p class="section-label">Why Klar</p>
+        <h2 class="section-title">The others are holding back</h2>
+        <p class="why-detail">
+          Every other budgeting app either hides behind a paywall, sells your data, or gives you a chatbot with a script. Klar gives you a real AI that reads your actual numbers — built for both UK and South Africa, then gets out of the way.
+        </p>
+        <div style="margin-top:24px; display:flex; gap:10px; flex-wrap:wrap;">
+          <span class="chip chip-violet">Live AI context</span>
+          <span class="chip chip-green">No data selling</span>
+          <span class="chip chip-muted">UK + ZAR native</span>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th class="klar-col">Klar</th>
+              <th>Emma</th>
+              <th>Plum</th>
+              <th>YNAB</th>
+              <th>Cleo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Live AI advisor</td>
+              <td class="klar-col c-yes">✓</td>
+              <td class="c-no">✗</td>
+              <td class="c-no">✗</td>
+              <td class="c-no">✗</td>
+              <td class="c-wait">Waitlist</td>
+            </tr>
+            <tr>
+              <td>UK + South Africa</td>
+              <td class="klar-col c-yes">✓</td>
+              <td class="c-no">✗</td>
+              <td class="c-no">✗</td>
+              <td class="c-no">✗</td>
+              <td class="c-no">✗</td>
+            </tr>
+            <tr>
+              <td>Free tier</td>
+              <td class="klar-col c-yes">✓</td>
+              <td class="c-yes">✓</td>
+              <td class="c-yes">✓</td>
+              <td class="c-no">✗</td>
+              <td class="c-yes">✓</td>
+            </tr>
+            <tr>
+              <td>No ads / no data selling</td>
+              <td class="klar-col c-yes">✓</td>
+              <td class="c-yes">✓</td>
+              <td class="c-no">✗</td>
+              <td class="c-yes">✓</td>
+              <td class="c-no">✗</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FAQ ══════════════════════════════════════════ -->
+<section id="faq" style="background: var(--bg); border-top: 1px solid var(--border);">
+  <div class="container" style="max-width: 720px; padding: 80px 24px;">
+    <div class="reveal" style="text-align: center; margin-bottom: 48px;">
+      <p class="section-label">FAQ</p>
+      <h2 class="section-title">Common questions</h2>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+
+      <details class="faq-item reveal">
+        <summary class="faq-q">Can I cancel anytime?</summary>
+        <p class="faq-a">Yes. Cancel your subscription at any time from within the app — no questions asked. You keep access until the end of your billing period.</p>
+      </details>
+
+      <details class="faq-item reveal reveal-delay-1">
+        <summary class="faq-q">Is my financial data safe?</summary>
+        <p class="faq-a">Your data is encrypted in transit (TLS) and stored with row-level access security on Supabase's EU infrastructure. We never sell your data.</p>
+      </details>
+
+      <details class="faq-item reveal reveal-delay-2">
+        <summary class="faq-q">Which banks are supported?</summary>
+        <p class="faq-a">UK users can connect 2,000+ banks via Salt Edge open banking (Pro plan). SA users can manually import transactions. Direct bank connections for SA are on our roadmap.</p>
+      </details>
+
+      <details class="faq-item reveal reveal-delay-3">
+        <summary class="faq-q">What's included in the free plan?</summary>
+        <p class="faq-a">The free plan includes transaction tracking, CSV import, and spending breakdowns — no credit card required. Net worth tracker, AI advisor, savings goals, and unlimited accounts unlock with Essential (£3.99/mo).</p>
+      </details>
+
+      <details class="faq-item reveal reveal-delay-4">
+        <summary class="faq-q">Does the AI advisor cost extra?</summary>
+        <p class="faq-a">No. The AI advisor (powered by Groq/LLaMA) is included in the Essential plan and above at no extra charge.</p>
+      </details>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ INVESTORS ══════════════════════════════════════════ -->
+<section class="investors" id="investors">
+  <div class="container">
+    <div class="investors-inner">
+      <div class="reveal">
+        <p class="section-label">Investing in Klar</p>
+        <h2 class="section-title">Back the app that doesn't compromise</h2>
+        <p class="section-sub">Klar is raising its seed round on Seedrs — SEIS/EIS advance assurance applied for and subject to HMRC approval. This is a ground-floor opportunity in a market every person with a bank account needs.</p>
+      </div>
+      <div class="investor-stats reveal reveal-delay-1">
+        <div class="stat-card">
+          <div class="stat-number">£200K</div>
+          <div class="stat-label">Raising on Seedrs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">£1.5M</div>
+          <div class="stat-label">Pre-money valuation</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">SEIS</div>
+          <div class="stat-label">Tax-efficient (EIS eligible)</div>
+        </div>
+      </div>
+      <div class="investors-badges reveal reveal-delay-2">
+        <span class="chip chip-gold">SEIS / EIS applied for</span>
+        <span class="chip chip-violet">HMRC advance assurance pending</span>
+        <span class="chip chip-muted">Raising on Seedrs</span>
+        <span class="chip chip-muted">Seed stage</span>
+      </div>
+      <div class="investors-links reveal reveal-delay-3">
+        <a href="./klar-financial-model.html" class="btn btn-ghost">📄 Financial model</a>
+        <a href="./klar-competitive-brief.md" class="btn btn-ghost">📊 Competitive brief</a>
+        <a href="./klar-pitch-materials.md" class="btn btn-ghost">🎯 Pitch materials</a>
+      </div>
+      <p class="investors-email reveal reveal-delay-4">
+        Questions? Reach the founder directly — <a href="mailto:hello@klarmoney.app">hello@klarmoney.app</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══════════════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">Klar © 2026 · Available in UK and South Africa</div>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="./privacy.html">Privacy</a>
+      <a href="./privacy.html#cookies">Cookies</a>
+      <a href="./terms.html">Terms</a>
+      <a href="/app">Launch App</a>
+      <a href="mailto:hello@klarmoney.app">Contact</a>
+    </nav>
+    <div class="footer-right">Built with ♥ for people who want the truth about their money</div>
+  </div>
+</footer>
+
+<script>
+  // ── NAV SCROLL ──
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+
+  // ── REVEAL ON SCROLL ──
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // ── SMOOTH SCROLL ──
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // Hero elements reveal immediately
+  document.querySelectorAll('.hero .reveal').forEach(el => {
+    setTimeout(() => el.classList.add('visible'), 100);
+  });
+</script>
+</body>
+</html>

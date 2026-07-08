@@ -1,0 +1,12 @@
+# OS / editor junk
+.DS_Store
+Thumbs.db
+*.swp
+
+# Local dev tooling (preview server config — machine-specific)
+.claude/
+
+# Env files — never commit real secrets
+.env
+.env.*
+!.env.example

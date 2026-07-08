@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://klarmoney.netlify.app/sitemap.xml
