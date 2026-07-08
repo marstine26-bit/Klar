@@ -3128,7 +3128,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <div class="ct">Display Preferences</div>
       <div class="cr"><div><div class="cl">Region</div><div class="cs">Changes currency, tax tools, and bill providers</div></div><div style="display:flex;gap:6px"><button id="pref-region-za" class="btn btn-xs" onclick="klSelectRegion('za');applyPrefsUI();renderAll()" style="padding:5px 12px">🇿🇦 South Africa</button><button id="pref-region-uk" class="btn btn-xs" onclick="klSelectRegion('uk');applyPrefsUI();renderAll()" style="padding:5px 12px">🇬🇧 United Kingdom</button></div></div>
       <div class="cr"><div><div class="cl">Compact sidebar</div></div><label class="toggle"><input type="checkbox" id="pref-compact" onchange="applyCompact(this.checked)"><span class="tsl"></span></label></div>
-      <div class="cr"><div><div class="cl">Currency symbol</div></div><select id="pref-cur" onchange="savePref()" style="width:110px"><option value="R">R (ZAR)</option><option value="$">$ (USD)</option><option value="€">€ (EUR)</option><option value="£">£ (GBP)</option><option value="₦">₦ (NGN)</option></select></div>
+      <div class="cr"><div><div class="cl">Currency symbol</div></div><select id="pref-cur" onchange="savePref()" style="width:110px"><option value="R">R (ZAR)</option><option value="$">$ (USD)</option><option value="€">€ (EUR)</option><option value="£">£ (GBP)</option><option value="₦">₦ (NGN)</option><option value="A$">A$ (AUD)</option><option value="C$">C$ (CAD)</option><option value="₹">₹ (INR)</option><option value="¥">¥ (JPY)</option><option value="CHF">CHF (CHF)</option><option value="kr">kr (SEK/NOK/DKK)</option><option value="NZ$">NZ$ (NZD)</option><option value="S$">S$ (SGD)</option><option value="HK$">HK$ (HKD)</option><option value="AED">AED (AED)</option><option value="CN¥">CN¥ (CNY)</option><option value="KSh">KSh (KES)</option><option value="GH₵">GH₵ (GHS)</option><option value="Mex$">Mex$ (MXN)</option><option value="R$">R$ (BRL)</option></select></div>
       <div class="cr"><div><div class="cl">Show cents</div><div class="cs">Display decimals on amounts</div></div><label class="toggle"><input type="checkbox" id="pref-cents" checked onchange="savePref()"><span class="tsl"></span></label></div>
     </div>
   </div>
@@ -5097,24 +5097,24 @@ const CATS = [
   {id:'income',lbl:'Income / Salary',icon:'💵',css:'--c-income'},
   {id:'freelance',lbl:'Freelance / Side Income',icon:'💼',css:'--c-savings'},
   {id:'transfer',lbl:'Transfer',icon:'↔',css:'--c-transfer'},
-  {id:'home-loan',lbl:'Home Loan / Bond',lbl_uk:'Mortgage',icon:'🏦',css:'--c-home-loan'},
+  {id:'home-loan',lbl:'Home Loan / Bond',lbl_uk:'Mortgage',lbl_other:'Home Loan / Mortgage',icon:'🏦',css:'--c-home-loan'},
   {id:'housing',lbl:'Rent',icon:'🏠',css:'--c-housing'},
-  {id:'rates',lbl:'Rates & Levies',lbl_uk:'Ground Rent / Service Charge',icon:'🏛',css:'--c-banking'},
+  {id:'rates',lbl:'Rates & Levies',lbl_uk:'Ground Rent / Service Charge',lbl_other:'Property Tax / Levies',icon:'🏛',css:'--c-banking'},
   {id:'food',lbl:'Groceries',icon:'🛒',css:'--c-food'},
   {id:'eating-out',lbl:'Eating Out / Takeaways',icon:'🍔',css:'--c-eating-out'},
-  {id:'petrol',lbl:'Petrol / Fuel',lbl_uk:'Petrol / Diesel / EV Charging',icon:'⛽',css:'--c-petrol'},
+  {id:'petrol',lbl:'Petrol / Fuel',lbl_uk:'Petrol / Diesel / EV Charging',lbl_other:'Fuel / Gas',icon:'⛽',css:'--c-petrol'},
   {id:'car',lbl:'Car Repayment',lbl_uk:'Car Finance / PCP',icon:'🚗',css:'--c-car'},
   {id:'transport',lbl:'Public Transport / E-hailing',lbl_uk:'Bus / Train / Tube / Taxi',icon:'🚌',css:'--c-transport'},
   {id:'car-service',lbl:'Car Service & Maintenance',icon:'🔧',css:'--c-banking'},
   {id:'toll',lbl:'Tolls & Parking',icon:'🛣',css:'--c-other'},
-  {id:'utilities',lbl:'Electricity (Eskom)',lbl_uk:'Electricity & Gas',icon:'⚡',css:'--c-utilities'},
+  {id:'utilities',lbl:'Electricity (Eskom)',lbl_uk:'Electricity & Gas',lbl_other:'Electricity / Power',icon:'⚡',css:'--c-utilities'},
   {id:'water',lbl:'Water & Sewage',icon:'💧',css:'--c-utilities'},
-  {id:'internet',lbl:'Internet & Fibre',lbl_uk:'Broadband / Internet',icon:'📡',css:'--c-subs'},
-  {id:'cellphone',lbl:'Cellphone / Airtime / Data',lbl_uk:'Mobile / SIM / Contract',icon:'📱',css:'--c-subs'},
-  {id:'dstv',lbl:'Streaming TV / DSTV',lbl_uk:'Streaming (Netflix / Sky / Now TV)',icon:'📺',css:'--c-subs'},
-  {id:'medical-aid',lbl:'Medical Aid',lbl_uk:'Private Health Insurance (PMI)',icon:'🏥',css:'--c-medical-aid'},
-  {id:'insurance',lbl:'Short-term Insurance',lbl_uk:'Home & Car Insurance',icon:'🛡',css:'--c-insurance'},
-  {id:'life-insurance',lbl:'Life / Funeral Cover',lbl_uk:'Life Insurance / Income Protection',icon:'🪦',css:'--c-debt'},
+  {id:'internet',lbl:'Internet & Fibre',lbl_uk:'Broadband / Internet',lbl_other:'Internet / Broadband',icon:'📡',css:'--c-subs'},
+  {id:'cellphone',lbl:'Cellphone / Airtime / Data',lbl_uk:'Mobile / SIM / Contract',lbl_other:'Mobile / Phone Plan',icon:'📱',css:'--c-subs'},
+  {id:'dstv',lbl:'Streaming TV / DSTV',lbl_uk:'Streaming (Netflix / Sky / Now TV)',lbl_other:'Streaming TV',icon:'📺',css:'--c-subs'},
+  {id:'medical-aid',lbl:'Medical Aid',lbl_uk:'Private Health Insurance (PMI)',lbl_other:'Health Insurance',icon:'🏥',css:'--c-medical-aid'},
+  {id:'insurance',lbl:'Short-term Insurance',lbl_uk:'Home & Car Insurance',lbl_other:'Home & Car Insurance',icon:'🛡',css:'--c-insurance'},
+  {id:'life-insurance',lbl:'Life / Funeral Cover',lbl_uk:'Life Insurance / Income Protection',lbl_other:'Life Insurance',icon:'🪦',css:'--c-debt'},
   {id:'health',lbl:'Doctor / Pharmacy / Dentist',icon:'❤️',css:'--c-health'},
   {id:'gym',lbl:'Gym / Fitness',icon:'💪',css:'--c-sport'},
   {id:'education',lbl:'School Fees / Tuition',icon:'📚',css:'--c-education'},
@@ -5125,11 +5125,11 @@ const CATS = [
   {id:'domestic',lbl:'Domestic Worker',icon:'🧹',css:'--c-domestic'},
   {id:'garden',lbl:'Garden / Maintenance',icon:'🌿',css:'--c-pets'},
   {id:'savings',lbl:'Savings / Emergency Fund',icon:'💰',css:'--c-savings'},
-  {id:'investments',lbl:'Investments (TFSA / RA / ETF)',lbl_uk:'Investments (ISA / SIPP / ETF)',icon:'📈',css:'--c-investments'},
+  {id:'investments',lbl:'Investments (TFSA / RA / ETF)',lbl_uk:'Investments (ISA / SIPP / ETF)',lbl_other:'Investments (ETF / Brokerage)',icon:'📈',css:'--c-investments'},
   {id:'debt',lbl:'Debt Repayments',icon:'📉',css:'--c-debt'},
   {id:'stokvels',lbl:'Stokvels / Burial Society',icon:'🤝',css:'--c-stokvels',region:'za'},
   {id:'church',lbl:'Church / Tithing / Donations',icon:'⛪',css:'--c-church'},
-  {id:'tax',lbl:'Tax / SARS Payments',lbl_uk:'HMRC / Tax Payments',icon:'🏛',css:'--c-tax'},
+  {id:'tax',lbl:'Tax / SARS Payments',lbl_uk:'HMRC / Tax Payments',lbl_other:'Tax Payments',icon:'🏛',css:'--c-tax'},
   {id:'banking',lbl:'Bank Charges & Fees',icon:'🏦',css:'--c-banking'},
   {id:'gifts',lbl:'Gifts & Family Support',icon:'🎁',css:'--c-gifts'},
   {id:'entertainment',lbl:'Entertainment & Events',icon:'🎬',css:'--c-entertain'},
@@ -5343,7 +5343,7 @@ function openSplitTxn(id) {
   if(origEl) origEl.innerHTML=`<strong>${esc(t.description)}</strong> · <span style="font-family:var(--fm)">${fmt(t.amount)}</span> · ${esc(t.date)} · <span class="badge">${t.type}</span>`;
   const partsEl=document.getElementById('split-parts');
   if(partsEl){
-    const _isUKsplit=(S.prefs?.region||'za')==='uk';const catOpts=CATS.filter(c=>!c.region||c.region===(S.prefs.region||'za')).map(c=>{const _l=(_isUKsplit&&c.lbl_uk)?c.lbl_uk:c.lbl;return`<option value="${c.id}">${c.icon} ${_l}</option>`;}).join('');
+    const _rgSplit=(S.prefs?.region||'za');const _isUKsplit=_rgSplit==='uk';const catOpts=CATS.filter(c=>!c.region||c.region===_rgSplit).map(c=>{const _l=_isUKsplit&&c.lbl_uk?c.lbl_uk:_rgSplit==='other'&&c.lbl_other?c.lbl_other:c.lbl;return`<option value="${c.id}">${c.icon} ${_l}</option>`;}).join('');
     partsEl.innerHTML=`
       ${[0,1].map(i=>`<div class="split-part" style="display:flex;gap:6px;align-items:center;margin-bottom:6px">
         <input type="text" placeholder="Description" value="${esc(t.description)}" style="flex:2;padding:5px 8px;font-size:12px">
@@ -5361,7 +5361,7 @@ function openSplitTxn(id) {
 
 function addSplitPart() {
   const partsEl=document.getElementById('split-parts');if(!partsEl)return;
-  const _isUKsp2=(S.prefs?.region||'za')==='uk';const catOpts=CATS.filter(c=>!c.region||c.region===(S.prefs.region||'za')).map(c=>{const _l=(_isUKsp2&&c.lbl_uk)?c.lbl_uk:c.lbl;return`<option value="${c.id}">${c.icon} ${_l}</option>`;}).join('');
+  const _rgSp2=(S.prefs?.region||'za');const _isUKsp2=_rgSp2==='uk';const catOpts=CATS.filter(c=>!c.region||c.region===_rgSp2).map(c=>{const _l=_isUKsp2&&c.lbl_uk?c.lbl_uk:_rgSp2==='other'&&c.lbl_other?c.lbl_other:c.lbl;return`<option value="${c.id}">${c.icon} ${_l}</option>`;}).join('');
   const div=document.createElement('div');
   div.className='split-part';
   div.style.cssText='display:flex;gap:6px;align-items:center;margin-bottom:6px';
@@ -5442,8 +5442,9 @@ function rCatRulesList() {
   if(srWrap)srWrap.style.display=suggs.length?'block':'none';
   window._klCatSuggs=suggs;
   if(srList)srList.innerHTML=suggs.map((s,i)=>{
-    const cats=window.CATS||[];const _isUKcrs=(S.prefs?.region||'za')==='uk';
-    const catOpts=cats.map(c=>{const _l=(_isUKcrs&&c.lbl_uk)?c.lbl_uk:c.lbl;return`<option value="${c.id}">${c.icon} ${_l}</option>`;}).join('');
+    const _rgCrs=(S.prefs?.region||'za');const _isUKcrs=_rgCrs==='uk';
+    const cats=(window.CATS||[]).filter(c=>!c.region||c.region===_rgCrs);
+    const catOpts=cats.map(c=>{const _l=_isUKcrs&&c.lbl_uk?c.lbl_uk:_rgCrs==='other'&&c.lbl_other?c.lbl_other:c.lbl;return`<option value="${c.id}">${c.icon} ${_l}</option>`;}).join('');
     return`<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
       <span style="font-family:monospace;font-size:11px;background:var(--s3);padding:2px 6px;border-radius:4px">${esc(s.name)}</span>
       <span style="font-size:10px;color:var(--t3)">${s.count}× uncategorized</span>
@@ -5481,7 +5482,7 @@ function deleteCatRule(key) {
 function openAddCatRule() {
   const sel=document.getElementById('catr-cat');
   if(sel){
-    const _isUKcatr=(S.prefs?.region||'za')==='uk';sel.innerHTML=CATS.filter(c=>!c.region||c.region===(S.prefs.region||'za')).map(c=>{const _l=(_isUKcatr&&c.lbl_uk)?c.lbl_uk:c.lbl;return`<option value="${c.id}">${_l}</option>`;}).join('');
+    const _rgCatr=(S.prefs?.region||'za');const _isUKcatr=_rgCatr==='uk';sel.innerHTML=CATS.filter(c=>!c.region||c.region===_rgCatr).map(c=>{const _l=_isUKcatr&&c.lbl_uk?c.lbl_uk:_rgCatr==='other'&&c.lbl_other?c.lbl_other:c.lbl;return`<option value="${c.id}">${_l}</option>`;}).join('');
   }
   document.getElementById('catr-keyword').value='';
   openModal('m-add-cat-rule');
@@ -5551,15 +5552,19 @@ const getDebtPayments = (debtId) => {
 };
 
 const catBy  = id => CATS.find(c => c.id === id) || CATS.find(c => c.id === 'other') || {id:'other',lbl:'Other',icon:'•',css:'--c-other'};
-const catLbl = id => { const c = catBy(id); return (S.prefs?.region==='uk' && c.lbl_uk) ? c.lbl_uk : c.lbl; };
+const catLbl = id => { const c = catBy(id); const r = S.prefs?.region; return (r==='uk' && c.lbl_uk) ? c.lbl_uk : (r==='other' && c.lbl_other) ? c.lbl_other : c.lbl; };
 const catClr = id => { const c = catBy(id); return getComputedStyle(document.documentElement).getPropertyValue(c.css).trim() || '#607090'; };
 const accBy  = id => (S.accounts||[]).find(a => a.id === id) || DEF_ACCOUNT;
 const _fxAmt = n  => {
   // Only convert when the display region's currency actually differs from the currency
   // the user's data is recorded in — never infer this from `region` alone (that fired the
   // fallback for genuine UK-native users with no ZAR history, dividing real GBP amounts by ~23).
-  const destCur = (S.prefs?.region||'za')==='uk' ? 'GBP' : 'ZAR';
+  const _region = S.prefs?.region||'za';
   const srcCur = S.prefs?.dataCurrency || 'ZAR';
+  // 'other'/ROW has no single fixed "home currency" to auto-convert into — Klar only tracks a
+  // live rate for ZAR<->GBP. Treat destCur as always matching srcCur for 'other' so no
+  // conversion is ever attempted (avoids misapplying a ZAR<->GBP rate to e.g. USD-native data).
+  const destCur = _region==='uk' ? 'GBP' : _region==='other' ? srcCur : 'ZAR';
   if (srcCur === destCur) return n;
   const fx = S.prefs?.fxConversion;
   if (fx && fx.rate && fx.from===srcCur && fx.to===destCur) return n*fx.rate;
@@ -5569,8 +5574,9 @@ const _fxAmt = n  => {
   if (srcCur==='GBP' && destCur==='ZAR') return n*zarPerGbp;
   return n;
 };
-const fmt    = n  => { if(isNaN(n)||n==null)n=0; n=_fxAmt(n); const c=S.prefs.cur||(S.prefs.region==='uk'?'\u00a3':'R'); const dc=S.prefs.cents!==false; return c+'\u202f'+Math.abs(n).toLocaleString('en-GB',{minimumFractionDigits:dc?2:0,maximumFractionDigits:dc?2:0}); };
-const fmtK   = n  => { n=_fxAmt(n); const c=S.prefs.cur||(S.prefs.region==='uk'?'£':'R'); if(n>=1e6)return c+(n/1e6).toFixed(1)+'M'; if(n>=1e3)return c+(n/1e3).toFixed(0)+'k'; return c+Math.round(n); };
+const _defCurSym = () => S.prefs.region==='uk'?'\u00a3':S.prefs.region==='other'?'$':'R';
+const fmt    = n  => { if(isNaN(n)||n==null)n=0; n=_fxAmt(n); const c=S.prefs.cur||_defCurSym(); const dc=S.prefs.cents!==false; return c+'\u202f'+Math.abs(n).toLocaleString('en-GB',{minimumFractionDigits:dc?2:0,maximumFractionDigits:dc?2:0}); };
+const fmtK   = n  => { n=_fxAmt(n); const c=S.prefs.cur||_defCurSym(); if(n>=1e6)return c+(n/1e6).toFixed(1)+'M'; if(n>=1e3)return c+(n/1e3).toFixed(0)+'k'; return c+Math.round(n); };
 const esc    = s  => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const uid    = () => (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const closeModal = id => { const el=document.getElementById(id); if(el) el.classList.remove('open'); };
@@ -6363,7 +6369,7 @@ function popCatDDs() {
     const el=document.getElementById(id); if(!el) return;
     const isF=id==='t-cat';
     const cur=el.value;
-    const _isUKcat=(S.prefs?.region||'za')==='uk';const _catRegion=_isUKcat?'uk':'za';el.innerHTML=(isF?'<option value="">All Categories</option><option value="__uncat__">⚠ Uncategorised</option>':'')+catList.filter(c=>!c.region||c.region===_catRegion).map(c=>'<option value="'+c.id+'">'+c.icon+' '+((_isUKcat&&c.lbl_uk)?c.lbl_uk:c.lbl)+'</option>').join('');
+    const _catRegionRaw=(S.prefs?.region||'za');const _isUKcat=_catRegionRaw==='uk';el.innerHTML=(isF?'<option value="">All Categories</option><option value="__uncat__">⚠ Uncategorised</option>':'')+catList.filter(c=>!c.region||c.region===_catRegionRaw).map(c=>'<option value="'+c.id+'">'+c.icon+' '+(_isUKcat&&c.lbl_uk?c.lbl_uk:_catRegionRaw==='other'&&c.lbl_other?c.lbl_other:c.lbl)+'</option>').join('');
     if(cur) el.value=cur;
   });
 }
@@ -8148,7 +8154,7 @@ function toggleAddSplitUi(){
 }
 function addSplitRow(){
   const sr=document.getElementById('split-rows');if(!sr)return;
-  const _isUKsr=(S.prefs?.region||'za')==='uk';const catOpts=CATS.filter(c=>!c.region||c.region===(S.prefs.region||'za')).map(c=>{const _l=(_isUKsr&&c.lbl_uk)?c.lbl_uk:c.lbl;return`<option value="${c.id}">${c.icon} ${_l}</option>`;}).join('');
+  const _rgSr=(S.prefs?.region||'za');const _isUKsr=_rgSr==='uk';const catOpts=CATS.filter(c=>!c.region||c.region===_rgSr).map(c=>{const _l=_isUKsr&&c.lbl_uk?c.lbl_uk:_rgSr==='other'&&c.lbl_other?c.lbl_other:c.lbl;return`<option value="${c.id}">${c.icon} ${_l}</option>`;}).join('');
   const div=document.createElement('div');
   div.className='split-row';
   div.style.cssText='display:flex;gap:6px;align-items:center;margin-bottom:6px';
@@ -9152,6 +9158,9 @@ function rTravel() {
    FOREX & OFFSHORE DASHBOARD
 ═══════════════════════════════════════════════════ */
 const ALL_FX_CURRENCIES = ['USD','EUR','GBP','CHF','JPY','AUD','CAD','NZD','SGD','HKD','AED','CNY','NAD','BWP','ZMW','MZN','KES','GHS','TZS','NGN','INR','MXN','BRL'];
+// Maps every symbol offered in the Settings currency picker to its ISO code — used to infer
+// dataCurrency for 'other'/ROW users (who have no fixed home currency the way za/uk users do).
+const CUR_SYM_TO_CODE = {'R':'ZAR','£':'GBP','$':'USD','€':'EUR','₦':'NGN','A$':'AUD','C$':'CAD','₹':'INR','¥':'JPY','CHF':'CHF','kr':'SEK','NZ$':'NZD','S$':'SGD','HK$':'HKD','AED':'AED','CN¥':'CNY','KSh':'KES','GH₵':'GHS','Mex$':'MXN','R$':'BRL'};
 
 function getCurrentSarbYear() {
   const now=new Date();
@@ -11395,7 +11404,8 @@ function syncModeSwitcher(){
     btn.classList.toggle('active',(btn.dataset.mode==='business')===corp);
   });
   const logoSub=document.querySelector('.logo-sub');
-  if(logoSub)logoSub.textContent=corp?(S.prefs.region==='uk'?'Business · United Kingdom':'Business · South Africa'):(S.prefs.region==='uk'?'Pro · United Kingdom':'Pro · South Africa');
+  const _smRegionLbl=S.prefs.region==='uk'?'United Kingdom':S.prefs.region==='other'?'Global':'South Africa';
+  if(logoSub)logoSub.textContent=(corp?'Business · ':'Pro · ')+_smRegionLbl;
 }
 
 /* ═══ BANK FEEDS (Saltedge) ═══ */
@@ -11659,9 +11669,17 @@ function rHealth(){
   const hasInvest=(S.invAllocations&&Object.values(S.invAllocations).some(v=>v>0))||S.holdings.length>0;
   const hasProperty=(S.properties||[]).length>0;
   const hasInsurance=(S.insurancePolicies||[]).length>0;
-  const _isUKhs=(S.prefs?.region||'za')==='uk';
+  const _regionHs=(S.prefs?.region||'za');
+  const _isUKhs=_regionHs==='uk';
+  const _isOtherHs=_regionHs==='other';
+  // 'other'/ROW has no equivalent of a TFSA/ISA to check a holding "type" against — crediting
+  // this 5-point category off general investment activity instead keeps the max achievable score
+  // equal across all three regions (a ROW user should never be structurally capped below 100
+  // just because Klar doesn't know their country's specific tax-advantaged account scheme).
   const hasTfsa=_isUKhs
     ?(S.holdings||[]).some(h=>h.type==='isa'||h.type==='sipp'||h.type==='lisa'||h.type==='premium_bonds'||h.type==='gia')
+    :_isOtherHs
+    ?hasInvest
     :(S.tfsa?.yearContrib||0)>0||(S.holdings||[]).some(h=>h.type==='tfsa');
   const scores={
     savings:Math.max(0,Math.min(25,savRate*125)),
@@ -11684,17 +11702,22 @@ function rHealth(){
   set('hs-lbl',lbl);set('hs-desc',`Score: ${total} / 100`);
   const _isUK=_isUKhs;
   const emTip=emMonths>=6?`${emMonths.toFixed(1)} months covered ✓ (target: 3–6 months)`:emMonths>=3?`${emMonths.toFixed(1)} months covered — consider building to 6 months`:emMonths>0?`Only ${emMonths.toFixed(1)} month${emMonths<1.5?'':'s'} covered — target 3–6 months (${fmt(exp*3)}–${fmt(exp*6)})`:'Create an emergency fund goal (3–6 months expenses = '+fmt(exp*3)+'–'+fmt(exp*6)+')';
+  const _savRateTip=_isUK?' (ONS UK avg ~5%; ISA saver target ≥10%; FIRE ≥30%)':_isOtherHs?' (advisor target ≥15–20%)':'(SA avg ~0–5%; advisor target ≥15%)';
+  const _investTip=hasInvest?'Investments tracked ✓':_isUK?'Start investing — a Stocks & Shares ISA is a great first step':_isOtherHs?'Start investing — index funds or a brokerage account are a great first step':'Start investing — TFSA is a great first step';
+  const _wrapperLbl=_isUK?'ISA Utilisation':_isOtherHs?'Tax-Advantaged Investing':'TFSA Utilisation';
+  const _wrapperTip=hasTfsa?(_isUK?'ISA contributions tracked ✓':_isOtherHs?'Investment activity tracked ✓':'TFSA contributions tracked ✓'):(_isUK?'Consider maximising your ISA allowance (£20,000/yr) to shelter investment growth from UK tax.':_isOtherHs?'Start investing to make use of any tax-advantaged accounts available in your country.':'Open a TFSA — R46,000/yr tax-free growth');
+  const _diversifyTip=scores.diversified>0?'Diversified across investing, tax wrapper & property ✓':'Diversify: combine '+(_isUK?'ISA':_isOtherHs?'investments':'TFSA')+' + property + investments';
   const items=[
-    {lbl:'Savings Rate',score:scores.savings,max:25,tip:`${Math.round(savRate*100)}% savings rate. Target: 20%+${_isUK?' (ONS UK avg ~5%; ISA saver target ≥10%; FIRE ≥30%)':'(SA avg ~0–5%; advisor target ≥15%)'}` },
+    {lbl:'Savings Rate',score:scores.savings,max:25,tip:`${Math.round(savRate*100)}% savings rate. Target: 20%+${_savRateTip}` },
     {lbl:'Debt Load',score:scores.debt,max:20,tip:`Debt payments: ${Math.round(debtRatio*100)}% of income. Full marks at 0% debt, score reaches zero at 50%+`},
     {lbl:'Emergency Fund',score:scores.emergency,max:10,tip:emTip},
     {lbl:'Budget Discipline',score:scores.budget,max:10,tip:hasBudget?'Budget limits configured ✓':'Set monthly budget limits'},
     {lbl:'Financial Goals',score:scores.goals,max:5,tip:hasGoals?S.goals.length+' goals active ✓':'Add savings goals to stay motivated'},
-    {lbl:'Investing',score:scores.investment,max:10,tip:hasInvest?'Investments tracked ✓':(_isUK?'Start investing — a Stocks & Shares ISA is a great first step':'Start investing — TFSA is a great first step')},
+    {lbl:'Investing',score:scores.investment,max:10,tip:_investTip},
     {lbl:'Property / Real Estate',score:scores.property,max:5,tip:hasProperty?'Property tracked ✓':'Add property via the Property tracker'},
     {lbl:'Insurance Cover',score:scores.insurance,max:5,tip:hasInsurance?`${(S.insurancePolicies||[]).length} polic${(S.insurancePolicies||[]).length>1?'ies':'y'} tracked ✓`:'Track your life, home & vehicle insurance'},
-    {lbl:_isUK?'ISA Utilisation':'TFSA Utilisation',score:scores.tfsa,max:5,tip:hasTfsa?(_isUK?'ISA contributions tracked ✓':'TFSA contributions tracked ✓'):(_isUK?'Consider maximising your ISA allowance (£20,000/yr) to shelter investment growth from UK tax.':'Open a TFSA — R46,000/yr tax-free growth')},
-    {lbl:'Portfolio Diversification',score:scores.diversified,max:5,tip:scores.diversified>0?'Diversified across investing, tax wrapper & property ✓':'Diversify: combine '+(S.prefs.region==='uk'?'ISA':'TFSA')+' + property + investments'},
+    {lbl:_wrapperLbl,score:scores.tfsa,max:5,tip:_wrapperTip},
+    {lbl:'Portfolio Diversification',score:scores.diversified,max:5,tip:_diversifyTip},
   ];
   set('hs-bd',items.map(i=>`<div class="pr"><div class="prh"><span style="font-size:12px">${i.lbl}</span><span style="font-family:var(--fm);font-size:10px;color:var(--t3)">${Math.round(i.score)}/${i.max}</span></div><div class="prt"><div class="prf" style="width:${(i.score/i.max)*100}%;background:${i.score>=i.max*0.8?'var(--green)':i.score>0?'var(--amber)':'var(--red)'}"></div></div><div style="font-size:10px;color:var(--t3);margin-top:2px">${i.tip}</div></div>`).join(''),true);
   const bdEl=document.getElementById('hs-bd'); if(bdEl) animateBars(bdEl);
@@ -11707,7 +11730,7 @@ function rHealth(){
     {lbl:'Investing started',done:hasInvest,icon:'📈'},
     {lbl:'20%+ savings rate',done:savRate>=0.2,icon:'💰'},
     {lbl:'Debt under 20% of income',done:debtRatio<0.2,icon:'⊘'},
-    {lbl:_isUK?'ISA account active':'TFSA account active',done:hasTfsa,icon:'🏦'},
+    {lbl:_isUK?'ISA account active':_isOtherHs?'Investing consistently':'TFSA account active',done:hasTfsa,icon:'🏦'},
     {lbl:'Property tracked',done:hasProperty,icon:'🏠'},
     {lbl:'Insurance in place',done:hasInsurance,icon:'🔒'},
     {lbl:'Fully diversified portfolio',done:scores.diversified>0,icon:'◈'},
@@ -11722,7 +11745,7 @@ function rInsights(){
   const txns=S.transactions.filter(t=>t.type==='expense');
   const insights=[];
   if(inc>0&&net/inc<0.1) insights.push({type:'r',icon:'⚠',title:'Savings Rate Below 10%',body:`You're saving ${Math.round((net/inc)*100)}% of income. Financial experts recommend at least 20%. Try cutting ${fmt(inc*0.1-net)} of discretionary spending.`});
-  if(inc>0&&net/inc>=0.2) insights.push({type:'g',icon:'✓',title:'Strong Savings Rate',body:`You're saving ${Math.round((net/inc)*100)}% of income — above the 20% benchmark. Consider investing your surplus in ${(S.prefs&&S.prefs.region==='uk')?'a Stocks & Shares ISA or SIPP.':'a TFSA or RA.'}`});
+  if(inc>0&&net/inc>=0.2){const _isrRegion=S.prefs&&S.prefs.region;const _isrTip=_isrRegion==='uk'?'a Stocks & Shares ISA or SIPP.':_isrRegion==='other'?'a tax-advantaged retirement account or low-cost index fund.':'a TFSA or RA.';insights.push({type:'g',icon:'✓',title:'Strong Savings Rate',body:`You're saving ${Math.round((net/inc)*100)}% of income — above the 20% benchmark. Consider investing your surplus in ${_isrTip}`});}
   {const _l6=last6();const _l6moCount=Math.max(_l6.filter(m=>S.transactions.some(t=>t.date&&t.date.startsWith(m))).length,1);const _l6txns=S.transactions.filter(t=>t.type==='expense'&&_l6.some(m=>t.date&&t.date.startsWith(m)));const cats6={};_l6txns.forEach(t=>{cats6[t.category]=(cats6[t.category]||0)+t.amount;});const topCat6=Object.entries(cats6).sort((a,b)=>b[1]-a[1])[0];if(topCat6) insights.push({type:'b',icon:'📊',title:'Top Spending Category',body:`Your largest expense category is <strong>${catLbl(topCat6[0])}</strong> at ${fmt(topCat6[1]/_l6moCount)}/mo average over the last ${_l6moCount} month${_l6moCount>1?'s':''}. Review if this aligns with your priorities.`});}
   const subMo=(S.subscriptions||[]).reduce((s,sub)=>s+toMo(sub.amount,sub.cycle),0);
   if(subMo>inc*0.05) insights.push({type:'a',icon:'↻',title:'High Subscription Spend',body:`Subscriptions cost ${fmt(subMo)}/mo (${Math.round((subMo/inc)*100)}% of income). Review unused services — every ${fmt(100)} cut saves ${fmt(1200)}/year.`});
@@ -12333,7 +12356,16 @@ function saveApiKey(){
 function clearApiKey(){
   S.prefs.groqKey='';save();applyPrefsUI();notify('API key cleared','ok');
 }
-function savePref(){S.prefs.cur=document.getElementById('pref-cur')?.value||'R';S.prefs.cents=document.getElementById('pref-cents')?.checked!==false;save();renderAll();if(typeof klApplyRegion==='function')klApplyRegion();notify('Settings saved','ok');}
+function savePref(){
+  S.prefs.cur=document.getElementById('pref-cur')?.value||'R';
+  S.prefs.cents=document.getElementById('pref-cents')?.checked!==false;
+  // 'other'/ROW users have no fixed home currency the way za/uk users do — their dataCurrency
+  // baseline IS whatever they've told us their currency is, so keep it in sync with any manual
+  // currency change here (otherwise switching to za/uk later would convert against a stale,
+  // long-abandoned currency instead of the one their data is actually recorded in).
+  if(S.prefs.region==='other') S.prefs.dataCurrency = CUR_SYM_TO_CODE[S.prefs.cur] || 'USD';
+  save();renderAll();if(typeof klApplyRegion==='function')klApplyRegion();notify('Settings saved','ok');
+}
 function applyCompact(v){S.prefs.compact=v;save();document.getElementById('sb')?.classList.toggle('collapsed',v);}
 function setTheme(t){S.prefs.theme=t;document.documentElement.dataset.theme=t;try{localStorage.setItem('cl-theme',t);}catch(e){}save();applyPrefsUI();}
 function setFS(s){S.prefs.fs=s;document.body.dataset.fs=s;save();}
@@ -12855,15 +12887,20 @@ function updSnap(){
   const snap=document.getElementById('chat-snap');
   if(snap) snap.innerHTML=`Monthly income: <strong>${fmt(inc)}</strong><br>Monthly expenses: <strong>${fmt(exp)}</strong><br>Net cashflow: <strong style="color:${net>=0?'var(--green)':'var(--red)'}">${fmt(net)}</strong><br>Accounts: <strong>${(S.accounts||[]).length}</strong><br>Active debts: <strong>${(S.debts||[]).length}</strong><br>Savings goals: <strong>${(S.goals||[]).length}</strong>`;
   // Update region-specific quick prompt buttons
-  const isUKai=(S.prefs?.region||'za')==='uk';
+  const _aiRegion=(S.prefs?.region||'za');
+  const isUKai=_aiRegion==='uk';
+  const isOtherAi=_aiRegion==='other';
   const qInvest=document.getElementById('ai-q-invest');
   if(qInvest){
-    if(isUKai){qInvest.textContent='📈 Investment options';qInvest.onclick=()=>qChat('What investment vehicles are available for my income level? (ISA, SIPP, GIA — informational only)');}
-    else{qInvest.textContent='📈 Investment options';qInvest.onclick=()=>qChat('What investment vehicles are available for my income level? (TFSA, ETF, RA — informational only)');}
+    qInvest.textContent='📈 Investment options';
+    if(isUKai)qInvest.onclick=()=>qChat('What investment vehicles are available for my income level? (ISA, SIPP, GIA — informational only)');
+    else if(isOtherAi)qInvest.onclick=()=>qChat('What investment vehicles are available for my income level? (index funds, brokerage accounts, retirement accounts — informational only)');
+    else qInvest.onclick=()=>qChat('What investment vehicles are available for my income level? (TFSA, ETF, RA — informational only)');
   }
   const qBanking=document.getElementById('ai-q-banking');
   if(qBanking){
     if(isUKai){qBanking.textContent='🏦 ISA & pension strategy';qBanking.onclick=()=>qChat('How should I optimise my ISA allowance and pension contributions this tax year?');}
+    else if(isOtherAi){qBanking.textContent='🏦 Banking upgrade';qBanking.onclick=()=>qChat('What banking or account options should I consider based on my income?');}
     else{qBanking.textContent='🏦 Banking upgrade';qBanking.onclick=()=>qChat('What banking package should I upgrade to based on my income?');}
   }
 }
@@ -12934,7 +12971,8 @@ async function sendChat(){
   // Build enriched, region-aware system prompt
   const region = S.prefs.region || 'za';
   const isUK = region === 'uk';
-  const cur = S.prefs.cur || (isUK ? '£' : 'R');
+  const isOther = region === 'other';
+  const cur = S.prefs.cur || _defCurSym();
   const _amd=new Date();const thisMonth=_amd.getFullYear()+'-'+String(_amd.getMonth()+1).padStart(2,'0');
   const catSpend = {};
   (S.transactions||[]).filter(t=>t.type==='expense'&&(t.date||'').startsWith(thisMonth))
@@ -12946,12 +12984,14 @@ async function sendChat(){
   const budgetTotal = Object.values(S.budgets||{}).reduce((s,v)=>s+_fxAmt(v||0),0);
   const regionalInstructions = isUK
     ? 'Reference ISA (£20,000/yr limit), HMRC, PAYE, and pension (auto-enrolment 5% min) where relevant. Use GBP (£).'
+    : isOther
+    ? `This user has not specified a single country — do not reference South African (TFSA/SARS/RA) or UK-specific (ISA/HMRC) tax rules, schemes, or institutions by name. Give globally-applicable guidance (e.g. index funds, employer retirement matching, general tax-advantaged accounts) and explicitly note that tax/retirement specifics vary by country, recommending the user consult a local adviser for jurisdiction-specific rules. Use ${cur} as the currency symbol.`
     : 'Reference TFSA (R46,000/yr limit), SARS, RA contributions (27.5% of income tax-deductible, max R430,000/yr), and stokvel savings where relevant. Use ZAR (R).';
   const activeSubs=(S.subscriptions||[]).filter(x=>x.active!==false);
   const subTotal=_fxAmt(activeSubs.reduce((s,sub)=>s+toMo(sub.amount,sub.cycle),0));
   const totalPortfolio=(S.holdings||[]).reduce((s,h)=>s+h.currentVal,0);
   const aiInc=Math.round(_fxAmt(avgInc()||0));const aiExp=Math.round(_fxAmt(avgExp()||0));
-  const systemContent = `You are a concise ${isUK?'UK':'South African'} personal finance advisor. ${regionalInstructions} Responses are informational only — not regulated financial advice. Always recommend consulting a qualified financial adviser for major decisions. Give specific, numbered, actionable steps. Reference the user's actual amounts. Do not give generic advice. Keep responses under 250 words unless the user asks for detail.\n\nUser financial context:\n- Monthly income: ${cur}${aiInc}, expenses: ${cur}${aiExp}, net: ${cur}${aiInc-aiExp}\n- Monthly budget total: ${cur}${Math.round(budgetTotal)}\n- Top spending this month: ${topCats||'no data yet'}\n- Accounts: ${(S.accounts||[]).map(a=>a.name).join(', ')||'none'}\n- Debts: ${debtSummary}\n- Savings goals: ${goalSummary}\n- Subscriptions: ${activeSubs.length} active, ${cur}${Math.round(subTotal)}/mo\n- Portfolio: ${fmt(totalPortfolio)} across ${(S.holdings||[]).length} holdings\n- Net worth: ${fmt(calcCurrentNW())}`;
+  const systemContent = `You are a concise ${isUK?'UK':isOther?'global':'South African'} personal finance advisor. ${regionalInstructions} Responses are informational only — not regulated financial advice. Always recommend consulting a qualified financial adviser for major decisions. Give specific, numbered, actionable steps. Reference the user's actual amounts. Do not give generic advice. Keep responses under 250 words unless the user asks for detail.\n\nUser financial context:\n- Monthly income: ${cur}${aiInc}, expenses: ${cur}${aiExp}, net: ${cur}${aiInc-aiExp}\n- Monthly budget total: ${cur}${Math.round(budgetTotal)}\n- Top spending this month: ${topCats||'no data yet'}\n- Accounts: ${(S.accounts||[]).map(a=>a.name).join(', ')||'none'}\n- Debts: ${debtSummary}\n- Savings goals: ${goalSummary}\n- Subscriptions: ${activeSubs.length} active, ${cur}${Math.round(subTotal)}/mo\n- Portfolio: ${fmt(totalPortfolio)} across ${(S.holdings||[]).length} holdings\n- Net worth: ${fmt(calcCurrentNW())}`;
   // Keep last 10 exchanges (20 messages) as rolling history
   if(!S.chatHistory) S.chatHistory=[];
   const histMsgs=S.chatHistory.slice(-20).map(h=>({role:h.role,content:h.content}));
@@ -15911,6 +15951,11 @@ document.addEventListener('click', function(e){
       if (!S.prefs.cur || S.prefs.cur === '£') S.prefs.cur = 'R';
     } else if (region === 'uk') {
       S.prefs.cur = '£';
+    } else if (region === 'other') {
+      // Don't leave a ROW user stuck on the ZAR default with no prompt to change it — fall back
+      // to the most globally-recognised symbol, and open the currency picker so they can pick
+      // their actual currency immediately rather than discovering it buried in Settings later.
+      if (!S.prefs.cur || S.prefs.cur === 'R') S.prefs.cur = '$';
     }
     save();
     if (gate) {
@@ -15923,8 +15968,13 @@ document.addEventListener('click', function(e){
     // round-trip bug: SA→UK→SA left a phantom GBP→ZAR conversion active, multiplying every
     // already-native-ZAR amount a second time. Once locked, later toggles always convert
     // relative to this fixed baseline, so repeated switching never compounds.
+    // For 'other'/ROW users, don't assume ZAR — derive from whatever currency symbol they've
+    // actually selected (S.prefs.cur), so a genuinely USD/EUR/etc-denominated user who later
+    // switches to SA or UK region gets correctly detected as a mismatch, not silently treated
+    // as ZAR-native and wrongly converted.
     if (!S.prefs.dataCurrency) {
-      S.prefs.dataCurrency = prevRegion ? ((prevRegion === 'uk') ? 'GBP' : 'ZAR') : ((region === 'uk') ? 'GBP' : 'ZAR');
+      const _inferRegionCur = r => r === 'uk' ? 'GBP' : r === 'za' ? 'ZAR' : (CUR_SYM_TO_CODE[S.prefs.cur] || 'USD');
+      S.prefs.dataCurrency = prevRegion ? _inferRegionCur(prevRegion) : _inferRegionCur(region);
     }
     const srcCurCode = S.prefs.dataCurrency;
     const destCurCode = (region === 'uk') ? 'GBP' : (region === 'za') ? 'ZAR' : null;
@@ -16119,9 +16169,8 @@ document.addEventListener('click', function(e){
     const logoSub = document.querySelector('.logo-sub');
     if (logoSub) {
       const corp = typeof isCorp === 'function' && isCorp();
-      logoSub.textContent = corp
-        ? (region === 'uk' ? 'Business · United Kingdom' : 'Business · South Africa')
-        : (region === 'uk' ? 'Pro · United Kingdom' : 'Pro · South Africa');
+      const _arRegionLbl = region === 'uk' ? 'United Kingdom' : region === 'other' ? 'Global' : 'South Africa';
+      logoSub.textContent = (corp ? 'Business · ' : 'Pro · ') + _arRegionLbl;
     }
   };
 
@@ -16350,8 +16399,15 @@ const GROCERY_STORES_ZA=[
   {id:'spar',name:'Spar'},{id:'flm',name:"Food Lover's Market"},
   {id:'makro',name:'Makro'},
 ];
+// 'other'/ROW: no single country to assume, so offer widely-recognised multi-country chains
+// plus a generic catch-all rather than defaulting to SA-specific stores.
+const GROCERY_STORES_OTHER=[
+  {id:'walmart',name:'Walmart'},{id:'carrefour',name:'Carrefour'},
+  {id:'costco',name:'Costco'},{id:'aldi_intl',name:'Aldi'},
+  {id:'lidl_intl',name:'Lidl'},{id:'other_store',name:'Local Supermarket'},
+];
 
-function _groceryStores(){return (S.prefs.region||'za')==='uk'?GROCERY_STORES_UK:GROCERY_STORES_ZA;}
+function _groceryStores(){const r=S.prefs.region||'za';return r==='uk'?GROCERY_STORES_UK:r==='other'?GROCERY_STORES_OTHER:GROCERY_STORES_ZA;}
 
 function openAddGroceryList(){
   const stores=_groceryStores();
@@ -16499,8 +16555,10 @@ async function _groceryFetchMissingPrices(listId){
   if(!list)return;
   const store=list.store;
   const storeName=_groceryStoreName(store);
-  const isUK=(S.prefs.region||'za')==='uk';
-  const currency=isUK?'GBP (£)':'ZAR (R)';
+  const _grRegion=(S.prefs.region||'za');
+  const isUK=_grRegion==='uk';
+  const isOtherGr=_grRegion==='other';
+  const currency=isUK?'GBP (£)':isOtherGr?`the user's local currency (symbol: ${S.prefs.cur||'$'})`:'ZAR (R)';
   const needPrice=list.items.filter(i=>i.manualPrice==null&&i.estimatedPrice==null);
   if(!needPrice.length)return;
   const cacheKey=i=>`${store}|${i.name.toLowerCase().trim()}`;
@@ -16517,7 +16575,7 @@ async function _groceryFetchMissingPrices(listId){
   const key=S.prefs.groqKey;
   if(!key)return;
   const itemList=stillNeeded.map(i=>`${i.qty||1}${i.unit?' '+i.unit:''} ${i.name}`).join(', ');
-  const prompt=`You are a ${isUK?'UK':'South African'} supermarket pricing assistant. Estimate the typical retail price in ${currency} for each of the following grocery items at ${storeName}. Return ONLY a JSON array like: [{"name":"item","price":1.99}]. Use current typical ${storeName} prices. Items: ${itemList}`;
+  const prompt=`You are a ${isUK?'UK':isOtherGr?'general international':'South African'} supermarket pricing assistant. Estimate the typical retail price in ${currency} for each of the following grocery items at ${storeName}. Return ONLY a JSON array like: [{"name":"item","price":1.99}]. Use current typical ${storeName} prices. Items: ${itemList}`;
   try{
     const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
       method:'POST',
