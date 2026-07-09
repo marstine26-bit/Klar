@@ -14885,6 +14885,20 @@ const KL_BILL_PROVIDERS_UK = [
   {id:'other_uk',       name:'Other Provider',    category:'Other',            emoji:'📋', color:'rgba(138,138,152,.18)',textColor:'#8A8A98', hint:'Account or reference number',      portalUrl:''},
 ];
 
+// 'other'/ROW: Klar has no real payment-portal integrations for arbitrary countries' utility
+// providers, and fabricating fake company names/links would be actively misleading. Offer honest,
+// generic categories instead — no portalUrl means bpProceed() just records the reference/amount
+// and logs a transaction, skipping the "open provider portal" convenience step entirely.
+const KL_BILL_PROVIDERS_OTHER = [
+  {id:'electricity_other', name:'Electricity',        category:'Utilities',        emoji:'⚡', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Account or meter number', portalUrl:''},
+  {id:'water_other',       name:'Water',               category:'Utilities',        emoji:'💧', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',          portalUrl:''},
+  {id:'internet_other',    name:'Internet',            category:'Internet & TV',    emoji:'📡', color:'rgba(155,127,212,.18)',textColor:'#9B7FD4', hint:'Account number',          portalUrl:''},
+  {id:'mobile_other',      name:'Mobile / Phone',      category:'Mobile',           emoji:'📱', color:'rgba(245,83,79,.18)',  textColor:'#F5534F', hint:'Account or mobile number', portalUrl:''},
+  {id:'streaming_other',   name:'Streaming / TV',      category:'Internet & TV',    emoji:'📺', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Account email',           portalUrl:''},
+  {id:'insurance_other',   name:'Insurance',           category:'Insurance',        emoji:'🛡', color:'rgba(76,175,80,.18)',  textColor:'#4CAF50', hint:'Policy number',           portalUrl:''},
+  {id:'other_row',         name:'Other Provider',      category:'Other',            emoji:'📋', color:'rgba(138,138,152,.18)',textColor:'#8A8A98', hint:'Account or reference number', portalUrl:''},
+];
+
 /* Keep legacy BP_CATEGORIES for backward compat with existing billPayHistory records */
 const BP_CATEGORIES = [
   {id:'electricity',name:'Electricity',emoji:'⚡',color:'rgba(245,166,35,.18)',textColor:'#F5A623'},
@@ -14897,7 +14911,7 @@ const BP_CATEGORIES = [
   {id:'gas',name:'Gas',emoji:'🔥',color:'rgba(245,83,79,.18)',textColor:'#F5534F'},
 ];
 
-function _klGetProviders(){ return S.prefs.region==='uk' ? KL_BILL_PROVIDERS_UK : KL_BILL_PROVIDERS_ZA; }
+function _klGetProviders(){ const r=S.prefs.region; return r==='uk' ? KL_BILL_PROVIDERS_UK : r==='other' ? KL_BILL_PROVIDERS_OTHER : KL_BILL_PROVIDERS_ZA; }
 function _klFindProvider(id){ return _klGetProviders().find(p=>p.id===id) || BP_CATEGORIES.find(c=>c.id===id) || {emoji:'💳',name:id,color:'rgba(155,127,212,.18)',textColor:'#9B7FD4'}; }
 
 /* ═══ KLAR SUBSCRIPTION PLANS ═══
@@ -15068,7 +15082,7 @@ function bpProceed(){
   const ref = (document.getElementById('bp-m-ref').value||'').trim();
   const amountRaw = parseFloat(document.getElementById('bp-m-amount').value);
   const isUK = S.prefs.region === 'uk';
-  const sym = isUK ? '£' : 'R';
+  const sym = S.prefs.cur || (isUK ? '£' : 'R');
   if(!ref){ notify('Please enter your account or reference number','err'); return; }
   if(!amountRaw || amountRaw < (isUK ? 0.01 : 1)){ notify(`Please enter an amount (e.g. ${sym}${isUK?'50':'100'})`, 'err'); return; }
   const amount = Math.round(amountRaw * 100) / 100;
@@ -15082,7 +15096,7 @@ function bpProceed(){
   // Record in bill history
   if(!S.billPayHistory) S.billPayHistory = [];
   const status = canOpenPortal ? 'portal_opened' : 'recorded';
-  S.billPayHistory.push({ cat:_bpActive.id, catName:_bpActive.name, ref, amount, currency: isUK?'GBP':'ZAR', ts:Date.now(), status });
+  S.billPayHistory.push({ cat:_bpActive.id, catName:_bpActive.name, ref, amount, currency: (S.prefs.dataCurrency||(isUK?'GBP':'ZAR')), ts:Date.now(), status });
 
   // Optionally log as a transaction for budget/spending tracking
   const logTxn = document.getElementById('bp-log-txn')?.checked !== false; // default true
