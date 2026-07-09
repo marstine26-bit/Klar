@@ -3127,6 +3127,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="card">
       <div class="ct">Display Preferences</div>
       <div class="cr"><div><div class="cl">Region</div><div class="cs">Changes currency, tax tools, and bill providers</div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button id="pref-region-za" class="btn btn-xs" onclick="klSelectRegion('za');applyPrefsUI();renderAll()" style="padding:5px 12px">🇿🇦 South Africa</button><button id="pref-region-uk" class="btn btn-xs" onclick="klSelectRegion('uk');applyPrefsUI();renderAll()" style="padding:5px 12px">🇬🇧 United Kingdom</button><button id="pref-region-other" class="btn btn-xs" onclick="klSelectRegion('other');applyPrefsUI();renderAll()" style="padding:5px 12px">🌍 Other</button></div></div>
+      <div class="cr"><div><div class="cl">Amounts look wrong after switching region?</div><div class="cs">Resets the currency conversion baseline to match your current region — use this if your numbers look multiplied or divided by an exchange rate incorrectly</div></div><button class="btn btn-ghost btn-xs" onclick="klFixCurrencyBaseline()">Fix currency conversion</button></div>
       <div class="cr"><div><div class="cl">Compact sidebar</div></div><label class="toggle"><input type="checkbox" id="pref-compact" onchange="applyCompact(this.checked)"><span class="tsl"></span></label></div>
       <div class="cr"><div><div class="cl">Currency symbol</div></div><select id="pref-cur" onchange="savePref()" style="width:110px"><option value="R">R (ZAR)</option><option value="$">$ (USD)</option><option value="€">€ (EUR)</option><option value="£">£ (GBP)</option><option value="₦">₦ (NGN)</option><option value="A$">A$ (AUD)</option><option value="C$">C$ (CAD)</option><option value="₹">₹ (INR)</option><option value="¥">¥ (JPY)</option><option value="CHF">CHF (CHF)</option><option value="kr">kr (SEK/NOK/DKK)</option><option value="NZ$">NZ$ (NZD)</option><option value="S$">S$ (SGD)</option><option value="HK$">HK$ (HKD)</option><option value="AED">AED (AED)</option><option value="CN¥">CN¥ (CNY)</option><option value="KSh">KSh (KES)</option><option value="GH₵">GH₵ (GHS)</option><option value="Mex$">Mex$ (MXN)</option><option value="R$">R$ (BRL)</option></select></div>
       <div class="cr"><div><div class="cl">Show cents</div><div class="cs">Display decimals on amounts</div></div><label class="toggle"><input type="checkbox" id="pref-cents" checked onchange="savePref()"><span class="tsl"></span></label></div>
@@ -16036,6 +16037,30 @@ document.addEventListener('click', function(e){
     }
     try { renderAll(); } catch(e) {}
     klOnRegionReady();
+  };
+
+  // Explicit, user-triggered recovery for a dataCurrency baseline that got locked to the wrong
+  // value (e.g. by an older, now-fixed version of the inference logic in klSelectRegion, before
+  // that fix shipped) — every amount then silently gets multiplied/divided by a stale FX rate
+  // forever, since dataCurrency is deliberately "locked once" and never auto-recomputed. This is
+  // NOT run automatically (an automatic heuristic based on "region re-selected" was tried and
+  // reverted — it can't reliably distinguish a genuinely corrupted baseline from a legitimate
+  // multi-currency user correctly viewing their native-currency data in a different region,
+  // since both look identical from state alone). Requires deliberate user action instead.
+  window.klFixCurrencyBaseline = function() {
+    const region = S.prefs.region || 'za';
+    const correctCur = region === 'uk' ? 'GBP' : region === 'za' ? 'ZAR' : (CUR_SYM_TO_CODE[S.prefs.cur] || 'USD');
+    klConfirm(
+      `This resets your currency conversion baseline to match your current region (${region==='uk'?'United Kingdom — GBP':region==='za'?'South Africa — ZAR':'your selected currency, '+(S.prefs.cur||'$')}). Only use this if amounts on your dashboard look multiplied or divided by an exchange rate incorrectly — it will treat all your existing data as already being in that currency going forward.`,
+      () => {
+        S.prefs.dataCurrency = correctCur;
+        S.prefs.fxConversion = null;
+        save();
+        try { renderAll(); } catch(e) {}
+        notify('Currency baseline reset — amounts should now display correctly', 'ok');
+      },
+      { title: 'Fix Currency Conversion', okLabel: 'Reset Baseline', danger: false }
+    );
   };
 
   window.klFetchAndApplyFx = async function(from, to) {
