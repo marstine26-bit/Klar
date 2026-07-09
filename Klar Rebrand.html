@@ -13776,7 +13776,11 @@ function rFxRatesPanel() {
   if (!panel || !rowsEl) return;
 
   const accs = S.accounts||[];
-  const _homeCurFx=(S.prefs?.region||'za')==='uk'?'GBP':'ZAR';
+  // 'other'/ROW: derive home currency from dataCurrency (falling back to the currency symbol they
+  // picked) rather than assuming ZAR — otherwise a genuinely USD/EUR-native 'other' user's own
+  // home-currency accounts get wrongly flagged as "foreign" against a ZAR baseline that was never
+  // theirs to begin with.
+  const _homeCurFx=(S.prefs?.region||'za')==='uk'?'GBP':(S.prefs?.region==='other'?(S.prefs.dataCurrency||CUR_SYM_TO_CODE[S.prefs.cur]||'USD'):'ZAR');
   const fxAccs = accs.filter(a => (a.currency||_homeCurFx) !== _homeCurFx);
   if (!fxAccs.length) { panel.style.display='none'; return; }
   panel.style.display='';
@@ -13808,9 +13812,12 @@ function rFxRatesPanel() {
     </div>`;
   }).join('');
 
-  // Totals breakdown
-  const _gbpRateFxP=(S.fxRates?.GBP)||23.4;
-  const toHomeFx=(zarAmt)=>_homeCurFx==='GBP'?zarAmt/_gbpRateFxP:zarAmt;
+  // Totals breakdown. S.fxRates is always ZAR-pivoted (rate = ZAR per 1 unit of that currency),
+  // so converting a ZAR-pivoted balance into ANY home currency we have a rate for — not just
+  // GBP — is just dividing by that currency's rate. Falls back to leaving the amount as ZAR-
+  // pivoted (better than a wrong/NaN result) if the home currency has no known rate at all.
+  const _homeRateFxP=_homeCurFx==='ZAR'?1:(S.fxRates?.[_homeCurFx]||(_homeCurFx==='GBP'?23.4:null));
+  const toHomeFx=(zarAmt)=>_homeRateFxP?zarAmt/_homeRateFxP:zarAmt;
   const breakdown = fxAccs.map(a => {
     const bal = calcAccBalance(a.id);
     const rate = S.fxRates[a.currency]||a.zarRate||1;
