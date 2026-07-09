@@ -8442,7 +8442,7 @@ function rNetWorth(){
   const ratioEl=document.getElementById('nw-ratio');
   if(ratioEl){const ratio=totA>0?Math.round((totL/totA)*100):0;ratioEl.textContent=ratio+'%';ratioEl.style.color=ratio>50?'var(--red)':ratio>25?'var(--amber)':'var(--green)';}
   const nassEl=document.getElementById('nw-assets-sub');if(nassEl)nassEl.textContent='Accounts + manual assets'+(holdingsVal>0?' + portfolio':'')+(propVal>0?' + property':'')+(farVal>0?' + fixed assets':'');
-  const _nwIsUK=(S.prefs?.region||'za')==='uk';const nliabEl=document.getElementById('nw-liab-sub');if(nliabEl)nliabEl.textContent='CC + liabilities'+(debtTotal>0?' + debts':'')+(propBond>0?(_nwIsUK?' + mortgage':' + bonds'):'');
+  const _nwIsSA=(S.prefs?.region||'za')==='za';const nliabEl=document.getElementById('nw-liab-sub');if(nliabEl)nliabEl.textContent='CC + liabilities'+(debtTotal>0?' + debts':'')+(propBond>0?(_nwIsSA?' + bonds':' + mortgage'):'');
   const nwEl=document.getElementById('nw-tot');if(nwEl)nwEl.className='sv '+(nw>=0?'pos':'neg');
 
   // Live Account Balances section
@@ -10826,18 +10826,21 @@ function applyTfsaAuto(yr,life){
 /* ═══ PROPERTY TRACKER ═══ */
 function openAddProperty(id){
   const p=id?(S.properties||[]).find(x=>x.id===id):null;
-  const isUKprop=(S.prefs?.region||'za')==='uk';
-  const cur=S.prefs?.cur||(isUKprop?'£':'R');
-  const defRate=isUKprop?'5.5':'11.75';
+  // "Mortgage" is the globally-understood term; "Bond" is SA-specific jargon — so this checks
+  // isSAprop (region==='za') rather than isUKprop, meaning 'other' correctly gets "Mortgage"
+  // terminology and UK-style placeholder defaults instead of falling through to SA wording.
+  const isSAprop=(S.prefs?.region||'za')==='za';
+  const cur=S.prefs?.cur||(isSAprop?'R':'£');
+  const defRate=isSAprop?'11.75':'5.5';
   document.getElementById('prop-modal-title').textContent=p?'Edit Property':'Add Property';
   document.getElementById('prop-name').value=p?.name||'';
-  document.getElementById('prop-name').placeholder=isUKprop?'e.g. 14 Elm Street, Bristol':'e.g. 12 Oak Ave, Sandton';
+  document.getElementById('prop-name').placeholder=isSAprop?'e.g. 12 Oak Ave, Sandton':'e.g. 14 Elm Street, Bristol';
   document.getElementById('prop-val').value=p?.marketValue||'';
-  document.getElementById('prop-val').placeholder=isUKprop?'e.g. 350000':'e.g. 1500000';
+  document.getElementById('prop-val').placeholder=isSAprop?'e.g. 1500000':'e.g. 350000';
   document.getElementById('prop-bond').value=p?.bondBalance||'';
-  document.getElementById('prop-bond').placeholder=isUKprop?'e.g. 220000':'e.g. 950000';
+  document.getElementById('prop-bond').placeholder=isSAprop?'e.g. 950000':'e.g. 220000';
   document.getElementById('prop-repay').value=p?.repayment||'';
-  document.getElementById('prop-repay').placeholder=isUKprop?'e.g. 1200':'e.g. 9800';
+  document.getElementById('prop-repay').placeholder=isSAprop?'e.g. 9800':'e.g. 1200';
   document.getElementById('prop-rate').value=p?.rate||defRate;
   document.getElementById('prop-rate').placeholder=`e.g. ${defRate}`;
   document.getElementById('prop-rent').value=p?.rentalIncome||'';
@@ -10847,9 +10850,9 @@ function openAddProperty(id){
   const propValLbl=document.getElementById('prop-val')?.closest('.fr')?.querySelector('label');
   if(propValLbl)propValLbl.textContent=`Current Market Value (${cur})`;
   const propBondLbl=document.getElementById('prop-bond')?.closest('.fr')?.querySelector('label');
-  if(propBondLbl)propBondLbl.textContent=isUKprop?`Outstanding Mortgage (${cur})`:`Outstanding Bond (${cur})`;
+  if(propBondLbl)propBondLbl.textContent=isSAprop?`Outstanding Bond (${cur})`:`Outstanding Mortgage (${cur})`;
   const propRepayLbl=document.getElementById('prop-repay')?.closest('.fr')?.querySelector('label');
-  if(propRepayLbl)propRepayLbl.textContent=isUKprop?`Monthly Mortgage Payment (${cur})`:`Monthly Bond Repayment (${cur})`;
+  if(propRepayLbl)propRepayLbl.textContent=isSAprop?`Monthly Bond Repayment (${cur})`:`Monthly Mortgage Payment (${cur})`;
   const propRentLbl=document.getElementById('prop-rent')?.closest('.fr')?.querySelector('label');
   if(propRentLbl)propRentLbl.textContent=`Monthly Rental Income (${cur})`;
   calcPropEquity();
@@ -10877,21 +10880,21 @@ function saveProperty(){
 function rProperty(){
   if(!S.properties)S.properties=[];
   const props=S.properties;
-  // Update page subtitle and card titles for region
-  const _propIsUK=(S.prefs?.region||'za')==='uk';
+  // "Mortgage" is the globally-understood term; "Bond" is SA-specific jargon — checks isSAprop
+  // (region==='za') so 'other' correctly falls through to "Mortgage" rather than SA wording.
+  const _isSAprop=(S.prefs?.region||'za')==='za';
   const _propPsub=document.querySelector('#pg-property .psub');
-  if(_propPsub)_propPsub.textContent=_propIsUK?'Mortgage, equity and rental income overview':'Bond, equity and rental income overview';
+  if(_propPsub)_propPsub.textContent=_isSAprop?'Bond, equity and rental income overview':'Mortgage, equity and rental income overview';
   const _amortCt=document.querySelector('#pg-property .card .ct');
   // find the "Bond Amortisation" card title specifically
   document.querySelectorAll('#pg-property .card .ct').forEach(el=>{
     if(el.textContent==='Bond Amortisation'||el.textContent==='Mortgage Amortisation')
-      el.textContent=_propIsUK?'Mortgage Amortisation':'Bond Amortisation';
+      el.textContent=_isSAprop?'Bond Amortisation':'Mortgage Amortisation';
   });
   const listEl=document.getElementById('prop-list');
   if(listEl){
-    const _isUKprop=(S.prefs?.region||'za')==='uk';
-    if(!props.length)listEl.innerHTML=`<div class="empty" style="padding:32px;text-align:center"><div style="font-size:36px;margin-bottom:10px">🏠</div><div class="empty-t">No properties yet</div><div class="empty-s">Track your home, investment property or buy-to-let — see equity, ${_isUKprop?'mortgage balance':'bond balance'} and estimated appreciation</div><button class="btn btn-gold" onclick="openAddProperty&&openAddProperty()" style="margin-top:14px">+ Add Property</button></div>`;
-    else listEl.innerHTML=`<div class="g2">${props.map(p=>{const equity=p.marketValue-p.bondBalance;const yrAgo=p.purchaseYear?(new Date().getFullYear()-p.purchaseYear):0;const ltv=p.marketValue>0&&p.bondBalance>0?Math.round(p.bondBalance/p.marketValue*100):0;const ltvColor=ltv===0?'var(--t3)':ltv<80?'var(--green)':ltv<90?'var(--amber)':'var(--red)';const equityColor=equity>=0?'var(--green)':'var(--red)';const isBondLabel=(S.prefs?.region||'za')==='uk'?'Mortgage':'Bond';return`<div class="card">
+    if(!props.length)listEl.innerHTML=`<div class="empty" style="padding:32px;text-align:center"><div style="font-size:36px;margin-bottom:10px">🏠</div><div class="empty-t">No properties yet</div><div class="empty-s">Track your home, investment property or buy-to-let — see equity, ${_isSAprop?'bond balance':'mortgage balance'} and estimated appreciation</div><button class="btn btn-gold" onclick="openAddProperty&&openAddProperty()" style="margin-top:14px">+ Add Property</button></div>`;
+    else listEl.innerHTML=`<div class="g2">${props.map(p=>{const equity=p.marketValue-p.bondBalance;const yrAgo=p.purchaseYear?(new Date().getFullYear()-p.purchaseYear):0;const ltv=p.marketValue>0&&p.bondBalance>0?Math.round(p.bondBalance/p.marketValue*100):0;const ltvColor=ltv===0?'var(--t3)':ltv<80?'var(--green)':ltv<90?'var(--amber)':'var(--red)';const equityColor=equity>=0?'var(--green)':'var(--red)';const isBondLabel=_isSAprop?'Bond':'Mortgage';return`<div class="card">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
         <div><div style="font-weight:700;font-size:13px">🏠 ${esc(p.name)}</div>${p.purchaseYear?`<div style="font-size:10.5px;color:var(--t3)">Purchased ${p.purchaseYear} · ${yrAgo}yr ago</div>`:''}</div>
         <button onclick="openAddProperty('${p.id}')" class="btn btn-ghost btn-xs">Edit</button>
@@ -10915,7 +10918,7 @@ function rProperty(){
   const sEl=document.getElementById('prop-summary');
   if(sEl)sEl.innerHTML=`<div class="g2" style="gap:8px">
     <div class="sr"><span class="lbl">Total Value</span><span class="val mono">${fmt(totVal)}</span></div>
-    <div class="sr"><span class="lbl">Total ${(S.prefs?.region||'za')==='uk'?'Mortgage':'Bond'}</span><span class="val mono neg">${fmt(totBond)}</span></div>
+    <div class="sr"><span class="lbl">Total ${(S.prefs?.region||'za')==='za'?'Bond':'Mortgage'}</span><span class="val mono neg">${fmt(totBond)}</span></div>
     <div class="sr"><span class="lbl">Total Equity</span><span class="val mono pos">${fmt(totEquity)}</span></div>
     <div class="sr"><span class="lbl">Rental Income/mo</span><span class="val mono pos">${fmt(totRent)}</span></div>
     <div class="sr"><span class="lbl">Yield (annual)</span><span class="val mono">${totVal>0?((totRent*12/totVal)*100).toFixed(1):'0.0'}%</span></div>
@@ -10924,7 +10927,7 @@ function rProperty(){
   const bp=props.find(p=>p.bondBalance>0&&p.repayment>0);
   const aEl=document.getElementById('prop-amort');
   if(aEl&&bp){const r=bp.rate/100/12;let bal=bp.bondBalance;const rows=[];for(let i=0;i<Math.min(12,bp.bondBalance/bp.repayment);i++){const interest=bal*r;const principal=Math.min(bp.repayment-interest,bal);bal-=principal;rows.push({interest,principal,balance:bal});}aEl.innerHTML=`<div style="font-size:11px;color:var(--t3);margin-bottom:8px">${esc(bp.name)} — next 12 payments</div><div class="tw" style="font-size:11px"><table><thead><tr><th>#</th><th style="text-align:right">Interest</th><th style="text-align:right">Principal</th><th style="text-align:right">Balance</th></tr></thead><tbody>${rows.map((r,i)=>`<tr><td>${i+1}</td><td style="text-align:right;color:var(--red);font-family:var(--fm)">${fmt(r.interest)}</td><td style="text-align:right;color:var(--green);font-family:var(--fm)">${fmt(r.principal)}</td><td style="text-align:right;font-family:var(--fm)">${fmt(r.balance)}</td></tr>`).join('')}</tbody></table></div>`;}
-  else if(aEl)aEl.innerHTML=`<div class="empty" style="padding:10px"><div class="empty-s">Add a property with ${(S.prefs?.region||'za')==='uk'?'mortgage':'bond'} details</div></div>`;
+  else if(aEl)aEl.innerHTML=`<div class="empty" style="padding:10px"><div class="empty-s">Add a property with ${(S.prefs?.region||'za')==='za'?'bond':'mortgage'} details</div></div>`;
 }
 const delProperty=id=>{const p=(S.properties||[]).find(x=>x.id===id);klConfirm(`Remove "${p?p.name:'this property'}"?`,()=>{S.properties=(S.properties||[]).filter(x=>x.id!==id);save();rProperty();renderAll();notify('Property removed');},{okLabel:'Remove',danger:true});};
 
