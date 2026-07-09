@@ -13472,20 +13472,22 @@ function toggleChecklist(mo,id,val){
 /* ═══ RETIREMENT READINESS ═══ */
 function rRetirementReadiness(){
   const el=document.getElementById('ret-readiness-wrap');if(!el)return;
-  const isUK=(S.prefs.region||'za')==='uk';
+  const _rrRegion=(S.prefs.region||'za');
+  const isUK=_rrRegion==='uk';
+  const isOtherRR=_rrRegion==='other';
   // Update the "FX & SARS" tab label to be region-appropriate
   const fxTab=document.querySelector('#pg-retire .tabs .tab:last-child');
-  if(fxTab)fxTab.innerHTML=isUK?'FX &amp; HMRC':'FX &amp; SARS';
+  if(fxTab)fxTab.innerHTML=isUK?'FX &amp; HMRC':isOtherRR?'FX &amp; Tax':'FX &amp; SARS';
   // Also update the SARS Season card title inside the retire FX tab
   const sarsCardEl=document.querySelector('#rv-fx .ct:last-of-type');
-  if(sarsCardEl&&sarsCardEl.textContent.trim()==='SARS Season')sarsCardEl.textContent=isUK?'HMRC Self Assessment':'SARS Season';
+  if(sarsCardEl&&(sarsCardEl.textContent.trim()==='SARS Season'||sarsCardEl.textContent.trim()==='HMRC Self Assessment'||sarsCardEl.textContent.trim()==='Tax Season'))sarsCardEl.textContent=isUK?'HMRC Self Assessment':isOtherRR?'Tax Season':'SARS Season';
   // Region-aware labels
   const raValEl=document.getElementById('rr-ra-val');
-  if(raValEl){const lbl=raValEl.closest('.fr')?.querySelector('label');if(lbl)lbl.textContent=isUK?'Current Pension / SIPP Value':'Current RA / Pension Value';}
+  if(raValEl){const lbl=raValEl.closest('.fr')?.querySelector('label');if(lbl)lbl.textContent=isUK?'Current Pension / SIPP Value':isOtherRR?'Current Retirement Account Value':'Current RA / Pension Value';}
   const rrContribEl=document.getElementById('rr-contrib');
-  if(rrContribEl){const lbl=rrContribEl.closest('.fr')?.querySelector('label');if(lbl)lbl.textContent=isUK?`Monthly Pension Contribution (${S.prefs.cur||'£'})`:`Monthly Contribution (${S.prefs.cur||'R'})`;}
+  if(rrContribEl){const lbl=rrContribEl.closest('.fr')?.querySelector('label');if(lbl)lbl.textContent=isUK?`Monthly Pension Contribution (${S.prefs.cur||'£'})`:`Monthly Contribution (${S.prefs.cur||(isOtherRR?'$':'R')})`;}
   const rateSlider=document.getElementById('rr-rate');
-  if(rateSlider){const hint=rateSlider.closest('.fr')?.querySelector('label span span');if(hint)hint.textContent=isUK?' UK equities avg ~9%':' JSE avg ~11%';}
+  if(rateSlider){const hint=rateSlider.closest('.fr')?.querySelector('label span span');if(hint)hint.textContent=isUK?' UK equities avg ~9%':isOtherRR?' global equities avg ~8-10%':' JSE avg ~11%';}
   // Auto-fill ZAR/USD from live rate if available and field untouched
   const fxInp=document.getElementById('fx-rate-inp');
   if(fxInp&&!fxInp._dirty&&S.fxRates?.USD&&S.fxRates.USD>1){fxInp.value=S.fxRates.USD.toFixed(2);}
@@ -13498,12 +13500,12 @@ function rRetirementReadiness(){
   const retAge=parseInt(document.getElementById('rr-ret-age')?.value)||65;
   const annualRate=parseFloat(document.getElementById('rr-rate')?.value)||10;
   const monthlyContrib=parseFloat(document.getElementById('rr-contrib')?.value)||(Object.values(S.invAllocations||{}).reduce((s,v)=>s+v,0));
-  const cur=S.prefs.cur||(isUK?'£':'R');
+  const cur=S.prefs.cur||_defCurSym();
   const heroEl=document.getElementById('ret-hero');
-  if(!raVal&&!monthlyContrib){el.innerHTML=`<div class="ic" style="margin-top:8px"><div class="ib">${isUK?'Enter your Pension / SIPP value and monthly contribution above to calculate your retirement projection.':'Enter your RA value and monthly contribution above to calculate your retirement projection.'}</div></div>`;if(heroEl)heroEl.style.display='none';return;}
+  if(!raVal&&!monthlyContrib){el.innerHTML=`<div class="ic" style="margin-top:8px"><div class="ib">${isUK?'Enter your Pension / SIPP value and monthly contribution above to calculate your retirement projection.':isOtherRR?'Enter your retirement account value and monthly contribution above to calculate your retirement projection.':'Enter your RA value and monthly contribution above to calculate your retirement projection.'}</div></div>`;if(heroEl)heroEl.style.display='none';return;}
   const years=Math.max(retAge-age,0);
   const realToggle=document.getElementById('rr-real-toggle')?.checked;
-  const INFLATION=isUK?0.025:0.035;
+  const INFLATION=isUK?0.025:isOtherRR?0.03:0.035;
   const effectiveRate=realToggle?((1+annualRate/100)/(1+INFLATION)-1)*100:annualRate;
   const r=effectiveRate/100/12;
   const futureVal=r>0
@@ -13516,7 +13518,7 @@ function rRetirementReadiness(){
   const swrMonthly=futureVal*0.04/12;
   const swrCovers=monthlyExp>0?(swrMonthly>=monthlyExp?'Fully covers expenses':'Covers '+Math.round((swrMonthly/monthlyExp)*100)+'% of expenses'):'—';
   el.innerHTML=`<div class="calc-result">
-    <div class="sr"><span class="lbl">${realToggle?(isUK?'Projected corpus (real — '+cur+' today)':'Projected corpus (real — R today)'):isUK?'Projected corpus':'Projected fund'}</span><span class="val pos">${fmt(futureVal)}</span></div>
+    <div class="sr"><span class="lbl">${realToggle?'Projected corpus (real — '+cur+' today)':isUK?'Projected corpus':'Projected fund'}</span><span class="val pos">${fmt(futureVal)}</span></div>
     <div class="sr"><span class="lbl">Lifestyle months funded</span><span class="val" style="color:${color}">${monthsOfLifestyle} mo (${(monthsOfLifestyle/12).toFixed(0)} yrs)</span></div>
     <div class="sr"><span class="lbl">4% rule — safe monthly</span><span class="val">${fmt(swrMonthly)}</span></div>
     <div class="sr"><span class="lbl">vs current expenses</span><span class="val" style="color:${swrMonthly>=monthlyExp?'var(--green)':'var(--amber)'}">${swrCovers}</span></div>
@@ -13552,7 +13554,7 @@ function setRetireView(view,tabEl){
 function rRetireScenarios(){
   const el=document.getElementById('ret-scenarios');if(!el)return;
   const isUK=(S.prefs.region||'za')==='uk';
-  const cur=S.prefs.cur||(isUK?'£':'R');
+  const cur=S.prefs.cur||_defCurSym();
   // Update extra contribution label and initial display
   const extraLblEl=document.querySelector('#rv-scenarios label[style*="font-size:11px"]');
   if(extraLblEl)extraLblEl.textContent=`Extra monthly contribution (${cur})`;
@@ -13632,6 +13634,10 @@ function rFxRate(){
 /* ═══ SARS EFILING SEASON REMINDER ═══ */
 function rSarsReminder(){
   const el=document.getElementById('sars-reminder');if(!el)return;
+  // 'other'/ROW: this reminder is called unconditionally from the Retirement page's "FX & Tax"
+  // tab regardless of region — neither SARS nor HMRC deadlines apply, so show nothing rather
+  // than falling through to the SA branch below.
+  if((S.prefs.region||'za')==='other'){ el.innerHTML=''; return; }
   // UK users: show HMRC Self Assessment deadlines instead of SARS
   if((S.prefs.region||'za')==='uk'){
     const now=new Date();const yr=now.getFullYear();const mo=now.getMonth()+1;
