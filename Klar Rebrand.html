@@ -3126,7 +3126,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     </div>
     <div class="card">
       <div class="ct">Display Preferences</div>
-      <div class="cr"><div><div class="cl">Region</div><div class="cs">Changes currency, tax tools, and bill providers</div></div><div style="display:flex;gap:6px"><button id="pref-region-za" class="btn btn-xs" onclick="klSelectRegion('za');applyPrefsUI();renderAll()" style="padding:5px 12px">🇿🇦 South Africa</button><button id="pref-region-uk" class="btn btn-xs" onclick="klSelectRegion('uk');applyPrefsUI();renderAll()" style="padding:5px 12px">🇬🇧 United Kingdom</button></div></div>
+      <div class="cr"><div><div class="cl">Region</div><div class="cs">Changes currency, tax tools, and bill providers</div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button id="pref-region-za" class="btn btn-xs" onclick="klSelectRegion('za');applyPrefsUI();renderAll()" style="padding:5px 12px">🇿🇦 South Africa</button><button id="pref-region-uk" class="btn btn-xs" onclick="klSelectRegion('uk');applyPrefsUI();renderAll()" style="padding:5px 12px">🇬🇧 United Kingdom</button><button id="pref-region-other" class="btn btn-xs" onclick="klSelectRegion('other');applyPrefsUI();renderAll()" style="padding:5px 12px">🌍 Other</button></div></div>
       <div class="cr"><div><div class="cl">Compact sidebar</div></div><label class="toggle"><input type="checkbox" id="pref-compact" onchange="applyCompact(this.checked)"><span class="tsl"></span></label></div>
       <div class="cr"><div><div class="cl">Currency symbol</div></div><select id="pref-cur" onchange="savePref()" style="width:110px"><option value="R">R (ZAR)</option><option value="$">$ (USD)</option><option value="€">€ (EUR)</option><option value="£">£ (GBP)</option><option value="₦">₦ (NGN)</option><option value="A$">A$ (AUD)</option><option value="C$">C$ (CAD)</option><option value="₹">₹ (INR)</option><option value="¥">¥ (JPY)</option><option value="CHF">CHF (CHF)</option><option value="kr">kr (SEK/NOK/DKK)</option><option value="NZ$">NZ$ (NZD)</option><option value="S$">S$ (SGD)</option><option value="HK$">HK$ (HKD)</option><option value="AED">AED (AED)</option><option value="CN¥">CN¥ (CNY)</option><option value="KSh">KSh (KES)</option><option value="GH₵">GH₵ (GHS)</option><option value="Mex$">Mex$ (MXN)</option><option value="R$">R$ (BRL)</option></select></div>
       <div class="cr"><div><div class="cl">Show cents</div><div class="cs">Display decimals on amounts</div></div><label class="toggle"><input type="checkbox" id="pref-cents" checked onchange="savePref()"><span class="tsl"></span></label></div>
@@ -12320,10 +12320,14 @@ function applyPrefsUI(){
   if(statusEl) statusEl.textContent=p.groqKey?'✓ Key saved':'No key — AI features disabled';
   if(statusEl) statusEl.style.color=p.groqKey?'var(--green)':'var(--t4)';
   const isUK=p.region==='uk';
+  const isOtherRegion=p.region==='other';
+  const isSA=!isUK&&!isOtherRegion;
   const zaBtn=document.getElementById('pref-region-za');
   const ukBtn=document.getElementById('pref-region-uk');
-  if(zaBtn){zaBtn.style.background=!isUK?'var(--accent)':'';zaBtn.style.color=!isUK?'#fff':'';}
+  const otherBtn=document.getElementById('pref-region-other');
+  if(zaBtn){zaBtn.style.background=isSA?'var(--accent)':'';zaBtn.style.color=isSA?'#fff':'';}
   if(ukBtn){ukBtn.style.background=isUK?'var(--accent)':'';ukBtn.style.color=isUK?'#fff':'';}
+  if(otherBtn){otherBtn.style.background=isOtherRegion?'var(--accent)':'';otherBtn.style.color=isOtherRegion?'#fff':'';}
   // Update business profile section for region
   const etSel=document.getElementById('corp-entity-type');
   if(etSel){
@@ -15969,6 +15973,7 @@ document.addEventListener('click', function(e){
     }
     klTrack('region_selected', {region});
     const prevRegion = S.prefs.region;
+    const _origCur = S.prefs.cur; // capture BEFORE the region-based reassignment below overwrites it
     S.prefs.region = region;
     if (region === 'za') {
       if (!S.prefs.cur || S.prefs.cur === '£') S.prefs.cur = 'R';
@@ -15997,7 +16002,22 @@ document.addEventListener('click', function(e){
     // as ZAR-native and wrongly converted.
     if (!S.prefs.dataCurrency) {
       const _inferRegionCur = r => r === 'uk' ? 'GBP' : r === 'za' ? 'ZAR' : (CUR_SYM_TO_CODE[S.prefs.cur] || 'USD');
-      S.prefs.dataCurrency = prevRegion ? _inferRegionCur(prevRegion) : _inferRegionCur(region);
+      if (prevRegion) {
+        S.prefs.dataCurrency = _inferRegionCur(prevRegion);
+      } else {
+        // No region was ever explicitly chosen before (prevRegion is '') — but that does NOT
+        // mean this is a brand-new user with no data. Someone who skipped onboarding, or whose
+        // account predates the region-gate, can already have real transactions/accounts entered
+        // under the implicit default (DEF()'s cur:'R'). Inferring dataCurrency from the NEW
+        // region they're now picking (rather than from what their EXISTING data is actually in)
+        // silently mislabeled a real ZAR-native user's whole history as GBP/USD/etc the instant
+        // they picked a different region for the first time, permanently disabling conversion
+        // for them (srcCur===destCur skip) and showing every raw ZAR number with the new symbol
+        // slapped on unconverted. Only trust "infer from the region being picked" for a truly
+        // empty account — otherwise infer from the currency symbol that was already showing.
+        const _hasExistingData = (S.transactions&&S.transactions.length>0) || (S.accounts||[]).some(a=>a.name&&a.name!=='Default Account');
+        S.prefs.dataCurrency = _hasExistingData ? (CUR_SYM_TO_CODE[_origCur] || 'ZAR') : _inferRegionCur(region);
+      }
     }
     const srcCurCode = S.prefs.dataCurrency;
     const destCurCode = (region === 'uk') ? 'GBP' : (region === 'za') ? 'ZAR' : null;
