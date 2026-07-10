@@ -10252,7 +10252,7 @@ function renderForecast(){
   // Restore the real structure if a prior render left the locked banner in place (e.g. user just
   // upgraded mid-session via checkout, which calls renderAll() without a full page reload).
   if(fcWrap&&!document.getElementById('fc-table')&&_fcWrapDefaultHTML) fcWrap.innerHTML=_fcWrapDefaultHTML;
-  const base=getFcBase();const iOv=parseFloat(document.getElementById('fc-i-ov')?.value);const eOv=parseFloat(document.getElementById('fc-e-ov')?.value);const curS=parseFloat(document.getElementById('fc-sav')?.value)||0;let avgI=isNaN(iOv)?base.avgI:iOv;let avgE=isNaN(eOv)?base.avgE:eOv;const now=new Date();let bal=curS;const m6=[];for(let i=1;i<=12;i++){const d=new Date(now.getFullYear(),now.getMonth()+i,1);const lbl=d.toLocaleString('default',{month:'short',year:'2-digit'});const net=avgI-avgE;bal+=net;m6.push({lbl,income:avgI,expenses:avgE,net,balance:bal});}const tEl=document.getElementById('fc-table');if(tEl)tEl.innerHTML=`<div class="tw"><table><thead><tr><th>Month</th><th>Income</th><th>Expenses</th><th>Net</th><th>Balance</th></tr></thead><tbody>${m6.map(x=>`<tr><td class="mono">${x.lbl}</td><td class="mono pos">${fmt(x.income)}</td><td class="mono neg">${fmt(x.expenses)}</td><td class="mono ${x.net>=0?'pos':'neg'}">${fmt(x.net)}</td><td class="mono" style="color:${x.balance>=0?'var(--green)':'var(--red)'}">${fmt(x.balance)}</td></tr>`).join('')}</tbody></table></div>`;const tot6=m6.reduce((s,x)=>s+x.net,0); /* 12-mo total */const nEl=document.getElementById('fc-note');if(nEl){if(!base.mos)nEl.textContent='Import transaction history for an accurate forecast.';else if(tot6<0)nEl.textContent='Projected shortfall of '+fmt(Math.abs(tot6))+' over 12 months.';else nEl.textContent='Projected to save '+fmt(tot6)+' over 12 months. Consider investing surplus in '+(S.prefs&&S.prefs.region==='uk'?'a Stocks & Shares ISA or SIPP.':'a TFSA or RA.');}}
+  const base=getFcBase();const iOv=parseFloat(document.getElementById('fc-i-ov')?.value);const eOv=parseFloat(document.getElementById('fc-e-ov')?.value);const curS=parseFloat(document.getElementById('fc-sav')?.value)||0;let avgI=isNaN(iOv)?base.avgI:iOv;let avgE=isNaN(eOv)?base.avgE:eOv;const now=new Date();let bal=curS;const m6=[];for(let i=1;i<=12;i++){const d=new Date(now.getFullYear(),now.getMonth()+i,1);const lbl=d.toLocaleString('default',{month:'short',year:'2-digit'});const net=avgI-avgE;bal+=net;m6.push({lbl,income:avgI,expenses:avgE,net,balance:bal});}const tEl=document.getElementById('fc-table');if(tEl)tEl.innerHTML=`<div class="tw"><table><thead><tr><th>Month</th><th>Income</th><th>Expenses</th><th>Net</th><th>Balance</th></tr></thead><tbody>${m6.map(x=>`<tr><td class="mono">${x.lbl}</td><td class="mono pos">${fmt(x.income)}</td><td class="mono neg">${fmt(x.expenses)}</td><td class="mono ${x.net>=0?'pos':'neg'}">${fmt(x.net)}</td><td class="mono" style="color:${x.balance>=0?'var(--green)':'var(--red)'}">${fmt(x.balance)}</td></tr>`).join('')}</tbody></table></div>`;const tot6=m6.reduce((s,x)=>s+x.net,0); /* 12-mo total */const nEl=document.getElementById('fc-note');if(nEl){if(!base.mos)nEl.textContent='Import transaction history for an accurate forecast.';else if(tot6<0)nEl.textContent='Projected shortfall of '+fmt(Math.abs(tot6))+' over 12 months.';else{const _fcRegion=S.prefs&&S.prefs.region;const _fcTip=_fcRegion==='uk'?'a Stocks & Shares ISA or SIPP.':_fcRegion==='other'?'a tax-advantaged retirement account or low-cost index fund.':'a TFSA or RA.';nEl.textContent='Projected to save '+fmt(tot6)+' over 12 months. Consider investing surplus in '+_fcTip;}}}
 
 /* ── Net Worth Snapshots ── */
 function calcCurrentNW() {
@@ -15080,13 +15080,13 @@ function bpOpenModal(catId){
   document.getElementById('bp-m-amount').value = '';
   // Region-aware currency + quick chips
   const isUK = S.prefs.region === 'uk';
-  const sym = isUK ? '£' : 'R';
+  const sym = S.prefs.cur || (isUK ? '£' : 'R');
   const symEl = document.getElementById('bp-currency-sym');
   if(symEl) symEl.textContent = sym;
   const chips = document.getElementById('bp-quick-chips');
   if(chips) chips.innerHTML = isUK
     ? ['50','100','150','200'].map(v=>`<div class="bp-quick-chip" onclick="document.getElementById('bp-m-amount').value=${v}">£${v}</div>`).join('')
-    : ['100','200','500','1000'].map(v=>`<div class="bp-quick-chip" onclick="document.getElementById('bp-m-amount').value=${v}">R${v}</div>`).join('');
+    : ['100','200','500','1000'].map(v=>`<div class="bp-quick-chip" onclick="document.getElementById('bp-m-amount').value=${v}">${sym}${v}</div>`).join('');
   // Portal button label
   const portalBtn = document.getElementById('bp-portal-btn');
   if(portalBtn) portalBtn.textContent = cat.portalUrl ? `Open ${cat.name} Portal →` : 'Record Payment';
