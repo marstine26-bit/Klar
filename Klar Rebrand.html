@@ -12075,12 +12075,14 @@ function rFocus(){
   if(nextPayday){const daysLeft=nextPayday.day-today.getDate();const daysInMonth=new Date(today.getFullYear(),today.getMonth()+1,0).getDate();const adjusted=daysLeft<0?daysLeft+daysInMonth:daysLeft;set('payday-count',adjusted);const pct=Math.round(((daysInMonth-adjusted)/daysInMonth)*100);const bar=document.getElementById('payday-bar');if(bar)bar.style.width=pct+'%';}
   else{set('payday-count','—');const bar=document.getElementById('payday-bar');if(bar)bar.style.width='50%';}
   // Priorities
-  const _isUK=S.prefs&&S.prefs.region==='uk';
+  const _ndRegion=S.prefs&&S.prefs.region;
+  const _isUK=_ndRegion==='uk';
+  const _isOtherNd=_ndRegion==='other';
   const priorities=[];
   if(net<0) priorities.push({icon:'⚠',text:'Cut spending to balance budget',color:'var(--red)'});
   if(!S.goals.length) priorities.push({icon:'🎯',text:'Set a savings goal',color:'var(--amber)'});
   if(S.debts.some(d=>d.rate>20)) priorities.push({icon:'💳',text:'Pay off high-interest debt first',color:'var(--red)'});
-  if(!Object.values(S.invAllocations||{}).some(v=>v>0)) priorities.push({icon:'📈',text:_isUK?'Open a Stocks & Shares ISA':'Start a TFSA investment',color:'var(--blue)'});
+  if(!Object.values(S.invAllocations||{}).some(v=>v>0)) priorities.push({icon:'📈',text:_isUK?'Open a Stocks & Shares ISA':_isOtherNd?'Start investing — an index fund is a great first step':'Start a TFSA investment',color:'var(--blue)'});
   if(net>=0&&S.goals.length) priorities.push({icon:'✓',text:'Keep saving — you\'re on track',color:'var(--green)'});
   set('nd-priorities',(priorities.length?priorities.slice(0,3):[{icon:'💡',text:'Import transactions for priorities',color:'var(--t3)'}]).map(p=>`<div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--s2);border-radius:10px;border-left:3px solid ${p.color}"><span style="font-size:18px">${p.icon}</span><span style="font-size:13px;font-weight:600">${p.text}</span></div>`).join(''),true);
   // Mood board
