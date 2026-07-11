@@ -9204,16 +9204,20 @@ function resetSarbYear() {
 }
 
 function rForex() {
-  const isUK=(S.prefs.region||'za')==='uk';
-  // Hide SARB section for UK users (SARB is SA Reserve Bank — not applicable to UK)
+  const region=S.prefs.region||'za';
+  const isUK=region==='uk';
+  const isSA=region==='za';
+  const isOther=region==='other';
+  const _homeCurFx=isSA?'ZAR':isUK?'GBP':(S.prefs.dataCurrency||CUR_SYM_TO_CODE[S.prefs.cur]||'USD');
+  // Hide SARB section outside SA (SARB is SA Reserve Bank — its allowances are SA-resident-only regulation)
   const sarbWrap=document.getElementById('sarb-section-wrap');
-  if(sarbWrap) sarbWrap.style.display=isUK?'none':'';
+  if(sarbWrap) sarbWrap.style.display=isSA?'':'none';
   // Update page subtitle for region
   const fxPsub=document.querySelector('#pg-forex .psub');
-  if(fxPsub)fxPsub.textContent=isUK?'Foreign accounts · FX rates · USD holdings · ISA foreign growth':'Foreign accounts · SARB allowances · FX rates · offshore holdings';
+  if(fxPsub)fxPsub.textContent=isSA?'Foreign accounts · SARB allowances · FX rates · offshore holdings':`Foreign accounts · FX rates · ${_homeCurFx} holdings · offshore growth`;
   // Update "Exchange Rates" heading currency label
   const fxCurLbl=document.getElementById('forex-rates-cur-lbl');
-  if(fxCurLbl)fxCurLbl.textContent=isUK?'GBP':'ZAR';
+  if(fxCurLbl)fxCurLbl.textContent=_homeCurFx;
   // Detected forex transactions banner
   const detFx=detectForexTransactions();
   const fxWrap=document.getElementById('forex-detected-wrap');
@@ -9222,15 +9226,15 @@ function rForex() {
   if(fxWrap)fxWrap.style.display=detFx.length?'block':'none';
   // Region-aware banner text
   const detBannerText=fxWrap?.querySelector('[style*="font-size:11px"][style*="color:var(--t3)"]');
-  if(detBannerText) detBannerText.textContent=isUK
-    ?'International transactions detected. Log them to track your offshore holdings and foreign currency accounts.'
-    :'These transactions may count against your SARB allowances. Log them to track your annual limit.';
+  if(detBannerText) detBannerText.textContent=isSA
+    ?'These transactions may count against your SARB allowances. Log them to track your annual limit.'
+    :'International transactions detected. Log them to track your offshore holdings and foreign currency accounts.';
   if(fxCnt)fxCnt.textContent=detFx.length?`(${detFx.length} found)`:'';
   if(fxList)fxList.innerHTML=detFx.map(t=>`<div class="li" style="margin-bottom:8px">
     <div class="lic" style="background:var(--purple)18;color:var(--purple)">🌍</div>
     <div class="lii"><div class="lin">${esc(t.description||'').slice(0,40)}</div><div class="lis">${t.date} · ${fmt(t.amount)}</div></div>
     <div style="display:flex;gap:6px;align-items:center">
-      <button class="btn btn-ok btn-xs" onclick="logForexTx('${t.id}')">${isUK?'Log Offshore':'Log vs DA'}</button>
+      <button class="btn btn-ok btn-xs" onclick="logForexTx('${t.id}')">${isSA?'Log vs DA':'Log Offshore'}</button>
       <button class="btn btn-ghost btn-xs" onclick="dismissDetectedForex('${t.id}')">Ignore</button>
     </div>
   </div>`).join('');
@@ -9250,9 +9254,9 @@ function rForex() {
   // Foreign accounts list
   const fxListEl=document.getElementById('forex-accounts-list');
   if(fxListEl){
-    const _baseCur=isUK?'GBP':'ZAR';
-    const _gbpRate=(S.fxRates&&S.fxRates.GBP)||23.4; // ZAR per 1 GBP
-    const toBase=(zarAmt)=>isUK?zarAmt/_gbpRate:zarAmt;
+    const _baseCur=_homeCurFx;
+    const _baseRate=_baseCur==='ZAR'?1:((S.fxRates&&S.fxRates[_baseCur])||(_baseCur==='GBP'?23.4:null)); // ZAR per 1 unit of _baseCur
+    const toBase=(zarAmt)=>_baseRate?zarAmt/_baseRate:zarAmt;
     const fxAccs=(S.accounts||[]).filter(a=>(a.currency||'ZAR')!==_baseCur||(a.type==='forex'||a.type==='foreign'||a.type==='crypto'));
     if(!fxAccs.length){
       fxListEl.innerHTML=`<div style="font-size:12px;color:var(--t3);padding:12px 0">No foreign accounts yet. <button class="btn btn-ghost btn-xs" onclick="openModal('m-add-account')">Add one</button></div>`;
@@ -9265,7 +9269,7 @@ function rForex() {
         const rate=(S.fxRates||{})[cur]||a.zarRate||1;
         const zarBal=cur===_baseCur?bal:bal*rate;
         const baseBal=toBase(zarBal);
-        const _fmtLocale=isUK?'en-GB':'en-ZA';
+        const _fmtLocale=isUK?'en-GB':isOther?'en-US':'en-ZA';
         const fmtNative=cur===_baseCur?fmt(bal):`${cur} ${bal.toLocaleString(_fmtLocale,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
         return`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--b2)">
           <div style="display:flex;align-items:center;gap:10px">
@@ -9290,7 +9294,7 @@ function rForex() {
     const all=['ZAR',...ALL_FX_CURRENCIES];
     [fromSel,toSel].forEach((sel,i)=>{
       sel.innerHTML=all.map(c=>`<option value="${c}">${c}</option>`).join('');
-      sel.value=i===0?(isUK?'GBP':'ZAR'):'USD';
+      sel.value=i===0?_homeCurFx:'USD';
     });
   }
   // Status line
@@ -9614,13 +9618,14 @@ function swDebtTab(type,el){document.querySelectorAll('#pg-debt .tab').forEach(t
 function rDebtStrat(type){const el=document.getElementById('debt-strat');if(!el)return;if(!S.debts.length){el.innerHTML='<div style="font-size:12px;color:var(--t2);padding:9px">Add debts to see a strategy.</div>';return;}const sorted=[...S.debts].sort((a,b)=>type==='avalanche'?b.rate-a.rate:a.balance-b.balance);el.innerHTML=`<div style="font-size:12px;font-weight:700;margin-bottom:4px;color:var(--t1)">${type==='avalanche'?'Avalanche — Highest Interest First':'Snowball — Smallest Balance First'}</div><div style="font-size:11px;color:var(--t2);margin-bottom:12px;line-height:1.65">${type==='avalanche'?'Mathematically optimal. Pay minimums everywhere, attack the highest-rate debt first.':'Quick wins build momentum. Pay the smallest balance first.'}</div>`+sorted.map((d,i)=>`<div style="display:flex;gap:9px;align-items:center;padding:7px 0;border-bottom:var(--bw) solid var(--b1)"><div style="width:20px;height:20px;border-radius:50%;background:${i===0?'var(--accent)':'var(--s3)'};color:${i===0?'#fff':'var(--t3)'};display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;flex-shrink:0">${i+1}</div><div style="flex:1"><div style="font-weight:600;font-size:13px">${esc(d.name)}</div><div style="font-size:10px;color:var(--t3);font-family:var(--fm)">${fmt(d.balance)} · ${d.rate}%</div></div><div style="font-size:11px;color:${i===0?'var(--accent)':'var(--t3)'};font-weight:${i===0?700:400}">${i===0?'FOCUS':'Min'}</div></div>`).join('');}
 function openAddDebt(id){
   const d=id?(S.debts||[]).find(x=>x.id===id):null;
-  const isUKdebt=(S.prefs?.region||'za')==='uk';
+  // isSAdebt (region==='za') rather than isUKdebt, meaning 'other' correctly gets "Mortgage" — "Mortgage" is the globally-understood term; "Home Loan" is SA-specific phrasing
+  const isSAdebt=(S.prefs?.region||'za')==='za';
   const nameInp=document.getElementById('dbt-name');
-  if(nameInp)nameInp.placeholder=isUKdebt?'e.g. Barclaycard, Halifax Mortgage':'e.g. FNB Credit Card, Home Loan';
+  if(nameInp)nameInp.placeholder=isSAdebt?'e.g. FNB Credit Card, Home Loan':'e.g. Barclaycard, Halifax Mortgage';
   const tyInp2=document.getElementById('dbt-ty');
-  if(tyInp2){const homeLoanOpt=tyInp2.querySelector('option[value="home_loan"]');if(homeLoanOpt)homeLoanOpt.textContent=isUKdebt?'Mortgage':'Home Loan';}
+  if(tyInp2){const homeLoanOpt=tyInp2.querySelector('option[value="home_loan"]');if(homeLoanOpt)homeLoanOpt.textContent=isSAdebt?'Home Loan':'Mortgage';}
   const rtInp2=document.getElementById('dbt-rt');
-  if(rtInp2)rtInp2.placeholder=isUKdebt?'e.g. 22.9':'e.g. 21.5';
+  if(rtInp2)rtInp2.placeholder=isSAdebt?'e.g. 21.5':'e.g. 22.9';
   const titleEl=document.getElementById('m-add-debt-title');
   if(titleEl)titleEl.textContent=d?'Edit Debt':'Add Debt';
   if(d){
@@ -10131,7 +10136,7 @@ function detectForexTransactions(){
 function logForexTx(txnId){
   const t=(S.transactions||[]).find(x=>x.id===txnId);if(!t)return;
   if(!S._dismissedForex)S._dismissedForex=[];S._dismissedForex.push(txnId);
-  if((S.prefs?.region||'za')==='uk'){save();rForex();notify('Offshore transaction noted','ok');return;}
+  if((S.prefs?.region||'za')!=='za'){save();rForex();notify('Offshore transaction noted','ok');return;}
   openSarbEntry('da');save();rForex();notify('Logging against Discretionary Allowance','ok');
 }
 function dismissDetectedForex(txnId){if(!S._dismissedForex)S._dismissedForex=[];S._dismissedForex.push(txnId);save();rForex();}
