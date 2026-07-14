@@ -1547,7 +1547,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="nav-item" onclick="goPg('portfolio')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-briefcase"/></svg></span><span class="nl">My Portfolio</span></div>
 
   <div class="ssl" data-section="Intelligence">Intelligence<span class="ssl-chev">›</span></div>
-  <div class="nav-item" data-region-only="za" onclick="goPg('class')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-award"/></svg></span><span class="nl">Class &amp; Banking</span></div>
+  <div class="nav-item" data-region-only="za,uk" onclick="goPg('class')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-award"/></svg></span><span class="nl">Class &amp; Banking</span></div>
   <div class="nav-item" onclick="goPg('health')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-heart-pulse"/></svg></span><span class="nl">Health Score</span></div>
   <div class="nav-item" onclick="goPg('insights')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-lightbulb"/></svg></span><span class="nl">Insights</span></div>
   <div class="nav-item" onclick="goPg('ai')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-bot"/></svg></span><span class="nl">AI Advisor</span></div>
@@ -11584,6 +11584,10 @@ async function rBankFeeds(){
 })();
 
 function rClass(){
+  // Reset header to its personal-mode default before branching, so a stale title/subtitle
+  // left over from a prior UK or business-mode render never sticks after switching back.
+  const _clsPhEl=document.querySelector('#pg-class .pt');if(_clsPhEl)_clsPhEl.innerHTML='Class &amp; <em>Banking</em>';
+  const _clsPsubEl=document.querySelector('#pg-class .psub');if(_clsPsubEl)_clsPsubEl.textContent='Where you stand · goals to upgrade';
   if((S.prefs?.region||'za')==='uk'){
     // Populate UK income bracket elements — the HTML already has data-region-only="uk" sections
     const annualGBP=_fxAmt(avgInc()*12);
