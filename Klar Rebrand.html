@@ -5552,7 +5552,13 @@ const getDebtPayments = (debtId) => {
   return (S.transactions||[]).filter(t=>t.debtId===debtId&&t.type==='expense').reduce((s,t)=>s+t.amount,0);
 };
 
-const catBy  = id => CATS.find(c => c.id === id) || CATS.find(c => c.id === 'other') || {id:'other',lbl:'Other',icon:'•',css:'--c-other'};
+const catBy  = id => {
+  if (typeof isCorp === 'function' && isCorp()) {
+    const bizMatch = [...CORP_CATS.income, ...CORP_CATS.expense].find(c => c.id === id);
+    if (bizMatch) return bizMatch;
+  }
+  return CATS.find(c => c.id === id) || CATS.find(c => c.id === 'other') || {id:'other',lbl:'Other',icon:'•',css:'--c-other'};
+};
 const catLbl = id => { const c = catBy(id); const r = S.prefs?.region; return (r==='uk' && c.lbl_uk) ? c.lbl_uk : (r==='other' && c.lbl_other) ? c.lbl_other : c.lbl; };
 const catClr = id => { const c = catBy(id); return getComputedStyle(document.documentElement).getPropertyValue(c.css).trim() || '#607090'; };
 const accBy  = id => (S.accounts||[]).find(a => a.id === id) || DEF_ACCOUNT;
@@ -7588,7 +7594,7 @@ function rDash() {
   if(ytdNetEl){ytdNetEl.className='d-ytd-num '+(ytdNet>=0?'pos':'neg'); animateNum(ytdNetEl,ytdNet,v=>fmt(Math.abs(v)));}
   set('d-ytd-inc-sub','Jan–'+curMoName+' '+yr);
   set('d-ytd-exp-sub','Jan–'+curMoName+' '+yr);
-  set('d-ytd-net-sub',ytdPct+'% YTD savings rate');
+  set('d-ytd-net-sub',ytdPct+(isCorp()?'% YTD margin':'% YTD savings rate'));
   rDonut(txns);rBudProg(txns);rRecent();rAnomalies();rDashForecast();rDashReminders();rEmptyState();
   // Quick-link tile stats
   const mo=S.curMo;
