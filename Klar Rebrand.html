@@ -13485,8 +13485,9 @@ function rMonthlyChecklist(){
   if((S.subscriptions||[]).length)items.push({id:'review-subs',label:'Review subscriptions for unused services',auto:true});
   items.push({id:'reconcile',label:'Reconcile all bank accounts',auto:true});
   items.push({id:'networth',label:'Take net worth snapshot',auto:true});
-  const isUK=S.prefs&&S.prefs.region==='uk';
-  items.push({id:'tax-wrapper',label:isUK?'Review ISA contributions (£20,000/yr allowance)':'Review TFSA contributions (R46,000/yr allowance)',auto:true});
+  const _clRegion=S.prefs?.region||'za';
+  const _clTaxWrapperLabel=_clRegion==='uk'?'Review ISA contributions (£20,000/yr allowance)':_clRegion==='other'?'Review tax-advantaged account contributions':'Review TFSA contributions (R46,000/yr allowance)';
+  items.push({id:'tax-wrapper',label:_clTaxWrapperLabel,auto:true});
   el.innerHTML=items.map(item=>{
     const done=checks[item.id]||false;
     return`<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--b1)">
