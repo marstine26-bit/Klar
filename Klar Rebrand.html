@@ -11610,6 +11610,10 @@ function rClass(){
   // left over from a prior UK or business-mode render never sticks after switching back.
   const _clsPhEl=document.querySelector('#pg-class .pt');if(_clsPhEl)_clsPhEl.innerHTML='Class &amp; <em>Banking</em>';
   const _clsPsubEl=document.querySelector('#pg-class .psub');if(_clsPsubEl)_clsPsubEl.textContent='Where you stand · goals to upgrade';
+  // Business mode must be checked BEFORE the region branches below — otherwise a UK business
+  // user hits the UK-personal branch first and sees personal income tax bands instead of
+  // their entity classification.
+  if(isCorp()){rBizClass();return;}
   if((S.prefs?.region||'za')==='uk'){
     // Populate UK income bracket elements — the HTML already has data-region-only="uk" sections
     const annualGBP=_fxAmt(avgInc()*12);
@@ -11633,7 +11637,6 @@ function rClass(){
     }
     return;
   }
-  if(isCorp()){rBizClass();return;}
   const annualInc=avgInc()*12;
   const cls=SA_CLASSES.find(c=>annualInc>=c.min)||SA_CLASSES[SA_CLASSES.length-1];
   const nextCls=SA_CLASSES[SA_CLASSES.indexOf(cls)-1];
@@ -11649,12 +11652,37 @@ function rClass(){
 }
 
 function rBizClass(){
+  const _bizClsRegion=S.prefs?.region||'za';
+  const phEl=document.querySelector('#pg-class .pt');if(phEl)phEl.innerHTML='Entity <em>Classification</em>';
+  const psubEl=document.querySelector('#pg-class .psub');
+  if(_bizClsRegion!=='za'){
+    // SA turnover-tier classification (Turnover Tax/SBC/CIT bands) and SA banking packages are
+    // South African Revenue Service / NCA specific — don't fabricate equivalent UK/other figures here.
+    if(psubEl)psubEl.textContent='Where your business stands';
+    const set=(id,v)=>{const el=document.getElementById(id);if(el)el.innerHTML=v};
+    const msg='Entity size classification and business banking tiers are jurisdiction-specific and not yet available for your region. Consult your local company registrar or a business banking advisor for the thresholds that apply to you.';
+    // The 'za' content lives in a <div data-region-only="za"> block — hidden by CSS outside SA.
+    // The 'uk' content lives in a separate <div data-region-only="uk"> block that stays VISIBLE
+    // for UK region regardless of corp mode, so it must be explicitly overwritten here too or it
+    // keeps showing stale personal UK tax-band content underneath the "Entity Classification" title.
+    set('cls-badge','');set('cls-desc',msg);
+    const barEl=document.getElementById('cls-bar');if(barEl)barEl.innerHTML='';
+    const bgEl=document.getElementById('bank-grid');
+    if(bgEl){
+      const h1=document.querySelector('#pg-class .card:nth-child(2) .ct');
+      if(h1)h1.textContent='Business Banking Packages';
+      bgEl.innerHTML='<div class="empty" style="padding:16px"><div class="empty-s">Not yet available for your region</div></div>';
+    }
+    if(_bizClsRegion==='uk'){
+      set('uk-cls-badge','');set('uk-cls-desc',msg);
+    }
+    return;
+  }
   const annualRev=avgInc()*12;
   const cls=BIZ_CLASSES.find(c=>annualRev>=c.min)||BIZ_CLASSES[BIZ_CLASSES.length-1];
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.innerHTML=v};
   // Update page header
-  const phEl=document.querySelector('#pg-class .pt');if(phEl)phEl.innerHTML='Entity <em>Classification</em>';
-  const psubEl=document.querySelector('#pg-class .psub');if(psubEl)psubEl.textContent='Where your business stands · NCA & SARS thresholds';
+  if(psubEl)psubEl.textContent='Where your business stands · NCA & SARS thresholds';
   set('cls-badge',`<div style="display:inline-flex;align-items:center;gap:12px;padding:14px 22px;background:${cls.color}18;border:1px solid ${cls.color}40;border-radius:14px"><span style="font-size:32px">${cls.icon}</span><div><div style="font-family:var(--fs);font-size:24px;font-weight:700;color:${cls.color}">${cls.lbl}</div><div style="font-size:11px;color:var(--t2);margin-top:2px">${cls.sub}</div><div style="font-size:10px;color:var(--t3);font-family:var(--fm);margin-top:4px">Annual Revenue: ${fmt(annualRev)}</div></div></div>`);
   set('cls-desc',annualRev>0?`Based on your average monthly revenue of ${fmt(avgInc())}, this entity is classified as a <strong>${cls.lbl}</strong>. ${cls.min===0?'Micro enterprises qualify for Turnover Tax (up to R1M/yr) at 0%–3% — simpler than standard CIT.':cls.lbl==='Small Enterprise'?'Eligible for Small Business Corporation (SBC) tax rates — 0% on first R95,750, 7% up to R365,000, 21% to R550,000, 27% above.':'Standard Corporate Income Tax (CIT) of 27% applies.'}` : 'Add revenue transactions to classify your entity.');
   const barEl=document.getElementById('cls-bar');
