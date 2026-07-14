@@ -1558,7 +1558,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="nav-item corp-hide" onclick="goPg('visual')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-layers"/></svg></span><span class="nl">Visual Budget</span></div>
 
   <div class="ssl" data-section="SA Tools" data-region-only="za">SA Tools<span class="ssl-chev">›</span></div>
-  <div class="nav-item" data-region-only="za" onclick="goPg('stokvel')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-users"/></svg></span><span class="nl">Stokvels</span></div>
+  <div class="nav-item corp-hide" data-region-only="za" onclick="goPg('stokvel')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-users"/></svg></span><span class="nl">Stokvels</span></div>
   <div class="nav-item" data-region-only="za" onclick="goPg('tax')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-landmark"/></svg></span><span class="nl">SARS &amp; Tax</span></div>
   <div class="nav-item" data-region-only="za" onclick="goPg('itr12')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-file-text"/></svg></span><span class="nl">ITR12 Estimator</span></div>
   <div class="nav-item" data-region-only="za" onclick="goPg('uif')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-shield"/></svg></span><span class="nl">UIF Calculator</span></div>
@@ -9215,12 +9215,16 @@ function rForex() {
   const isSA=region==='za';
   const isOther=region==='other';
   const _homeCurFx=isSA?'ZAR':isUK?'GBP':(S.prefs.dataCurrency||CUR_SYM_TO_CODE[S.prefs.cur]||'USD');
-  // Hide SARB section outside SA (SARB is SA Reserve Bank — its allowances are SA-resident-only regulation)
+  // Hide SARB section outside SA, and for business mode — the Single Discretionary/Discretionary
+  // Allowances shown here are natural-person-only SARB rules; companies use different SARB
+  // mechanisms entirely, so showing personal SDA/DA figures to a business is factually wrong,
+  // not just incomplete.
   const sarbWrap=document.getElementById('sarb-section-wrap');
-  if(sarbWrap) sarbWrap.style.display=isSA?'':'none';
+  const showSarb=isSA&&!isCorp();
+  if(sarbWrap) sarbWrap.style.display=showSarb?'':'none';
   // Update page subtitle for region
   const fxPsub=document.querySelector('#pg-forex .psub');
-  if(fxPsub)fxPsub.textContent=isSA?'Foreign accounts · SARB allowances · FX rates · offshore holdings':`Foreign accounts · FX rates · ${_homeCurFx} holdings · offshore growth`;
+  if(fxPsub)fxPsub.textContent=showSarb?'Foreign accounts · SARB allowances · FX rates · offshore holdings':`Foreign accounts · FX rates · ${_homeCurFx} holdings · offshore growth`;
   // Update "Exchange Rates" heading currency label
   const fxCurLbl=document.getElementById('forex-rates-cur-lbl');
   if(fxCurLbl)fxCurLbl.textContent=_homeCurFx;
@@ -9232,7 +9236,7 @@ function rForex() {
   if(fxWrap)fxWrap.style.display=detFx.length?'block':'none';
   // Region-aware banner text
   const detBannerText=fxWrap?.querySelector('[style*="font-size:11px"][style*="color:var(--t3)"]');
-  if(detBannerText) detBannerText.textContent=isSA
+  if(detBannerText) detBannerText.textContent=showSarb
     ?'These transactions may count against your SARB allowances. Log them to track your annual limit.'
     :'International transactions detected. Log them to track your offshore holdings and foreign currency accounts.';
   if(fxCnt)fxCnt.textContent=detFx.length?`(${detFx.length} found)`:'';
@@ -9240,7 +9244,7 @@ function rForex() {
     <div class="lic" style="background:var(--purple)18;color:var(--purple)">🌍</div>
     <div class="lii"><div class="lin">${esc(t.description||'').slice(0,40)}</div><div class="lis">${t.date} · ${fmt(t.amount)}</div></div>
     <div style="display:flex;gap:6px;align-items:center">
-      <button class="btn btn-ok btn-xs" onclick="logForexTx('${t.id}')">${isSA?'Log vs DA':'Log Offshore'}</button>
+      <button class="btn btn-ok btn-xs" onclick="logForexTx('${t.id}')">${showSarb?'Log vs DA':'Log Offshore'}</button>
       <button class="btn btn-ghost btn-xs" onclick="dismissDetectedForex('${t.id}')">Ignore</button>
     </div>
   </div>`).join('');
@@ -10142,7 +10146,7 @@ function detectForexTransactions(){
 function logForexTx(txnId){
   const t=(S.transactions||[]).find(x=>x.id===txnId);if(!t)return;
   if(!S._dismissedForex)S._dismissedForex=[];S._dismissedForex.push(txnId);
-  if((S.prefs?.region||'za')!=='za'){save();rForex();notify('Offshore transaction noted','ok');return;}
+  if((S.prefs?.region||'za')!=='za'||isCorp()){save();rForex();notify('Offshore transaction noted','ok');return;}
   openSarbEntry('da');save();rForex();notify('Logging against Discretionary Allowance','ok');
 }
 function dismissDetectedForex(txnId){if(!S._dismissedForex)S._dismissedForex=[];S._dismissedForex.push(txnId);save();rForex();}
