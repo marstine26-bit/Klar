@@ -11184,7 +11184,8 @@ function exportCsv(type){
   let rows=[],filename='';
   if(type==='transactions'){
     filename=`Klar_Transactions_${S.curMo}.csv`;
-    rows=[['Date','Description','Category','Type','Amount','Account','Note','Tags'],...(S.transactions||[]).sort((a,b)=>a.date.localeCompare(b.date)).map(t=>[t.date,`"${(t.description||'').replace(/"/g,'""')}"`,t.category,t.type,(t.type==='expense'?-t.amount:t.amount).toFixed(2),t.accountId||'','"'+(t.note||'').replace(/"/g,'""')+'"','"'+(t.tags||[]).join(', ').replace(/"/g,'""')+'"'])];
+    const acctName=id=>{const a=(S.accounts||[]).find(x=>x.id===id);return a?a.name:(id||'');};
+    rows=[['Date','Description','Category','Type','Amount','Account','Note','Tags'],...(S.transactions||[]).sort((a,b)=>a.date.localeCompare(b.date)).map(t=>[t.date,`"${(t.description||'').replace(/"/g,'""')}"`,t.category,t.type,(t.type==='expense'?-t.amount:t.amount).toFixed(2),`"${acctName(t.accountId).replace(/"/g,'""')}"`,'"'+(t.note||'').replace(/"/g,'""')+'"','"'+(t.tags||[]).join(', ').replace(/"/g,'""')+'"'])];
   } else if(type==='budget'){
     filename=`Klar_Budget_${S.curMo}.csv`;
     const txns=moTxns();
@@ -11204,7 +11205,8 @@ function exportCsv(type){
 function exportXls(){
   const txns=(S.transactions||[]).sort((a,b)=>a.date.localeCompare(b.date));
   const cur=S.prefs?.cur||'R';
-  const rows=txns.map(t=>`<tr><td>${t.date}</td><td>${(t.description||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</td><td>${t.category}</td><td>${t.type}</td><td style="mso-number-format:'#,##0.00'">${t.amount.toFixed(2)}</td><td>${t.accountId||''}</td><td>${(t.note||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</td><td>${(t.tags||[]).join(', ').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</td></tr>`).join('');
+  const acctName=id=>{const a=(S.accounts||[]).find(x=>x.id===id);return a?a.name:(id||'');};
+  const rows=txns.map(t=>`<tr><td>${t.date}</td><td>${(t.description||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</td><td>${t.category}</td><td>${t.type}</td><td style="mso-number-format:'#,##0.00'">${t.amount.toFixed(2)}</td><td>${acctName(t.accountId).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</td><td>${(t.note||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</td><td>${(t.tags||[]).join(', ').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</td></tr>`).join('');
   const html=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Transactions</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table border="1"><thead><tr style="background:#9B7FD4;color:#fff;font-weight:700"><th>Date</th><th>Description</th><th>Category</th><th>Type</th><th>Amount (${cur})</th><th>Account</th><th>Note</th><th>Tags</th></tr></thead><tbody>${rows}</tbody></table></body></html>`;
   const blob=new Blob(['﻿'+html],{type:'application/vnd.ms-excel;charset=utf-8'});
   const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=`Klar_Transactions_${S.curMo}.xls`;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);
