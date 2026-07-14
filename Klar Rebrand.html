@@ -5159,7 +5159,7 @@ function initCustomCats(){
 }
 
 /* Returns all cats (built-in + user custom), always current */
-function getAllCats(){return CATS;}
+function getAllCats(){return (typeof isCorp==='function'&&isCorp())?[...CORP_CATS.income,...CORP_CATS.expense]:CATS;}
 
 /* Build a <select> options string, optionally with a "+ New category" option */
 function buildCatOpts(selectedId,includeAddNew=true){
