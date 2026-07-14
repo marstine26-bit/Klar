@@ -11750,11 +11750,16 @@ function rHealth(){
   const _regionHs=(S.prefs?.region||'za');
   const _isUKhs=_regionHs==='uk';
   const _isOtherHs=_regionHs==='other';
+  const _isCorpHs=isCorp();
   // 'other'/ROW has no equivalent of a TFSA/ISA to check a holding "type" against — crediting
   // this 5-point category off general investment activity instead keeps the max achievable score
   // equal across all three regions (a ROW user should never be structurally capped below 100
   // just because Klar doesn't know their country's specific tax-advantaged account scheme).
-  const hasTfsa=_isUKhs
+  // Business mode has no personal tax wrapper at all — same reasoning, credit off general
+  // treasury/investment activity instead.
+  const hasTfsa=_isCorpHs
+    ?hasInvest
+    :_isUKhs
     ?(S.holdings||[]).some(h=>h.type==='isa'||h.type==='sipp'||h.type==='lisa'||h.type==='premium_bonds'||h.type==='gia')
     :_isOtherHs
     ?hasInvest
@@ -11780,11 +11785,11 @@ function rHealth(){
   set('hs-lbl',lbl);set('hs-desc',`Score: ${total} / 100`);
   const _isUK=_isUKhs;
   const emTip=emMonths>=6?`${emMonths.toFixed(1)} months covered ✓ (target: 3–6 months)`:emMonths>=3?`${emMonths.toFixed(1)} months covered — consider building to 6 months`:emMonths>0?`Only ${emMonths.toFixed(1)} month${emMonths<1.5?'':'s'} covered — target 3–6 months (${fmt(exp*3)}–${fmt(exp*6)})`:'Create an emergency fund goal (3–6 months expenses = '+fmt(exp*3)+'–'+fmt(exp*6)+')';
-  const _savRateTip=_isUK?' (ONS UK avg ~5%; ISA saver target ≥10%; FIRE ≥30%)':_isOtherHs?' (advisor target ≥15–20%)':'(SA avg ~0–5%; advisor target ≥15%)';
-  const _investTip=hasInvest?'Investments tracked ✓':_isUK?'Start investing — a Stocks & Shares ISA is a great first step':_isOtherHs?'Start investing — index funds or a brokerage account are a great first step':'Start investing — TFSA is a great first step';
-  const _wrapperLbl=_isUK?'ISA Utilisation':_isOtherHs?'Tax-Advantaged Investing':'TFSA Utilisation';
-  const _wrapperTip=hasTfsa?(_isUK?'ISA contributions tracked ✓':_isOtherHs?'Investment activity tracked ✓':'TFSA contributions tracked ✓'):(_isUK?'Consider maximising your ISA allowance (£20,000/yr) to shelter investment growth from UK tax.':_isOtherHs?'Start investing to make use of any tax-advantaged accounts available in your country.':'Open a TFSA — R46,000/yr tax-free growth');
-  const _diversifyTip=scores.diversified>0?'Diversified across investing, tax wrapper & property ✓':'Diversify: combine '+(_isUK?'ISA':_isOtherHs?'investments':'TFSA')+' + property + investments';
+  const _savRateTip=_isCorpHs?' (target ≥20% margin)':_isUK?' (ONS UK avg ~5%; ISA saver target ≥10%; FIRE ≥30%)':_isOtherHs?' (advisor target ≥15–20%)':'(SA avg ~0–5%; advisor target ≥15%)';
+  const _investTip=hasInvest?'Investments tracked ✓':_isCorpHs?'Start putting surplus cash to work — a money market fund is a great first step':_isUK?'Start investing — a Stocks & Shares ISA is a great first step':_isOtherHs?'Start investing — index funds or a brokerage account are a great first step':'Start investing — TFSA is a great first step';
+  const _wrapperLbl=_isCorpHs?'Cash Management':_isUK?'ISA Utilisation':_isOtherHs?'Tax-Advantaged Investing':'TFSA Utilisation';
+  const _wrapperTip=hasTfsa?(_isCorpHs?'Surplus cash working ✓':_isUK?'ISA contributions tracked ✓':_isOtherHs?'Investment activity tracked ✓':'TFSA contributions tracked ✓'):(_isCorpHs?'Put idle surplus into a money market fund or fixed deposit rather than a current account.':_isUK?'Consider maximising your ISA allowance (£20,000/yr) to shelter investment growth from UK tax.':_isOtherHs?'Start investing to make use of any tax-advantaged accounts available in your country.':'Open a TFSA — R46,000/yr tax-free growth');
+  const _diversifyTip=scores.diversified>0?'Diversified across investing, cash management & property ✓':'Diversify: combine '+(_isCorpHs?'treasury':_isUK?'ISA':_isOtherHs?'investments':'TFSA')+' + property + investments';
   const items=[
     {lbl:'Savings Rate',score:scores.savings,max:25,tip:`${Math.round(savRate*100)}% savings rate. Target: 20%+${_savRateTip}` },
     {lbl:'Debt Load',score:scores.debt,max:20,tip:`Debt payments: ${Math.round(debtRatio*100)}% of income. Full marks at 0% debt, score reaches zero at 50%+`},
@@ -11808,7 +11813,7 @@ function rHealth(){
     {lbl:'Investing started',done:hasInvest,icon:'📈'},
     {lbl:'20%+ savings rate',done:savRate>=0.2,icon:'💰'},
     {lbl:'Debt under 20% of income',done:debtRatio<0.2,icon:'⊘'},
-    {lbl:_isUK?'ISA account active':_isOtherHs?'Investing consistently':'TFSA account active',done:hasTfsa,icon:'🏦'},
+    {lbl:_isCorpHs?'Cash working, not idle':_isUK?'ISA account active':_isOtherHs?'Investing consistently':'TFSA account active',done:hasTfsa,icon:'🏦'},
     {lbl:'Property tracked',done:hasProperty,icon:'🏠'},
     {lbl:'Insurance in place',done:hasInsurance,icon:'🔒'},
     {lbl:'Fully diversified portfolio',done:scores.diversified>0,icon:'◈'},
