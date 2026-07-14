@@ -1586,7 +1586,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="nav-item" onclick="goPg('checklist')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-check-list"/></svg></span><span class="nl">Month Checklist</span></div>
   <div class="nav-item" onclick="goPg('recurring')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-repeat"/></svg></span><span class="nl">Recurring</span></div>
   <div class="nav-item" onclick="goPg('tags')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-tag"/></svg></span><span class="nl">Tags</span></div>
-  <div class="nav-item" onclick="goPg('retire')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-target"/></svg></span><span class="nl">Retirement</span></div>
+  <div class="nav-item corp-hide" onclick="goPg('retire')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-target"/></svg></span><span class="nl">Retirement</span></div>
 
   <div class="ssl" data-section="Preferences">Preferences<span class="ssl-chev">›</span></div>
   <div class="nav-item" onclick="goPg('settings')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-settings"/></svg></span><span class="nl">Customise</span></div>
@@ -13552,8 +13552,16 @@ function toggleChecklist(mo,id,val){
 }
 
 /* ═══ RETIREMENT READINESS ═══ */
+let _rrDefaultHTML=null;
 function rRetirementReadiness(){
   const el=document.getElementById('ret-readiness-wrap');if(!el)return;
+  if(el&&_rrDefaultHTML===null&&document.getElementById('rr-ra-val'))_rrDefaultHTML=el.innerHTML;
+  if(isCorp()){
+    el.innerHTML='<div class="card" style="text-align:center;padding:40px 24px"><div style="font-size:36px;margin-bottom:16px">👤</div><div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:8px">Personal Feature</div><div style="font-size:13px;color:var(--t3);max-width:340px;margin:0 auto;line-height:1.7">Retirement readiness planning is for personal finances — switch to Personal mode to use this calculator.</div><button class="btn btn-gold" style="margin-top:16px" onclick="toggleCorpMode()">Switch to Personal</button></div>';
+    return;
+  }
+  // Restore the real structure if a prior business-mode render left the personal-feature banner in place
+  if(el&&!document.getElementById('rr-ra-val')&&_rrDefaultHTML)el.innerHTML=_rrDefaultHTML;
   const _rrRegion=(S.prefs.region||'za');
   const isUK=_rrRegion==='uk';
   const isOtherRR=_rrRegion==='other';
