@@ -10574,12 +10574,16 @@ function sbCopySettlement(){
 const ITR_BRACKETS=[{max:245100,rate:.18,base:0,prev:0},{max:383100,rate:.26,base:44118,prev:245100},{max:530200,rate:.31,base:79998,prev:383100},{max:695800,rate:.36,base:125599,prev:530200},{max:887000,rate:.39,base:185215,prev:695800},{max:1878600,rate:.41,base:259783,prev:887000},{max:Infinity,rate:.45,base:666339,prev:1878600}];
 const ITR_REBATES={u65:17820,'65to74':27585,'75p':30834};
 const ITR_MATC_MAIN=376,ITR_MATC_DEP1=376,ITR_MATC_DEP2=254; // monthly credits: main, 1st dep, extra deps (2026/27)
+let _itr12DefaultHTML=null;
 function calcItr12(){
+  const pgItr12=document.getElementById('pg-itr12');
+  if(pgItr12&&_itr12DefaultHTML===null&&document.getElementById('itr-salary')) _itr12DefaultHTML=pgItr12.innerHTML;
   if((S.prefs&&S.prefs.region)==='uk'){
-    const pg=document.getElementById('pg-itr12');
-    if(pg)pg.innerHTML='<div class="ph"><div><div class="pt">ITR12 Estimator</div></div></div><div class="card" style="padding:24px;text-align:center;color:var(--t3)"><div style="font-size:28px;margin-bottom:12px">🇿🇦</div><div style="font-size:14px;font-weight:600;color:var(--t2);margin-bottom:8px">South Africa only</div><div style="font-size:13px;max-width:440px;margin:0 auto">The ITR12 is the South African Revenue Service (SARS) annual tax return and is not applicable to UK users. UK users should use <strong>HMRC Self Assessment</strong> to file their tax return.</div></div>';
+    if(pgItr12)pgItr12.innerHTML='<div class="ph"><div><div class="pt">ITR12 Estimator</div></div></div><div class="card" style="padding:24px;text-align:center;color:var(--t3)"><div style="font-size:28px;margin-bottom:12px">🇿🇦</div><div style="font-size:14px;font-weight:600;color:var(--t2);margin-bottom:8px">South Africa only</div><div style="font-size:13px;max-width:440px;margin:0 auto">The ITR12 is the South African Revenue Service (SARS) annual tax return and is not applicable to UK users. UK users should use <strong>HMRC Self Assessment</strong> to file their tax return.</div></div>';
     return;
   }
+  // Restore the real structure if a prior UK-region render left the blocked banner in place
+  if(pgItr12&&!document.getElementById('itr-salary')&&_itr12DefaultHTML) pgItr12.innerHTML=_itr12DefaultHTML;
   const gross=(parseFloat(document.getElementById('itr-salary')?.value)||0)+(parseFloat(document.getElementById('itr-comm')?.value)||0)+(parseFloat(document.getElementById('itr-rental')?.value)||0)+(parseFloat(document.getElementById('itr-interest')?.value)||0);
   const ra=Math.min(parseFloat(document.getElementById('itr-ra')?.value)||0, gross*0.275, 430000);
   const trav=parseFloat(document.getElementById('itr-trav')?.value)||0;
@@ -10751,12 +10755,16 @@ function rCashflow(){
 }
 
 /* ═══ TFSA TRACKER ═══ */
+let _tfsaDefaultHTML=null;
 function rTfsa(){
+  const pgTfsa=document.getElementById('pg-tfsa');
+  if(pgTfsa&&_tfsaDefaultHTML===null&&document.getElementById('tfsa-used-num')) _tfsaDefaultHTML=pgTfsa.innerHTML;
   if((S.prefs&&S.prefs.region)==='uk'){
-    const pg=document.getElementById('pg-tfsa');
-    if(pg)pg.innerHTML='<div class="ph"><div><div class="pt">TFSA Tracker</div></div></div><div class="card" style="padding:24px;text-align:center;color:var(--t3)"><div style="font-size:28px;margin-bottom:12px">🇿🇦</div><div style="font-size:14px;font-weight:600;color:var(--t2);margin-bottom:8px">South Africa only</div><div style="font-size:13px;max-width:440px;margin:0 auto">The Tax-Free Savings Account (TFSA) is a South African investment vehicle and is not applicable to UK users. UK users have a similar product called the <strong>ISA (Individual Savings Account)</strong> — see the ISA Tracker in UK Tools.</div></div>';
+    if(pgTfsa)pgTfsa.innerHTML='<div class="ph"><div><div class="pt">TFSA Tracker</div></div></div><div class="card" style="padding:24px;text-align:center;color:var(--t3)"><div style="font-size:28px;margin-bottom:12px">🇿🇦</div><div style="font-size:14px;font-weight:600;color:var(--t2);margin-bottom:8px">South Africa only</div><div style="font-size:13px;max-width:440px;margin:0 auto">The Tax-Free Savings Account (TFSA) is a South African investment vehicle and is not applicable to UK users. UK users have a similar product called the <strong>ISA (Individual Savings Account)</strong> — see the ISA Tracker in UK Tools.</div></div>';
     return;
   }
+  // Restore the real structure if a prior UK-region render left the blocked banner in place
+  if(pgTfsa&&!document.getElementById('tfsa-used-num')&&_tfsaDefaultHTML) pgTfsa.innerHTML=_tfsaDefaultHTML;
   if(!S.tfsa)S.tfsa={yearContrib:0,lifeContrib:0};
   // Auto-calculate contributions from investment/savings transactions (SA tax year: 1 Mar – 28 Feb)
   const now=new Date();
@@ -11007,13 +11015,17 @@ const delInsurance=id=>{const p=(S.insurancePolicies||[]).find(x=>x.id===id);klC
 const _daysUntil=dateStr=>{if(!dateStr)return999;const d=new Date(dateStr);const now=new Date();now.setHours(0,0,0,0);d.setHours(0,0,0,0);return Math.ceil((d-now)/(1000*60*60*24));};
 
 /* ═══ UIF CALCULATOR ═══ */
+let _uifDefaultHTML=null;
 function calcUif(){
+  const pgUif=document.getElementById('pg-uif');
+  if(pgUif&&_uifDefaultHTML===null&&document.getElementById('uif-salary')) _uifDefaultHTML=pgUif.innerHTML;
   // UK guard: UIF is SA-specific; replace page content for UK users
   if((S.prefs.region||'za')==='uk'){
-    const pg=document.getElementById('pg-uif');
-    if(pg)pg.innerHTML='<div class="ph"><div><div class="pt">UIF Calculator</div></div></div><div class="card" style="padding:24px;text-align:center;color:var(--t3)"><div style="font-size:28px;margin-bottom:12px">🇿🇦</div><div style="font-size:14px;font-weight:600;color:var(--t2);margin-bottom:8px">South Africa only</div><div style="font-size:13px;max-width:440px;margin:0 auto">The UIF (Unemployment Insurance Fund) is a South African benefit and is not applicable to UK users. UK equivalent: <strong>Jobseeker\'s Allowance (JSA)</strong> — visit <a href="https://www.gov.uk/jobseekers-allowance" target="_blank" style="color:var(--accent)">GOV.UK Jobseeker\'s Allowance →</a></div></div>';
+    if(pgUif)pgUif.innerHTML='<div class="ph"><div><div class="pt">UIF Calculator</div></div></div><div class="card" style="padding:24px;text-align:center;color:var(--t3)"><div style="font-size:28px;margin-bottom:12px">🇿🇦</div><div style="font-size:14px;font-weight:600;color:var(--t2);margin-bottom:8px">South Africa only</div><div style="font-size:13px;max-width:440px;margin:0 auto">The UIF (Unemployment Insurance Fund) is a South African benefit and is not applicable to UK users. UK equivalent: <strong>Jobseeker\'s Allowance (JSA)</strong> — visit <a href="https://www.gov.uk/jobseekers-allowance" target="_blank" style="color:var(--accent)">GOV.UK Jobseeker\'s Allowance →</a></div></div>';
     return;
   }
+  // Restore the real structure if a prior UK-region render left the blocked banner in place
+  if(pgUif&&!document.getElementById('uif-salary')&&_uifDefaultHTML) pgUif.innerHTML=_uifDefaultHTML;
   const salary=parseFloat(document.getElementById('uif-salary')?.value)||0;
   const months=Math.min(parseFloat(document.getElementById('uif-months')?.value)||0,48);
   const reason=document.getElementById('uif-reason')?.value||'retrench';
@@ -12300,12 +12312,16 @@ const SMME=[
   {name:'NYDA Grant',icon:'🌱',desc:'Up to R1,000 grant for youth 18-35 · nyda.gov.za'},
   {name:'DSBD SMME Fund',icon:'📊',desc:'Working capital and asset finance · dsbd.gov.za'},
 ];
+let _grantsDefaultHTML=null;
 function rGrants(){
+  const pgGrants=document.getElementById('pg-grants');
+  if(pgGrants&&_grantsDefaultHTML===null&&document.getElementById('grants-eligibility')) _grantsDefaultHTML=pgGrants.innerHTML;
   if((S.prefs&&S.prefs.region)==='uk'){
-    const pg=document.getElementById('pg-grants');
-    if(pg)pg.innerHTML='<div class="ph"><div><div class="pt">Grants &amp; Relief</div></div></div><div class="card" style="padding:24px;text-align:center;color:var(--t3)"><div style="font-size:28px;margin-bottom:12px">🇿🇦</div><div style="font-size:14px;font-weight:600;color:var(--t2);margin-bottom:8px">South Africa only</div><div style="font-size:13px;max-width:400px;margin:0 auto">This page contains South Africa-specific social grant information (SASSA, FLISP, SMME) and is not applicable to UK users.</div></div>';
+    if(pgGrants)pgGrants.innerHTML='<div class="ph"><div><div class="pt">Grants &amp; Relief</div></div></div><div class="card" style="padding:24px;text-align:center;color:var(--t3)"><div style="font-size:28px;margin-bottom:12px">🇿🇦</div><div style="font-size:14px;font-weight:600;color:var(--t2);margin-bottom:8px">South Africa only</div><div style="font-size:13px;max-width:400px;margin:0 auto">This page contains South Africa-specific social grant information (SASSA, FLISP, SMME) and is not applicable to UK users.</div></div>';
     return;
   }
+  // Restore the real structure if a prior UK-region render left the blocked banner in place
+  if(pgGrants&&!document.getElementById('grants-eligibility')&&_grantsDefaultHTML) pgGrants.innerHTML=_grantsDefaultHTML;
   const annualInc=avgInc()*12;
   const eligEl=document.getElementById('grants-eligibility');
   if(eligEl){
