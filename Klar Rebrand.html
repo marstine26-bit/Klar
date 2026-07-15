@@ -8252,7 +8252,7 @@ function openAddTxn(){
   const tyEl=document.getElementById('txn-ty'); if(tyEl){tyEl.value='expense'; onTxnTypeChange('expense');}
   // Pre-fill time to current time
   const _tmEl = document.getElementById('txn-tm');
-  if (_tmEl) _tmEl.value = _now.toTimeString().slice(0,5);
+  if (_tmEl) _tmEl.value = new Date().toTimeString().slice(0,5);
   document.getElementById('m-add-txn').classList.add('open');
   // Populate goal/debt dropdowns
   const gSel=document.getElementById('txn-goal-link');
