@@ -14112,9 +14112,13 @@ function obSkip(){
   if(el){
     el.style.opacity='0';
     el.style.transition='opacity .35s';
-    setTimeout(()=>{el.style.display='none';renderAll();},350);
+    // setObRegion() (step 4's SA/International toggle) only swaps the bank-list UI — it never sets
+    // S.prefs.region. Without this, every new user silently falls back to 'za' everywhere in the
+    // app regardless of what they picked. klCheckRegion() opens the real 3-way region gate if unset.
+    setTimeout(()=>{el.style.display='none';renderAll();if(typeof klCheckRegion==='function')klCheckRegion();},350);
   } else {
     renderAll();
+    if(typeof klCheckRegion==='function')klCheckRegion();
   }
 }
 
@@ -14125,7 +14129,7 @@ function obImport(){
   if(el){
     el.style.opacity='0';
     el.style.transition='opacity .3s';
-    setTimeout(()=>{el.style.display='none';renderAll();openImport&&openImport();},320);
+    setTimeout(()=>{el.style.display='none';renderAll();if(typeof klCheckRegion==='function')klCheckRegion();openImport&&openImport();},320);
   }
 }
 
