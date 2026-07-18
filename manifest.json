@@ -1,7 +1,7 @@
 {
   "name": "Klar — Personal Finance",
   "short_name": "Klar",
-  "description": "Personal finance tracker with budgets, goals, bill hub and AI advisor. Built for SA & UK.",
+  "description": "Personal finance tracker with budgets, goals, bill hub and AI advisor. Built for South Africa, the UK, and the rest of the world.",
   "id": "/app",
   "start_url": "/app",
   "display": "standalone",
