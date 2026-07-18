@@ -10668,9 +10668,12 @@ function rItr12Checklist(){
   </div>`).join('');
 }
 function itr12AutoFill(){
-  const yr=new Date().getFullYear();
-  const txYrStart=`${yr-1}-03-01`;
-  const txYrEnd=`${yr}-03-01`;
+  // SA tax year runs 1 March – end of February, not the calendar year — mirrors getCurrentSarbYear()'s
+  // month>=2 (March) check, otherwise this looks one tax year in the past for 9 of the 12 calendar months.
+  const now=new Date();
+  const taxYr=now.getMonth()>=2?now.getFullYear():now.getFullYear()-1;
+  const txYrStart=`${taxYr}-03-01`;
+  const txYrEnd=`${taxYr+1}-03-01`;
   const taxYrTxns=S.transactions.filter(t=>t.date>=txYrStart&&t.date<txYrEnd);
   const income=taxYrTxns.filter(t=>t.type==='income'&&!['rental','interest'].includes(t.category)).reduce((s,t)=>s+t.amount,0);
   const rental=taxYrTxns.filter(t=>t.type==='income'&&t.category==='rental').reduce((s,t)=>s+t.amount,0);
