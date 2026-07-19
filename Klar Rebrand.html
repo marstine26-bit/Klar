@@ -302,7 +302,7 @@ body[data-density="compact"] .card{padding:18px}
 .tb-title{font-family:var(--ff);font-size:20px;font-weight:700;letter-spacing:-.04em;color:var(--t1);line-height:1;white-space:nowrap}
 .tb-title em{font-style:normal;color:var(--accent)}
 [data-theme="light"] .tb-title em,[data-theme="warm"] .tb-title em{color:var(--accent)}
-.tb-tabs{display:flex;gap:0;margin-left:8px;align-items:center;height:100%;overflow-x:auto;scrollbar-width:none}
+.tb-tabs{display:flex;gap:0;margin-left:8px;align-items:center;height:100%;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 20px),transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 20px),transparent 100%)}
 .tb-tabs::-webkit-scrollbar{display:none}
 .tb-tab{
   padding:0 14px;height:100%;display:flex;align-items:center;
@@ -493,7 +493,7 @@ body[data-density="compact"] .card{padding:18px}
 .rail-btn>svg{display:block;width:18px;height:18px;margin:0 auto;overflow:visible}
 .sf{margin-top:auto;padding:16px 20px;border-top:var(--bw) solid var(--b1);flex-shrink:0}
 
-.page{display:none;padding:clamp(14px,2.5vw,36px) clamp(14px,3vw,40px);width:100%}
+.page{display:none;padding:clamp(14px,2.5vw,36px) clamp(14px,3vw,40px) calc(clamp(14px,2.5vw,36px) + 96px);width:100%}
 .page.active{display:block;animation:pgIn .22s var(--ease)}
 @keyframes pgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
@@ -6445,7 +6445,7 @@ function rAccounts() {
       <div style="font-family:var(--fs);font-size:26px;font-weight:700;color:${isCc?(Math.abs(bal)>0?'var(--red)':'var(--green)'):(bal>=0?'var(--green)':'var(--red)')}">
         ${isForex?esc(cur)+' ':''}<span style="font-size:${isForex?'20px':'26px'}">${fmt(Math.abs(bal))}</span>
       </div>
-      ${isForex?`<div style="font-size:11px;color:var(--t3);font-family:var(--fm);margin-top:2px">≈ ${S.prefs.cur||'R'} ${fmt(Math.abs(zarBal))}</div>`:''}
+      ${isForex?`<div style="font-size:11px;color:var(--t3);font-family:var(--fm);margin-top:2px">≈ ${fmt(Math.abs(zarBal))}</div>`:''}
       <div style="font-size:10px;color:var(--t3);margin-top:4px;font-family:var(--fm)">${txnCount} transactions</div>
       ${isCc ? `
         <div style="margin-top:10px">
