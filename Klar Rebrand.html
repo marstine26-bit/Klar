@@ -4955,6 +4955,9 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 <script>
 'use strict';
 
+console.log('%cKlar', 'font-size:20px;font-weight:800;color:#9B7FD4');
+console.log('%cWell done, good and faithful steward.', 'font-style:italic;color:#8A8A98');
+
 /* ═══════════════════════════════════════════════════
    GLOBAL ERROR HANDLERS
 ═══════════════════════════════════════════════════ */
@@ -12184,7 +12187,7 @@ function rFocus(){
 /* ═══ ROUTINES ═══ */
 const DEFAULT_ROUTINES=[
   {id:'daily',icon:'☀',name:'Daily Check-in',freq:'daily',dur:5,steps:['Check account balance','Note any unexpected charges','Review today\'s budget capacity'],color:'var(--green)'},
-  {id:'weekly',icon:'📅',name:'Weekly Review',freq:'weekly',dur:15,steps:['Reconcile transactions','Review category spending','Update savings progress','Plan next week\'s big expenses'],color:'var(--blue)'},
+  {id:'weekly',icon:'📅',name:'Weekly Review',freq:'weekly',dur:18,steps:['Reconcile transactions','Review category spending','Update savings progress','Plan next week\'s big expenses','Reflect: did this week\'s spending match what matters most?'],color:'var(--blue)'},
   {id:'monthly',icon:'📊',name:'Monthly Close',freq:'monthly',dur:30,steps:['Review all transactions','Check budget vs actual','Reconcile all accounts','Update net worth','Review investment allocations','Set next month\'s goals'],color:'var(--accent)'},
   {id:'payday',icon:'💰',name:'Payday Ritual',freq:'payday',dur:20,steps:['Transfer savings first','Pay all scheduled bills','Top up TFSA contribution','Review debt payments','Update budget for month'],color:'var(--amber)'},
 ];
