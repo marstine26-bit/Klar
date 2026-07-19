@@ -108,6 +108,69 @@
       if (typeof renderAll === 'function') renderAll();
       if (typeof rSettingsPlanTiles === 'function') rSettingsPlanTiles();
     }
+
+    if (status === 'tester') {
+      _renderTesterSwitcher();
+      _updateTesterSwitcherActive();
+    } else {
+      _removeTesterSwitcher();
+    }
+  }
+
+  // ── QA tester tier switcher ─────────────────────────────────────────────
+  // Only ever shown to accounts with a tester_overrides row (see get-tier),
+  // which only a service-role process can create — a normal signup can never
+  // make this appear for themselves.
+  function _renderTesterSwitcher() {
+    if (document.getElementById('kl-tester-switcher')) return;
+    const el = document.createElement('div');
+    el.id = 'kl-tester-switcher';
+    el.style.cssText = 'position:fixed;bottom:16px;right:16px;z-index:99999;background:#0D0D14;border:1px solid #9B7FD4;border-radius:12px;padding:10px 12px;display:flex;gap:6px;align-items:center;font:600 11px system-ui,sans-serif;box-shadow:0 4px 20px rgba(0,0,0,.4)';
+
+    const label = document.createElement('span');
+    label.textContent = 'QA tier';
+    label.style.cssText = 'color:#8A8A98;letter-spacing:.05em;text-transform:uppercase;font-size:9px;margin-right:2px';
+    el.appendChild(label);
+
+    TIER_ORDER.forEach((t) => {
+      const btn = document.createElement('button');
+      btn.textContent = t;
+      btn.dataset.tier = t;
+      btn.type = 'button';
+      btn.style.cssText = 'border:1px solid #1E1E2E;background:#161622;color:#F0F0EE;border-radius:6px;padding:4px 8px;cursor:pointer;text-transform:capitalize;font:inherit';
+      btn.addEventListener('click', () => _switchTesterTier(t));
+      el.appendChild(btn);
+    });
+
+    document.body.appendChild(el);
+  }
+
+  function _updateTesterSwitcherActive() {
+    const el = document.getElementById('kl-tester-switcher');
+    if (!el) return;
+    const cur = S?.prefs?.tier;
+    el.querySelectorAll('button').forEach((b) => {
+      const active = b.dataset.tier === cur;
+      b.style.background = active ? '#9B7FD4' : '#161622';
+      b.style.color      = active ? '#fff' : '#F0F0EE';
+    });
+  }
+
+  function _removeTesterSwitcher() {
+    const el = document.getElementById('kl-tester-switcher');
+    if (el) el.remove();
+  }
+
+  async function _switchTesterTier(tier) {
+    if (typeof _sb === 'undefined' || !_sb) return;
+    if (typeof _sbUser === 'undefined' || !_sbUser) return;
+    const { error } = await _sb.from('tester_overrides').update({ tier }).eq('user_id', _sbUser.id);
+    if (error) {
+      console.warn('[Klar] tester tier switch failed:', error.message);
+      if (typeof notify === 'function') notify('Could not switch tier', 'err');
+      return;
+    }
+    await window.klVerifyTier(true);
   }
 
   // ── Harden klHasTier ─────────────────────────────────────────────────────
@@ -168,6 +231,7 @@
           S.prefs._tierStatus  = null;
           _lastVerifyAt = 0;
         }
+        _removeTesterSwitcher();
       }
     });
   }

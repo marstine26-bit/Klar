@@ -75,6 +75,20 @@ Deno.serve(async (req: Request) => {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 
+  // ── QA tester override — checked before real subscriptions ───────────────
+  // A row here only exists if it was seeded by a service-role process; the
+  // table's RLS policy lets a tester switch their own tier but never insert
+  // one for themselves, so this can't be self-granted by a normal signup.
+  const { data: override } = await sb
+    .from("tester_overrides")
+    .select("tier")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (override) {
+    return jsonResponse({ tier: override.tier, status: "tester", expires: null }, 200);
+  }
+
   const { data: sub, error: dbError } = await sb
     .from("subscriptions")
     .select("plan_id, status, current_period_end")
