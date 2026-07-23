@@ -3163,7 +3163,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="card">
 
       <div class="ct">AI Advisor — Groq API Key</div>
-      <div style="font-size:12px;color:var(--t3);margin-bottom:10px;line-height:1.6">Required to use the AI Advisor and AI month summaries. A key is included by default — you can replace it with your own from <strong style="color:var(--t2)">console.groq.com</strong> if needed. Your key is stored locally in your browser only and sent directly to Groq.</div>
+      <div style="font-size:12px;color:var(--t3);margin-bottom:10px;line-height:1.6">Required to use the AI Advisor and AI month summaries. Get a free key from <strong style="color:var(--t2)">console.groq.com</strong> and paste it below. Your key is stored locally in your browser only and sent directly to Groq.</div>
       <div class="fr"><label>API Key</label><input type="password" id="pref-api-key" placeholder="gsk_…" autocomplete="off" style="font-family:var(--fm);letter-spacing:.05em"></div>
       <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
         <button class="btn btn-ghost btn-sm" onclick="saveApiKey()">Save Key</button>
@@ -13095,8 +13095,12 @@ async function sendChat(){
     .forEach(t=>{ catSpend[t.category||'other']=(catSpend[t.category||'other']||0)+_fxAmt(Math.abs(t.amount)); });
   const topCats = Object.entries(catSpend).sort((a,b)=>b[1]-a[1]).slice(0,3)
     .map(([k,v])=>`${k}:${cur}${Math.round(v)}`).join(', ');
-  const debtSummary = (S.debts||[]).map(d=>`${d.name||'Debt'} ${cur}${Math.round(_fxAmt(d.balance||0))} @${d.rate||0}%`).join('; ') || 'none';
-  const goalSummary = (S.goals||[]).map(g=>`${g.name||'Goal'} ${Math.round(((g.saved||0)/(g.target||1))*100)}% saved`).join('; ') || 'none';
+  // Deliberately anonymised — the privacy disclosure shown to the user promises "account & debt
+  // counts" only, never user-chosen names (which can contain identifying info, e.g. "Loan from
+  // Uncle Peter" or "Mom's Estate Account"). Sequential labels keep per-item context useful to
+  // the AI (e.g. "pay off Debt 2 first") without sending anything the user typed themselves.
+  const debtSummary = (S.debts||[]).map((d,i)=>`Debt ${i+1} ${cur}${Math.round(_fxAmt(d.balance||0))} @${d.rate||0}%`).join('; ') || 'none';
+  const goalSummary = (S.goals||[]).map((g,i)=>`Goal ${i+1} ${Math.round(((g.saved||0)/(g.target||1))*100)}% saved`).join('; ') || 'none';
   const budgetTotal = Object.values(S.budgets||{}).reduce((s,v)=>s+_fxAmt(v||0),0);
   const regionalInstructions = isUK
     ? 'Reference ISA (£20,000/yr limit), HMRC, PAYE, and pension (auto-enrolment 5% min) where relevant. Use GBP (£).'
@@ -13107,7 +13111,7 @@ async function sendChat(){
   const subTotal=_fxAmt(activeSubs.reduce((s,sub)=>s+toMo(sub.amount,sub.cycle),0));
   const totalPortfolio=(S.holdings||[]).reduce((s,h)=>s+h.currentVal,0);
   const aiInc=Math.round(_fxAmt(avgInc()||0));const aiExp=Math.round(_fxAmt(avgExp()||0));
-  const systemContent = `You are a concise ${isUK?'UK':isOther?'global':'South African'} personal finance advisor. ${regionalInstructions} Responses are informational only — not regulated financial advice. Always recommend consulting a qualified financial adviser for major decisions. Give specific, numbered, actionable steps. Reference the user's actual amounts. Do not give generic advice. Keep responses under 250 words unless the user asks for detail.\n\nUser financial context:\n- Monthly income: ${cur}${aiInc}, expenses: ${cur}${aiExp}, net: ${cur}${aiInc-aiExp}\n- Monthly budget total: ${cur}${Math.round(budgetTotal)}\n- Top spending this month: ${topCats||'no data yet'}\n- Accounts: ${(S.accounts||[]).map(a=>a.name).join(', ')||'none'}\n- Debts: ${debtSummary}\n- Savings goals: ${goalSummary}\n- Subscriptions: ${activeSubs.length} active, ${cur}${Math.round(subTotal)}/mo\n- Portfolio: ${fmt(totalPortfolio)} across ${(S.holdings||[]).length} holdings\n- Net worth: ${fmt(calcCurrentNW())}`;
+  const systemContent = `You are a concise ${isUK?'UK':isOther?'global':'South African'} personal finance advisor. ${regionalInstructions} Responses are informational only — not regulated financial advice. Always recommend consulting a qualified financial adviser for major decisions. Give specific, numbered, actionable steps. Reference the user's actual amounts. Do not give generic advice. Keep responses under 250 words unless the user asks for detail.\n\nUser financial context:\n- Monthly income: ${cur}${aiInc}, expenses: ${cur}${aiExp}, net: ${cur}${aiInc-aiExp}\n- Monthly budget total: ${cur}${Math.round(budgetTotal)}\n- Top spending this month: ${topCats||'no data yet'}\n- Accounts: ${(S.accounts||[]).length} account${(S.accounts||[]).length===1?'':'s'}\n- Debts: ${debtSummary}\n- Savings goals: ${goalSummary}\n- Subscriptions: ${activeSubs.length} active, ${cur}${Math.round(subTotal)}/mo\n- Portfolio: ${fmt(totalPortfolio)} across ${(S.holdings||[]).length} holdings\n- Net worth: ${fmt(calcCurrentNW())}`;
   // Keep last 10 exchanges (20 messages) as rolling history
   if(!S.chatHistory) S.chatHistory=[];
   const histMsgs=S.chatHistory.slice(-20).map(h=>({role:h.role,content:h.content}));
@@ -14611,7 +14615,15 @@ async function sbPullAndMerge(){
         // Cloud is newer — merge, preferring cloud for most keys but keep local prefs
         const localPrefs = S.prefs;
         Object.assign(S, cloud);
-        S.prefs = Object.assign({}, cloud.prefs || {}, { accent: localPrefs?.accent, theme: localPrefs?.theme, groqKey: localPrefs?.groqKey });
+        // Tier fields are deliberately NOT taken from the cloud blob — klar_syncs is written by
+        // the client's own JWT, so a tampered local S.prefs.tier (e.g. via devtools) would
+        // otherwise round-trip through the cloud and persist across devices/sessions forever.
+        // The only trustworthy source for tier is klVerifyTier() (server-authoritative, via the
+        // get-tier Edge Function), which already runs on sign-in and app start — keeping the
+        // pre-merge local value here just means "unknown yet" until that check lands, not a
+        // real security boundary on its own, but it stops cloud sync from being the mechanism
+        // that makes a tampered tier durable.
+        S.prefs = Object.assign({}, cloud.prefs || {}, { accent: localPrefs?.accent, theme: localPrefs?.theme, groqKey: localPrefs?.groqKey, tier: localPrefs?.tier, _tierStatus: localPrefs?._tierStatus, _tierExpires: localPrefs?._tierExpires });
         S._syncVersion = cloudVer;
         try { localStorage.setItem('cl_v55', JSON.stringify(S)); } catch(e){}
         renderAll();
