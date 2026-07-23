@@ -356,6 +356,18 @@ body[data-density="compact"] .card{padding:18px}
   .topbar{padding:0 16px}
   .tb-search{display:none}
 }
+
+/* Base grid utility classes — deliberately placed before the responsive
+   breakpoints below so their narrower-viewport column overrides (e.g.
+   .g4 collapsing to 2 columns under 1280px) actually win the cascade.
+   These previously lived after the breakpoints, which silently defeated
+   every responsive .g2/.g3/.g4/.g5 override at every width. */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.gauto{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:13px}
+
 /* ═══ RESPONSIVE SYSTEM — fluid layout at every breakpoint ═══ */
 
 /* Large desktop ≥1280px: unconstrained, fills all available width */
@@ -780,12 +792,6 @@ input[type=color]{width:46px;height:36px;padding:2px;cursor:pointer}
 .tsl::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:var(--t3);border-radius:50%;transition:all var(--dur)}
 .toggle input:checked+.tsl{background:var(--accent)}
 .toggle input:checked+.tsl::before{transform:translateX(18px);background:#fff}
-
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
-.gauto{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:13px}
 
 .tw{overflow-x:auto;border-radius:var(--r);border:var(--bw) solid var(--b1)}
 table{width:100%;border-collapse:collapse;font-size:13px}
@@ -12369,7 +12375,7 @@ const SASSA_GRANTS=[
 ];
 const HOUSING=[
   {name:'FLISP Subsidy',amount:'R38,911–R169,265',desc:'First home buyers earning R3,501–R22,000/mo · Via NHFC'},
-  {name:'RDP / BNG Housing',amount:'Free stand',desc:'Households earning <R3,500/mo · Apply via municipality'},
+  {name:'RDP / BNG Housing',amount:'Free stand',desc:'Households earning under R3,500/mo · Apply via municipality'},
   {name:'NHFC Social Housing',amount:'Subsidised rent',desc:'Income R1,500–R22,000/mo · Urban areas'},
 ];
 const SMME=[
