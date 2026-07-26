@@ -4,6 +4,15 @@
  * Receives Lemon Squeezy webhook events, verifies the HMAC-SHA256 signature,
  * and keeps the `subscriptions` table in sync.
  *
+ * verify_jwt is deliberately false: Lemon Squeezy has no Supabase user JWT to
+ * present when calling this webhook. Authenticity is instead established by
+ * the HMAC-SHA256 signature check below (verifyLsSignature), the same
+ * pattern already used correctly by the get-tier function in this project.
+ * (This was previously deployed with verify_jwt:true, which caused Supabase's
+ * platform gateway to reject every webhook call with 401 before this
+ * function's own signature check ever ran — no subscription event had ever
+ * reached application code as a result. Fixed in a backend-audit pass.)
+ *
  * Required env vars (set in Supabase Dashboard → Edge Functions → Secrets):
  *   LEMONSQUEEZY_WEBHOOK_SECRET  — from LS Dashboard → Settings → Webhooks → secret
  *   SUPABASE_SERVICE_ROLE_KEY    — auto-injected by Supabase runtime
