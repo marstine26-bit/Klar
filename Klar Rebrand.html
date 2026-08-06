@@ -510,6 +510,10 @@ body[data-density="compact"] .card{padding:18px}
 .page{display:none;padding:clamp(14px,2.5vw,36px) clamp(14px,3vw,40px) calc(clamp(14px,2.5vw,36px) + 96px);width:100%}
 .page.active{display:block;animation:pgIn .22s var(--ease)}
 @keyframes pgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){
+  .page.active{animation:none}
+  *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
 
 .ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px;gap:14px;flex-wrap:wrap}
 .pt{font-family:var(--fs);font-size:32px;font-weight:800;color:var(--t1);letter-spacing:-0.05em;line-height:1.1}
@@ -4685,9 +4689,9 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="modal">
     <div class="mt" id="m-add-txn-title">Add Transaction</div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-      <div class="fr"><label>Date</label><input type="date" id="txn-dt"></div>
-      <div class="fr"><label>Time <span style="color:var(--t4);font-weight:400;font-size:9px">optional</span></label><input type="time" id="txn-tm"></div>
-      <div class="fr"><label>Type</label>
+      <div class="fr"><label for="txn-dt">Date</label><input type="date" id="txn-dt"></div>
+      <div class="fr"><label for="txn-tm">Time <span style="color:var(--t4);font-weight:400;font-size:9px">optional</span></label><input type="time" id="txn-tm"></div>
+      <div class="fr"><label for="txn-ty">Type</label>
         <select id="txn-ty" onchange="onTxnTypeChange(this.value)">
           <option value="expense">Expense</option>
           <option value="income">Income</option>
@@ -4695,19 +4699,19 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
         </select>
       </div>
     </div>
-    <div class="fr"><label>From Account</label><select id="txn-acc"></select></div>
-    <div class="fr" id="txn-to-acc-wrap" style="display:none"><label>To Account <span style="color:var(--blue);font-size:9px">TRANSFER DESTINATION</span></label><select id="txn-to-acc"></select></div>
-    <div class="fr"><label>Description</label><input type="text" id="txn-ds" placeholder="e.g. Woolworths groceries"></div>
+    <div class="fr"><label for="txn-acc">From Account</label><select id="txn-acc"></select></div>
+    <div class="fr" id="txn-to-acc-wrap" style="display:none"><label for="txn-to-acc">To Account <span style="color:var(--blue);font-size:9px">TRANSFER DESTINATION</span></label><select id="txn-to-acc"></select></div>
+    <div class="fr"><label for="txn-ds">Description</label><input type="text" id="txn-ds" placeholder="e.g. Woolworths groceries"></div>
     <div class="fg2">
-      <div class="fr"><label>Amount (<span class="kl-cur-sym">R</span>)</label><input type="number" id="txn-am" placeholder="0.00" min="0" step="0.01"></div>
-      <div class="fr" id="txn-cat-wrap"><label>Category</label><select id="txn-ca"></select></div>
+      <div class="fr"><label for="txn-am">Amount (<span class="kl-cur-sym">R</span>)</label><input type="number" id="txn-am" placeholder="0.00" min="0" step="0.01"></div>
+      <div class="fr" id="txn-cat-wrap"><label for="txn-ca">Category</label><select id="txn-ca"></select></div>
     </div>
-    <div class="fr"><label>Note (optional)</label><input type="text" id="txn-note" placeholder="e.g. Split with John, Business expense"></div>
+    <div class="fr"><label for="txn-note">Note (optional)</label><input type="text" id="txn-note" placeholder="e.g. Split with John, Business expense"></div>
     <div class="fg2">
-      <div class="fr" id="txn-goal-wrap"><label>Link to Goal</label><select id="txn-goal-link"><option value="">None</option></select></div>
-      <div class="fr" id="txn-debt-wrap"><label>Link to Debt</label><select id="txn-debt-link"><option value="">None</option></select></div>
+      <div class="fr" id="txn-goal-wrap"><label for="txn-goal-link">Link to Goal</label><select id="txn-goal-link"><option value="">None</option></select></div>
+      <div class="fr" id="txn-debt-wrap"><label for="txn-debt-link">Link to Debt</label><select id="txn-debt-link"><option value="">None</option></select></div>
     </div>
-    <div class="fr"><label>Tags (comma separated)</label><input type="text" id="txn-tags" placeholder="e.g. #business, #holiday2025, #shared"></div>
+    <div class="fr"><label for="txn-tags">Tags (comma separated)</label><input type="text" id="txn-tags" placeholder="e.g. #business, #holiday2025, #shared"></div>
     <div style="display:flex;gap:8px;margin-bottom:16px;align-items:center">
       <label class="toggle" style="margin:0"><input type="checkbox" id="txn-recurring" onchange="toggleRecurringUI(this.checked)"><span class="tsl"></span></label>
       <span style="font-size:12px;color:var(--t2);font-weight:600">Make recurring</span>
@@ -5607,6 +5611,11 @@ const notify = (msg,type) => { const el=document.getElementById('notif'); if(!el
 /* ─── COUNT-UP ANIMATION ─── */
 function animateNum(el, targetValue, formatter, durationMs) {
   if (!el) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    el.textContent = (formatter || fmt)(targetValue);
+    el.dataset.animFrom = targetValue;
+    return;
+  }
   const dur = durationMs || 680;
   const start = performance.now();
   const from = parseFloat(el.dataset.animFrom) || 0;
@@ -6161,9 +6170,19 @@ function syncShell(pageId){
   const region = (typeof S !== 'undefined' ? S.prefs?.region : null) || 'za';
   tab.innerHTML = def.tabs
     .filter(t => !t.region || t.region === region)
-    .map(t => `<div class="tb-tab ${t.id===pageId?'active':''}" onclick="goPg('${t.id}')">${t.label}</div>`)
+    .map(t => `<div class="tb-tab ${t.id===pageId?'active':''}" onclick="goPg('${t.id}')" role="tab" tabindex="0" aria-selected="${t.id===pageId}">${t.label}</div>`)
     .join('');
 }
+// tb-tabs is rebuilt via innerHTML on every navigation, so a one-time
+// querySelectorAll retrofit can't keep up — delegate the keydown listener to
+// the (static) container instead, same Enter/Space-activates-click pattern
+// used for the other div-based controls.
+document.addEventListener('DOMContentLoaded', function(){
+  const tabsEl = document.getElementById('tb-tabs');
+  if (tabsEl) tabsEl.addEventListener('keydown', function(e){
+    if ((e.key==='Enter'||e.key===' ') && e.target.classList.contains('tb-tab')) { e.preventDefault(); e.target.click(); }
+  });
+});
 
 function cycleTheme(){
   const order = ['light','dark','warm','amoled','highcontrast'];
@@ -7798,7 +7817,7 @@ function liHTML(t){
   const sign=t.type==='income'?'+':t.type==='transfer'?'↔':'−';
   const cls=t.type==='income'?'pos':t.type==='transfer'?'':' ';
   const typeStyle=t.type==='transfer'?`background:var(--blue-d);color:var(--blue)`:t.type==='income'?'background:var(--green-d);color:var(--green)':'background:var(--red-d);color:var(--red)';
-  return`<div class="li"><div class="lic" style="background:${clr}18;color:${clr}">${t.type==='transfer'?'↔':cat.icon}</div><div class="lii"><div class="lin">${esc(t.description)}${t.receipt?` <span onclick="klViewReceipt('${t.id}')" title="View receipt" style="cursor:pointer;font-size:10px;color:var(--accent)">📎</span>`:''}</div><div class="lis">${esc(t.date||'—')} · <span class="acc-dot" style="background:${acc.color}"></span> ${esc(acc.name)}</div></div><div style="text-align:right"><div class="lia ${cls}">${sign}${fmt(t.amount)}</div>${t.type==='transfer'?`<span class="badge" style="${typeStyle}">Transfer</span>`:''}</div><button onclick="delTxn('${t.id}')" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:16px;padding:4px;line-height:1">&times;</button></div>`;
+  return`<div class="li"><div class="lic" style="background:${clr}18;color:${clr}">${t.type==='transfer'?'↔':cat.icon}</div><div class="lii"><div class="lin">${esc(t.description)}${t.receipt?` <span onclick="klViewReceipt('${t.id}')" title="View receipt" style="cursor:pointer;font-size:10px;color:var(--accent)">📎</span>`:''}</div><div class="lis">${esc(t.date||'—')} · <span class="acc-dot" style="background:${acc.color}"></span> ${esc(acc.name)}</div></div><div style="text-align:right"><div class="lia ${cls}">${sign}${fmt(t.amount)}</div>${t.type==='transfer'?`<span class="badge" style="${typeStyle}">Transfer</span>`:''}</div><button onclick="delTxn('${t.id}')" aria-label="Delete transaction: ${esc(t.description)}, ${sign}${fmt(t.amount)}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:16px;padding:4px;line-height:1">&times;</button></div>`;
 }
 
 /* ═══════════════════════════════════════════════════
@@ -8491,7 +8510,7 @@ function rNetWorth(){
   }
 
   const icos={cash:'💵',investment:'📈',property:'🏠',vehicle:'🚗',retirement:'🏦',other:'📦'};
-  const rList=(id,items)=>{const el=document.getElementById(id);if(!el)return;if(!items.length){el.innerHTML='<div class="empty" style="padding:12px"><div class="empty-t" style="font-size:13px">None added</div></div>';return;}el.innerHTML=items.map(a=>`<div class="li"><div class="lic" style="background:var(--s3)">${icos[a.category]||'📦'}</div><div class="lii"><div class="lin">${esc(a.name)}</div><div class="lis">${a.category}</div></div><div class="lia ${a.kind==='asset'?'pos':'neg'}">${fmt(a.value)}</div><button onclick="delAsset('${a.id}')" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:16px;padding:4px">&times;</button></div>`).join('');};
+  const rList=(id,items)=>{const el=document.getElementById(id);if(!el)return;if(!items.length){el.innerHTML='<div class="empty" style="padding:12px"><div class="empty-t" style="font-size:13px">None added</div></div>';return;}el.innerHTML=items.map(a=>`<div class="li"><div class="lic" style="background:var(--s3)">${icos[a.category]||'📦'}</div><div class="lii"><div class="lin">${esc(a.name)}</div><div class="lis">${a.category}</div></div><div class="lia ${a.kind==='asset'?'pos':'neg'}">${fmt(a.value)}</div><button onclick="delAsset('${a.id}')" aria-label="Delete: ${esc(a.name)}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:16px;padding:4px">&times;</button></div>`).join('');};
   rList('assets-list',assets);rList('liab-list',liabs);
   const cEl=document.getElementById('nw-chart');
   if(cEl&&(totA>0||totL>0)){const W=560,H=74,pL=74;const max=Math.max(totA,totL,1);const bA=Math.max((totA/max)*(W-pL-16),4);const bL=Math.max((totL/max)*(W-pL-16),4);cEl.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%"><text x="${pL-8}" y="21" text-anchor="end" fill="var(--t3)" font-size="10" font-family="monospace">Assets</text><rect x="${pL}" y="10" width="${bA}" height="16" fill="var(--green)" rx="3" opacity="0.85"/><text x="${pL+bA+6}" y="21" fill="var(--green)" font-size="10.5" font-family="monospace">${fmt(totA)}</text><text x="${pL-8}" y="53" text-anchor="end" fill="var(--t3)" font-size="10" font-family="monospace">Liabilities</text><rect x="${pL}" y="42" width="${bL}" height="16" fill="var(--red)" rx="3" opacity="0.75"/><text x="${pL+bL+6}" y="53" fill="var(--red)" font-size="10.5" font-family="monospace">${fmt(totL)}</text></svg>`;}
@@ -8708,7 +8727,7 @@ function rSubs(){
     const cardStyle=isPaused?'opacity:0.55;border-style:dashed':'';
     const pauseBtn=`<button onclick="toggleSubActive('${sub.id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:13px;padding:2px 4px;line-height:1" title="${isPaused?'Resume':'Pause'}">${isPaused?'▶':'⏸'}</button>`;
     const overdueBadge=isOverdue?`<div onclick="advanceSubDate('${sub.id}')" style="font-size:9px;color:var(--red);font-weight:700;margin-top:2px;cursor:pointer" title="Click to advance to next billing date">Past due — click to advance ↻</div>`:'';
-    return`<div class="li" style="${cardStyle}"><div class="lic" style="background:var(--s3);font-size:17px">${esc(sub.icon||'📱')}</div><div class="lii"><div class="lin">${esc(sub.name)}${isPaused?' <span style="font-size:9px;color:var(--t3);font-weight:400;margin-left:4px">PAUSED</span>':''}</div><div class="lis">Next: ${esc(sub.nextDt||'—')} · ${sub.cycle||'monthly'}</div>${overdueBadge}</div><div style="text-align:right"><div class="lia">${fmt(sub.amount)}</div><div style="font-size:9.5px;color:var(--t3);font-family:var(--fm)">${fmt(m)}/mo</div></div>${pauseBtn}<button onclick="delSub('${sub.id}')" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:16px;padding:4px">&times;</button></div>`;
+    return`<div class="li" style="${cardStyle}"><div class="lic" style="background:var(--s3);font-size:17px">${esc(sub.icon||'📱')}</div><div class="lii"><div class="lin">${esc(sub.name)}${isPaused?' <span style="font-size:9px;color:var(--t3);font-weight:400;margin-left:4px">PAUSED</span>':''}</div><div class="lis">Next: ${esc(sub.nextDt||'—')} · ${sub.cycle||'monthly'}</div>${overdueBadge}</div><div style="text-align:right"><div class="lia">${fmt(sub.amount)}</div><div style="font-size:9.5px;color:var(--t3);font-family:var(--fm)">${fmt(m)}/mo</div></div>${pauseBtn}<button onclick="delSub('${sub.id}')" aria-label="Delete subscription: ${esc(sub.name)}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:16px;padding:4px">&times;</button></div>`;
   }).join('');
 }
 
@@ -8826,7 +8845,7 @@ function rBudget(){
           </span>
           <div style="display:flex;gap:6px;align-items:center">
             <span style="font-family:var(--fm);font-size:10.5px;color:${over?'var(--red)':'var(--t2)'}">${fmt(act)} / ${fmt(lim)}</span>
-            <button onclick="delBudget('${catId}')" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:13px">&times;</button>
+            <button onclick="delBudget('${catId}')" aria-label="Remove budget limit: ${esc(catLbl(catId))}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:13px">&times;</button>
           </div>
         </div>
         <div class="prt"><div class="prf" style="width:${pct}%;background:${clr}"></div></div>
@@ -9513,7 +9532,7 @@ function rSavings(){
         <span style="font-size:13.5px">${esc(g.icon||'🎯')} <strong>${esc(g.name)}</strong>${isDone?'<span style="color:var(--gold);font-size:9px;margin-left:5px;font-weight:700">COMPLETE ✓</span>':onTrack===true?'<span style="color:var(--green);font-size:9px;margin-left:5px;font-weight:700">ON TRACK ✓</span>':onTrack===false?'<span style="color:var(--amber);font-size:9px;margin-left:5px;font-weight:700">BEHIND SCHEDULE</span>':''}</span>
         <div style="display:flex;gap:6px;align-items:center">
           <span style="font-family:var(--fm);font-size:10.5px;color:var(--t2)">${fmt(g.saved)} / ${fmt(g.target)}</span>
-          <button onclick="delGoal('${g.id}')" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:13px">&times;</button>
+          <button onclick="delGoal('${g.id}')" aria-label="Delete goal: ${esc(g.name)}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:13px">&times;</button>
         </div>
       </div>
       <div class="prt" style="height:6px;margin-bottom:6px" title="${fmt(g.saved)} saved of ${fmt(g.target)} target (${Math.round(pG)}%)"><div class="prf" style="width:${pG}%;background:${isDone?'var(--gold)':'var(--green)'}"></div></div>
@@ -10266,7 +10285,7 @@ function rCalendar(){
       </div>`;
     }).join('');
   }
-  const[yr,mo]=calMoStr.split('-').map(Number);const lbl=document.getElementById('cal-lbl');if(lbl)lbl.textContent=new Date(yr,mo-1,1).toLocaleString('default',{month:'long',year:'numeric'});const dim=new Date(yr,mo,0).getDate();const evs=getCalEvs().filter(e=>e.day<=dim);const totDue=evs.filter(e=>e.type!=='payday').reduce((s,e)=>s+(e.amount||0),0);const today=new Date();const sameM=yr===today.getFullYear()&&mo===today.getMonth()+1;const upcoming=evs.filter(e=>e.type!=='payday'&&(!sameM||e.day>=today.getDate())).sort((a,b)=>a.day-b.day);const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};set('cal-ct',evs.filter(e=>e.type!=='payday').length);set('cal-tot',fmt(totDue));set('cal-nxt',upcoming.length?upcoming[0].name+' (day '+upcoming[0].day+')':'—');const firstDay=new Date(yr,mo-1,1).getDay();const dip=new Date(yr,mo-1,0).getDate();const startOff=(firstDay+6)%7;const grid=document.getElementById('cal-grid');if(!grid)return;let cells='';for(let i=startOff-1;i>=0;i--)cells+=`<div class="cd om"><div class="cdn">${dip-i}</div></div>`;for(let d=1;d<=dim;d++){const dEvs=evs.filter(e=>e.day===d);const isT=sameM&&d===today.getDate();const isPast=sameM&&d<today.getDate();cells+=`<div class="cd${isT?' today':isPast?' past':''}"><div class="cdn" style="${isT?'color:var(--accent);font-weight:700':isPast?'color:var(--t4)':''}">${d}</div>${dEvs.map(e=>`<div class="ce" style="background:${e.color}20;color:${isPast?'var(--t4)':e.color};${isPast?'opacity:0.5':''}">${esc((e.name||'').slice(0,10))}</div>`).join('')}</div>`;}const totC=Math.ceil((startOff+dim)/7)*7;let nd=1;while(startOff+dim+(nd-1)<totC)cells+=`<div class="cd om"><div class="cdn">${nd++}</div></div>`;grid.innerHTML=cells;const ulEl=document.getElementById('cal-up-list');if(ulEl)ulEl.innerHTML=[...evs].sort((a,b)=>a.day-b.day).map(e=>`<div class="li"><div class="lic" style="background:${e.color}18;color:${e.color}">📅</div><div class="lii"><div class="lin">${esc(e.name)}</div><div class="lis">Day ${e.day} · ${e.type}</div></div><div class="lia" style="color:${e.type==='payday'?'var(--green)':'var(--red)'}">${e.type==='payday'?'+':'−'}${fmt(e.amount)}</div></div>`).join('')||'<div class="empty" style="padding:12px"><div class="empty-s">No bills this month</div></div>';const blEl=document.getElementById('cal-bill-list');if(blEl)blEl.innerHTML=(S.calBills||[]).map(b=>`<div class="li"><div class="lii"><div class="lin" style="font-size:12px">${esc(b.name)}</div><div class="lis">Day ${b.day}</div></div><span class="mono" style="font-size:11px">${fmt(b.amount)}</span><button onclick="delCalBill('${b.id}')" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:13px;padding:4px">&times;</button></div>`).join('');}
+  const[yr,mo]=calMoStr.split('-').map(Number);const lbl=document.getElementById('cal-lbl');if(lbl)lbl.textContent=new Date(yr,mo-1,1).toLocaleString('default',{month:'long',year:'numeric'});const dim=new Date(yr,mo,0).getDate();const evs=getCalEvs().filter(e=>e.day<=dim);const totDue=evs.filter(e=>e.type!=='payday').reduce((s,e)=>s+(e.amount||0),0);const today=new Date();const sameM=yr===today.getFullYear()&&mo===today.getMonth()+1;const upcoming=evs.filter(e=>e.type!=='payday'&&(!sameM||e.day>=today.getDate())).sort((a,b)=>a.day-b.day);const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};set('cal-ct',evs.filter(e=>e.type!=='payday').length);set('cal-tot',fmt(totDue));set('cal-nxt',upcoming.length?upcoming[0].name+' (day '+upcoming[0].day+')':'—');const firstDay=new Date(yr,mo-1,1).getDay();const dip=new Date(yr,mo-1,0).getDate();const startOff=(firstDay+6)%7;const grid=document.getElementById('cal-grid');if(!grid)return;let cells='';for(let i=startOff-1;i>=0;i--)cells+=`<div class="cd om"><div class="cdn">${dip-i}</div></div>`;for(let d=1;d<=dim;d++){const dEvs=evs.filter(e=>e.day===d);const isT=sameM&&d===today.getDate();const isPast=sameM&&d<today.getDate();cells+=`<div class="cd${isT?' today':isPast?' past':''}"><div class="cdn" style="${isT?'color:var(--accent);font-weight:700':isPast?'color:var(--t4)':''}">${d}</div>${dEvs.map(e=>`<div class="ce" style="background:${e.color}20;color:${isPast?'var(--t4)':e.color};${isPast?'opacity:0.5':''}">${esc((e.name||'').slice(0,10))}</div>`).join('')}</div>`;}const totC=Math.ceil((startOff+dim)/7)*7;let nd=1;while(startOff+dim+(nd-1)<totC)cells+=`<div class="cd om"><div class="cdn">${nd++}</div></div>`;grid.innerHTML=cells;const ulEl=document.getElementById('cal-up-list');if(ulEl)ulEl.innerHTML=[...evs].sort((a,b)=>a.day-b.day).map(e=>`<div class="li"><div class="lic" style="background:${e.color}18;color:${e.color}">📅</div><div class="lii"><div class="lin">${esc(e.name)}</div><div class="lis">Day ${e.day} · ${e.type}</div></div><div class="lia" style="color:${e.type==='payday'?'var(--green)':'var(--red)'}">${e.type==='payday'?'+':'−'}${fmt(e.amount)}</div></div>`).join('')||'<div class="empty" style="padding:12px"><div class="empty-s">No bills this month</div></div>';const blEl=document.getElementById('cal-bill-list');if(blEl)blEl.innerHTML=(S.calBills||[]).map(b=>`<div class="li"><div class="lii"><div class="lin" style="font-size:12px">${esc(b.name)}</div><div class="lis">Day ${b.day}</div></div><span class="mono" style="font-size:11px">${fmt(b.amount)}</span><button onclick="delCalBill('${b.id}')" aria-label="Delete: ${esc(b.name)}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:13px;padding:4px">&times;</button></div>`).join('');}
 function addCalBill(){const name=document.getElementById('bl-name').value.trim();const amount=parseFloat(document.getElementById('bl-amt').value)||0;const day=parseInt(document.getElementById('bl-day').value);const type=document.getElementById('bl-type').value;const color=document.getElementById('bl-col').value;if(!name||!day||day<1||day>28){notify('Enter a valid name and day (1-28)','err');return;}if(!S.calBills)S.calBills=[];S.calBills.push({id:uid(),name,amount,day,type,color});save();rCalendar();notify('Bill added to calendar','ok');['bl-name','bl-amt','bl-day'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});}
 const delCalBill=id=>{const b=(S.calBills||[]).find(x=>x.id===id);klConfirm('Remove'+(b?' "'+b.name+'"':'')+' from calendar?',()=>{S.calBills=(S.calBills||[]).filter(x=>x.id!==id);save();rCalendar();},{title:'Remove Bill',danger:true});};
 
@@ -10483,7 +10502,7 @@ function _sbRenderExpenses(){
     </div>
     <div style="display:flex;align-items:center;gap:8px">
       <span style="font-family:var(--fm);font-size:12px">${fmt(e.amount)}</span>
-      <button onclick="_sbDelExpense(${i})" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px">&times;</button>
+      <button onclick="_sbDelExpense(${i})" aria-label="Delete split expense: ${esc(e.desc)}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px">&times;</button>
     </div>
   </div>`).join('');
 }
@@ -11018,7 +11037,7 @@ function rInsurance(){
     else{const sorted=[...policies].sort((a,b)=>{if(!a.renewal&&!b.renewal)return 0;if(!a.renewal)return 1;if(!b.renewal)return -1;return a.renewal.localeCompare(b.renewal);});listEl.innerHTML=`<div class="g2">${sorted.map(p=>{const days=_daysUntil(p.renewal);const expired=p.renewal&&days<0;const renewalColor=expired?'var(--red)':days<30?'var(--amber)':'var(--t2)';return`<div class="card" style="position:relative${expired?';border-left:3px solid var(--red)':''}">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
         <div style="display:flex;gap:10px;align-items:center"><span style="font-size:20px">${p.icon}</span><div><div style="font-weight:700;font-size:13px">${esc(p.insurer)}</div><div style="font-size:10.5px;color:var(--t3);text-transform:capitalize">${p.type.replace('_',' ')}</div></div></div>
-        <button onclick="delInsurance('${p.id}')" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:15px">&times;</button>
+        <button onclick="delInsurance('${p.id}')" aria-label="Delete policy: ${esc(p.insurer)} ${esc(p.type.replace('_',' '))}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:15px">&times;</button>
       </div>
       <div class="g2" style="gap:6px">
         <div class="sr"><span class="lbl">Monthly Premium</span><span class="val mono neg">${fmt(p.premium)}</span></div>
@@ -11172,7 +11191,7 @@ function rReminders(){
       </div>
       <div style="display:flex;gap:6px">
         <button onclick="doneReminder('${r.id}')" class="btn btn-ghost btn-xs">✓ Done</button>
-        <button onclick="delReminder('${r.id}')" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px">&times;</button>
+        <button onclick="delReminder('${r.id}')" aria-label="Delete reminder: ${esc(r.desc)}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px">&times;</button>
       </div>
     </div>`}).join('')}`;
   }
@@ -11350,7 +11369,7 @@ function rPortfolio(){if(!S.holdings)S.holdings=[];
       detectWrap.style.display='none';
     }
   }
-  const cost=S.holdings.reduce((s,h)=>s+h.cost,0);const val=S.holdings.reduce((s,h)=>s+h.currentVal,0);const gl=val-cost;const ret=cost>0?((gl/cost)*100):0;const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};set('pf-cost',fmt(cost));set('pf-val',fmt(val));set('pf-gl',fmt(gl));set('pf-ret',ret.toFixed(1)+'%');const glEl=document.getElementById('pf-gl');if(glEl)glEl.className='sv '+(gl>=0?'pos':'neg');const retEl=document.getElementById('pf-ret');if(retEl)retEl.style.color=ret>=0?'var(--green)':'var(--red)';const lEl=document.getElementById('pf-list');if(lEl){const _pfRegion=S.prefs?.region||'za';const _isUKpf=_pfRegion==='uk';const _isOtherPf=_pfRegion==='other';const _pfCorpEmpty='Track your money market funds, fixed deposits, unit trusts and other business investments to see your total portfolio performance';if(!S.holdings.length)lEl.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="font-size:36px;margin-bottom:10px">📈</div><div class="empty-t">No holdings yet</div><div class="empty-s">'+(isCorp()?_pfCorpEmpty:_isUKpf?'Track your ISAs, SIPPs, GIAs and other investments to see your total portfolio performance':_isOtherPf?'Track your ETFs, index funds, retirement accounts and other investments to see your total portfolio performance':'Track your ETFs, TFSAs, RAs, crypto and other investments to see your total portfolio performance')+'</div><button class="btn btn-gold" onclick="openAddHolding&&openAddHolding()" style="margin-top:14px">+ Add Holding</button></div>';else lEl.innerHTML=`<div class="tw"><table><thead><tr><th>Name</th><th>Type</th><th>Cost</th><th>Value</th><th>Return</th><th></th></tr></thead><tbody>${S.holdings.map(h=>{const r=h.cost>0?(((h.currentVal-h.cost)/h.cost)*100):0;return`<tr><td>${esc(h.name)}${h.provider?`<div style="font-size:9.5px;color:var(--t3)">${esc(h.provider)}</div>`:''}</td><td class="mono" style="font-size:11px">${h.type.replace('_',' ')}</td><td class="mono">${fmt(h.cost)}</td><td class="mono ${h.currentVal>=h.cost?'pos':'neg'}">${fmt(h.currentVal)}</td><td class="mono" style="color:${r>=0?'var(--green)':'var(--red)'}">${r.toFixed(1)}%</td><td><button onclick='delHolding("'+h.id+'")' class="btn btn-danger btn-xs">&times;</button></td></tr>`;}).join('')}</tbody></table></div>`;}
+  const cost=S.holdings.reduce((s,h)=>s+h.cost,0);const val=S.holdings.reduce((s,h)=>s+h.currentVal,0);const gl=val-cost;const ret=cost>0?((gl/cost)*100):0;const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};set('pf-cost',fmt(cost));set('pf-val',fmt(val));set('pf-gl',fmt(gl));set('pf-ret',ret.toFixed(1)+'%');const glEl=document.getElementById('pf-gl');if(glEl)glEl.className='sv '+(gl>=0?'pos':'neg');const retEl=document.getElementById('pf-ret');if(retEl)retEl.style.color=ret>=0?'var(--green)':'var(--red)';const lEl=document.getElementById('pf-list');if(lEl){const _pfRegion=S.prefs?.region||'za';const _isUKpf=_pfRegion==='uk';const _isOtherPf=_pfRegion==='other';const _pfCorpEmpty='Track your money market funds, fixed deposits, unit trusts and other business investments to see your total portfolio performance';if(!S.holdings.length)lEl.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="font-size:36px;margin-bottom:10px">📈</div><div class="empty-t">No holdings yet</div><div class="empty-s">'+(isCorp()?_pfCorpEmpty:_isUKpf?'Track your ISAs, SIPPs, GIAs and other investments to see your total portfolio performance':_isOtherPf?'Track your ETFs, index funds, retirement accounts and other investments to see your total portfolio performance':'Track your ETFs, TFSAs, RAs, crypto and other investments to see your total portfolio performance')+'</div><button class="btn btn-gold" onclick="openAddHolding&&openAddHolding()" style="margin-top:14px">+ Add Holding</button></div>';else lEl.innerHTML=`<div class="tw"><table><thead><tr><th>Name</th><th>Type</th><th>Cost</th><th>Value</th><th>Return</th><th></th></tr></thead><tbody>${S.holdings.map(h=>{const r=h.cost>0?(((h.currentVal-h.cost)/h.cost)*100):0;return`<tr><td>${esc(h.name)}${h.provider?`<div style="font-size:9.5px;color:var(--t3)">${esc(h.provider)}</div>`:''}</td><td class="mono" style="font-size:11px">${h.type.replace('_',' ')}</td><td class="mono">${fmt(h.cost)}</td><td class="mono ${h.currentVal>=h.cost?'pos':'neg'}">${fmt(h.currentVal)}</td><td class="mono" style="color:${r>=0?'var(--green)':'var(--red)'}">${r.toFixed(1)}%</td><td><button onclick="delHolding('${h.id}')" aria-label="Delete holding: ${esc(h.name)}" class="btn btn-danger btn-xs">&times;</button></td></tr>`;}).join('')}</tbody></table></div>`;}
   const aEl=document.getElementById('pf-alloc');
   if(aEl){const byType={};S.holdings.forEach(h=>{byType[h.type]=(byType[h.type]||0)+h.currentVal;});const sorted=Object.entries(byType).sort((a,b)=>b[1]-a[1]);if(!sorted.length){aEl.innerHTML='<div class="empty" style="padding:12px"><div class="empty-s">No holdings</div></div>';}else{const total=sorted.reduce((s,[,v])=>s+v,0);aEl.innerHTML=sorted.map(([type,val])=>{const pct=Math.round((val/total)*100);const clr=type==='etf'?'var(--green)':type==='tfsa'?'var(--blue)':type==='ra'?'var(--purple)':type==='crypto'?'var(--amber)':type==='isa'?'var(--accent)':type==='sipp'?'var(--blue)':type==='gia'?'var(--green)':type==='premium_bonds'?'var(--gold)':'var(--teal)';return`<div class="pr"><div class="prh"><span style="font-size:12px">${type.replace('_',' ')}</span><span style="font-family:var(--fm);font-size:11px">${fmt(val)} (${pct}%)</span></div><div class="prt"><div class="prf" style="width:${pct}%;background:${clr}"></div></div></div>`;}).join('');}}
   // JSE Top 40 12-month return as of 2025 Q4; FTSE 100 12-month return as of 2025 Q4; S&P 500 12-month return as of 2025 Q4 — update annually
@@ -12218,7 +12237,7 @@ function rRoutines(){
     const pct=steps.length?Math.round(done.length/steps.length*100):0;
     const stepsHtml=steps.map((s,idx)=>`<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--b2)"><input type="checkbox" ${done.includes(idx)?'checked':''} onchange="toggleRoutineStep('${r.id}',${idx},this.checked)" style="accent-color:var(--accent);width:16px;height:16px;margin-top:2px;flex-shrink:0"><span style="${done.includes(idx)?'text-decoration:line-through;color:var(--t3)':''}">${esc(s)}</span></div>`).join('');
     const resetBtn=done.length?`<button class="btn btn-ghost btn-xs" style="margin-top:8px;color:var(--t3)" onclick="resetRoutineProgress('${r.id}')">&#8635; Reset</button>`:'';
-    return `<div class="dc"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-weight:700;font-size:13px">${esc(r.name)}</div><div style="font-size:10px;color:var(--t3);font-family:var(--fm);margin-top:2px">${esc(r.freq)} · ${r.duration||15} min</div></div><div style="display:flex;gap:6px;align-items:center"><button onclick="openEditRoutine('${r.id}')" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:11px;padding:2px 6px;font-weight:600">Edit</button><button onclick="delRoutine('${r.id}')" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px">&times;</button></div></div>${steps.length?`<div style="height:4px;background:var(--b2);border-radius:2px;margin:10px 0 6px"><div style="height:100%;width:${pct}%;background:var(--green);border-radius:2px;transition:width .3s"></div></div><div style="font-size:10px;color:var(--t3);margin-bottom:8px">${done.length}/${steps.length} steps &middot; ${pct}%</div><div style="font-size:12px;color:var(--t2)">${stepsHtml}</div>`:''} ${resetBtn}</div>`;
+    return `<div class="dc"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-weight:700;font-size:13px">${esc(r.name)}</div><div style="font-size:10px;color:var(--t3);font-family:var(--fm);margin-top:2px">${esc(r.freq)} · ${r.duration||15} min</div></div><div style="display:flex;gap:6px;align-items:center"><button onclick="openEditRoutine('${r.id}')" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:11px;padding:2px 6px;font-weight:600">Edit</button><button onclick="delRoutine('${r.id}')" aria-label="Delete routine: ${esc(r.name)}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px">&times;</button></div></div>${steps.length?`<div style="height:4px;background:var(--b2);border-radius:2px;margin:10px 0 6px"><div style="height:100%;width:${pct}%;background:var(--green);border-radius:2px;transition:width .3s"></div></div><div style="font-size:10px;color:var(--t3);margin-bottom:8px">${done.length}/${steps.length} steps &middot; ${pct}%</div><div style="font-size:12px;color:var(--t2)">${stepsHtml}</div>`:''} ${resetBtn}</div>`;
   }).join('');}
 }
 function openAddRoutine(){const titleEl=document.getElementById('m-add-routine-title');if(titleEl)titleEl.textContent='Add Custom Routine';const saveBtn=document.querySelector('#m-add-routine .btn-gold');if(saveBtn){saveBtn.textContent='Save Routine';saveBtn.onclick=saveRoutine;}['rt-name','rt-steps'].forEach(function(id){const el=document.getElementById(id);if(el)el.value='';});const freq=document.getElementById('rt-freq');if(freq)freq.value='daily';const dur=document.getElementById('rt-dur');if(dur)dur.value='';document.getElementById('m-add-routine').classList.add('open');}
@@ -12880,7 +12899,7 @@ function rLsTracker(){
   }
   if(histEl){
     if(!expenses.length){histEl.innerHTML='<div class="empty" style="padding:8px"><div class="empty-s">No expenses yet</div></div>';}
-    else histEl.innerHTML=expenses.slice().reverse().slice(0,6).map(e=>`<div class="li" style="padding:7px 0"><div class="lii"><div class="lin" style="font-size:12px">Stage ${e.stage} · ${itemLabels[e.item]||e.item}</div><div class="lis">${e.date}${e.note?' · '+esc(e.note):''}</div></div><div style="font-family:var(--fm);font-size:12px;color:var(--red)">${fmt(e.cost)}</div><button onclick="delLsExpense('${e.id}')" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px">&times;</button></div>`).join('');
+    else histEl.innerHTML=expenses.slice().reverse().slice(0,6).map(e=>`<div class="li" style="padding:7px 0"><div class="lii"><div class="lin" style="font-size:12px">Stage ${e.stage} · ${itemLabels[e.item]||e.item}</div><div class="lis">${e.date}${e.note?' · '+esc(e.note):''}</div></div><div style="font-family:var(--fm);font-size:12px;color:var(--red)">${fmt(e.cost)}</div><button onclick="delLsExpense('${e.id}')" aria-label="Delete expense: Stage ${e.stage} ${itemLabels[e.item]||e.item}, ${e.date}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px">&times;</button></div>`).join('');
   }
 }
 const delLsExpense=id=>{S.lsExpenses=(S.lsExpenses||[]).filter(e=>e.id!==id);save();rLsTracker();};
@@ -12930,7 +12949,7 @@ function rPetrolTracker(){
   let cpkm='';
   if(withOdo.length>=2){const km=withOdo[withOdo.length-1].odo-withOdo[0].odo;const spent=withOdo.slice(1).reduce((s,f)=>s+f.total,0);if(km>0)cpkm=fmt(spent/km)+'/km';}
   if(resEl)resEl.innerHTML=`<div class="calc-result"><div class="sr"><span class="lbl">Total spent</span><span class="val neg">${fmt(totalSpent)}</span></div><div class="sr"><span class="lbl">Avg price/litre</span><span class="val">${fmt(avgPrice)}</span></div>${cpkm?`<div class="sr"><span class="lbl">Cost per km</span><span class="val">${cpkm}</span></div>`:''}<div class="sr"><span class="lbl">Fill-ups logged</span><span class="val">${fills.length}</span></div></div>`;
-  if(histEl)histEl.innerHTML=fills.slice().reverse().slice(0,8).map(f=>`<div class="li" style="padding:8px 0"><div class="lii"><div class="lin" style="font-size:12px">⛽ ${f.litres}L @ ${fmt(f.price)}/L</div><div class="lis">${f.date}${f.odo?' · '+f.odo.toLocaleString()+'km':''}</div></div><div style="font-family:var(--fm);font-size:12px;color:var(--red);font-weight:600">${fmt(f.total)}</div><button onclick="delPetrolFill('${f.id}')" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px">&times;</button></div>`).join('');
+  if(histEl)histEl.innerHTML=fills.slice().reverse().slice(0,8).map(f=>`<div class="li" style="padding:8px 0"><div class="lii"><div class="lin" style="font-size:12px">⛽ ${f.litres}L @ ${fmt(f.price)}/L</div><div class="lis">${f.date}${f.odo?' · '+f.odo.toLocaleString()+'km':''}</div></div><div style="font-family:var(--fm);font-size:12px;color:var(--red);font-weight:600">${fmt(f.total)}</div><button onclick="delPetrolFill('${f.id}')" aria-label="Delete fuel fill-up: ${f.litres}L, ${f.date}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px">&times;</button></div>`).join('');
 }
 const delPetrolFill=id=>{S.petrolFills=(S.petrolFills||[]).filter(f=>f.id!==id);save();rPetrolTracker();};
 
@@ -13197,9 +13216,14 @@ document.addEventListener('DOMContentLoaded',()=>{
       }).observe(el,{attributes:true});
     });
   })();
-  // Accessibility: make sidebar nav-item divs keyboard-navigable
-  document.querySelectorAll('.nav-item').forEach(function(el){
-    el.setAttribute('role','button');
+  // Accessibility: make sidebar nav-item divs, and other div-based clickable
+  // controls that were never given real button semantics, keyboard-navigable.
+  // .tb-tab is deliberately excluded here — it's rebuilt via innerHTML on every
+  // page navigation, so it gets its role/tabindex baked into its own template
+  // string instead (see the tb-tabs render function) rather than a one-time
+  // querySelectorAll that would miss every re-render.
+  document.querySelectorAll('.nav-item, .tab, .tsw, #corp-toggle').forEach(function(el){
+    el.setAttribute('role', el.id==='corp-toggle' ? 'switch' : el.classList.contains('tab') ? 'tab' : 'button');
     el.setAttribute('tabindex','0');
     el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click();}});
   });
@@ -13511,7 +13535,7 @@ function rMedGap(){
     <div class="stat-tile" style="padding:14px"><div class="sl">Unclaimed</div><div class="sv" style="font-size:20px;color:${outstanding>0?'var(--amber)':'var(--green)'}">${fmt(outstanding)}</div></div>
   </div>`;
   if(!expenses.length){el.innerHTML=`<div class="empty" style="padding:12px"><div class="empty-s">${emptyLbl}</div></div>`;return;}
-  el.innerHTML=expenses.slice().reverse().map(e=>`<div class="li"><div class="lii"><div class="lin">${esc(e.provider)} — ${esc(e.description)}</div><div class="lis">${e.date}${e.claimed?` · Claimed: ${fmt(e.claimed)}`:' · Unclaimed'}</div></div><div style="text-align:right"><div style="font-family:var(--fm);font-size:13px;color:var(--red)">${fmt(e.oop)}</div></div><button onclick="delMedGap('${e.id}')" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px">&times;</button></div>`).join('');
+  el.innerHTML=expenses.slice().reverse().map(e=>`<div class="li"><div class="lii"><div class="lin">${esc(e.provider)} — ${esc(e.description)}</div><div class="lis">${e.date}${e.claimed?` · Claimed: ${fmt(e.claimed)}`:' · Unclaimed'}</div></div><div style="text-align:right"><div style="font-family:var(--fm);font-size:13px;color:var(--red)">${fmt(e.oop)}</div></div><button onclick="delMedGap('${e.id}')" aria-label="Delete medical expense: ${esc(e.provider)}, ${e.date}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px">&times;</button></div>`).join('');
 }
 function addMedGapExpense(){
   const date=document.getElementById('mg-date')?.value||localDateStr();
