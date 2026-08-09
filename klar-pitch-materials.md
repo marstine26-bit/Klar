@@ -92,8 +92,8 @@ This is early-stage investing. We're honest about that. But the product is built
 
 **Job:** Demonstrate a clear, proven SaaS revenue model with logical upgrade paths.
 
-- Freemium SaaS with three paid tiers: Essential £3.99/mo, Pro £7.99/mo, Family £12.99/mo (in development)
-- Billing via Paddle (handles UK/international VAT compliance automatically)
+- Freemium SaaS with three paid tiers: Essential £3.99/mo, Pro £7.99/mo, Family £11.99/mo (in development)
+- Billing via Lemon Squeezy (handles UK/international VAT compliance automatically); Bill Pay processed separately via Stripe
 - Unit economics target: convert free users to Essential at 10–15%, upgrade 20–30% to Pro over 12 months
 - No lending, no referral kickbacks, no data selling — revenue comes entirely from subscribers
 - Long-term adjacency: AI-powered financial coaching upsell; potential B2B2C (employer financial wellness)

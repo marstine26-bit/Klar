@@ -1382,25 +1382,29 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 <!-- ══ CRISP CHAT ══
      Replace YOUR_CRISP_WEBSITE_ID with your Website ID from Crisp Dashboard → Settings → Website Settings.
      Get your free account at https://crisp.chat
-     The widget loads only after the user has made an explicit navigation action (not on cold load)
-     to avoid interfering with the PIN lock or region gate. -->
+     The widget script itself, and the user-email association, are deliberately NOT loaded here —
+     only window.$crisp/CRISP_WEBSITE_ID config is set up (inert, no network request). The actual
+     script tag is injected lazily by _klLoadCrisp(), called from klOpenSupport() the first time
+     the user opens chat, matching the privacy policy's "When chat opened" disclosure. This used
+     to load and identify the user unconditionally on cold load, before the user had touched
+     support chat at all (and before the privacy/region gate was even dismissed). -->
 <script>
   window.$crisp = [];
   window.CRISP_WEBSITE_ID = '5a23dbc4-b5bd-4159-a7f6-41d27ccb05a7';
-  (function() {
+  let _crispLoaded = false;
+  window._klLoadCrisp = function() {
+    if (_crispLoaded || window.CRISP_WEBSITE_ID === 'YOUR_CRISP_WEBSITE_ID') return;
+    _crispLoaded = true;
     var d = document;
     var s = d.createElement('script');
     s.src = 'https://client.crisp.chat/l.js';
     s.async = 1;
     d.getElementsByTagName('head')[0].appendChild(s);
-  })();
-  /* Pre-load user email if already signed in — Crisp will associate the conversation. */
-  document.addEventListener('DOMContentLoaded', function() {
     try {
       var u = JSON.parse(localStorage.getItem('sb_user') || 'null');
       if (u && u.email) window.$crisp.push(['set', 'user:email', [u.email]]);
     } catch(e) {}
-  });
+  };
 </script>
 
 </head>
@@ -4252,6 +4256,10 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <tr><td><strong>Groq</strong></td><td>AI Advisor responses</td><td>USA</td><td>Only when queried</td></tr>
       <tr><td><strong>Lemon Squeezy</strong></td><td>Subscription payments</td><td>Global</td><td>Only when subscribing</td></tr>
       <tr><td><strong>Stripe</strong></td><td>Bill payments checkout</td><td>Global</td><td>Only when paying bills</td></tr>
+      <tr><td><strong>Saltedge</strong></td><td>UK bank feeds</td><td>EU</td><td>Only if bank feed connected</td></tr>
+      <tr><td><strong>Frankfurter</strong></td><td>Live FX rates</td><td>EU</td><td>When FX conversion active</td></tr>
+      <tr><td><strong>Crisp</strong></td><td>Support chat</td><td>EU</td><td>When chat opened</td></tr>
+      <tr><td><strong>PostHog</strong></td><td>Product analytics (anonymised)</td><td>EU</td><td>Always (anonymised)</td></tr>
     </table>
     <p>All services operate under their own privacy policies and are bound by applicable data protection law. None are active unless you use the specific feature.</p>
 
@@ -13229,6 +13237,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
   // Sidebar collapsible sections
   initSidebarCollapse();
+  // Returning user who already consented in a previous session — resume analytics.
+  // (First-time consent is handled at the point it's granted: klAcceptPrivacy() /
+  // klCheckRegion()'s privacy-checkbox branch.)
+  if(typeof _klMaybeInitPostHog==='function') _klMaybeInitPostHog();
   goPg('dashboard');
   // Auth gate — mandatory on first load; skipped if session already exists
   _initSupabase();
@@ -14423,12 +14435,25 @@ const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
    Get one free at https://posthog.com — EU cloud: eu.i.posthog.com */
 const KL_POSTHOG_KEY  = 'phc_thPcUFq3KwSwf7BDnX7XZe5QctQatCGimcdrKNBafJAm';
 const KL_POSTHOG_HOST = 'https://eu.i.posthog.com';
+// The stub below only queues calls locally and defines window.posthog — it makes no network
+// request by itself, so it's safe to set up eagerly. The actual posthog.init() call (which does
+// reach out to PostHog's servers) is deferred to _klMaybeInitPostHog(), called only once consent
+// is already on file at boot, or the moment the user grants it — matching the privacy policy's
+// "nothing is sent unless you opt in" promise, which this previously violated by calling
+// posthog.init() (and klTrack() firing on the very first page render) unconditionally.
 (function(){
   if(!KL_POSTHOG_KEY) return;
   !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split('.');2==o.length&&(t=t[o[0]],e=o[1]);t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement('script')).type='text/javascript',p.crossOrigin='anonymous',p.async=!0,p.src=s.api_host+'/static/array.js',(r=t.getElementsByTagName('script')[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a='posthog',u.people=u.people||[],u.toString=function(t){var e='posthog';return'posthog'!==a&&(e+='.'+a),t||(e+=' (stub)'),e},u.people.toString=function(){return u.toString(1)+' (stub)'},o='capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys getNextSurveyStep onSessionId setPersonPropertiesForFlags'.split(' '),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-  posthog.init(KL_POSTHOG_KEY,{api_host:KL_POSTHOG_HOST,person_profiles:'identified_only',capture_pageview:false,autocapture:false,persistence:'memory',disable_persistence:true});
 })();
+let _posthogInited = false;
+function _klMaybeInitPostHog(){
+  if(_posthogInited || !KL_POSTHOG_KEY || typeof posthog==='undefined') return;
+  if(typeof S==='undefined' || !S.prefs || !S.prefs.privacyConsented) return;
+  posthog.init(KL_POSTHOG_KEY,{api_host:KL_POSTHOG_HOST,person_profiles:'identified_only',capture_pageview:false,autocapture:false,persistence:'memory',disable_persistence:true});
+  _posthogInited = true;
+}
 function klTrack(event,props){
+  if(!_posthogInited) return;
   if(typeof posthog!=='undefined'&&posthog.capture){
     posthog.capture(event,Object.assign({region:S?.prefs?.region,tier:S?.prefs?.tier},props||{}));
   }
@@ -14762,7 +14787,7 @@ function rSettingsPlanTiles(){
   if(planSubEl) planSubEl.textContent = tier==='free'?'Local storage only · No cloud sync or AI':'Active subscription · Cloud sync + AI enabled';
   // Refresh referral link (in case user just signed in)
   if (typeof klInitReferral === 'function') klInitReferral();
-  // Show Paddle customer portal for paid users; hide upgrade CTA
+  // Show Lemon Squeezy customer portal for paid users; hide upgrade CTA
   const upgradeBtn = document.getElementById('kl-upgrade-btn');
   const manageWrap = document.getElementById('kl-manage-sub-wrap');
   if(tier !== 'free'){
@@ -15151,7 +15176,7 @@ const KL_PLANS = [
   { id:'essential', name:'Essential',
     gbpMonthly:3.99, gbpAnnual:34.99, zarMonthly:49,  zarAnnual:499,
     monthlyKey:'essential_monthly', annualKey:'essential_annual',
-    features:['Everything in Free','Cloud sync across all devices','AI Financial Advisor (Groq/LLaMA)','Net Worth & Health Score','Cash Flow Forecast','Bank Feeds (UK Open Banking)','Bill Hub & payment tracking','ISA / TFSA tracker','Unlimited history','Receipt photo attachments'] },
+    features:['Everything in Free','Cloud sync across all devices','AI Financial Advisor (Groq/LLaMA)','Net Worth & Health Score','Cash Flow Forecast','Bank Feeds (UK, via Salt Edge)','Bill Hub & payment tracking','ISA / TFSA tracker','Unlimited history','Receipt photo attachments'] },
   { id:'pro',       name:'Pro',
     gbpMonthly:7.99, gbpAnnual:64.99, zarMonthly:89,  zarAnnual:899,
     monthlyKey:'pro_monthly', annualKey:'pro_annual', recommended:true,
@@ -15372,6 +15397,7 @@ document.addEventListener('click', function(e){
     S.prefs.privacyConsentDate = new Date().toISOString();
     S.prefs.privacyConsentVersion = PRIVACY_VERSION;
     save();
+    if(typeof _klMaybeInitPostHog==='function') _klMaybeInitPostHog();
     const gate = document.getElementById('kl-privacy-gate');
     if (gate) {
       gate.style.opacity = '0';
@@ -15392,6 +15418,7 @@ document.addEventListener('click', function(e){
 
   window.klOpenSupport = function() {
     if (typeof window.$crisp !== 'undefined' && window.CRISP_WEBSITE_ID !== 'YOUR_CRISP_WEBSITE_ID') {
+      if (typeof window._klLoadCrisp === 'function') window._klLoadCrisp();
       window.$crisp.push(['do', 'chat:show']);
       window.$crisp.push(['do', 'chat:open']);
     } else {
@@ -16148,6 +16175,7 @@ document.addEventListener('click', function(e){
       S.prefs.privacyConsented = true;
       S.prefs.privacyConsentDate = new Date().toISOString();
       S.prefs.privacyConsentVersion = (typeof PRIVACY_VERSION !== 'undefined' ? PRIVACY_VERSION : 1);
+      if(typeof _klMaybeInitPostHog==='function') _klMaybeInitPostHog();
     }
     klTrack('region_selected', {region});
     const prevRegion = S.prefs.region;

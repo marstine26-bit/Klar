@@ -132,7 +132,7 @@ The market is competitive but fragmented. No single app has achieved dominant ma
 | **YNAB** | Expensive (£85+/yr equiv.) | None | US primary | Partial (manual) | Medium | No |
 | **Moneyhub** | Closing (consumer) | None | Enterprise only | No | Enterprise only | Yes |
 | **Monzo** | Free–£15 (bank bundle) | None | UK only | No | Low | Limited |
-| **Klar** | £3.99–£12.99 | Yes (Groq/LLaMA) | UK + ZA (ZAR) | Yes (single-file) | High | Roadmap |
+| **Klar** | £3.99–£11.99 | Yes (Groq/LLaMA) | UK + ZA (ZAR) | Yes (single-file) | High | Roadmap |
 
 **Standout observations:** Cleo has the strongest AI feature set but is operationally US-focused. No competitor offers meaningful offline capability or multi-region consumer support. Klar's price points sit at or below mid-market across the board. AI advisory is a genuine differentiator that no UK-headquartered competitor currently offers in a mature state.
 
@@ -148,7 +148,7 @@ The market is competitive but fragmented. No single app has achieved dominant ma
 
 **3. Multi-region from day one.** Klar operates in both the UK (GBP) and South Africa (ZAR). No consumer competitor in this space has a credible multi-region strategy at launch. This signals architectural thinking about internationalisation and opens the door to emerging market expansion — a narrative with clear investor appeal.
 
-**4. Honest pricing with a family tier.** At £3.99/£7.99/£12.99, Klar undercuts Emma (£4.99–£14.99) and YNAB (~£85/yr) while matching Plum and Snoop Plus on entry-level pricing. The Family plan at £12.99 has no direct equivalent in the pure-budgeting segment — Emma's family add-on costs £5.99/mo per person on top of the Ultimate £14.99 plan.
+**4. Honest pricing with a family tier.** At £3.99/£7.99/£11.99, Klar undercuts Emma (£4.99–£14.99) and YNAB (~£85/yr) while matching Plum and Snoop Plus on entry-level pricing. The Family plan at £11.99 has no direct equivalent in the pure-budgeting segment — Emma's family add-on costs £5.99/mo per person on top of the Ultimate £14.99 plan.
 
 **5. Comprehensive feature breadth in one product.** Klar covers transaction tracking, budgeting, savings goals, debt tracking, subscription management, and AI advice in one product. No competitor in the £4–£8/mo range matches this surface area. Emma comes closest but lacks AI and debt tracking depth.
 
@@ -178,7 +178,7 @@ The research identifies several underserved areas that no competitor owns convin
 
 - **AI is the moat, and Klar has it now.** The only UK-native competitor with a live AI advisor is Klar. Cleo — the AI benchmark in this space — has retreated to the US and is in a staged UK re-entry with USD pricing. The AI window is open, and being early matters in LLM-native products where user habit and conversation memory create switching costs.
 
-- **Pricing is a strategic weapon.** At £3.99/£7.99/£12.99, Klar is priced below Emma and YNAB, at parity with Plum, and above Snoop's free tier — but with materially more features than Snoop and AI that neither Plum nor Emma can match. The price-to-feature ratio is currently best-in-class at each tier.
+- **Pricing is a strategic weapon.** At £3.99/£7.99/£11.99, Klar is priced below Emma and YNAB, at parity with Plum, and above Snoop's free tier — but with materially more features than Snoop and AI that neither Plum nor Emma can match. The price-to-feature ratio is currently best-in-class at each tier.
 
 - **Moneyhub's consumer closure is an acquisition opportunity.** Moneyhub is shutting its consumer app in August 2026. These are engaged, paying users who understand Open Banking and financial tracking — a pre-qualified audience that will be looking for a replacement. A targeted acquisition campaign in Q3 2026 is a concrete, time-limited opportunity.
 
