@@ -278,6 +278,29 @@ body[data-density="compact"] .card{padding:18px}
 }
 .rail-btn:hover .rb-tip{opacity:1;transform:translateY(-50%) translateX(0)}
 
+/* "More" panel — folds in SA/UK Tools, Pay Bills, Business always, and (mobile only, via
+   .rail-mobile-only) Invest/Insights/Settings/Shortcuts too, since the mobile bottom bar only
+   keeps 5 icons visible. Desktop: small anchored dropdown, positioned by toggleRailMore() via
+   getBoundingClientRect() so it always sits next to the actual button regardless of where the
+   rail places it. Mobile: full-width bottom sheet above the tab bar (see @media block below). */
+.rail-more-panel{
+  position:fixed;z-index:210;min-width:200px;
+  background:var(--s2);border:var(--bw) solid var(--b1);border-radius:var(--r);
+  padding:8px;box-shadow:0 12px 40px rgba(0,0,0,.4);
+  display:none;flex-direction:column;gap:2px;
+}
+.rail-more-panel.open{display:flex}
+.rail-more-item{
+  display:flex;align-items:center;gap:10px;width:100%;
+  padding:9px 10px;border-radius:8px;border:none;background:transparent;
+  color:var(--t2);font-size:13px;font-weight:500;text-align:left;cursor:pointer;
+  font-family:var(--ff);transition:background var(--dur),color var(--dur);
+}
+.rail-more-item:hover{background:var(--s3);color:var(--t1)}
+.rail-more-item.active{color:var(--accent);background:var(--accent-d)}
+.rail-more-divider{height:1px;background:var(--b1);margin:4px 2px}
+.rail-mobile-only{display:none}
+
 /* Old .sidebar is the functional shadow nav — visually removed but its .nav-item nodes drive the index-based active state in goPg() */
 .sidebar{position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none}
 
@@ -302,7 +325,7 @@ body[data-density="compact"] .card{padding:18px}
 .tb-title{font-family:var(--ff);font-size:20px;font-weight:700;letter-spacing:-.04em;color:var(--t1);line-height:1;white-space:nowrap}
 .tb-title em{font-style:normal;color:var(--accent)}
 [data-theme="light"] .tb-title em,[data-theme="warm"] .tb-title em{color:var(--accent)}
-.tb-tabs{display:flex;gap:0;margin-left:8px;align-items:center;height:100%;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 20px),transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 20px),transparent 100%)}
+.tb-tabs{position:relative;display:flex;gap:0;margin-left:8px;align-items:center;height:100%;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 20px),transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 20px),transparent 100%)}
 .tb-tabs::-webkit-scrollbar{display:none}
 .tb-tab{
   padding:0 14px;height:100%;display:flex;align-items:center;
@@ -313,6 +336,19 @@ body[data-density="compact"] .card{padding:18px}
 }
 .tb-tab:hover{color:var(--t1)}
 .tb-tab.active{color:var(--t1);border-bottom-color:var(--accent)}
+.tb-more-menu{
+  position:fixed;min-width:180px;
+  background:var(--s2);border:var(--bw) solid var(--b1);border-radius:var(--rsm);
+  padding:6px;box-shadow:0 8px 30px rgba(0,0,0,.35);z-index:210;
+  display:none;flex-direction:column;gap:1px;
+}
+.tb-more-menu.open{display:flex}
+.tb-more-item{
+  padding:8px 10px;border-radius:7px;font-size:12.5px;font-weight:500;
+  color:var(--t2);cursor:pointer;white-space:nowrap;transition:background var(--dur),color var(--dur);
+}
+.tb-more-item:hover{background:var(--s3);color:var(--t1)}
+.tb-more-item.active{color:var(--accent);font-weight:700}
 .tb-tab .tb-tab-badge{
   margin-left:6px;background:var(--gold-d);color:var(--gold);
   font-size:10px;padding:1px 6px;border-radius:10px;font-weight:600;font-family:var(--fm);
@@ -324,6 +360,10 @@ body[data-density="compact"] .card{padding:18px}
   border-radius:8px;padding:6px 10px;width:240px;
   font-size:12px;color:var(--t3);cursor:pointer;
 }
+/* Hidden on desktop (the full .tb-search box above covers it); the mobile media query flips
+   this to display:flex, since .tb-search itself is hidden on mobile (no room for the full box)
+   — previously mobile had NO way to search or jump to a page at all. */
+.tb-search-mobile-btn{display:none}
 .tb-search:hover{border-color:var(--b2);color:var(--t2)}
 .tb-search kbd{
   margin-left:auto;background:var(--s3);padding:1px 5px;border-radius:3px;
@@ -352,9 +392,20 @@ body[data-density="compact"] .card{padding:18px}
   .rail-btn{flex:1;width:auto;height:44px;border-radius:8px}
   .rail-btn.active::before{left:50%;top:auto;bottom:-4px;transform:translateX(-50%);width:24px;height:3px;border-radius:2px 2px 0 0}
   .rail-btn .rb-tip{display:none}
+  .rail-desktop-only{display:none}
   .main{margin-left:0;padding-bottom:64px}
   .topbar{padding:0 16px}
   .tb-search{display:none}
+  .tb-search-mobile-btn{display:flex}
+  /* "More" panel becomes a full-width bottom sheet above the 60px tab bar, rather than the
+     small anchored desktop dropdown — same content, touch-sized targets. */
+  .rail-more-panel{
+    left:0!important;right:0!important;bottom:60px!important;top:auto!important;
+    width:100%;min-width:0;border-radius:16px 16px 0 0;border-bottom:none;
+    max-height:60vh;overflow-y:auto;padding:10px;
+  }
+  .rail-more-item{padding:12px 10px;font-size:14px}
+  .rail-mobile-only{display:flex}
 }
 
 /* Base grid utility classes — deliberately placed before the responsive
@@ -817,6 +868,24 @@ tbody tr:hover td{background:var(--s2)}
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:100;align-items:center;justify-content:center;padding:20px}
 .modal-bg.open{display:flex}
 .modal{background:var(--s1);border:var(--bw) solid var(--b2);border-radius:var(--r);padding:32px;width:100%;max-width:490px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow);animation:mIn .2s var(--ease)}
+
+/* Command palette (⌘K) — top-anchored rather than centered, so it doesn't jump around as the
+   result count changes while typing. */
+#kl-cmdk-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);z-index:900;padding:12vh 20px 20px;justify-content:center}
+#kl-cmdk-modal.open{display:flex}
+.kl-cmdk-box{background:var(--s1);border:var(--bw) solid var(--b2);border-radius:var(--r);width:100%;max-width:560px;max-height:70vh;box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;animation:mIn .15s var(--ease)}
+.kl-cmdk-inputwrap{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:var(--bw) solid var(--b1);flex-shrink:0}
+.kl-cmdk-icon{color:var(--t3);font-size:16px}
+.kl-cmdk-inputwrap input{flex:1;background:none;border:none;outline:none;font-size:15px;color:var(--t1);font-family:var(--ff)}
+.kl-cmdk-inputwrap input::placeholder{color:var(--t4)}
+.kl-cmdk-inputwrap kbd{background:var(--s3);color:var(--t3);font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;font-family:var(--fm)}
+.kl-cmdk-results{overflow-y:auto;padding:6px}
+.kl-cmdk-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;font-size:13.5px;color:var(--t2)}
+.kl-cmdk-item.sel,.kl-cmdk-item:hover{background:var(--accent-d);color:var(--t1)}
+.kl-cmdk-item-hub{font-size:10.5px;color:var(--t4);font-family:var(--fm);flex-shrink:0}
+.kl-cmdk-item.sel .kl-cmdk-item-hub{color:var(--t3)}
+.kl-cmdk-search-fallback{border-top:var(--bw) solid var(--b1);margin-top:4px;padding-top:12px;color:var(--t3);font-size:12.5px}
+.kl-cmdk-empty{padding:20px;text-align:center;color:var(--t4);font-size:13px}
 @keyframes mIn{from{opacity:0;transform:translateY(-14px) scale(.97)}to{opacity:1;transform:none}}
 .mt{font-family:var(--fs);font-size:22px;font-weight:700;letter-spacing:-0.3px;margin-bottom:22px;color:var(--t1)}
 .mf{display:flex;gap:9px;justify-content:flex-end;margin-top:24px}
@@ -1477,33 +1546,56 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <button class="rail-btn" data-hub="wealth" onclick="goHub('wealth')" aria-label="Wealth">
     <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-trending-up"/></svg><span class="rb-tip">Wealth</span>
   </button>
-  <button class="rail-btn" data-hub="invest" onclick="goHub('invest')" aria-label="Invest">
+  <button class="rail-btn rail-desktop-only" data-hub="invest" onclick="goHub('invest')" aria-label="Invest" id="rail-invest-btn">
     <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-bar-chart"/></svg><span class="rb-tip">Invest</span>
   </button>
-  <button class="rail-btn" data-hub="sa" onclick="goHub('sa')" data-region-hide="uk" aria-label="SA Tools">
-    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-landmark"/></svg><span class="rb-tip">SA Tools</span>
-  </button>
-  <button class="rail-btn" data-hub="uk" onclick="goHub('uk')" data-region-only="uk" aria-label="UK Tools">
-    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-landmark"/></svg><span class="rb-tip">UK Tools</span>
-  </button>
-  <button class="rail-btn" data-hub="insights" onclick="goHub('insights')" aria-label="Insights">
+  <button class="rail-btn rail-desktop-only" data-hub="insights" onclick="goHub('insights')" aria-label="Insights" id="rail-insights-btn">
     <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-sparkles"/></svg><span class="rb-tip">Insights</span>
   </button>
-  <button class="rail-btn" data-hub="pay" onclick="goHub('pay')" aria-label="Pay Bills">
-    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="3.5" width="13" height="10" rx="1.5"/><path d="M1.5 6.5h13M5 10h2"/></svg><span class="rb-tip">Pay Bills</span>
-  </button>
-  <button class="rail-btn corp-show" data-hub="biz" onclick="goHub('biz')" aria-label="Business" style="display:none">
-    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="12" height="7" rx="1.5"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/><path d="M8 10v2"/></svg><span class="rb-tip">Business</span>
+  <button class="rail-btn" id="rail-more-btn" onclick="toggleRailMore(event)" aria-label="More" aria-haspopup="true" aria-expanded="false">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="3" cy="8" r="1.1" fill="currentColor" stroke="none"/><circle cx="8" cy="8" r="1.1" fill="currentColor" stroke="none"/><circle cx="13" cy="8" r="1.1" fill="currentColor" stroke="none"/></svg><span class="rb-tip">More</span>
   </button>
   <div class="rail-spacer"></div>
-  <button class="rail-btn" onclick="klShowShortcuts()" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">
+  <button class="rail-btn rail-desktop-only" onclick="klShowShortcuts()" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">
     <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="14" height="10" rx="2"/><path d="M4 7h1M7.5 7h1M11 7h1M4 10h1M6 10h4M11 10h1"/></svg><span class="rb-tip">Shortcuts</span>
   </button>
   <div id="rail-last-saved" style="font-size:9px;color:var(--t4);text-align:center;padding:4px 2px 8px;line-height:1.3;display:none"></div>
-  <button class="rail-btn" data-hub="settings" onclick="goHub('settings')" aria-label="Settings">
+  <button class="rail-btn rail-desktop-only" data-hub="settings" onclick="goHub('settings')" aria-label="Settings" id="rail-settings-btn">
     <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-settings"/></svg><span class="rb-tip">Settings</span>
   </button>
 </nav>
+
+<!-- ═══ RAIL "MORE" PANEL — SA/UK Tools, Pay Bills, Business always; on mobile also
+     Invest/Insights/Settings/Shortcuts, since the mobile bottom bar only shows 5 icons
+     (Home/Money/Plan/Wealth/More) vs desktop's 8. See toggleRailMore()/CSS for the
+     dropdown-on-desktop vs bottom-sheet-on-mobile split. ═══ -->
+<div class="rail-more-panel" id="rail-more-panel">
+  <button class="rail-more-item" data-hub="sa" onclick="goHub('sa');closeRailMore()" data-region-hide="uk" aria-label="SA Tools">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-landmark"/></svg><span>SA Tools</span>
+  </button>
+  <button class="rail-more-item" data-hub="uk" onclick="goHub('uk');closeRailMore()" data-region-only="uk" aria-label="UK Tools">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-landmark"/></svg><span>UK Tools</span>
+  </button>
+  <button class="rail-more-item" data-hub="pay" onclick="goHub('pay');closeRailMore()" aria-label="Pay Bills">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="3.5" width="13" height="10" rx="1.5"/><path d="M1.5 6.5h13M5 10h2"/></svg><span>Pay Bills</span>
+  </button>
+  <button class="rail-more-item corp-show" data-hub="biz" onclick="goHub('biz');closeRailMore()" aria-label="Business" style="display:none">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="12" height="7" rx="1.5"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/><path d="M8 10v2"/></svg><span>Business</span>
+  </button>
+  <div class="rail-more-divider rail-mobile-only"></div>
+  <button class="rail-more-item rail-mobile-only" data-hub="invest" onclick="goHub('invest');closeRailMore()" aria-label="Invest">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-bar-chart"/></svg><span>Invest</span>
+  </button>
+  <button class="rail-more-item rail-mobile-only" data-hub="insights" onclick="goHub('insights');closeRailMore()" aria-label="Insights">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-sparkles"/></svg><span>Insights</span>
+  </button>
+  <button class="rail-more-item rail-mobile-only" data-hub="settings" onclick="goHub('settings');closeRailMore()" aria-label="Settings">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-settings"/></svg><span>Settings</span>
+  </button>
+  <button class="rail-more-item rail-mobile-only" onclick="klShowShortcuts();closeRailMore()" aria-label="Keyboard shortcuts">
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="14" height="10" rx="2"/><path d="M4 7h1M7.5 7h1M11 7h1M4 10h1M6 10h4M11 10h1"/></svg><span>Shortcuts</span>
+  </button>
+</div>
 
 <!-- ═══ FUNCTIONAL SHADOW SIDEBAR — drives goPg() index lookup, visually hidden ═══ -->
 <aside class="sidebar" id="sb" aria-label="Main navigation">
@@ -1618,9 +1710,10 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="tb-title" id="tb-title">Dashboard</div>
   <div class="tb-tabs" id="tb-tabs"></div>
   <div class="tb-actions">
-    <div class="tb-search" onclick="goPg('transactions');setTimeout(()=>document.getElementById('t-srch')?.focus(),120)" title="Search transactions, amounts, categories">
+    <div class="tb-search" onclick="openCmdK()" title="Search &amp; go to anywhere in Klar">
       <span>⌕</span><span>Search</span><kbd>⌘K</kbd>
     </div>
+    <button class="tb-icon-btn tb-search-mobile-btn" onclick="openCmdK()" title="Search &amp; go to anywhere in Klar">⌕</button>
     <button class="tb-icon-btn" onclick="goPg('insights')" title="Insights">○</button>
     <button class="tb-icon-btn" onclick="openSplitBills()" title="Split bills with friends">💸</button>
     <button class="tb-icon-btn" onclick="document.getElementById('m-export').classList.add('open')" title="Export data">⬇</button>
@@ -6074,27 +6167,27 @@ const HUBS = {
     {id:'reminders',  label:'Reminders'},
   ]},
   money:    { label:'Money',         tabs:[
-    {id:'transactions', label:'Transactions'},
-    {id:'accounts',     label:'Accounts'},
+    {id:'transactions', label:'Transactions', primary:true},
+    {id:'accounts',     label:'Accounts',     primary:true},
+    {id:'trends',       label:'Trends',       primary:true},
     {id:'bankfeeds',    label:'Bank Feeds'},
     {id:'recurring',    label:'Recurring'},
     {id:'tags',         label:'Tags'},
     {id:'subs',         label:'Subscriptions'},
-    {id:'trends',       label:'Trends'},
   ]},
   plan:     { label:'Plan',          tabs:[
-    {id:'budget',       label:'Budget'},
+    {id:'budget',       label:'Budget',    primary:true},
+    {id:'routines',     label:'Routines',  primary:true},
+    {id:'cashflow',     label:'Cashflow',  primary:true},
     {id:'whatif',       label:'What-If'},
     {id:'visual',       label:'Visual Budget'},
-    {id:'routines',     label:'Routines'},
-    {id:'cashflow',     label:'Cashflow'},
     {id:'grocery',      label:'Grocery Lists'},
   ]},
   wealth:   { label:'Wealth',        tabs:[
-    {id:'savings',      label:'Savings Goals'},
+    {id:'savings',      label:'Savings Goals', primary:true},
+    {id:'debt',         label:'Debt Payoff',   primary:true},
+    {id:'networth',     label:'Net Worth',     primary:true},
     {id:'savings-rate', label:'Savings Rate'},
-    {id:'debt',         label:'Debt Payoff'},
-    {id:'networth',     label:'Net Worth'},
     {id:'travel',       label:'Travel Planner'},
     {id:'forex',        label:'Forex & Offshore'},
     {id:'retire',       label:'Retirement'},
@@ -6108,11 +6201,11 @@ const HUBS = {
     {id:'isa',       label:'ISA Tracker',   region:'uk'},
   ]},
   sa:       { label:'SA Tools',      tabs:[
-    {id:'tax',       label:'SARS & Tax'},
+    {id:'tax',       label:'SARS & Tax',      primary:true},
+    {id:'stokvel',   label:'Stokvels',        primary:true},
+    {id:'grants',    label:'Grants & Relief', primary:true},
     {id:'itr12',     label:'ITR12'},
     {id:'uif',       label:'UIF'},
-    {id:'stokvel',   label:'Stokvels'},
-    {id:'grants',    label:'Grants & Relief'},
     {id:'medgap',    label:'Medical Gap'},
     {id:'vehicle',   label:'Vehicle Costs'},
     {id:'insurance', label:'Insurance'},
@@ -6150,30 +6243,42 @@ function goHub(hub){
   goPg(def.tabs[0].id);
 }
 
+// Hoisted out of syncShell so the command palette (klCmdK, see below) can reuse the same
+// friendly names instead of maintaining a second, inevitably-drifting copy.
+const PAGE_TITLES = {
+  dashboard:'Dashboard',forecast:'Forecast',cal:'Bill Calendar',health:'Health Score',reminders:'Reminders',
+  transactions:'Transactions',accounts:'Accounts',recurring:'Recurring',tags:'Tags',subs:'Subscriptions',trends:'Trends',
+  budget:'Budget',whatif:'What-If',visual:'Visual Budget',routines:'Routines',cashflow:'Cashflow Forecast',
+  savings:'Savings Goals','savings-rate':'Savings Rate',debt:'Debt Payoff',networth:'Net Worth',retire:'Retirement',property:'Property',travel:'Travel Planner',forex:'Forex & Offshore',
+  invest:'Investments',portfolio:'Portfolio','class':'Class & Banking',tfsa:'TFSA Tracker',bankfeeds:'Bank Feeds',
+  tax:'SARS & Tax',itr12:'ITR12 Estimator',uif:'UIF Calculator',stokvel:'Stokvels',grants:'Grants & Relief',medgap:'Medical Gap',vehicle:'Vehicle Costs',insurance:'Insurance',
+  isa:'ISA Tracker',ukloans:'Student Loan Tracker',uktax:'Income Tax & NI',
+  insights:'Insights',ai:'AI Advisor',focus:'Focus Mode',
+  settings:'Customise',checklist:'Checklist',feeds:'Bank Feeds',
+  billpay:'Bill Hub',grocery:'Grocery Lists',
+  far:'Fixed Asset Register',bizloans:'Business Loans',
+};
 function syncShell(pageId){
   const hub = PAGE_TO_HUB[pageId] || 'home';
   // rail
   document.querySelectorAll('.rail-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.hub === hub);
   });
+  document.querySelectorAll('.rail-more-item[data-hub]').forEach(b => {
+    b.classList.toggle('active', b.dataset.hub === hub);
+  });
+  // "More" rail button lights up whenever the active hub lives inside its panel — either
+  // always-folded (SA/UK Tools, Pay Bills, Business) or, on mobile only, the hubs that also
+  // have their own always-visible desktop rail icon (Invest, Insights, Settings) — on desktop
+  // those already have a dedicated icon, so More shouldn't also glow for them there.
+  const _isMobileNav = window.innerWidth <= 760;
+  const _moreHubs = _isMobileNav ? ['sa','uk','pay','biz','invest','insights','settings'] : ['sa','uk','pay','biz'];
+  document.getElementById('rail-more-btn')?.classList.toggle('active', _moreHubs.includes(hub));
   // topbar title
-  const titles = {
-    dashboard:'Dashboard',forecast:'Forecast',cal:'Bill Calendar',health:'Health Score',reminders:'Reminders',
-    transactions:'Transactions',accounts:'Accounts',recurring:'Recurring',tags:'Tags',subs:'Subscriptions',trends:'Trends',
-    budget:'Budget',whatif:'What-If',visual:'Visual Budget',routines:'Routines',cashflow:'Cashflow Forecast',
-    savings:'Savings Goals','savings-rate':'Savings Rate',debt:'Debt Payoff',networth:'Net Worth',retire:'Retirement',property:'Property',
-    invest:'Investments',portfolio:'Portfolio','class':'Class & Banking',tfsa:'TFSA Tracker',bankfeeds:'Bank Feeds',
-    tax:'SARS & Tax',itr12:'ITR12 Estimator',uif:'UIF Calculator',stokvel:'Stokvels',grants:'Grants & Relief',medgap:'Medical Gap',vehicle:'Vehicle Costs',insurance:'Insurance',
-    isa:'ISA Tracker',ukloans:'Student Loan Tracker',uktax:'Income Tax & NI',
-    insights:'Insights',ai:'AI Advisor',focus:'Focus Mode',
-    settings:'Customise',checklist:'Checklist',feeds:'Bank Feeds',
-    billpay:'Bill Hub',grocery:'Grocery Lists',
-    far:'Fixed Asset Register',bizloans:'Business Loans',
-  };
   const tt = document.getElementById('tb-title');
   if (tt) {
     let tn = tt.firstChild; if(!tn||tn.nodeType!==3){tn=document.createTextNode('');tt.insertBefore(tn,tt.firstChild);}
-    tn.textContent = titles[pageId] || HUBS[hub]?.label || '';
+    tn.textContent = PAGE_TITLES[pageId] || HUBS[hub]?.label || '';
     if(!tt.querySelector('.corp-badge')){const b=document.createElement('span');b.className='corp-badge';b.textContent='Corporate';tt.appendChild(b);}
   }
   // topbar tabs (only show if hub has >1 tab)
@@ -6182,11 +6287,178 @@ function syncShell(pageId){
   const def = HUBS[hub];
   if (!def || def.tabs.length <= 1){ tab.innerHTML=''; return; }
   const region = (typeof S !== 'undefined' ? S.prefs?.region : null) || 'za';
-  tab.innerHTML = def.tabs
-    .filter(t => !t.region || t.region === region)
-    .map(t => `<div class="tb-tab ${t.id===pageId?'active':''}" onclick="goPg('${t.id}')" role="tab" tabindex="0" aria-selected="${t.id===pageId}">${t.label}</div>`)
-    .join('');
+  const visTabs = def.tabs.filter(t => !t.region || t.region === region);
+  const hasPrimaryFlag = visTabs.some(t => t.primary);
+  const primaryTabs = hasPrimaryFlag ? visTabs.filter(t => t.primary) : visTabs;
+  const secondaryTabs = hasPrimaryFlag ? visTabs.filter(t => !t.primary) : [];
+  const tabHtml = t => `<div class="tb-tab ${t.id===pageId?'active':''}" onclick="goPg('${t.id}')" role="tab" tabindex="0" aria-selected="${t.id===pageId}">${t.label}</div>`;
+  let html = primaryTabs.map(tabHtml).join('');
+  if (secondaryTabs.length) {
+    const activeSecondary = secondaryTabs.find(t => t.id === pageId);
+    const moreLabel = activeSecondary ? activeSecondary.label : 'More';
+    html += `<div class="tb-tab tb-more ${activeSecondary?'active':''}" onclick="toggleTbMore(event)" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" id="tb-more-trigger">${moreLabel} ▾</div>`;
+  }
+  tab.innerHTML = html;
+  // The dropdown menu itself is deliberately NOT a child of #tb-tabs — that container has
+  // overflow-x:auto (needed for the horizontal-scroll-on-narrow-viewports fix from an earlier
+  // session), and overflow-x:auto implicitly clips overflow-y too, so a dropdown nested inside
+  // it renders with correct layout geometry but is actually invisible/unclickable. Instead this
+  // renders into a single reused body-level element, positioned via getBoundingClientRect() of
+  // the trigger each time it opens — same pattern as the rail "More" panel.
+  let menu = document.getElementById('tb-more-menu');
+  if (!menu) { menu = document.createElement('div'); menu.id = 'tb-more-menu'; menu.className = 'tb-more-menu'; document.body.appendChild(menu); }
+  menu.classList.remove('open');
+  menu.innerHTML = secondaryTabs.map(t =>
+    `<div class="tb-more-item ${t.id===pageId?'active':''}" onclick="goPg('${t.id}');closeTbMore()" role="menuitem" tabindex="0">${t.label}</div>`
+  ).join('');
 }
+function toggleTbMore(e){
+  if(e) e.stopPropagation();
+  const menu = document.getElementById('tb-more-menu');
+  const trigger = document.getElementById('tb-more-trigger');
+  if(!menu || !trigger) return;
+  const opening = !menu.classList.contains('open');
+  if (opening) {
+    const r = trigger.getBoundingClientRect();
+    menu.style.left = r.left + 'px';
+    menu.style.top = (r.bottom + 4) + 'px';
+  }
+  menu.classList.toggle('open', opening);
+  trigger.setAttribute('aria-expanded', String(opening));
+}
+function closeTbMore(){
+  document.getElementById('tb-more-menu')?.classList.remove('open');
+  document.getElementById('tb-more-trigger')?.setAttribute('aria-expanded','false');
+}
+document.addEventListener('click', e => {
+  const menu = document.getElementById('tb-more-menu');
+  if(menu && menu.classList.contains('open') && !menu.contains(e.target) && e.target.id!=='tb-more-trigger') closeTbMore();
+});
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeTbMore(); });
+
+/* ═══ RAIL "MORE" PANEL — desktop dropdown / mobile bottom sheet ═══ */
+function toggleRailMore(e){
+  if(e) e.stopPropagation();
+  const panel = document.getElementById('rail-more-panel');
+  const btn = document.getElementById('rail-more-btn');
+  if(!panel) return;
+  const opening = !panel.classList.contains('open');
+  if(opening && btn && window.innerWidth > 760){
+    // Desktop: anchor the dropdown next to the actual button, wherever the rail placed it —
+    // avoids hardcoding a position that would drift if the rail's content changes.
+    const r = btn.getBoundingClientRect();
+    panel.style.left = (r.right + 8) + 'px';
+    panel.style.top = Math.max(8, r.top - 4) + 'px';
+    panel.style.bottom = 'auto';
+  }
+  panel.classList.toggle('open', opening);
+  if(btn) btn.setAttribute('aria-expanded', String(opening));
+}
+function closeRailMore(){
+  document.getElementById('rail-more-panel')?.classList.remove('open');
+  document.getElementById('rail-more-btn')?.setAttribute('aria-expanded','false');
+}
+document.addEventListener('click', e => {
+  const panel = document.getElementById('rail-more-panel');
+  if(panel && panel.classList.contains('open') && !panel.contains(e.target) && e.target.closest('#rail-more-btn')===null) closeRailMore();
+});
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeRailMore(); });
+
+/* ═══ COMMAND PALETTE (⌘K) — "go to anywhere" ═══
+   Replaces the old ⌘K behavior (which only ever jumped straight to Transactions search).
+   Lets the visible rail/tab-strip stay decluttered since every one of the ~49 pages is still
+   reachable in a couple of keystrokes — the palette is the escape hatch for "give them the
+   ability to navigate it all" without every page needing a permanent visible icon. */
+function _cmdKEntries(){
+  const region = S?.prefs?.region || 'za';
+  const corp = typeof isCorp === 'function' && isCorp();
+  const out = [];
+  for (const [hubId, hub] of Object.entries(HUBS)) {
+    if (hubId === 'sa' && region === 'uk') continue;
+    if (hubId === 'uk' && region !== 'uk') continue;
+    if (hubId === 'biz' && !corp) continue;
+    for (const t of hub.tabs) {
+      if (t.region && t.region !== region) continue;
+      out.push({ id: t.id, label: PAGE_TITLES[t.id] || t.label, hub: hub.label });
+    }
+  }
+  return out;
+}
+function _cmdKScore(entry, q){
+  const label = entry.label.toLowerCase(), hub = entry.hub.toLowerCase();
+  if (label === q) return 100;
+  if (label.startsWith(q)) return 80;
+  if (label.includes(q)) return 60;
+  if (hub.includes(q)) return 40;
+  return 0;
+}
+function _cmdKRender(){
+  const input = document.getElementById('kl-cmdk-input');
+  const results = document.getElementById('kl-cmdk-results');
+  if (!input || !results) return;
+  const q = input.value.trim().toLowerCase();
+  let items = _cmdKEntries();
+  if (q) {
+    items = items.map(e => ({ ...e, score: _cmdKScore(e, q) })).filter(e => e.score > 0).sort((a,b) => b.score - a.score);
+  }
+  items = items.slice(0, 8);
+  let html = items.map((e,i) => `<div class="kl-cmdk-item${i===0?' sel':''}" data-id="${e.id}" role="option" aria-selected="${i===0}"><span class="kl-cmdk-item-label">${esc(e.label)}</span><span class="kl-cmdk-item-hub">${esc(e.hub)}</span></div>`).join('');
+  if (q) {
+    html += `<div class="kl-cmdk-item kl-cmdk-search-fallback" data-search="1" role="option"><span class="kl-cmdk-item-label">⌕ Search transactions for "${esc(input.value.trim())}"</span></div>`;
+  }
+  results.innerHTML = html || `<div class="kl-cmdk-empty">No matches — try a different search</div>`;
+}
+function _cmdKMove(dir){
+  const results = document.getElementById('kl-cmdk-results');
+  if (!results) return;
+  const opts = [...results.querySelectorAll('[role="option"]')];
+  if (!opts.length) return;
+  let idx = opts.findIndex(o => o.classList.contains('sel'));
+  opts.forEach(o => { o.classList.remove('sel'); o.setAttribute('aria-selected','false'); });
+  idx = (idx + dir + opts.length) % opts.length;
+  opts[idx].classList.add('sel'); opts[idx].setAttribute('aria-selected','true');
+  opts[idx].scrollIntoView({ block:'nearest' });
+}
+function _cmdKActivate(el){
+  if (!el) return;
+  if (el.dataset.search) {
+    const q = document.getElementById('kl-cmdk-input')?.value.trim() || '';
+    closeCmdK();
+    goPg('transactions');
+    setTimeout(() => { const f = document.getElementById('t-srch'); if (f) { f.value = q; f.dispatchEvent(new Event('input')); f.focus(); } }, 150);
+    return;
+  }
+  const id = el.dataset.id;
+  if (id) { closeCmdK(); goPg(id); }
+}
+window.openCmdK = function(){
+  let modal = document.getElementById('kl-cmdk-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'kl-cmdk-modal';
+    modal.setAttribute('role','dialog'); modal.setAttribute('aria-modal','true'); modal.setAttribute('aria-label','Search and navigate');
+    modal.innerHTML = `<div class="kl-cmdk-box">
+      <div class="kl-cmdk-inputwrap"><span class="kl-cmdk-icon">⌕</span><input id="kl-cmdk-input" type="text" placeholder="Search transactions, or jump to any page…" autocomplete="off"><kbd>Esc</kbd></div>
+      <div id="kl-cmdk-results" class="kl-cmdk-results" role="listbox"></div>
+    </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if (e.target === modal) closeCmdK(); });
+    const input = modal.querySelector('#kl-cmdk-input');
+    input.addEventListener('input', _cmdKRender);
+    input.addEventListener('keydown', e => {
+      if (e.key === 'ArrowDown') { e.preventDefault(); _cmdKMove(1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); _cmdKMove(-1); }
+      else if (e.key === 'Enter') { e.preventDefault(); _cmdKActivate(document.querySelector('#kl-cmdk-results .sel')); }
+      else if (e.key === 'Escape') { closeCmdK(); }
+    });
+    modal.querySelector('#kl-cmdk-results').addEventListener('click', e => { _cmdKActivate(e.target.closest('[role="option"]')); });
+  }
+  modal.classList.add('open');
+  const input = document.getElementById('kl-cmdk-input');
+  input.value = ''; _cmdKRender();
+  setTimeout(() => input.focus(), 30);
+};
+window.closeCmdK = function(){ document.getElementById('kl-cmdk-modal')?.classList.remove('open'); };
 // tb-tabs is rebuilt via innerHTML on every navigation, so a one-time
 // querySelectorAll retrofit can't keep up — delegate the keydown listener to
 // the (static) container instead, same Enter/Space-activates-click pattern
@@ -6196,6 +6468,11 @@ document.addEventListener('DOMContentLoaded', function(){
   if (tabsEl) tabsEl.addEventListener('keydown', function(e){
     if ((e.key==='Enter'||e.key===' ') && e.target.classList.contains('tb-tab')) { e.preventDefault(); e.target.click(); }
   });
+});
+// .tb-more-item lives in #tb-more-menu, a body-level element created lazily (see syncShell) —
+// a document-level delegated listener works regardless of when that element first appears.
+document.addEventListener('keydown', function(e){
+  if ((e.key==='Enter'||e.key===' ') && e.target.classList.contains('tb-more-item')) { e.preventDefault(); e.target.click(); }
 });
 
 function cycleTheme(){
@@ -13274,11 +13551,10 @@ document.addEventListener('DOMContentLoaded',()=>{
     const tag = document.activeElement?.tagName;
     const inField = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || document.activeElement?.isContentEditable;
 
-    // ⌘K / Ctrl+K → jump to Transactions search
+    // ⌘K / Ctrl+K → open the command palette (go to any page, or fall back to transaction search)
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
       e.preventDefault();
-      goPg('transactions');
-      setTimeout(() => document.getElementById('t-srch')?.focus(), 120);
+      openCmdK();
       return;
     }
 
