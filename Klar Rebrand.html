@@ -3370,6 +3370,11 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
         <div style="font-size:10.5px;color:var(--t3);line-height:1.5;margin-bottom:8px">Delete your Supabase cloud backup and sign out</div>
         <button class="btn btn-danger btn-xs" onclick="klDeleteCloudData()" style="width:100%">Delete cloud data</button>
       </div>
+      <div style="background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:10px 12px">
+        <div style="font-size:11px;font-weight:700;color:var(--t1);margin-bottom:3px">Erasure — Account</div>
+        <div style="font-size:10.5px;color:var(--t3);line-height:1.5;margin-bottom:8px">Permanently delete your Klar account, cloud data, and login — cannot be undone</div>
+        <button class="btn btn-danger btn-xs" onclick="klDeleteAccount()" style="width:100%">Delete account permanently</button>
+      </div>
     </div>
 
     <div class="ssl" style="margin-bottom:8px">Third-Party Processors</div>
@@ -4276,7 +4281,8 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <div class="kl-right-item"><div class="kl-ri-title">✅ Access</div><div class="kl-ri-how">Settings → Data Management → Full data backup (JSON)</div></div>
       <div class="kl-right-item"><div class="kl-ri-title">✏️ Rectification</div><div class="kl-ri-how">Edit any transaction, account, or record directly in the app</div></div>
       <div class="kl-right-item"><div class="kl-ri-title">🗑️ Erasure (local)</div><div class="kl-ri-how">Settings → Data Management → Reset all data</div></div>
-      <div class="kl-right-item"><div class="kl-ri-title">🗑️ Erasure (cloud)</div><div class="kl-ri-how">Settings → Privacy → Delete cloud data</div></div>
+      <div class="kl-right-item"><div class="kl-ri-title">🗑️ Erasure (cloud data only)</div><div class="kl-ri-how">Settings → Privacy → Delete cloud data</div></div>
+      <div class="kl-right-item"><div class="kl-ri-title">🗑️ Erasure (full account)</div><div class="kl-ri-how">Settings → Privacy → Delete account permanently (irreversible)</div></div>
       <div class="kl-right-item"><div class="kl-ri-title">📦 Portability</div><div class="kl-ri-how">Export as JSON or CSV from Settings → Data Management</div></div>
       <div class="kl-right-item"><div class="kl-ri-title">🚫 Restriction</div><div class="kl-ri-how">Sign out of cloud sync; remove API key to disable AI</div></div>
       <div class="kl-right-item"><div class="kl-ri-title">↩️ Withdraw consent</div><div class="kl-ri-how">Review consent notice via Settings → Privacy at any time</div></div>
@@ -14632,11 +14638,25 @@ async function sbPushSync(){
   try {
     const _safePrefs = Object.assign({}, S.prefs, { groqKey: undefined });
     const _safeS = Object.assign({}, S, { prefs: _safePrefs });
-    const payload = { user_id: _sbUser.id, data: _safeS, version: (S._syncVersion||0)+1, device_id: _sbDeviceId(), updated_at: new Date().toISOString() };
-    const { error } = await _sb.from('klar_syncs').upsert(payload, { onConflict:'user_id' });
+    const expectedVersion = S._syncVersion||0;
+    // push_klar_sync (see migration add_sync_optimistic_concurrency) only writes if the server's
+    // current version still matches what we last saw — otherwise another device pushed since our
+    // last sync, and this returns success:false instead of blindly overwriting their changes.
+    // Previously this was a plain upsert with no version check at all: whichever device pushed
+    // last always won silently, with no way to even detect that another device's unsynced edits
+    // had just been discarded.
+    const { data: rpcResult, error } = await _sb.rpc('push_klar_sync', { p_data: _safeS, p_expected_version: expectedVersion, p_device_id: _sbDeviceId() });
     if(error) throw error;
-    S._syncVersion = payload.version;
-    S._lastSyncedAt = payload.updated_at;
+    if(!rpcResult.success){
+      _sbSetDot('err');
+      if(_rls){_rls.textContent='Sync conflict';}
+      notify('Your data changed on another device — pulling the latest before saving again', 'warn');
+      _sbSyncing = false;
+      await sbPullAndMerge();
+      return;
+    }
+    S._syncVersion = rpcResult.version;
+    S._lastSyncedAt = new Date().toISOString();
     _sbLastSync = Date.now();
     _sbSetDot('ok');
     _sbUpdateSyncTxt();
@@ -15445,6 +15465,41 @@ document.addEventListener('click', function(e){
         notify('Error deleting cloud data: ' + e.message, 'err');
       }
     },{okLabel:'Delete & Sign Out'});
+  };
+
+  // Real account deletion — klDeleteCloudData() above only ever wiped data rows and signed the
+  // user out, leaving the actual Supabase Auth identity (email, hashed credentials) on the server
+  // indefinitely. That didn't match what the privacy policy promises for the erasure right. This
+  // calls the delete-account Edge Function, which verifies the caller's own JWT server-side (no
+  // way to target another account) and deletes both their data rows and their Auth user record.
+  window.klDeleteAccount = async function() {
+    if (typeof _sb === 'undefined' || !_sb || !_sbUser) {
+      notify('Sign in to cloud sync first — use the ☁ button in the top bar', 'err'); return;
+    }
+    klConfirm(
+      'This permanently deletes your Klar account — your cloud data AND your login itself. This cannot be undone; there is no recovery. Your local data on this device is not affected. Continue?',
+      async function(){
+        try {
+          const { data: { session } } = await _sb.auth.getSession();
+          if (!session?.access_token) { notify('Session expired — sign in again first', 'err'); return; }
+          const res = await fetch(SB_URL + '/functions/v1/delete-account', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + session.access_token, 'Content-Type': 'application/json' },
+          });
+          if (!res.ok) { const body = await res.json().catch(()=>({})); throw new Error(body.error || ('HTTP '+res.status)); }
+          await _sb.auth.signOut();
+          _sbUser = null;
+          S._syncVersion = 0;
+          S._lastSyncedAt = null;
+          save();
+          if (typeof applyPrefsUI === 'function') applyPrefsUI();
+          notify('Account permanently deleted', 'ok');
+        } catch(e) {
+          notify('Error deleting account: ' + e.message, 'err');
+        }
+      },
+      {okLabel:'Permanently Delete Account', title:'Delete Account', danger:true}
+    );
   };
 
   window.klUpdatePrivacyUI = function() {
