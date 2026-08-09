@@ -15024,11 +15024,11 @@ document.addEventListener('DOMContentLoaded', () => { _initSupabase(); });
 document.addEventListener('click', e => { if(e.target.id==='sb-auth-modal') sbCloseAuth(); });
 
 /* ═══════════════════════════════════════════════════════
-   KLAR BILL PAY — Stripe-powered utility bill gateway
-   Publishable key used client-side only (safe).
-   Payment Links pre-created via Stripe API.
+   KLAR BILL HUB — reference/amount logger + provider portal handoff.
+   No payment processor actually moves money here: no SA or UK vendor
+   exposes a public API for third-party bill disbursement, so Bill Hub
+   records the payment and opens the provider's own portal instead.
    ═══════════════════════════════════════════════════════ */
-const BP_PK = 'pk_test_51TiAXSBNC0iIo30osw5ZxP1thF1lFqe3Uzha93WzJaQHoeUUC5LMSZG0YVeoQfHdTwWOY7TCywEbCQFKA5j9aYXk00oRasZovb';
 
 /* ── Tier gating ── */
 const KL_TIER_ORDER = ['free','essential','pro','family'];
@@ -15440,27 +15440,26 @@ const KL_PRICE_IDS = {
   family_annual:     'price_1TicKGBNC0iIo30oMT9qo5jz',
 };
 /* ── Lemon Squeezy configuration ────────────────────────────────────────────
-   After creating your store and products in Lemon Squeezy:
-   1. LS Dashboard → Settings → General → copy your store slug
-   2. LS Dashboard → Products → [plan] → Variants → copy the numeric variant ID
-   Set KL_LS_STORE to your store slug (e.g. 'klarmoney') and fill in variant IDs below.
+   Two stores: LS has no fixed multi-currency pricing per product, so ZAR and
+   GBP plans live in separate stores with their own base currency.
+   'klarmoney' = ZAR (SA + other regions), 'klaruk' = GBP (UK).
    ─────────────────────────────────────────────────────────────────────────── */
-const KL_LS_STORE = 'klarmoney'; // Your LS store slug — update if different
+const KL_LS_STORES = { zar: 'klarmoney', gbp: 'klaruk' };
 
-/* Variant IDs — LS Dashboard → Products → [plan] → Variants → numeric ID */
+/* Variant IDs — LS Dashboard → Products → [plan] → Share → checkout link UUID */
 const KL_LS_VARIANTS = {
-  /* GBP variants (UK users) — fill in after creating products in LS */
-  essential_monthly_gbp: '',   // e.g. '123456'
-  essential_annual_gbp:  '',
-  pro_monthly_gbp:       '',
-  pro_annual_gbp:        '',
-  family_monthly_gbp:    '',
+  /* GBP variants (UK users) — store: klaruk */
+  essential_monthly_gbp: 'b5078be3-45ee-4d5f-bb76-347fb6e1de3d',
+  essential_annual_gbp:  '5b5bb3f3-fc3b-4d2b-b2be-6ee15a0a75ee',
+  pro_monthly_gbp:       'e01f49f5-57d4-480a-9e06-dae0fb929728',
+  pro_annual_gbp:        '72fa590c-8243-40c2-9473-593c1ad5037d',
+  family_monthly_gbp:    '', // Family tier is comingSoon — create when ready to launch
   family_annual_gbp:     '',
-  /* ZAR variants (SA + other) — fill in after creating products in LS */
-  essential_monthly_zar: '',
-  essential_annual_zar:  '',
-  pro_monthly_zar:       '',
-  pro_annual_zar:        '',
+  /* ZAR variants (SA + other) — store: klarmoney */
+  essential_monthly_zar: '96374865-eadb-407d-8c69-cbe54882100c',
+  essential_annual_zar:  '6fb57969-ff02-4be1-b78e-c61d5f8a57bb',
+  pro_monthly_zar:       '5457853f-441b-48b9-8f7b-4c8469ed8e84',
+  pro_annual_zar:        '6995b783-601d-4418-afa7-da1cb1d134d8',
   family_monthly_zar:    '',
   family_annual_zar:     '',
 };
@@ -16681,11 +16680,11 @@ document.addEventListener('click', function(e){
       notify('Please sign in to upgrade your plan', 'warn');
       return;
     }
-    const region = S?.prefs?.region==='uk' ? 'gbp' : 'zar';
-    const key = planId+'_'+_klPgBilling+'_'+region;
+    const currency = S?.prefs?.region==='uk' ? 'gbp' : 'zar';
+    const key = planId+'_'+_klPgBilling+'_'+currency;
     const variantId = KL_LS_VARIANTS[key];
     if(!variantId){ notify('Plan not yet configured — check back soon','warn'); return; }
-    klOpenLsCheckout(variantId);
+    klOpenLsCheckout(variantId, KL_LS_STORES[currency]);
   };
   window.klPlanGateComplete = function() {
     const isFirstRun = !S.prefs.onboardingComplete && S.transactions.length===0;
@@ -16809,22 +16808,24 @@ document.addEventListener('click', function(e){
   };
   window.klSubscribe = function(planId, billing) {
     if (!_sbUser) { notify('Please sign in to upgrade your plan', 'warn'); return; }
-    const region = S?.prefs?.region==='uk' ? 'gbp' : 'zar';
-    const key = planId + '_' + billing + '_' + region;
+    const currency = S?.prefs?.region==='uk' ? 'gbp' : 'zar';
+    const key = planId + '_' + billing + '_' + currency;
     const variantId = KL_LS_VARIANTS[key];
     if (!variantId) { notify('Plan not yet configured — check back soon', 'warn'); return; }
-    klOpenLsCheckout(variantId);
+    klOpenLsCheckout(variantId, KL_LS_STORES[currency]);
   };
 
   /* ── Lemon Squeezy checkout helper ────────────────────────────────────────
      Opens the LS overlay checkout (lemonsqueezy.js adds the overlay behaviour
      automatically when the link has class="lemonsqueezy-button").
      After the user returns to this tab, polls get-tier to activate their tier.
+     `store` picks which LS store the variant lives in (see KL_LS_STORES) —
+     defaults to the ZAR store since that's the only caller-omitted case today.
   ─────────────────────────────────────────────────────────────────────────── */
-  window.klOpenLsCheckout = function(variantId) {
+  window.klOpenLsCheckout = function(variantId, store) {
     if (!_sbUser) { notify('Please sign in first', 'warn'); return; }
 
-    const url = new URL('https://' + KL_LS_STORE + '.lemonsqueezy.com/checkout/buy/' + variantId);
+    const url = new URL('https://' + (store || KL_LS_STORES.zar) + '.lemonsqueezy.com/checkout/buy/' + variantId);
     url.searchParams.set('checkout[custom][supabase_user_id]', _sbUser.id);
     if (_sbUser.email) url.searchParams.set('checkout[email]', _sbUser.email);
     // Return to app after checkout completes
