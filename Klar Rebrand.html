@@ -15066,7 +15066,7 @@ function rSettingsPlanTiles(){
   const plans = [
     {id:'essential', name:'Essential', mo: isUK?'3.99':'49',  yr: isUK?'34.99':'499', blurb:'AI advisor + net worth + bank feeds'},
     {id:'pro',       name:'Pro',       mo: isUK?'7.99':'89',   yr: isUK?'64.99':'899', blurb:'+ UK loan tools + priority support'},
-    {id:'family',    name:'Family',    mo: isUK?'11.99':'129', yr: isUK?'99':'1,299',  blurb:'Up to 5 family members', comingSoon:true},
+    {id:'family',    name:'Family',    mo: isUK?'11.99':'129', yr: isUK?'99':'1,299',  blurb:'Up to 5 family members'},
   ];
   el.innerHTML = plans.map(p=>{
     const isCurrent = tier===p.id;
@@ -15453,15 +15453,15 @@ const KL_LS_VARIANTS = {
   essential_annual_gbp:  '5b5bb3f3-fc3b-4d2b-b2be-6ee15a0a75ee',
   pro_monthly_gbp:       'e01f49f5-57d4-480a-9e06-dae0fb929728',
   pro_annual_gbp:        '72fa590c-8243-40c2-9473-593c1ad5037d',
-  family_monthly_gbp:    '', // Family tier is comingSoon — create when ready to launch
-  family_annual_gbp:     '',
+  family_monthly_gbp:    'd99dc8d4-b9fc-468b-b849-113230d06310',
+  family_annual_gbp:     'c9f8a4f1-5e99-4716-b79c-eb5e076154a7',
   /* ZAR variants (SA + other) — store: klarmoney */
   essential_monthly_zar: '96374865-eadb-407d-8c69-cbe54882100c',
   essential_annual_zar:  '6fb57969-ff02-4be1-b78e-c61d5f8a57bb',
   pro_monthly_zar:       '5457853f-441b-48b9-8f7b-4c8469ed8e84',
   pro_annual_zar:        '6995b783-601d-4418-afa7-da1cb1d134d8',
-  family_monthly_zar:    '',
-  family_annual_zar:     '',
+  family_monthly_zar:    '97a48885-c995-4549-945d-88ad7b675136',
+  family_annual_zar:     '6a9cc99d-d39f-4a83-8422-67999b6084be',
 };
 const KL_PLANS = [
   { id:'free',      name:'Free',
@@ -15476,7 +15476,7 @@ const KL_PLANS = [
     gbpMonthly:7.99, gbpAnnual:64.99, zarMonthly:89,  zarAnnual:899,
     monthlyKey:'pro_monthly', annualKey:'pro_annual', recommended:true,
     features:['Everything in Essential','UK Student Loan tracker (Plans 1/2/4/5)','Annual tax summary export','Spending anomaly detection','Salary & investment forecasting','Multi-currency portfolio tracker','Priority support (24h response)'] },
-  { id:'family',    name:'Family',    comingSoon:true,
+  { id:'family',    name:'Family',
     gbpMonthly:11.99,gbpAnnual:99.00, zarMonthly:129, zarAnnual:1299,
     monthlyKey:'family_monthly', annualKey:'family_annual',
     features:['Everything in Pro','Up to 5 family members','Shared household budget','Per-member spending reports','Family financial goals'] },
