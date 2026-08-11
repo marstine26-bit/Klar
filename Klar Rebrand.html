@@ -3296,7 +3296,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       </div>
       <div id="kl-notif-toggles" style="display:none">
         <div class="cr"><div><div class="cl">All notifications</div><div class="cs">Master on/off switch</div></div><label class="toggle"><input type="checkbox" id="kl-nt-all" onchange="klNotifToggle('notif',this.checked)"><span class="tsl"></span></label></div>
-        <div class="cr"><div><div class="cl">Bill payments</div><div class="cs">When you initiate a Stripe payment</div></div><label class="toggle"><input type="checkbox" id="kl-nt-billpay" onchange="klNotifToggle('notifBillPay',this.checked)"><span class="tsl"></span></label></div>
+        <div class="cr"><div><div class="cl">Bill payments</div><div class="cs">When you log a payment in Bill Hub</div></div><label class="toggle"><input type="checkbox" id="kl-nt-billpay" onchange="klNotifToggle('notifBillPay',this.checked)"><span class="tsl"></span></label></div>
         <div class="cr"><div><div class="cl">Budget alerts</div><div class="cs">When spending exceeds a category limit</div></div><label class="toggle"><input type="checkbox" id="kl-nt-budget" onchange="klNotifToggle('notifBudget',this.checked)"><span class="tsl"></span></label></div>
         <div class="cr"><div><div class="cl">Savings goals</div><div class="cs">When a savings goal is fully reached</div></div><label class="toggle"><input type="checkbox" id="kl-nt-goals" onchange="klNotifToggle('notifGoals',this.checked)"><span class="tsl"></span></label></div>
         <div class="cr"><div><div class="cl">Upcoming bills</div><div class="cs">3 days before calendar bills are due</div></div><label class="toggle"><input type="checkbox" id="kl-nt-bills" onchange="klNotifToggle('notifBills',this.checked)"><span class="tsl"></span></label></div>
@@ -3485,14 +3485,6 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
         <div style="flex:1">
           <div style="font-size:12px;font-weight:700;color:var(--t1)">Groq <span style="font-size:10px;color:var(--t4);font-weight:500">(AI Advisor — optional)</span></div>
           <div style="font-size:11px;color:var(--t3)">Financial summary only, no raw data · USA servers</div>
-        </div>
-        <span style="font-size:10px;color:var(--t4)">opt-in</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:12px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:10px 14px">
-        <div style="font-size:18px">💳</div>
-        <div style="flex:1">
-          <div style="font-size:12px;font-weight:700;color:var(--t1)">Stripe <span style="font-size:10px;color:var(--t4);font-weight:500">(Bill payments — optional)</span></div>
-          <div style="font-size:11px;color:var(--t3)">PCI-DSS compliant · Klar never sees card details</div>
         </div>
         <span style="font-size:10px;color:var(--t4)">opt-in</span>
       </div>
@@ -4300,11 +4292,11 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <li><span class="kl-pip"></span><span><strong style="color:var(--t1)">Local-first by default</strong> — your financial data is stored only on this device. Nothing leaves without your explicit opt-in.</span></li>
       <li><span class="kl-pip"></span><span><strong style="color:var(--t1)">Optional cloud sync</strong> — if you sign in, data is encrypted and stored on Supabase. You can delete it anytime from Settings.</span></li>
       <li><span class="kl-pip"></span><span><strong style="color:var(--t1)">Optional AI Advisor</strong> — sends a financial summary (no raw transactions or names) to Groq's servers in the USA for processing.</span></li>
-      <li><span class="kl-pip"></span><span><strong style="color:var(--t1)">Optional bill payments</strong> — clicking "Pay" opens Stripe's checkout. Klar never stores your card details.</span></li>
+      <li><span class="kl-pip"></span><span><strong style="color:var(--t1)">Bill Hub</strong> — logs the bill reference and amount you enter, then opens the provider's own official portal in a new tab for you to pay directly. Klar never collects or sees your card details.</span></li>
     </ul>
     <div class="kl-pg-thirds">
       <strong>Optional third-party processors:</strong><br>
-      Supabase (cloud backup) &nbsp;·&nbsp; Groq (AI) &nbsp;·&nbsp; Stripe (payments)
+      Supabase (cloud backup) &nbsp;·&nbsp; Groq (AI) &nbsp;·&nbsp; Lemon Squeezy (subscription payments)
     </div>
     <div class="kl-pg-rights">
       <strong>Your rights under POPIA, GDPR &amp; global privacy laws:</strong><br>
@@ -4345,7 +4337,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="kl-py-flag"><span class="kl-py-fi">📱</span><span><strong>Local only (default):</strong> All data is stored in your browser's localStorage on this device. Nothing is sent to any server. You can clear it at any time.</span></div>
     <div class="kl-py-flag"><span class="kl-py-fi">☁</span><span><strong>Cloud Sync (optional — opt-in):</strong> If you sign in, your data is encrypted in transit (TLS) and stored on Supabase Inc servers. You can delete your cloud data at any time from Settings → Privacy.</span></div>
     <div class="kl-py-flag"><span class="kl-py-fi">🤖</span><span><strong>AI Advisor (optional — opt-in):</strong> When you send a message, a financial summary (average income, expenses, account count, debt count) is sent to Groq Inc for AI processing. Raw transactions, names, and account numbers are <em>not</em> transmitted.</span></div>
-    <div class="kl-py-flag"><span class="kl-py-fi">💳</span><span><strong>Bill Payments (optional — opt-in):</strong> Clicking "Pay with Stripe" opens Stripe's hosted checkout. Klar never receives or stores your payment card details.</span></div>
+    <div class="kl-py-flag"><span class="kl-py-fi">💳</span><span><strong>Bill Hub (no card data ever collected):</strong> Bill Hub logs the reference and amount you enter, then opens the utility or service provider's own official portal in a new tab for you to complete payment directly with them. Klar has no payment processor for this feature and never receives, sees, or stores your payment card details.</span></div>
 
     <h2>4. Third-Party Processors</h2>
     <table class="kl-py-table">
@@ -4353,7 +4345,6 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <tr><td><strong>Supabase</strong></td><td>Cloud backup &amp; sync</td><td>USA / EU</td><td>Only if signed in</td></tr>
       <tr><td><strong>Groq</strong></td><td>AI Advisor responses</td><td>USA</td><td>Only when queried</td></tr>
       <tr><td><strong>Lemon Squeezy</strong></td><td>Subscription payments</td><td>Global</td><td>Only when subscribing</td></tr>
-      <tr><td><strong>Stripe</strong></td><td>Bill payments checkout</td><td>Global</td><td>Only when paying bills</td></tr>
       <tr><td><strong>Saltedge</strong></td><td>UK bank feeds</td><td>EU</td><td>Only if bank feed connected</td></tr>
       <tr><td><strong>Frankfurter</strong></td><td>Live FX rates</td><td>EU</td><td>When FX conversion active</td></tr>
       <tr><td><strong>Crisp</strong></td><td>Support chat</td><td>EU</td><td>When chat opened</td></tr>
@@ -15426,19 +15417,6 @@ const BP_CATEGORIES = [
 function _klGetProviders(){ const r=S.prefs.region; return r==='uk' ? KL_BILL_PROVIDERS_UK : r==='other' ? KL_BILL_PROVIDERS_OTHER : KL_BILL_PROVIDERS_ZA; }
 function _klFindProvider(id){ return _klGetProviders().find(p=>p.id===id) || BP_CATEGORIES.find(c=>c.id===id) || {emoji:'💳',name:id,color:'rgba(155,127,212,.18)',textColor:'#9B7FD4'}; }
 
-/* ═══ KLAR SUBSCRIPTION PLANS ═══
-   Price IDs from Stripe Dashboard (test mode).
-   Payment Links: create in Stripe → Products → [price] → Create payment link
-   Then replace the placeholder buy.stripe.com URLs below.
-   ════════════════════════════════════════════════════════ */
-const KL_PRICE_IDS = {
-  essential_monthly: 'price_1TicINBNC0iIo30otQNBTcgm',
-  pro_monthly:       'price_1TicIxBNC0iIo30odo01YVtI',
-  family_monthly:    'price_1TicJJBNC0iIo30oR0JM3byH',
-  essential_annual:  'price_1TicJbBNC0iIo30oqFIW86cQ',
-  pro_annual:        'price_1TicJpBNC0iIo30oXOh2xjL7',
-  family_annual:     'price_1TicKGBNC0iIo30oMT9qo5jz',
-};
 /* ── Lemon Squeezy configuration ────────────────────────────────────────────
    Two stores: LS has no fixed multi-currency pricing per product, so ZAR and
    GBP plans live in separate stores with their own base currency.

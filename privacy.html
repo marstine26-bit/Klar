@@ -281,7 +281,7 @@
     </div>
     <div class="flag-row">
       <span class="flag-icon">💳</span>
-      <span><strong>Bill Pay (optional — opt-in):</strong> If you use Klar's Bill Pay feature to pay a utility or other bill directly, that payment is processed by Stripe. Klar never receives or stores your payment card details. Refer to Stripe's <a href="https://stripe.com/privacy" target="_blank" rel="noopener">privacy policy</a>.</span>
+      <span><strong>Bill Hub (no processor involved):</strong> Bill Hub logs the reference number and amount you enter for tracking, then opens the relevant utility or service provider's own official website in a new tab so you can pay them directly. Klar has no payment processor for this feature and never receives, sees, or stores your payment card details.</span>
     </div>
     <div class="flag-row">
       <span class="flag-icon">💬</span>
@@ -303,7 +303,6 @@
         <tr><td><strong>Supabase</strong></td><td>Cloud backup &amp; auth</td><td>Encrypted app data, email</td><td>EU / USA</td><td>Only if signed in</td></tr>
         <tr><td><strong>Groq</strong></td><td>AI Advisor responses</td><td>Financial summary only</td><td>USA</td><td>Only when you query AI</td></tr>
         <tr><td><strong>Lemon Squeezy</strong></td><td>Subscription billing</td><td>Email, payment details</td><td>Global</td><td>Only when subscribing</td></tr>
-        <tr><td><strong>Stripe</strong></td><td>Bill Pay processing</td><td>Email, payment details</td><td>Global</td><td>Only when paying a bill</td></tr>
         <tr><td><strong>Saltedge</strong></td><td>UK bank feeds</td><td>OAuth token, account list</td><td>EU</td><td>Only if bank feed connected</td></tr>
         <tr><td><strong>Frankfurter</strong></td><td>Live FX rates</td><td>Currency pair (no personal data)</td><td>EU</td><td>When FX conversion active</td></tr>
         <tr><td><strong>Crisp</strong></td><td>Support chat</td><td>Chat messages, email (optional)</td><td>EU</td><td>When chat opened</td></tr>
@@ -395,7 +394,7 @@
       <li><strong>Local data:</strong> stored in browser localStorage, accessible only to the origin serving the app. We recommend using the app PIN lock (Settings → App Lock) if you share a device.</li>
       <li><strong>Cloud data:</strong> transmitted via TLS 1.2+; stored with Supabase's encryption-at-rest (AES-256). Row Level Security ensures only you can read your data.</li>
       <li><strong>AI data:</strong> transmitted via TLS to Groq's API; only a minimal financial summary is sent — no raw transaction data.</li>
-      <li><strong>Payments:</strong> all card data is handled by Lemon Squeezy's (subscriptions) and Stripe's (Bill Pay) PCI-DSS-compliant infrastructure. We never see your card details.</li>
+      <li><strong>Payments:</strong> all card data for subscriptions is handled by Lemon Squeezy's PCI-DSS-compliant infrastructure. We never see your card details. Bill Hub has no payment processor at all — it never collects card data in the first place.</li>
     </ul>
     <div class="callout amber">
       <strong>Your responsibility:</strong> Keep your sign-in credentials secure. Do not share your Klar access with others on shared devices without using the PIN lock feature.
@@ -409,7 +408,6 @@
       <li><strong>Supabase</strong> — EU-hosted by default; may also use USA infrastructure. Supabase maintains GDPR Standard Contractual Clauses (SCCs) and is certified under the EU-US Data Privacy Framework.</li>
       <li><strong>Groq</strong> — USA. By enabling the AI Advisor, you consent to the transfer of a financial summary to Groq's USA servers.</li>
       <li><strong>Lemon Squeezy</strong> — Global. Lemon Squeezy is GDPR-compliant and maintains SCCs for cross-border transfers.</li>
-      <li><strong>Stripe</strong> — Global. Stripe is GDPR-compliant and maintains SCCs for cross-border transfers.</li>
     </ul>
     <p>By enabling these optional features, you consent to the associated cross-border transfers described above.</p>
   </div>

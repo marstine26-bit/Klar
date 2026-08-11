@@ -24,19 +24,23 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 // ── Variant ID → plan mapping ─────────────────────────────────────────────────
-// Set these once you create products in Lemon Squeezy Dashboard.
-// LS Dashboard → Your Store → Products → [plan] → Variants → copy numeric ID.
+// Two LS stores (klaruk=GBP, klarmoney=ZAR) since LS has no fixed dual-currency
+// pricing per product — see KL_LS_VARIANTS in the main app for the same map.
 const VARIANT_TO_PLAN: Record<string, string> = {
-  // GBP variants (UK)
-  // "123456": "essential",   // Essential Monthly GBP   — fill in real IDs
-  // "123457": "essential",   // Essential Annual  GBP
-  // "123458": "pro",          // Pro Monthly       GBP
-  // "123459": "pro",          // Pro Annual        GBP
-  // ZAR variants (SA)
-  // "123460": "essential",   // Essential Monthly ZAR
-  // "123461": "essential",   // Essential Annual  ZAR
-  // "123462": "pro",          // Pro Monthly       ZAR
-  // "123463": "pro",          // Pro Annual        ZAR
+  // GBP variants — store: klaruk
+  "b5078be3-45ee-4d5f-bb76-347fb6e1de3d": "essential", // Essential Monthly GBP
+  "5b5bb3f3-fc3b-4d2b-b2be-6ee15a0a75ee": "essential", // Essential Annual  GBP
+  "e01f49f5-57d4-480a-9e06-dae0fb929728": "pro",        // Pro Monthly       GBP
+  "72fa590c-8243-40c2-9473-593c1ad5037d": "pro",        // Pro Annual        GBP
+  "d99dc8d4-b9fc-468b-b849-113230d06310": "family",     // Family Monthly    GBP
+  "c9f8a4f1-5e99-4716-b79c-eb5e076154a7": "family",     // Family Annual     GBP
+  // ZAR variants — store: klarmoney
+  "96374865-eadb-407d-8c69-cbe54882100c": "essential", // Essential Monthly ZAR
+  "6fb57969-ff02-4be1-b78e-c61d5f8a57bb": "essential", // Essential Annual  ZAR
+  "5457853f-441b-48b9-8f7b-4c8469ed8e84": "pro",        // Pro Monthly       ZAR
+  "6995b783-601d-4418-afa7-da1cb1d134d8": "pro",        // Pro Annual        ZAR
+  "97a48885-c995-4549-945d-88ad7b675136": "family",     // Family Monthly    ZAR
+  "6a9cc99d-d39f-4a83-8422-67999b6084be": "family",     // Family Annual     ZAR
 };
 
 // ── LS status → our status mapping ───────────────────────────────────────────
