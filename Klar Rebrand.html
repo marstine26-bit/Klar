@@ -590,25 +590,35 @@ body[data-density="compact"] .card{padding:18px}
 #pg-dashboard.dash-simple .d-full-only{display:none !important}
 #pg-dashboard.dash-simple .d-bottomrow{grid-template-columns:1fr}
 #pg-dashboard.dash-simple .d-hero-row{grid-template-columns:1fr}
-#pg-dashboard{position:relative}
+#pg-dashboard{
+  position:relative;overflow-x:clip;
+  --glass-bg:rgba(19,19,29,.44);
+  --glass-bg-soft:rgba(19,19,29,.30);
+  --glass-border:rgba(255,255,255,.10);
+  --glass-hi:inset 0 1.5px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(255,255,255,.04),inset 0 -14px 24px -18px rgba(123,94,167,.35);
+  --glass-shadow:0 24px 48px -14px rgba(91,72,150,.32),0 12px 28px rgba(0,0,0,.45);
+  --glass-blur:blur(28px) saturate(180%);
+}
 .d-orb{position:absolute;border-radius:50%;filter:blur(70px);pointer-events:none;z-index:0}
 .d-orb-1{width:520px;height:520px;top:-160px;right:-100px;background:radial-gradient(circle,rgba(123,94,167,.32) 0%,transparent 70%)}
 .d-orb-2{width:460px;height:460px;top:260px;right:380px;background:radial-gradient(circle,rgba(79,142,247,.20) 0%,transparent 70%)}
 .d-orb-3{width:400px;height:400px;top:120px;left:60px;background:radial-gradient(circle,rgba(123,94,167,.16) 0%,transparent 70%)}
-.d-hero{z-index:1;
-  padding:32px 28px 36px;margin-bottom:20px;
-  background:linear-gradient(135deg,rgba(123,94,167,.16) 0%,rgba(91,127,212,.10) 100%),var(--s2);
+.d-hero{
+  z-index:1;color:#fff;
+  padding:26px 28px 22px;
+  background:linear-gradient(135deg,rgba(123,94,167,.62) 0%,rgba(91,127,212,.55) 100%);
   backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
-  border:var(--bw) solid var(--b1);border-radius:var(--r);
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.06),0 20px 44px -18px rgba(91,72,150,.35);
+  border:1px solid rgba(255,255,255,.16);border-radius:var(--r);
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.28),inset 0 -20px 40px -24px rgba(0,0,0,.35),0 26px 54px -14px rgba(91,72,150,.5),0 12px 28px rgba(0,0,0,.4);
   position:relative;overflow:hidden;
 }
-.d-hero::before{content:'';position:absolute;top:-80px;right:-40px;width:300px;height:300px;background:radial-gradient(circle,rgba(123,94,167,.28) 0%,transparent 70%);pointer-events:none;z-index:0;filter:blur(6px)}
-.d-hero::after{content:'';position:absolute;bottom:-60px;right:120px;width:220px;height:220px;background:radial-gradient(circle,rgba(79,142,247,.16) 0%,transparent 70%);pointer-events:none;z-index:0;filter:blur(6px)}
-.d-hero>*{position:relative;z-index:1}
+.d-hero::before{content:'';position:absolute;top:-90px;right:-60px;width:260px;height:260px;background:radial-gradient(circle,rgba(255,255,255,.28) 0%,transparent 72%);pointer-events:none;z-index:0;filter:blur(46px)}
+.d-hero::after{content:'';position:absolute;bottom:-100px;left:-50px;width:220px;height:220px;background:radial-gradient(circle,rgba(19,19,29,.35) 0%,transparent 72%);pointer-events:none;z-index:0;filter:blur(46px)}
+.d-hero-sheen{position:absolute;top:0;left:-30%;width:60%;height:100%;background:linear-gradient(115deg,rgba(255,255,255,.14) 0%,transparent 55%);transform:skewX(-14deg);pointer-events:none;z-index:0}
+.d-hero-content{position:relative;z-index:1}
 .d-hero-eyebrow{
-  font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--accent);margin-bottom:12px;font-family:var(--ff);
+  font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  opacity:.85;margin-bottom:9px;font-family:var(--ff);color:inherit;
 }
 .d-hero-num{
   font-family:var(--fs);font-style:italic;font-weight:400;
@@ -617,82 +627,78 @@ body[data-density="compact"] .card{padding:18px}
 .d-hero-num.pos{color:var(--green)}
 .d-hero-num.neg{color:var(--red)}
 .d-hero-emph{font-family:var(--fs);font-style:italic;color:var(--t1)}
-.d-hero-row{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;margin-bottom:16px;position:relative;z-index:1}
+.d-hero-row{display:grid;grid-template-columns:1.55fr 1fr;gap:16px;margin-bottom:16px;position:relative;z-index:1}
 @media (max-width:900px){.d-hero-row{grid-template-columns:1fr}}
-.d-hero-bal{font-family:var(--fm);font-size:38px;font-weight:700;letter-spacing:-.02em;color:var(--t1);margin-bottom:4px}
-.d-hero-bal.pos{color:var(--green)}
-.d-hero-bal.neg{color:var(--red)}
-.d-hero-balsub{font-size:12.5px;color:var(--t2);margin-bottom:22px}
-.d-hero-stats{display:flex;gap:28px;margin-bottom:22px;flex-wrap:wrap}
-.d-hero-stat-lbl{font-size:10.5px;color:var(--t3);margin-bottom:3px}
-.d-hero-stat-num{font-size:15px;font-weight:700;font-family:var(--fm)}
-.d-hero-stat-num.pos{color:var(--green)}
-.d-hero-stat-num.neg{color:var(--red)}
-.d-hero-actions{display:flex;gap:8px;border-top:var(--bw) solid var(--b1);padding-top:16px;flex-wrap:wrap}
+.d-hero-bal{font-family:var(--fm);font-size:40px;font-weight:700;letter-spacing:-.02em;color:#fff;margin-bottom:4px;text-shadow:0 2px 20px rgba(0,0,0,.3)}
+.d-hero-balsub{font-size:12.5px;opacity:.85;margin-bottom:20px;color:inherit}
+.d-hero-stats{display:flex;gap:26px;margin-bottom:22px;flex-wrap:wrap}
+.d-hero-stat-lbl{font-size:10.5px;opacity:.75;margin-bottom:3px;color:inherit}
+.d-hero-stat-num{font-size:15px;font-weight:700;font-family:var(--fm);color:inherit}
+.d-hero-actions{display:flex;gap:10px;border-top:1px solid rgba(255,255,255,.2);padding-top:18px;flex-wrap:wrap}
 .d-hact{display:flex;flex-direction:column;align-items:center;gap:7px;flex:1;min-width:60px;cursor:pointer;transition:transform .16s var(--ease);background:none;border:none;color:inherit;font-family:inherit;padding:0}
 .d-hact:hover{transform:translateY(-2px)}
-.d-hact-ico{width:38px;height:38px;border-radius:50%;background:var(--s3);border:var(--bw) solid var(--b2);display:flex;align-items:center;justify-content:center;color:var(--accent);transition:background .16s,border-color .16s}
-.d-hact:hover .d-hact-ico{background:var(--accent-d);border-color:var(--accent)}
-.d-hact-ico svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.d-hact-lbl{font-size:10.5px;font-weight:600;color:var(--t2)}
+.d-hact-ico{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;position:relative;box-shadow:inset 0 1px 1px rgba(255,255,255,.45),inset 0 -3px 6px rgba(0,0,0,.15),0 2px 8px rgba(0,0,0,.15);transition:background .16s}
+.d-hact:hover .d-hact-ico{background:rgba(255,255,255,.28)}
+.d-hact-ico svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.d-hact-lbl{font-size:10.5px;font-weight:600;opacity:.92;color:inherit}
 
 .d-ring-card{
-  background:var(--s2);backdrop-filter:blur(20px) saturate(150%);-webkit-backdrop-filter:blur(20px) saturate(150%);
-  border:var(--bw) solid var(--b1);border-radius:var(--r);
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.05),0 10px 24px -14px rgba(0,0,0,.4);
+  background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-border);border-radius:var(--r);
+  box-shadow:var(--glass-hi),var(--glass-shadow);
   padding:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;position:relative;z-index:1;
+  text-align:center;position:relative;overflow:hidden;z-index:1;
 }
 .d-ring-lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:14px}
 .d-ring-wrap{position:relative;width:128px;height:128px;margin-bottom:12px}
 .d-ring-pct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.d-ring-pct b{font-size:25px;font-weight:800;font-family:var(--fs)}
+.d-ring-pct b{font-size:25px;font-weight:800}
 .d-ring-pct span{font-size:10px;color:var(--t3)}
 .d-ring-sub{font-size:12px;color:var(--t2)}
 .d-ring-cta{margin-top:10px}
+.d-ring-legend{display:flex;gap:14px;margin-top:16px}
+.d-rl-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t3)}
+.d-rl-dot{width:7px;height:7px;border-radius:50%;display:inline-block}
 
 .d-kpis{
   display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
   margin-bottom:20px;
 }
 .d-kpi{
-  padding:20px 22px;border:var(--bw) solid var(--b1);
-  border-radius:var(--r);background:var(--s2);
-  backdrop-filter:blur(20px) saturate(150%);-webkit-backdrop-filter:blur(20px) saturate(150%);
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.05),0 10px 24px -14px rgba(0,0,0,.4);
-  position:relative;z-index:1;transition:background var(--dur),border-color var(--dur),transform var(--dur);
+  padding:18px 18px 16px;border:1px solid var(--glass-border);
+  border-radius:var(--r);background:var(--glass-bg);
+  backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);
+  box-shadow:var(--glass-hi),var(--glass-shadow);
+  position:relative;z-index:1;overflow:hidden;transition:transform var(--dur);
 }
-.d-kpi:nth-child(1){background:linear-gradient(160deg,rgba(123,94,167,.18),var(--s2) 62%)}
-.d-kpi:nth-child(2){background:linear-gradient(160deg,rgba(76,175,80,.16),var(--s2) 62%)}
-.d-kpi:nth-child(3){background:linear-gradient(160deg,rgba(245,83,79,.14),var(--s2) 62%)}
-.d-kpi:nth-child(4){background:linear-gradient(160deg,rgba(79,142,247,.14),var(--s2) 62%)}
-.d-kpi:last-child{border:var(--bw) solid var(--b1)}
-.d-kpi:hover{border-color:var(--b2);transform:translateY(-1px)}
+.d-kpi:nth-child(1){background:linear-gradient(160deg,rgba(123,94,167,.28),var(--glass-bg) 62%)}
+.d-kpi:nth-child(2){background:linear-gradient(160deg,rgba(76,175,80,.24),var(--glass-bg) 62%)}
+.d-kpi:nth-child(3){background:linear-gradient(160deg,rgba(245,83,79,.24),var(--glass-bg) 62%)}
+.d-kpi:nth-child(4){background:linear-gradient(160deg,rgba(79,142,247,.24),var(--glass-bg) 62%)}
+.d-kpi:hover{transform:translateY(-1px)}
 .d-kpi-lbl{
-  font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--t3);margin-bottom:10px;
+  font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--t3);margin-bottom:9px;
 }
 .d-kpi-num{
-  font-family:var(--fs);font-size:30px;font-weight:800;letter-spacing:-.04em;
-  color:var(--t1);line-height:1.05;margin-bottom:4px;
+  font-family:var(--fm);font-size:22px;font-weight:800;letter-spacing:-.03em;
+  color:var(--t1);line-height:1.05;margin-bottom:9px;font-variant-numeric:tabular-nums;
 }
-.d-kpi-num.pos{color:var(--green)}
-.d-kpi-num.neg{color:var(--red)}
 .d-kpi-sub{font-size:11px;color:var(--t3);font-family:var(--fm)}
-.trend-up{color:var(--green);font-size:11px;font-weight:700}
-.trend-down{color:var(--red);font-size:11px;font-weight:700}
-.trend-up.inv{color:var(--red)}
-.trend-down.inv{color:var(--green)}
+.pill{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700}
+.pill.pos{background:var(--green-d);color:var(--green)}
+.pill.neg{background:var(--red-d);color:var(--red)}
+.pill.blu{background:var(--blue-d);color:var(--blue)}
 .d-kpi-trend{font-size:11px;margin-top:2px;min-height:16px}
 .t-muted{color:var(--t4);font-style:italic;font-weight:400}
 
 .d-acct-stack{position:relative;height:112px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .d-acct-card{position:absolute;top:0;left:0;width:100%;height:92px;border-radius:var(--rsm);
   padding:14px 16px;box-shadow:0 10px 24px rgba(0,0,0,.3);
-  transition:transform .38s var(--ease),opacity .38s var(--ease);border:var(--bw) solid var(--b1)}
+  transition:transform .38s var(--ease),opacity .38s var(--ease)}
 .d-acct-card.pos-0{transform:translateY(0) scale(1) rotate(0deg);z-index:3;opacity:1}
-.d-acct-card.pos-1{transform:translateY(10px) scale(.96) rotate(-2deg);z-index:2;opacity:.85}
-.d-acct-card.pos-2{transform:translateY(18px) scale(.92) rotate(2deg);z-index:1;opacity:.6}
+.d-acct-card.pos-1{transform:translateY(10px) scale(.96) rotate(-2deg);z-index:2;opacity:.9;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.09)}
+.d-acct-card.pos-2{transform:translateY(18px) scale(.92) rotate(2deg);z-index:1;opacity:.65;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.07)}
 .d-acct-hint{display:flex;align-items:center;justify-content:center;gap:8px;font-size:10.5px;color:var(--t3);margin-top:22px}
 .d-acct-dots{display:flex;gap:4px}
 .d-acct-dot{width:5px;height:5px;border-radius:50%;background:var(--b2);transition:all var(--dur)}
@@ -700,14 +706,23 @@ body[data-density="compact"] .card{padding:18px}
 
 /* Shared glass card treatment for dashboard-only cards */
 .d-glass-card{
-  background:var(--s2);backdrop-filter:blur(20px) saturate(150%);-webkit-backdrop-filter:blur(20px) saturate(150%);
-  border:var(--bw) solid var(--b1);border-radius:var(--r);
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.05),0 10px 24px -14px rgba(0,0,0,.4);
-  position:relative;z-index:1;padding:20px 22px;
+  background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-border);border-radius:var(--r);
+  box-shadow:var(--glass-hi),var(--glass-shadow);
+  position:relative;z-index:1;overflow:hidden;padding:20px 22px;
 }
 
 /* Full-width cash-flow chart row */
 .d-chart-row{margin-bottom:16px;position:relative;z-index:1}
+.d-chart-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.d-chart-num{font-family:var(--fm);font-size:26px;font-weight:800;letter-spacing:-.03em;color:var(--t1);font-variant-numeric:tabular-nums}
+.d-chart-legend{display:flex;gap:16px;margin-top:6px;flex-wrap:wrap}
+.d-cl-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t3);font-weight:600}
+.d-cl-line{width:12px;height:3px;border-radius:2px;display:inline-block}
+.d-periodpills{display:flex;background:rgba(255,255,255,.04);border:1px solid var(--glass-border);border-radius:999px;padding:3px;gap:2px}
+.d-pp{padding:5px 11px;border-radius:999px;font-size:11px;font-weight:700;color:var(--t3);cursor:pointer;transition:background .15s,color .15s}
+.d-pp:hover{color:var(--t1)}
+.d-pp.active{background:var(--accent-d);color:var(--accent)}
 .ct-tab{font-size:11px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--accent);cursor:pointer}
 .ct-tab:hover{text-decoration:underline}
 
@@ -743,15 +758,17 @@ body[data-density="compact"] .card{padding:18px}
   display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform .16s var(--ease);
 }
 .d-promo:hover{transform:translateY(-1px)}
-.d-promo-ico{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--blue));display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;box-shadow:inset 0 1.5px 1px rgba(255,255,255,.35),0 4px 12px rgba(123,94,167,.4)}
-.d-promo-ico svg{width:17px;height:17px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.d-promo-title{font-size:12.5px;font-weight:700;margin-bottom:2px;color:var(--t1)}
-.d-promo-sub{font-size:11px;color:var(--t3)}
-.d-promo-cta{margin-left:auto;font-size:11px;font-weight:700;color:var(--accent);white-space:nowrap;flex-shrink:0}
+.d-promo::before{content:'';position:absolute;top:0;left:-40%;width:35%;height:100%;background:linear-gradient(115deg,transparent,rgba(255,255,255,.10),transparent);transform:skewX(-16deg);animation:dPromoShimmer 5s ease-in-out infinite;pointer-events:none}
+@keyframes dPromoShimmer{0%{left:-40%}55%,100%{left:130%}}
+.d-promo-ico{width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--blue));display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;position:relative;z-index:1;box-shadow:inset 0 1.5px 1px rgba(255,255,255,.4),inset 0 -4px 8px rgba(0,0,0,.2),0 6px 16px rgba(123,94,167,.45)}
+.d-promo-ico svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.d-promo-title{font-size:13px;font-weight:700;margin-bottom:2px;color:var(--t1);position:relative;z-index:1}
+.d-promo-sub{font-size:11.5px;color:var(--t2);position:relative;z-index:1}
+.d-promo-cta{margin-left:auto;font-size:11.5px;font-weight:700;color:var(--accent);white-space:nowrap;flex-shrink:0;position:relative;z-index:1}
 
 .d-sub-row{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:var(--bw) solid var(--b1)}
 .d-sub-row:last-child{border-bottom:none;padding-bottom:0}
-.d-sub-chip{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;color:#fff}
+.d-sub-chip{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;color:#fff;box-shadow:inset 0 1.5px 1px rgba(255,255,255,.35),inset 0 -3px 6px rgba(0,0,0,.2),0 4px 12px rgba(0,0,0,.35)}
 .d-sub-name{font-size:12.5px;font-weight:600}
 .d-sub-due{font-size:10.5px;color:var(--t3)}
 .d-sub-amt{margin-left:auto;font-size:12.5px;font-weight:700;font-family:var(--fm)}
@@ -1821,43 +1838,57 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 
   <div class="d-hero-row">
     <div class="d-hero">
-      <div class="d-hero-eyebrow">Total balance</div>
-      <div class="d-hero-bal pos" id="d-hero-bal"><span class="kl-cur-sym">R</span> 0</div>
-      <div class="d-hero-balsub" id="d-hero-balsub">Across 0 accounts</div>
-      <div class="d-hero-stats">
-        <div><div class="d-hero-stat-lbl" id="d-inc-lbl">Income</div><div class="d-hero-stat-num pos" id="d-inc">—</div></div>
-        <div><div class="d-hero-stat-lbl" id="d-exp-lbl">Expenses</div><div class="d-hero-stat-num neg" id="d-exp">—</div></div>
-        <div><div class="d-hero-stat-lbl" id="d-savpct-lbl">Savings rate</div><div class="d-hero-stat-num" id="d-savpct">—</div></div>
-      </div>
-      <div class="d-hero-actions">
-        <button class="d-hact" onclick="openAddTxn()"><span class="d-hact-ico"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span class="d-hact-lbl">Add</span></button>
-        <button class="d-hact" onclick="openAddTxnTransfer()" title="Record a transfer between accounts"><span class="d-hact-ico"><svg viewBox="0 0 16 16" style="width:16px;height:16px"><use href="#ki-arrows-ud"/></svg></span><span class="d-hact-lbl">Transfer</span></button>
-        <button class="d-hact" onclick="goPg('cal')"><span class="d-hact-ico"><svg viewBox="0 0 16 16" style="width:16px;height:16px"><use href="#ki-calendar"/></svg></span><span class="d-hact-lbl">Bills</span></button>
-        <button class="d-hact" onclick="openImport()"><span class="d-hact-ico"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/><path d="M5 19h14"/></svg></span><span class="d-hact-lbl">Import CSV</span></button>
+      <div class="d-hero-sheen"></div>
+      <div class="d-hero-content">
+        <div class="d-hero-eyebrow">Total balance</div>
+        <div class="d-hero-bal" id="d-hero-bal"><span class="kl-cur-sym">R</span> 0</div>
+        <div class="d-hero-balsub" id="d-hero-balsub">Across 0 accounts</div>
+        <div class="d-hero-stats">
+          <div><div class="d-hero-stat-lbl" id="d-inc-lbl">Income</div><div class="d-hero-stat-num" id="d-inc">—</div></div>
+          <div><div class="d-hero-stat-lbl" id="d-exp-lbl">Expenses</div><div class="d-hero-stat-num" id="d-exp">—</div></div>
+          <div><div class="d-hero-stat-lbl" id="d-savpct-lbl">Savings rate</div><div class="d-hero-stat-num" id="d-savpct">—</div></div>
+        </div>
+        <div class="d-hero-actions">
+          <button class="d-hact" onclick="openAddTxn()"><span class="d-hact-ico"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span class="d-hact-lbl">Add</span></button>
+          <button class="d-hact" onclick="openAddTxnTransfer()" title="Record a transfer between accounts"><span class="d-hact-ico"><svg viewBox="0 0 16 16" style="width:16px;height:16px"><use href="#ki-arrows-ud"/></svg></span><span class="d-hact-lbl">Transfer</span></button>
+          <button class="d-hact" onclick="goPg('cal')"><span class="d-hact-ico"><svg viewBox="0 0 16 16" style="width:16px;height:16px"><use href="#ki-calendar"/></svg></span><span class="d-hact-lbl">Bills</span></button>
+          <button class="d-hact" onclick="openImport()"><span class="d-hact-ico"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/><path d="M5 19h14"/></svg></span><span class="d-hact-lbl">Import CSV</span></button>
+        </div>
       </div>
     </div>
     <div class="d-ring-card d-full-only">
       <div class="d-ring-lbl">Budget used</div>
       <div class="d-ring-wrap" id="d-ring-wrap"></div>
       <div class="d-ring-sub" id="d-ring-sub">No budget set</div>
-      <button class="btn btn-ghost btn-xs d-ring-cta" onclick="goPg('budget')">Set up budget →</button>
+      <div class="d-ring-legend" id="d-ring-legend" style="display:none">
+        <div class="d-rl-item"><span class="d-rl-dot" style="background:var(--accent2)"></span>Spent</div>
+        <div class="d-rl-item"><span class="d-rl-dot" style="background:#22222f"></span>Remaining</div>
+      </div>
+      <button class="btn btn-ghost btn-xs d-ring-cta" id="d-ring-cta" onclick="goPg('budget')">Set up budget →</button>
     </div>
   </div>
 
   <!-- ═══ CASH FLOW CHART (full width) ═══ -->
   <div class="d-chart-row d-full-only">
     <div class="d-glass-card">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px">
+      <div class="d-chart-top">
         <div>
-          <div class="ct" style="margin-bottom:6px">Cash flow</div>
-          <div style="display:flex;gap:14px">
-            <span style="font-size:11px;color:var(--t3);display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block"></span>Income</span>
-            <span style="font-size:11px;color:var(--t3);display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block"></span>Expenses</span>
+          <div class="ct" style="margin-bottom:8px">Cash flow</div>
+          <div id="d-chart-num" class="d-chart-num">—</div>
+          <div class="d-chart-legend">
+            <span class="d-cl-item"><span class="d-cl-line" style="background:var(--accent)"></span>Income</span>
+            <span class="d-cl-item"><span class="d-cl-line" style="background:var(--red)"></span>Expenses</span>
+            <span class="d-cl-item"><span class="d-cl-line" style="background:var(--t4)"></span><span id="d-chart-avg-lbl">Average</span></span>
           </div>
         </div>
-        <button class="btn btn-ghost btn-xs" onclick="goPg('forecast')">Forecast →</button>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="d-periodpills" id="d-periodpills">
+            <div class="d-pp" data-n="1" onclick="rDashSetCfPeriod(1)">1M</div><div class="d-pp" data-n="3" onclick="rDashSetCfPeriod(3)">3M</div><div class="d-pp active" data-n="6" onclick="rDashSetCfPeriod(6)">6M</div><div class="d-pp" data-n="12" onclick="rDashSetCfPeriod(12)">1Y</div>
+          </div>
+          <button class="btn btn-ghost btn-xs" onclick="goPg('forecast')">Forecast →</button>
+        </div>
       </div>
-      <div id="d-cashflow-chart" style="margin-top:10px"></div>
+      <div id="d-cashflow-chart" style="margin-top:8px"></div>
     </div>
   </div>
 
@@ -1865,18 +1896,18 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="d-kpis d-full-only">
     <div class="d-kpi">
       <div class="d-kpi-lbl" id="d-bal-kpi-lbl">Total balance</div>
-      <div class="d-kpi-num pos" id="d-kpi-bal">—</div>
+      <div class="d-kpi-num" id="d-kpi-bal">—</div>
       <div class="d-kpi-sub" id="d-kpi-bal-c">0 accounts</div>
     </div>
     <div class="d-kpi">
       <div class="d-kpi-lbl" id="d-inc-kpi-lbl">Income</div>
-      <div class="d-kpi-num pos" id="d-inc-kpi">—</div>
+      <div class="d-kpi-num" id="d-inc-kpi">—</div>
       <div class="d-kpi-trend" id="d-inc-trend"></div>
       <div class="d-kpi-sub" id="d-inc-c">0 transactions</div>
     </div>
     <div class="d-kpi">
       <div class="d-kpi-lbl" id="d-exp-kpi-lbl">Expenses</div>
-      <div class="d-kpi-num neg" id="d-exp-kpi">—</div>
+      <div class="d-kpi-num" id="d-exp-kpi">—</div>
       <div class="d-kpi-trend" id="d-exp-trend"></div>
       <div class="d-kpi-sub" id="d-exp-c">0 transactions</div>
     </div>
@@ -6749,7 +6780,8 @@ function updMoLbl() { const[y,m]=S.curMo.split('-').map(Number); const el=docume
 const moTxns = mo => { const m=mo||S.curMo; return S.transactions.filter(t=>t.date&&t.date.startsWith(m)&&t.type!=='transfer'); };
 // Returns today's date as YYYY-MM-DD in local time (not UTC), safe for all timezones
 const localDateStr = (d=new Date()) => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-const last6 = () => { const r=[]; const n=new Date(); for(let i=5;i>=0;i--){const d=new Date(n.getFullYear(),n.getMonth()-i,1);r.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'))} return r; };
+const last6 = () => lastN(6);
+const lastN = (n) => { const r=[]; const now=new Date(); for(let i=n-1;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);r.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'))} return r; };
 const toMo = (amt,cyc) => { if(cyc==='annual')return amt/12; if(cyc==='weekly')return amt*52/12; if(cyc==='quarterly')return amt/3; return amt; };
 
 function popCatDDs() {
@@ -7854,9 +7886,9 @@ function doImport() {
 function _kpiDelta(current, prev, inv) {
   if (!prev || prev === 0) return '';
   const pct = ((current - prev) / Math.abs(prev)) * 100;
-  const sign = pct >= 0 ? '▲' : '▼';
-  const cls = (pct >= 0 ? 'trend-up' : 'trend-down') + (inv ? ' inv' : '');
-  return `<span class="${cls}">${sign} ${Math.abs(pct).toFixed(1)}%</span> <span style="font-size:10px;color:var(--t3)">vs last month</span>`;
+  const good = inv ? pct<0 : pct>=0;
+  const cls = good ? 'pos' : 'neg';
+  return `<span class="pill ${cls}">${pct>=0?'+':''}${pct.toFixed(1)}%</span>`;
 }
 /* ── Dashboard Simple/Full mode ──────────────────────────────────────────
    Simple hides the budget ring, cash-flow chart, KPI strip, subscriptions
@@ -7891,15 +7923,36 @@ function _smoothPath(pts){
   }
   return d;
 }
+let _dCfPeriod=6;
+function rDashSetCfPeriod(n){
+  _dCfPeriod=n;
+  document.querySelectorAll('#d-periodpills .d-pp').forEach(p=>p.classList.toggle('active',+p.dataset.n===n));
+  rDashCashflow();
+}
 function rDashCashflow(){
   const el=document.getElementById('d-cashflow-chart'); if(!el) return;
-  const months=last6();
+  const months=lastN(_dCfPeriod);
   const data=months.map(m=>{
     const txns=moTxns(m);
     const income=txns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
     const expenses=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
     return {m,income,expenses};
   });
+  const curNet=data[data.length-1]?data[data.length-1].income-data[data.length-1].expenses:0;
+  const prevMoData=data.length>1?data[data.length-2]:null;
+  const prevNet=prevMoData?prevMoData.income-prevMoData.expenses:0;
+  const numEl=document.getElementById('d-chart-num');
+  const avgLblEl=document.getElementById('d-chart-avg-lbl');
+  if(avgLblEl)avgLblEl.textContent=_dCfPeriod+'-mo average';
+  if(numEl){
+    let pillHtml='';
+    if(prevMoData&&prevNet!==0){
+      const dPct=((curNet-prevNet)/Math.abs(prevNet))*100;
+      const cls=dPct>=0?'pos':'neg';
+      pillHtml=` <span class="pill ${cls}" style="font-size:10.5px">${dPct>=0?'+':''}${dPct.toFixed(0)}% vs prior</span>`;
+    }
+    numEl.innerHTML=fmt(curNet)+pillHtml;
+  }
   if(!data.some(d=>d.income>0||d.expenses>0)){
     el.innerHTML='<div class="empty" style="padding:20px"><div class="empty-t" style="font-size:13px">No cash flow data yet</div><div class="empty-s">Add a few months of transactions to see the trend</div></div>';
     return;
@@ -7907,19 +7960,22 @@ function rDashCashflow(){
   const W=1160,H=170,pad={t:12,b:22};
   const cH=H-pad.t-pad.b;
   const maxV=Math.max(...data.map(d=>Math.max(d.income,d.expenses)),1);
-  const stepX=W/(data.length-1);
+  const stepX=W/(data.length-1||1);
   const incPts=data.map((d,i)=>({x:i*stepX,y:pad.t+cH-(d.income/maxV)*cH}));
   const expPts=data.map((d,i)=>({x:i*stepX,y:pad.t+cH-(d.expenses/maxV)*cH}));
   const incPath=_smoothPath(incPts);
   const expPath=_smoothPath(expPts);
   const last=incPts.length-1;
   const areaPath=`${incPath} L${incPts[last].x},${pad.t+cH} L${incPts[0].x},${pad.t+cH} Z`;
+  const avgIncome=data.reduce((s,d)=>s+d.income,0)/data.length;
+  const avgYClamped=Math.max(pad.t,Math.min(pad.t+cH,pad.t+cH-(avgIncome/maxV)*cH));
   const labels=data.map(d=>{const[y,m]=d.m.split('-');return new Date(+y,+m-1,1).toLocaleString('default',{month:'short'});});
   el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="overflow:visible">
       <defs><linearGradient id="dcfGrad" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.28"/>
         <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
       </linearGradient></defs>
+      <line x1="0" y1="${avgYClamped.toFixed(1)}" x2="${W}" y2="${avgYClamped.toFixed(1)}" stroke="var(--t4)" stroke-width="1.5" stroke-dasharray="5 5"/>
       <path d="${areaPath}" fill="url(#dcfGrad)"/>
       <path d="${expPath}" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" opacity="0.75"/>
       <path d="${incPath}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
@@ -7952,11 +8008,11 @@ function _paintAcctStack(){
     const bal=calcAccBalance(acc.id);
     const isCc=acc.type==='credit';
     const front=pos===0;
-    const bg=front?'linear-gradient(135deg,var(--accent) 0%,var(--blue) 100%)':'var(--s2)';
+    const bg=front?'linear-gradient(135deg,var(--accent) 0%,var(--blue) 100%)':(pos===1?'rgba(42,36,64,.6)':'rgba(30,26,46,.55)');
     return `<div class="d-acct-card pos-${pos}" style="background:${bg}">
-      <div style="font-size:12px;font-weight:700;${front?'color:#fff':'color:var(--t1)'}">${esc(acc.name)}</div>
-      <div style="font-size:10px;font-family:var(--fm);${front?'color:rgba(255,255,255,.72)':'color:var(--t3)'}">${esc(acc.bank||typeLabels[acc.type]||'')}</div>
-      ${front?`<div style="font-size:19px;font-weight:800;margin-top:16px;color:#fff">${isCc&&bal<0?'-':''}${fmt(Math.abs(bal))}</div>`:''}
+      <div style="font-size:12px;font-weight:700;color:#fff;opacity:${front?1:.9}">${esc(acc.name)}</div>
+      <div style="font-size:10.5px;font-family:var(--fm);color:#fff;opacity:${front?.7:.55}">${esc(acc.bank||typeLabels[acc.type]||'')}</div>
+      <div style="font-size:19px;font-weight:800;margin-top:16px;color:#fff">${isCc&&bal<0?'-':''}${fmt(Math.abs(bal))}</div>
     </div>`;
   }).join('');
   const dotsHtml=_dAcctList.map((_,i)=>`<span class="d-acct-dot ${_dAcctOrder[0]===i?'on':''}"></span>`).join('');
@@ -7995,14 +8051,14 @@ function rDash() {
   if(expTrendEl)expTrendEl.innerHTML=_kpiDelta(exp,prevExp,true);
   const savTrendEl=document.getElementById('d-savpct-trend');
   if(savTrendEl)savTrendEl.innerHTML=_kpiDelta(pct,prevPct,false);
-  // Total balance (hero + KPI)
+  // Total balance (hero + KPI) — plain white/t1 text, matching the mockup (color-coding lives in
+  // the card tint and trend pill, not the number itself)
   const totalBal=(S.accounts||[]).reduce((s,a)=>s+calcAccBalance(a.id),0);
-  const balCls=totalBal>=0?'pos':'neg';
   const heroBalEl=document.getElementById('d-hero-bal');
-  if(heroBalEl){heroBalEl.className='d-hero-bal '+balCls;animateNum(heroBalEl,totalBal,v=>fmt(Math.abs(v)));}
+  if(heroBalEl)animateNum(heroBalEl,totalBal,v=>(v<0?'-':'')+fmt(Math.abs(v)));
   set('d-hero-balsub','Across '+(S.accounts||[]).length+' account'+((S.accounts||[]).length===1?'':'s')+' · '+(net>=0?'+':'-')+fmt(Math.abs(net))+' net this month');
   const kpiBalEl=document.getElementById('d-kpi-bal');
-  if(kpiBalEl){kpiBalEl.className='d-kpi-num '+balCls;animateNum(kpiBalEl,totalBal,v=>fmt(Math.abs(v)));}
+  if(kpiBalEl)animateNum(kpiBalEl,totalBal,v=>(v<0?'-':'')+fmt(Math.abs(v)));
   set('d-kpi-bal-c',(S.accounts||[]).length+' account'+((S.accounts||[]).length===1?'':'s'));
   // Animated KPI numbers
   setNumAnimated('d-inc', inc);setNumAnimated('d-inc-kpi', inc);
@@ -8012,10 +8068,8 @@ function rDash() {
   // Savings rate (hero stat + KPI)
   const savLbl=isCorp()?'Margin':'Savings rate';
   set('d-savpct-lbl',savLbl);set('d-savpct-kpi-lbl',savLbl);
-  const savPctEl=document.getElementById('d-savpct');
-  if(savPctEl){savPctEl.className='d-hero-stat-num '+(net>=0?'pos':'neg');savPctEl.textContent=pct+'%';}
-  const savKpiEl=document.getElementById('d-savpct-kpi');
-  if(savKpiEl){savKpiEl.className='d-kpi-num '+(net>=0?'pos':'neg');savKpiEl.textContent=pct+'%';}
+  set('d-savpct',pct+'%');
+  set('d-savpct-kpi',pct+'%');
   // KPI label relabelling for business mode
   if(isCorp()){
     set('d-bal-kpi-lbl','Cash position');
@@ -8077,13 +8131,19 @@ function rDashRing(){
   const txns=moTxns();
   const spent=txns.filter(t=>t.type==='expense'&&budgets[t.category]!=null).reduce((s,t)=>s+t.amount,0);
   const R=54,C=2*Math.PI*R;
+  const ctaEl=document.getElementById('d-ring-cta');
+  const legendEl=document.getElementById('d-ring-legend');
   if(!keys.length||totalBudget<=0){
     wrap.innerHTML=`<svg width="128" height="128" viewBox="0 0 128 128"><circle cx="64" cy="64" r="${R}" fill="none" stroke="var(--b1)" stroke-width="12"/></svg>
       <div class="d-ring-pct" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><b>—</b><span>no budget</span></div>`;
     wrap.style.position='relative';
     if(subEl)subEl.textContent='Set spending limits to track your budget here';
+    if(ctaEl)ctaEl.style.display='';
+    if(legendEl)legendEl.style.display='none';
     return;
   }
+  if(ctaEl)ctaEl.style.display='none';
+  if(legendEl)legendEl.style.display='';
   const pct=Math.round((spent/totalBudget)*100);
   const shownPct=Math.min(pct,100);
   const offset=C*(1-shownPct/100);
@@ -8112,13 +8172,19 @@ function rDashSubs(){
     el.innerHTML=`<div class="empty" style="padding:16px"><div class="empty-s">No subscriptions yet — Klar auto-detects them from your transactions, or <span style="color:var(--accent);cursor:pointer" onclick="goPg('subs')">add one</span></div></div>`;
     return;
   }
-  const chipClrs=['var(--accent)','var(--blue)','var(--green)','var(--amber)','var(--red)'];
+  const chipGrads=[
+    'radial-gradient(circle at 32% 28%,#B39BE0,#6F53A8 78%)',
+    'radial-gradient(circle at 32% 28%,#6FA8FF,#2F63C7 78%)',
+    'radial-gradient(circle at 32% 28%,#6DD076,#2F8A3B 78%)',
+    'radial-gradient(circle at 32% 28%,#FFC15E,#D68C1E 78%)',
+    'radial-gradient(circle at 32% 28%,#F0574F,#C8241C 78%)',
+  ];
   const sorted=[...active].sort((a,b)=>(a.nextDt||'9999').localeCompare(b.nextDt||'9999')).slice(0,3);
   el.innerHTML=sorted.map((sub,i)=>{
     const d=sub.nextDt?_daysUntil(sub.nextDt):null;
     const due=d==null?sub.cycle||'monthly':(d<0?'Overdue':d===0?'Due today':d===1?'Renews tomorrow':'Renews in '+d+'d');
     return`<div class="d-sub-row">
-      <div class="d-sub-chip" style="background:${chipClrs[i%chipClrs.length]}">${esc(sub.icon||'📱')}</div>
+      <div class="d-sub-chip" style="background:${chipGrads[i%chipGrads.length]}">${esc(sub.icon||'📱')}</div>
       <div><div class="d-sub-name">${esc(sub.name)}</div><div class="d-sub-due">${esc(due)}</div></div>
       <div class="d-sub-amt">${fmt(sub.amount)}</div>
     </div>`;
