@@ -658,6 +658,21 @@ body[data-density="compact"] .card{padding:18px}
 .d-kpi-trend{font-size:11px;margin-top:2px;min-height:16px}
 .t-muted{color:var(--t4);font-style:italic;font-weight:400}
 
+/* cash flow + account stack row */
+.d-top2{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;margin-bottom:20px}
+@media (max-width:900px){.d-top2{grid-template-columns:1fr}}
+.d-acct-stack{position:relative;height:112px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.d-acct-card{position:absolute;top:0;left:0;width:100%;height:92px;border-radius:var(--rsm);
+  padding:14px 16px;box-shadow:0 10px 24px rgba(0,0,0,.3);
+  transition:transform .38s var(--ease),opacity .38s var(--ease);border:var(--bw) solid var(--b1)}
+.d-acct-card.pos-0{transform:translateY(0) scale(1) rotate(0deg);z-index:3;opacity:1}
+.d-acct-card.pos-1{transform:translateY(10px) scale(.96) rotate(-2deg);z-index:2;opacity:.85}
+.d-acct-card.pos-2{transform:translateY(18px) scale(.92) rotate(2deg);z-index:1;opacity:.6}
+.d-acct-hint{display:flex;align-items:center;justify-content:center;gap:8px;font-size:10.5px;color:var(--t3);margin-top:22px}
+.d-acct-dots{display:flex;gap:4px}
+.d-acct-dot{width:5px;height:5px;border-radius:50%;background:var(--b2);transition:all var(--dur)}
+.d-acct-dot.on{background:var(--accent);width:13px;border-radius:3px}
+
 .d-ytd{
   display:grid;grid-template-columns:repeat(3,1fr);gap:0;
   background:var(--s1);border:var(--bw) solid var(--b1);border-radius:var(--r);
@@ -1797,6 +1812,27 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <div class="d-kpi-lbl">Subscriptions</div>
       <div class="d-kpi-num" id="d-sub">—</div>
       <div class="d-kpi-sub" id="d-sub-c">0 active</div>
+    </div>
+  </div>
+
+  <!-- ═══ TOP ROW: CASH FLOW CHART + ACCOUNT STACK ═══ -->
+  <div class="d-top2 d-full-only">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px">
+        <div>
+          <div class="ct" style="margin-bottom:6px">Cash flow</div>
+          <div style="display:flex;gap:14px">
+            <span style="font-size:11px;color:var(--t3);display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block"></span>Income</span>
+            <span style="font-size:11px;color:var(--t3);display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block"></span>Expenses</span>
+          </div>
+        </div>
+        <button class="btn btn-ghost btn-xs" onclick="goPg('cashflow')">Forecast →</button>
+      </div>
+      <div id="d-cashflow-chart" style="margin-top:10px"></div>
+    </div>
+    <div class="card">
+      <div class="ct" style="margin-bottom:14px">Your accounts</div>
+      <div id="d-acctstack"></div>
     </div>
   </div>
 
@@ -7829,8 +7865,102 @@ function klSetDashMode(mode){
   S.prefs.dashMode=mode; save();
   klApplyDashMode();
 }
+
+/* ── Dashboard cash-flow chart — smooth 6-month income/expense lines,
+   built from the same last6()/moTxns() data as the Trends bar chart. ── */
+function _smoothPath(pts){
+  if(pts.length<2) return '';
+  let d=`M${pts[0].x},${pts[0].y}`;
+  for(let i=0;i<pts.length-1;i++){
+    const p0=pts[i-1]||pts[i], p1=pts[i], p2=pts[i+1], p3=pts[i+2]||p2;
+    const c1x=p1.x+(p2.x-p0.x)/6, c1y=p1.y+(p2.y-p0.y)/6;
+    const c2x=p2.x-(p3.x-p1.x)/6, c2y=p2.y-(p3.y-p1.y)/6;
+    d+=` C${c1x},${c1y} ${c2x},${c2y} ${p2.x},${p2.y}`;
+  }
+  return d;
+}
+function rDashCashflow(){
+  const el=document.getElementById('d-cashflow-chart'); if(!el) return;
+  const months=last6();
+  const data=months.map(m=>{
+    const txns=moTxns(m);
+    const income=txns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+    const expenses=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+    return {m,income,expenses};
+  });
+  if(!data.some(d=>d.income>0||d.expenses>0)){
+    el.innerHTML='<div class="empty" style="padding:20px"><div class="empty-t" style="font-size:13px">No cash flow data yet</div><div class="empty-s">Add a few months of transactions to see the trend</div></div>';
+    return;
+  }
+  const W=1160,H=170,pad={t:12,b:22};
+  const cH=H-pad.t-pad.b;
+  const maxV=Math.max(...data.map(d=>Math.max(d.income,d.expenses)),1);
+  const stepX=W/(data.length-1);
+  const incPts=data.map((d,i)=>({x:i*stepX,y:pad.t+cH-(d.income/maxV)*cH}));
+  const expPts=data.map((d,i)=>({x:i*stepX,y:pad.t+cH-(d.expenses/maxV)*cH}));
+  const incPath=_smoothPath(incPts);
+  const expPath=_smoothPath(expPts);
+  const last=incPts.length-1;
+  const areaPath=`${incPath} L${incPts[last].x},${pad.t+cH} L${incPts[0].x},${pad.t+cH} Z`;
+  const labels=data.map(d=>{const[y,m]=d.m.split('-');return new Date(+y,+m-1,1).toLocaleString('default',{month:'short'});});
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="overflow:visible">
+      <defs><linearGradient id="dcfGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.28"/>
+        <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+      </linearGradient></defs>
+      <path d="${areaPath}" fill="url(#dcfGrad)"/>
+      <path d="${expPath}" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" opacity="0.75"/>
+      <path d="${incPath}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="${incPts[last].x}" cy="${incPts[last].y}" r="4.5" fill="var(--bg)" stroke="var(--accent)" stroke-width="2.5"/>
+      <circle cx="${expPts[last].x}" cy="${expPts[last].y}" r="4" fill="var(--bg)" stroke="var(--red)" stroke-width="2"/>
+    </svg>
+    <div style="display:flex;justify-content:space-between;margin-top:4px">
+      ${labels.map(l=>`<span style="font-size:10px;color:var(--t4)">${l}</span>`).join('')}
+    </div>`;
+}
+
+/* ── Dashboard account stack — click to shuffle through top accounts. ── */
+let _dAcctList=[], _dAcctOrder=[];
+function rDashAcctStack(){
+  const wrap=document.getElementById('d-acctstack'); if(!wrap) return;
+  const accs=(S.accounts||[]).slice(0,3);
+  if(!accs.length){
+    wrap.innerHTML=`<div class="empty" style="padding:16px"><div class="empty-s">No accounts yet — <span style="color:var(--accent);cursor:pointer" onclick="goPg('accounts')">add one</span></div></div>`;
+    return;
+  }
+  _dAcctList=accs; _dAcctOrder=accs.map((_,i)=>i);
+  _paintAcctStack();
+}
+function _paintAcctStack(){
+  const wrap=document.getElementById('d-acctstack'); if(!wrap) return;
+  const n=_dAcctList.length;
+  const typeLabels={cheque:'Cheque/Current',savings:'Savings',credit:'Credit Card',investment:'Investment',cash:'Cash'};
+  const cardsHtml=_dAcctOrder.map((accIdx,pos)=>{
+    const acc=_dAcctList[accIdx];
+    const bal=calcAccBalance(acc.id);
+    const isCc=acc.type==='credit';
+    const front=pos===0;
+    const bg=front?'linear-gradient(135deg,var(--accent) 0%,var(--blue) 100%)':'var(--s2)';
+    return `<div class="d-acct-card pos-${pos}" style="background:${bg}">
+      <div style="font-size:12px;font-weight:700;${front?'color:#fff':'color:var(--t1)'}">${esc(acc.name)}</div>
+      <div style="font-size:10px;font-family:var(--fm);${front?'color:rgba(255,255,255,.72)':'color:var(--t3)'}">${esc(acc.bank||typeLabels[acc.type]||'')}</div>
+      ${front?`<div style="font-size:19px;font-weight:800;margin-top:16px;color:#fff">${isCc&&bal<0?'-':''}${fmt(Math.abs(bal))}</div>`:''}
+    </div>`;
+  }).join('');
+  const dotsHtml=_dAcctList.map((_,i)=>`<span class="d-acct-dot ${_dAcctOrder[0]===i?'on':''}"></span>`).join('');
+  wrap.innerHTML=`<div class="d-acct-stack" onclick="_shuffleAcctStack()" role="button" aria-label="Switch account">${cardsHtml}</div>
+    ${n>1?`<div class="d-acct-hint"><span>Tap to switch accounts</span><span class="d-acct-dots">${dotsHtml}</span></div>`:''}`;
+}
+function _shuffleAcctStack(){
+  if(_dAcctOrder.length<2) return;
+  _dAcctOrder.push(_dAcctOrder.shift());
+  _paintAcctStack();
+}
+
 function rDash() {
   klApplyDashMode();
+  rDashCashflow();
+  rDashAcctStack();
   const txns=moTxns();
   const inc=txns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
   const exp=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
