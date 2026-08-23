@@ -394,6 +394,7 @@ body[data-density="compact"] .card{padding:18px}
   display:flex;align-items:center;justify-content:center;transition:all var(--dur);
 }
 .tb-icon-btn:hover{border-color:var(--b2);color:var(--t1);background:var(--s2)}
+.tb-icon-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.5;flex-shrink:0}
 .tb-icon-btn.has-dot::after{
   content:'';position:absolute;top:6px;right:6px;
   width:6px;height:6px;border-radius:50%;background:var(--gold);
@@ -1091,7 +1092,8 @@ tbody tr:hover td{background:var(--s2)}
 .chat-user{background:var(--accent);color:#fff;border-radius:16px 16px 4px 16px;padding:11px 16px;font-size:13px;align-self:flex-end;max-width:82%;font-weight:500}
 .chat-ai{background:var(--s2);border:var(--bw) solid var(--b2);border-radius:16px 16px 16px 4px;padding:11px 16px;font-size:13px;align-self:flex-start;max-width:86%;line-height:1.7}
 
-.sft{font-size:10px;color:var(--t4);font-weight:600;letter-spacing:0.5px}
+.sft{font-size:10px;color:var(--t4);font-weight:600;letter-spacing:0.5px;display:flex;align-items:center;gap:5px}
+.sft svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:1.5;flex-shrink:0}
 
 /* ── TRANSFER DETECTION BANNER ── */
 .transfer-detect-wrap{margin-bottom:16px}
@@ -1223,7 +1225,8 @@ tbody tr:hover td{background:var(--s2)}
 
 /* Sidebar mode switcher */
 .mode-switcher{display:flex;background:var(--s2);border-radius:8px;padding:3px;gap:2px;margin:8px 12px 2px}
-.mode-btn{flex:1;padding:6px 4px;border:none;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;background:transparent;color:var(--t3);font-family:var(--ff);transition:all .15s var(--ease)}
+.mode-btn{flex:1;padding:6px 4px;border:none;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;background:transparent;color:var(--t3);font-family:var(--ff);transition:all .15s var(--ease);display:inline-flex;align-items:center;justify-content:center;gap:4px}
+.mode-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.5;flex-shrink:0}
 .mode-btn.mode-personal.active{background:linear-gradient(135deg,#7B5EA7,#5B7FD4);color:#fff}
 .mode-btn.mode-business.active{background:var(--gold);color:#fff}
 
@@ -1635,6 +1638,8 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <symbol id="ki-check-list" viewBox="0 0 16 16"><path d="M5.5 4h8.5M5.5 8h8.5M5.5 12h8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M1.5 3l1 1.2 2-2.2M1.5 7l1 1.2 2-2.2M1.5 11l1 1.2 2-2.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
   <symbol id="ki-repeat" viewBox="0 0 16 16"><path d="M1 9.5A6 6 0 0 0 12.5 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M15 6.5A6 6 0 0 0 3.5 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M11.5 11l1.5 2.5 2-.8M2 4.5l1.5-1.5 1.5 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
   <symbol id="ki-tag" viewBox="0 0 16 16"><path d="M8.5 1.5H14V7l-7 7-5.5-5.5Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="11.5" cy="4.5" r="1" fill="currentColor"/></symbol>
+  <symbol id="ki-user" viewBox="0 0 16 16"><circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M2 14c0-3 2.7-5.5 6-5.5s6 2.5 6 5.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="ki-cart" viewBox="0 0 16 16"><path d="M1.5 1.5h1.8l1 8.2a1.5 1.5 0 0 0 1.5 1.3h6.2a1.5 1.5 0 0 0 1.47-1.2l1.03-5.3H3.9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="6.5" cy="14" r="1" fill="currentColor"/><circle cx="11.5" cy="14" r="1" fill="currentColor"/></symbol>
 </svg>
 
 <!-- ═══ RAIL — 8 hubs ═══ -->
@@ -1734,8 +1739,8 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 
   <!-- Mode switcher -->
   <div class="mode-switcher">
-    <button class="mode-btn mode-personal active" data-mode="personal" onclick="if(isCorp())toggleCorpMode()" title="Personal finances">👤 Personal</button>
-    <button class="mode-btn mode-business" data-mode="business" onclick="if(!isCorp())toggleCorpMode()" title="Business finances">💼 Business</button>
+    <button class="mode-btn mode-personal active" data-mode="personal" onclick="if(isCorp())toggleCorpMode()" title="Personal finances"><svg viewBox="0 0 16 16"><use href="#ki-user"/></svg>Personal</button>
+    <button class="mode-btn mode-business" data-mode="business" onclick="if(!isCorp())toggleCorpMode()" title="Business finances"><svg viewBox="0 0 16 16"><use href="#ki-briefcase"/></svg>Business</button>
   </div>
 
   <div class="ssl" data-section="Overview">Overview<span class="ssl-chev">›</span></div>
@@ -1750,7 +1755,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="nav-item" onclick="goPg('cal')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-calendar"/></svg></span><span class="nl">Bill Calendar</span></div>
   <div class="nav-item" onclick="goPg('billpay')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-credit-card"/></svg></span><span class="nl">Bill Hub</span></div>
   <div class="nav-item" onclick="goPg('forecast')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-trending-up"/></svg></span><span class="nl">Forecast</span></div>
-  <div class="nav-item corp-hide" onclick="goPg('grocery')"><span class="ni">🛒</span><span class="nl">Grocery Lists</span></div>
+  <div class="nav-item corp-hide" onclick="goPg('grocery')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-cart"/></svg></span><span class="nl">Grocery Lists</span></div>
 
   <div class="ssl corp-show" style="display:none">Business Tools</div>
   <div class="nav-item corp-show" style="display:none" onclick="goPg('far')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2h12v12H2zM5 2v12M11 2v12M2 7h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="nl">Asset Register</span></div>
@@ -1812,7 +1817,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="ssl" data-section="Preferences">Preferences<span class="ssl-chev">›</span></div>
   <div class="nav-item" onclick="goPg('settings')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-settings"/></svg></span><span class="nl">Customise</span></div>
 
-  <div class="sf"><div class="sft">🔒 Local only · No tracking</div></div>
+  <div class="sf"><div class="sft"><svg viewBox="0 0 16 16"><use href="#ki-lock"/></svg>Local only · No tracking</div></div>
 </aside>
 
 <!-- ═══ MAIN ═══ -->
@@ -1828,10 +1833,10 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     </div>
     <button class="tb-icon-btn tb-search-mobile-btn" onclick="openCmdK()" title="Search &amp; go to anywhere in Klar">⌕</button>
     <button class="tb-icon-btn" onclick="goPg('insights')" title="Insights">○</button>
-    <button class="tb-icon-btn" onclick="openSplitBills()" title="Split bills with friends">💸</button>
+    <button class="tb-icon-btn" onclick="openSplitBills()" title="Split bills with friends"><svg viewBox="0 0 16 16"><use href="#ki-users"/></svg></button>
     <button class="tb-icon-btn" onclick="document.getElementById('m-export').classList.add('open')" title="Export data">⬇</button>
     <button class="tb-icon-btn" id="tb-theme" onclick="cycleTheme()" title="Theme">◐</button>
-    <button class="tb-icon-btn" onclick="goPg('reminders')" title="Reminders" id="tb-reminders">🔔</button>
+    <button class="tb-icon-btn" onclick="goPg('reminders')" title="Reminders" id="tb-reminders"><svg viewBox="0 0 16 16"><use href="#ki-bell"/></svg></button>
     <button id="sb-auth-btn" onclick="sbOpenAuth()" title="Cloud sync">
       <span class="sync-dot idle" id="sb-sync-dot"></span>
       <span id="sb-auth-label">Sign in</span>
