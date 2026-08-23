@@ -90,6 +90,13 @@
   --fs:'Geist',sans-serif;     /* hero numbers in Geist 700 */
   --fm:'Geist Mono',ui-monospace,monospace;
   --prime:11.75;
+
+  /* Glass card system — matches the dashboard's approved treatment. Undefined on
+     light theme on purpose: .card/.stat-tile fall back to their old flat style there. */
+  --glass-bg:rgba(19,19,29,.44);
+  --glass-border:rgba(255,255,255,.10);
+  --glass-blur:blur(28px) saturate(180%);
+  --glass-shadow-combo:inset 0 1.5px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(255,255,255,.04),inset 0 -14px 24px -18px rgba(123,94,167,.35),0 24px 48px -14px rgba(91,72,150,.32),0 12px 28px rgba(0,0,0,.45);
 }
 
 /* LIGHT — warm off-white & forest */
@@ -129,6 +136,9 @@
 
   --shadow:0 8px 32px rgba(20,15,5,.06);
   --shadow-sm:0 1px 6px rgba(20,15,5,.04);
+
+  /* Light theme keeps its existing flat card look — no glass */
+  --glass-bg:var(--s2);--glass-border:var(--b1);--glass-blur:none;--glass-shadow-combo:none;
 }
 
 /* HIGH-CONTRAST — keeps name for compatibility, now near-black + bright forest */
@@ -139,6 +149,8 @@
   --accent:#5fd089;--accent2:#80e8a8;--accent-d:rgba(95,208,137,.16);--accent-g:rgba(95,208,137,.30);
   --gold:#f0c060;--gold2:#ffd478;
   --green:#5fd089;--red:#ff6f60;
+  --glass-bg:rgba(20,20,20,.5);--glass-border:rgba(255,255,255,.12);--glass-blur:blur(24px) saturate(160%);
+  --glass-shadow-combo:inset 0 1.5px 0 rgba(255,255,255,.16),inset 0 0 0 1px rgba(255,255,255,.05),inset 0 -14px 24px -18px rgba(95,208,137,.3),0 24px 48px -14px rgba(95,208,137,.25),0 12px 28px rgba(0,0,0,.5);
 }
 
 /* WARM — sepia paper, kept for tweak compatibility */
@@ -149,6 +161,8 @@
   --accent:#7cb88f;--accent2:#9ad1ab;--accent-d:rgba(124,184,143,.14);--accent-g:rgba(124,184,143,.28);
   --gold:#e8c170;--gold2:#f4d690;
   --green:#7cb88f;
+  --glass-bg:rgba(50,38,25,.5);--glass-border:rgba(255,240,220,.10);--glass-blur:blur(24px) saturate(160%);
+  --glass-shadow-combo:inset 0 1.5px 0 rgba(255,240,220,.12),inset 0 0 0 1px rgba(255,240,220,.04),inset 0 -14px 24px -18px rgba(124,184,143,.3),0 24px 48px -14px rgba(124,184,143,.2),0 12px 28px rgba(0,0,0,.45);
 }
 
 /* AMOLED — pure black + maximum lime punch */
@@ -165,6 +179,11 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:14px;scroll-behavior:smooth}
 body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;transition:background var(--dur),color var(--dur);font-feature-settings:"ss01","cv11"}
+/* Ambient glow behind every page — gives .card/.stat-tile glass blur something to catch. Dark themes only; light theme's flat cards don't need it. */
+:root:not([data-theme="light"]) body::before,
+:root:not([data-theme="light"]) body::after{content:'';position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0}
+:root:not([data-theme="light"]) body::before{width:560px;height:560px;top:-180px;right:-120px;background:radial-gradient(circle,rgba(123,94,167,.14) 0%,transparent 70%)}
+:root:not([data-theme="light"]) body::after{width:480px;height:480px;bottom:-160px;left:280px;background:radial-gradient(circle,rgba(79,142,247,.10) 0%,transparent 70%)}
 /* Hero numbers — Geist 700, tight tracking */
 .hero-num,.amt-hero,.bignum,.kpi-value,.balance-hero{font-family:var(--ff);font-weight:700;letter-spacing:-.03em;line-height:1.05;font-variant-numeric:tabular-nums}
 /* Tabular numbers everywhere money lives */
@@ -889,14 +908,23 @@ body[data-density="compact"] .card{padding:18px}
 .mnav button{background:var(--s2);border:var(--bw) solid var(--b2);color:var(--t2);width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all var(--dur)}
 .mnav button:hover{border-color:var(--accent);color:var(--accent)}
 
-.card{background:var(--s2);border:var(--bw) solid var(--b1);border-radius:var(--r);padding:24px;transition:border-color var(--dur),box-shadow var(--dur);position:relative;overflow:hidden}
-.card:hover{border-color:var(--b2)}
+.card{
+  background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);
+  border:var(--bw) solid var(--glass-border);border-radius:var(--r);padding:24px;
+  box-shadow:var(--glass-shadow-combo);
+  transition:border-color var(--dur),box-shadow var(--dur);position:relative;overflow:hidden;
+}
 .card:hover{border-color:var(--b2)}
 .card-accent{border-color:var(--accent);background:linear-gradient(145deg,var(--s1),var(--s0))}
 .card-accent::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2),transparent)}
 .ct{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:16px}
 
-.stat-tile{background:var(--s2);border:var(--bw) solid var(--b1);border-radius:var(--r);padding:20px 22px;transition:all var(--dur);position:relative;overflow:hidden}
+.stat-tile{
+  background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);
+  border:var(--bw) solid var(--glass-border);border-radius:var(--r);padding:20px 22px;
+  box-shadow:var(--glass-shadow-combo);
+  transition:all var(--dur);position:relative;overflow:hidden;
+}
 .stat-tile:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
 .stat-tile::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);opacity:0;transition:opacity var(--dur)}
 .stat-tile:hover::after{opacity:1}
