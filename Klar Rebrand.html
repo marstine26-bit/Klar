@@ -1679,6 +1679,10 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <symbol id="ki-banknote" viewBox="0 0 16 16"><rect x="1" y="4" width="14" height="8.5" rx="1.3" stroke="currentColor" stroke-width="1.3" fill="none"/><circle cx="8" cy="8.25" r="2" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M3 6v.01M13 10.5v.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/></symbol>
   <symbol id="ki-crypto" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.3" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M6.7 5v6M8.3 5v6M6 6.2h3.1a1.15 1.15 0 0 1 0 2.3H6h3.3a1.15 1.15 0 0 1 0 2.3H6" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
   <symbol id="ki-dice" viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" rx="2.3" stroke="currentColor" stroke-width="1.3" fill="none"/><circle cx="5.3" cy="5.3" r="1" fill="currentColor"/><circle cx="10.7" cy="5.3" r="1" fill="currentColor"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="5.3" cy="10.7" r="1" fill="currentColor"/><circle cx="10.7" cy="10.7" r="1" fill="currentColor"/></symbol>
+  <symbol id="ki-printer" viewBox="0 0 16 16"><rect x="3.5" y="9.5" width="9" height="4.5" rx="1" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M4 9.5V6h8v3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/><rect x="2" y="6" width="12" height="5" rx="1.2" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M5.5 2h5v4h-5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" fill="none"/><circle cx="11" cy="7.7" r=".6" fill="currentColor"/></symbol>
+  <symbol id="ki-crown" viewBox="0 0 16 16"><path d="M2 12.5 1 5l3.2 2.3L8 3l3.8 4.3L15 5l-1 7.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" fill="none"/><path d="M2.3 13.5h11.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="ki-diamond" viewBox="0 0 16 16"><path d="M3 5.5 8 1.5l5 4-5 9Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" fill="none"/><path d="M3 5.5h10M6 5.5 8 1.5l2 4M8 1.5 6 5.5l2 9 2-9z" stroke="currentColor" stroke-width="1" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="ki-star" viewBox="0 0 16 16"><path d="M8 1.3 9.9 6l5 .4-3.8 3.3 1.2 4.9L8 11.9 3.7 14.6l1.2-4.9L1.1 6.4l5-.4Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" fill="none"/></symbol>
   <symbol id="ki-clipboard" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="11.5" rx="1.3" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M6 3V2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/><path d="M5.5 7h5M5.5 9.5h5M5.5 12h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none"/></symbol>
   <symbol id="ki-camera" viewBox="0 0 16 16"><path d="M2 5.5h2.3L5.2 4h5.6l.9 1.5H14a1 1 0 0 1 1 1V13a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6.5a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" fill="none"/><circle cx="8" cy="9.3" r="2.6" stroke="currentColor" stroke-width="1.3" fill="none"/></symbol>
 </svg>
@@ -2866,7 +2870,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 <div id="pg-class" class="page">
   <div class="ph">
     <div><div class="pt">Class &amp; <em>Banking</em></div><div class="psub">Where you stand · goals to upgrade</div></div>
-    <button class="btn btn-gold" onclick="printReport()" data-region-only="za">🖨 Print Report</button>
+    <button class="btn btn-gold" onclick="printReport()" data-region-only="za"><svg viewBox="0 0 16 16"><use href="#ki-printer"/></svg>Print Report</button>
   </div>
   <!-- SA content -->
   <div data-region-only="za">
@@ -2983,13 +2987,13 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <div class="card">
         <div class="ct">Quick Questions</div>
         <div style="display:flex;flex-direction:column;gap:6px">
-          <button class="btn btn-ghost btn-sm" onclick="qChat('Analyse my spending and tell me where I can save money')" style="text-align:left;justify-content:flex-start;font-size:11px">💡 Analyse my spending</button>
-          <button class="btn btn-ghost btn-sm" onclick="qChat('What is the best strategy to pay off my debts quickly?')" style="text-align:left;justify-content:flex-start;font-size:11px">💳 Best debt strategy</button>
-          <button class="btn btn-ghost btn-sm" onclick="qChat('How much should I save each month to reach my goals?')" style="text-align:left;justify-content:flex-start;font-size:11px">🎯 Savings planning</button>
-          <button class="btn btn-ghost btn-sm" onclick="qChat('Audit my subscriptions - which should I cancel?')" style="text-align:left;justify-content:flex-start;font-size:11px">📱 Subscription audit</button>
-          <button class="btn btn-ghost btn-sm" onclick="qChat('Create a realistic monthly budget plan for me')" style="text-align:left;justify-content:flex-start;font-size:11px">▣ Build me a budget</button>
-          <button id="ai-q-invest" class="btn btn-ghost btn-sm" onclick="qChat('What investment vehicles are available for my income level? (TFSA, ETF, RA, ISA — informational only)')" style="text-align:left;justify-content:flex-start;font-size:11px">📈 Investment options</button>
-          <button id="ai-q-banking" class="btn btn-ghost btn-sm" onclick="qChat('What banking package should I upgrade to based on my income?')" style="text-align:left;justify-content:flex-start;font-size:11px">🏦 Banking upgrade</button>
+          <button class="btn btn-ghost btn-sm" onclick="qChat('Analyse my spending and tell me where I can save money')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16"><use href="#ki-lightbulb"/></svg>Analyse my spending</button>
+          <button class="btn btn-ghost btn-sm" onclick="qChat('What is the best strategy to pay off my debts quickly?')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16"><use href="#ki-credit-card"/></svg>Best debt strategy</button>
+          <button class="btn btn-ghost btn-sm" onclick="qChat('How much should I save each month to reach my goals?')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16"><use href="#ki-target"/></svg>Savings planning</button>
+          <button class="btn btn-ghost btn-sm" onclick="qChat('Audit my subscriptions - which should I cancel?')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16"><use href="#ki-cat-phone"/></svg>Subscription audit</button>
+          <button class="btn btn-ghost btn-sm" onclick="qChat('Create a realistic monthly budget plan for me')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16"><use href="#ki-pie"/></svg>Build me a budget</button>
+          <button id="ai-q-invest" class="btn btn-ghost btn-sm" onclick="qChat('What investment vehicles are available for my income level? (TFSA, ETF, RA, ISA — informational only)')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16"><use href="#ki-chart-up"/></svg>Investment options</button>
+          <button id="ai-q-banking" class="btn btn-ghost btn-sm" onclick="qChat('What banking package should I upgrade to based on my income?')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16"><use href="#ki-bank"/></svg>Banking upgrade</button>
         </div>
       </div>
       <div class="card"><div class="ct">Your Financial Snapshot</div><div id="chat-snap" style="font-size:11px;color:var(--t2);line-height:2.2;font-weight:500"></div></div>
@@ -9451,8 +9455,7 @@ function rBudget(){
       });
       const ubTotal=ubTxns.reduce((s,t)=>s+t.amount,0);
       const ubRows=Object.entries(ubBycat).sort((a,b)=>b[1].total-a[1].total).map(([cid,d])=>{
-        const cat=catBy(cid);
-        return`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--b2)"><div style="width:30px;height:30px;border-radius:8px;background:var(--amber-d,#3a2e0a);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">${cat.icon}</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--t1)">${esc(catLbl(cid))}</div><div style="font-size:11px;color:var(--t3)">${d.count} transaction${d.count===1?'':'s'}</div></div><div style="font-family:var(--fm);font-size:13px;font-weight:700;color:var(--amber)">${fmt(d.total)}</div></div>`;
+        return`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--b2)"><div style="width:30px;height:30px;border-radius:8px;background:var(--amber-d,#3a2e0a);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">${catIconSvg(cid)}</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--t1)">${esc(catLbl(cid))}</div><div style="font-size:11px;color:var(--t3)">${d.count} transaction${d.count===1?'':'s'}</div></div><div style="font-family:var(--fm);font-size:13px;font-weight:700;color:var(--amber)">${fmt(d.total)}</div></div>`;
       }).join('');
       ubWrap.style.display='block';
       ubWrap.innerHTML=`<div class="card" style="border:1px solid var(--amber);border-radius:12px;margin-top:14px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div><div class="ct" style="color:var(--amber);margin:0 0 2px 0">&#x26A0; Unbudgeted Spending</div><div style="font-size:11px;color:var(--t3)">Set budgets for these categories to track them</div></div><div style="font-family:var(--fm);font-size:16px;font-weight:800;color:var(--amber)">${fmt(ubTotal)}</div></div>${ubRows}</div>`;
@@ -11999,42 +12002,44 @@ function addHoldingFromTx(txId,accId,encodedName,type){
 
 /* ═══ CLASS & BANKING ═══ */
 const SA_CLASSES=[
-  {lbl:'Ultra High Net Worth',min:3000000,color:'#ffd700',icon:'👑'},
-  {lbl:'High Net Worth',min:1500000,color:'#c0c0c0',icon:'💎'},
-  {lbl:'Affluent',min:750000,color:'#cd7f32',icon:'⭐'},
-  {lbl:'Upper Middle Class',min:360000,color:'var(--green)',icon:'📈'},
-  {lbl:'Middle Class',min:180000,color:'var(--blue)',icon:'🏠'},
-  {lbl:'Working Class',min:72000,color:'var(--amber)',icon:'💪'},
-  {lbl:'Lower Income',min:0,color:'var(--t3)',icon:'🌱'},
+  {lbl:'Ultra High Net Worth',min:3000000,color:'#ffd700',icon:'ki-crown'},
+  {lbl:'High Net Worth',min:1500000,color:'#c0c0c0',icon:'ki-diamond'},
+  {lbl:'Affluent',min:750000,color:'#cd7f32',icon:'ki-star'},
+  {lbl:'Upper Middle Class',min:360000,color:'var(--green)',icon:'ki-chart-up'},
+  {lbl:'Middle Class',min:180000,color:'var(--blue)',icon:'ki-home2'},
+  {lbl:'Working Class',min:72000,color:'var(--amber)',icon:'ki-cat-dumbbell'},
+  {lbl:'Lower Income',min:0,color:'var(--t3)',icon:'ki-cat-leaf'},
 ];
+// bankColor is a plain brand-color swatch (not a pictographic icon) — rendered as a small dot,
+// matching the .acc-dot convention already used for account color-coding elsewhere in the app.
 const SA_BANKS=[
-  {name:'FNB Private Clients',bank:'FNB',min:750000,icon:'🔶',fees:'R395/mo',perks:'Private banker · Travel lounge · Global account'},
-  {name:'Investec Private Bank',bank:'Investec',min:700000,icon:'🟦',fees:'R695/mo',perks:'Private banking · Offshore · Concierge'},
-  {name:'Standard Bank Private',bank:'Std Bank',min:600000,icon:'⬛',fees:'R310/mo',perks:'Private banker · Global one'},
-  {name:'ABSA Private Banking',bank:'ABSA',min:500000,icon:'🔴',fees:'R340/mo',perks:'Private banker · Rewards'},
-  {name:'Nedbank Private Wealth',bank:'Nedbank',min:500000,icon:'🟢',fees:'R280/mo',perks:'Private wealth manager'},
-  {name:'FNB Premier',bank:'FNB',min:360000,icon:'🔶',fees:'R285/mo',perks:'eBucks · Travel benefits'},
-  {name:'Capitec Global One',bank:'Capitec',min:0,icon:'🔵',fees:'R7/mo',perks:'High interest savings · Simple fees'},
-  {name:'FNB Easy Account',bank:'FNB',min:0,icon:'🔶',fees:'R110/mo',perks:'eBucks · Basic banking'},
+  {name:'FNB Private Clients',bank:'FNB',min:750000,bankColor:'var(--gold)',fees:'R395/mo',perks:'Private banker · Travel lounge · Global account'},
+  {name:'Investec Private Bank',bank:'Investec',min:700000,bankColor:'var(--blue)',fees:'R695/mo',perks:'Private banking · Offshore · Concierge'},
+  {name:'Standard Bank Private',bank:'Std Bank',min:600000,bankColor:'#2d5c8a',fees:'R310/mo',perks:'Private banker · Global one'},
+  {name:'ABSA Private Banking',bank:'ABSA',min:500000,bankColor:'var(--red)',fees:'R340/mo',perks:'Private banker · Rewards'},
+  {name:'Nedbank Private Wealth',bank:'Nedbank',min:500000,bankColor:'var(--green)',fees:'R280/mo',perks:'Private wealth manager'},
+  {name:'FNB Premier',bank:'FNB',min:360000,bankColor:'var(--gold)',fees:'R285/mo',perks:'eBucks · Travel benefits'},
+  {name:'Capitec Global One',bank:'Capitec',min:0,bankColor:'#17a2b8',fees:'R7/mo',perks:'High interest savings · Simple fees'},
+  {name:'FNB Easy Account',bank:'FNB',min:0,bankColor:'var(--gold)',fees:'R110/mo',perks:'eBucks · Basic banking'},
 ];
 
 /* Business entity classification */
 const BIZ_CLASSES=[
-  {lbl:'Listed Company',sub:'JSE or other exchange listed',min:500000000,color:'#ffd700',icon:'🏛',ticker:true},
-  {lbl:'Large Enterprise',sub:'Annual turnover > R500M',min:200000000,color:'#c0c0c0',icon:'🏢'},
-  {lbl:'Medium Enterprise',sub:'Turnover R10M – R500M',min:10000000,color:'#cd7f32',icon:'📊'},
-  {lbl:'Small Enterprise',sub:'Turnover R1M – R10M',min:1000000,color:'var(--green)',icon:'🌱'},
-  {lbl:'Micro Enterprise',sub:'Turnover < R1M (Turnover Tax eligible)',min:0,color:'var(--blue)',icon:'🔹'},
+  {lbl:'Listed Company',sub:'JSE or other exchange listed',min:500000000,color:'#ffd700',icon:'ki-landmark',ticker:true},
+  {lbl:'Large Enterprise',sub:'Annual turnover > R500M',min:200000000,color:'#c0c0c0',icon:'ki-cat-building'},
+  {lbl:'Medium Enterprise',sub:'Turnover R10M – R500M',min:10000000,color:'#cd7f32',icon:'ki-bar-chart-2'},
+  {lbl:'Small Enterprise',sub:'Turnover R1M – R10M',min:1000000,color:'var(--green)',icon:'ki-cat-leaf'},
+  {lbl:'Micro Enterprise',sub:'Turnover < R1M (Turnover Tax eligible)',min:0,color:'var(--blue)',icon:'ki-diamond'},
 ];
 const SA_BIZ_BANKS=[
-  {name:'FNB Business Plus',bank:'FNB',min:0,icon:'🔶',fees:'R215/mo',perks:'Unlimited electronic transactions · eBucks for Business · Business overdraft'},
-  {name:'Capitec Business Banking',bank:'Capitec',min:0,icon:'🔵',fees:'R99/mo',perks:'Simple fee structure · Online banking · No minimum balance'},
-  {name:'Standard Bank Business Current',bank:'Std Bank',min:0,icon:'⬛',fees:'R185/mo',perks:'BizConnect accounting · Trade finance · Fleet management'},
-  {name:'ABSA Business Account',bank:'ABSA',min:0,icon:'🔴',fees:'R175/mo',perks:'Online banking · ABSA Rewards · Invoice financing'},
-  {name:'Nedbank Business Banking',bank:'Nedbank',min:0,icon:'🟢',fees:'R195/mo',perks:'SimplyBiz app · POPI compliance tools · Merchant services'},
-  {name:'FNB Platinum Business',bank:'FNB',min:1000000,icon:'🔶',fees:'R395/mo',perks:'Dedicated relationship manager · Forex · Trade finance · Private banker'},
-  {name:'Investec Business Bank',bank:'Investec',min:5000000,icon:'🟦',fees:'R695/mo',perks:'Private banking · Investment solutions · Offshore accounts · Concierge'},
-  {name:'ABSA Business Evolve',bank:'ABSA',min:500000,icon:'🔴',fees:'R325/mo',perks:'Growth solutions · SME loans · Fleet · International trade'},
+  {name:'FNB Business Plus',bank:'FNB',min:0,bankColor:'var(--gold)',fees:'R215/mo',perks:'Unlimited electronic transactions · eBucks for Business · Business overdraft'},
+  {name:'Capitec Business Banking',bank:'Capitec',min:0,bankColor:'#17a2b8',fees:'R99/mo',perks:'Simple fee structure · Online banking · No minimum balance'},
+  {name:'Standard Bank Business Current',bank:'Std Bank',min:0,bankColor:'#2d5c8a',fees:'R185/mo',perks:'BizConnect accounting · Trade finance · Fleet management'},
+  {name:'ABSA Business Account',bank:'ABSA',min:0,bankColor:'var(--red)',fees:'R175/mo',perks:'Online banking · ABSA Rewards · Invoice financing'},
+  {name:'Nedbank Business Banking',bank:'Nedbank',min:0,bankColor:'var(--green)',fees:'R195/mo',perks:'SimplyBiz app · POPI compliance tools · Merchant services'},
+  {name:'FNB Platinum Business',bank:'FNB',min:1000000,bankColor:'var(--gold)',fees:'R395/mo',perks:'Dedicated relationship manager · Forex · Trade finance · Private banker'},
+  {name:'Investec Business Bank',bank:'Investec',min:5000000,bankColor:'var(--blue)',fees:'R695/mo',perks:'Private banking · Investment solutions · Offshore accounts · Concierge'},
+  {name:'ABSA Business Evolve',bank:'ABSA',min:500000,bankColor:'var(--red)',fees:'R325/mo',perks:'Growth solutions · SME loans · Fleet · International trade'},
 ];
 
 /* ═══ BANK REGION DATA ═══ */
@@ -12259,11 +12264,11 @@ function rClass(){
         descEl.textContent='Add income transactions to see your UK income bracket and tax band.';
       } else {
         let band,rate,color,icon;
-        if(annualGBP<=12570){band='Personal Allowance';rate='0%';color='var(--green)';icon='🌱';}
-        else if(annualGBP<=50270){band='Basic Rate Taxpayer';rate='20%';color='var(--blue)';icon='💼';}
-        else if(annualGBP<=125140){band='Higher Rate Taxpayer';rate='40%';color='var(--amber)';icon='📈';}
-        else{band='Additional Rate Taxpayer';rate='45%';color='var(--gold)';icon='🏆';}
-        badgeEl.innerHTML=`<div style="display:inline-flex;align-items:center;gap:10px;padding:12px 20px;background:${color}18;border:1px solid ${color}40;border-radius:12px"><span style="font-size:28px">${icon}</span><div><div style="font-family:var(--fs);font-size:22px;font-weight:700;color:${color}">${band}</div><div style="font-size:11px;color:var(--t3);font-family:var(--fm)">Annual income: ${fmt(avgInc()*12)} · ${rate} tax band</div></div></div>`;
+        if(annualGBP<=12570){band='Personal Allowance';rate='0%';color='var(--green)';icon='ki-cat-leaf';}
+        else if(annualGBP<=50270){band='Basic Rate Taxpayer';rate='20%';color='var(--blue)';icon='ki-briefcase';}
+        else if(annualGBP<=125140){band='Higher Rate Taxpayer';rate='40%';color='var(--amber)';icon='ki-chart-up';}
+        else{band='Additional Rate Taxpayer';rate='45%';color='var(--gold)';icon='ki-crown';}
+        badgeEl.innerHTML=`<div style="display:inline-flex;align-items:center;gap:10px;padding:12px 20px;background:${color}18;border:1px solid ${color}40;border-radius:12px"><span style="width:28px;height:28px;color:${color}"><svg width="28" height="28" viewBox="0 0 16 16" fill="none"><use href="#${icon}"/></svg></span><div><div style="font-family:var(--fs);font-size:22px;font-weight:700;color:${color}">${band}</div><div style="font-size:11px;color:var(--t3);font-family:var(--fm)">Annual income: ${fmt(avgInc()*12)} · ${rate} tax band</div></div></div>`;
         descEl.textContent=`Based on your average monthly income of ${fmt(avgInc())}, your estimated annual income of ${fmt(avgInc()*12)} puts you in the ${band} band for 2026/27.`;
       }
     }
@@ -12273,14 +12278,14 @@ function rClass(){
   const cls=SA_CLASSES.find(c=>annualInc>=c.min)||SA_CLASSES[SA_CLASSES.length-1];
   const nextCls=SA_CLASSES[SA_CLASSES.indexOf(cls)-1];
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.innerHTML=v};
-  set('cls-badge',`<div style="display:inline-flex;align-items:center;gap:10px;padding:12px 20px;background:${cls.color}18;border:1px solid ${cls.color}40;border-radius:12px"><span style="font-size:28px">${cls.icon}</span><div><div style="font-family:var(--fs);font-size:22px;font-weight:700;color:${cls.color}">${cls.lbl}</div><div style="font-size:11px;color:var(--t3);font-family:var(--fm)">Annual income: ${fmt(annualInc)}</div></div></div>`);
+  set('cls-badge',`<div style="display:inline-flex;align-items:center;gap:10px;padding:12px 20px;background:${cls.color}18;border:1px solid ${cls.color}40;border-radius:12px"><span style="width:28px;height:28px;color:${cls.color}"><svg width="28" height="28" viewBox="0 0 16 16" fill="none"><use href="#${cls.icon}"/></svg></span><div><div style="font-family:var(--fs);font-size:22px;font-weight:700;color:${cls.color}">${cls.lbl}</div><div style="font-size:11px;color:var(--t3);font-family:var(--fm)">Annual income: ${fmt(annualInc)}</div></div></div>`);
   set('cls-desc',annualInc>0?`Based on your average monthly income of ${fmt(avgInc())}, you fall in the <strong>${cls.lbl}</strong> bracket. ${nextCls?`The next tier is <strong>${nextCls.lbl}</strong> at ${fmt(nextCls.min)}/yr.`:'You are in the top income bracket.'}`:' Add income transactions to see your class.');
   // Class bar
   const barEl=document.getElementById('cls-bar');
-  if(barEl){barEl.innerHTML=SA_CLASSES.slice().reverse().map(c=>{const active=c.lbl===cls.lbl;return`<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:var(--bw) solid var(--b1)"><span style="font-size:14px;width:24px">${c.icon}</span><div style="flex:1"><div style="font-size:12px;font-weight:${active?700:500};color:${active?'var(--t1)':'var(--t2)'}">${c.lbl}</div><div style="font-size:10px;color:var(--t3);font-family:var(--fm)">${fmt(c.min)}+/yr</div></div>${active?'<span style="font-size:9px;font-weight:700;color:var(--accent);letter-spacing:1px">YOU</span>':''}</div>`;}).join('');}
+  if(barEl){barEl.innerHTML=SA_CLASSES.slice().reverse().map(c=>{const active=c.lbl===cls.lbl;return`<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:var(--bw) solid var(--b1)"><span style="width:24px;height:14px;display:flex;align-items:center;color:${c.color}"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><use href="#${c.icon}"/></svg></span><div style="flex:1"><div style="font-size:12px;font-weight:${active?700:500};color:${active?'var(--t1)':'var(--t2)'}">${c.lbl}</div><div style="font-size:10px;color:var(--t3);font-family:var(--fm)">${fmt(c.min)}+/yr</div></div>${active?'<span style="font-size:9px;font-weight:700;color:var(--accent);letter-spacing:1px">YOU</span>':''}</div>`;}).join('');}
   // Bank grid
   const bgEl=document.getElementById('bank-grid');
-  if(bgEl){bgEl.innerHTML=SA_BANKS.map(b=>{const eligible=annualInc>=b.min;const recommended=eligible&&(SA_BANKS.filter(bb=>annualInc>=bb.min).indexOf(b)===0);return`<div style="background:var(--s2);border:${recommended?'2px solid var(--accent)':'var(--bw) solid var(--b2)'};border-radius:var(--r);padding:16px;opacity:${eligible?1:0.4};transition:all var(--dur)"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:20px">${b.icon}</span><span style="font-size:9px;font-weight:700;color:var(--t3);font-family:var(--fm)">${b.bank}</span></div><div style="font-weight:700;font-size:12px;margin-bottom:4px">${b.name}</div><div style="font-size:10px;color:var(--t3);margin-bottom:8px">${b.fees}</div><div style="font-size:10px;color:var(--t2);line-height:1.6">${b.perks}</div>${recommended?'<div style="margin-top:8px;font-size:9px;font-weight:700;color:var(--accent)">★ RECOMMENDED FOR YOU</div>':''}</div>`;}).join('');}
+  if(bgEl){bgEl.innerHTML=SA_BANKS.map(b=>{const eligible=annualInc>=b.min;const recommended=eligible&&(SA_BANKS.filter(bb=>annualInc>=bb.min).indexOf(b)===0);return`<div style="background:var(--s2);border:${recommended?'2px solid var(--accent)':'var(--bw) solid var(--b2)'};border-radius:var(--r);padding:16px;opacity:${eligible?1:0.4};transition:all var(--dur)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="width:14px;height:14px;border-radius:50%;background:${b.bankColor};flex-shrink:0"></span><span style="font-size:9px;font-weight:700;color:var(--t3);font-family:var(--fm)">${b.bank}</span></div><div style="font-weight:700;font-size:12px;margin-bottom:4px">${b.name}</div><div style="font-size:10px;color:var(--t3);margin-bottom:8px">${b.fees}</div><div style="font-size:10px;color:var(--t2);line-height:1.6">${b.perks}</div>${recommended?'<div style="margin-top:8px;font-size:9px;font-weight:700;color:var(--accent)">★ RECOMMENDED FOR YOU</div>':''}</div>`;}).join('');}
 }
 
 function rBizClass(){
@@ -12315,15 +12320,15 @@ function rBizClass(){
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.innerHTML=v};
   // Update page header
   if(psubEl)psubEl.textContent='Where your business stands · NCA & SARS thresholds';
-  set('cls-badge',`<div style="display:inline-flex;align-items:center;gap:12px;padding:14px 22px;background:${cls.color}18;border:1px solid ${cls.color}40;border-radius:14px"><span style="font-size:32px">${cls.icon}</span><div><div style="font-family:var(--fs);font-size:24px;font-weight:700;color:${cls.color}">${cls.lbl}</div><div style="font-size:11px;color:var(--t2);margin-top:2px">${cls.sub}</div><div style="font-size:10px;color:var(--t3);font-family:var(--fm);margin-top:4px">Annual Revenue: ${fmt(annualRev)}</div></div></div>`);
+  set('cls-badge',`<div style="display:inline-flex;align-items:center;gap:12px;padding:14px 22px;background:${cls.color}18;border:1px solid ${cls.color}40;border-radius:14px"><span style="width:32px;height:32px;color:${cls.color}"><svg width="32" height="32" viewBox="0 0 16 16" fill="none"><use href="#${cls.icon}"/></svg></span><div><div style="font-family:var(--fs);font-size:24px;font-weight:700;color:${cls.color}">${cls.lbl}</div><div style="font-size:11px;color:var(--t2);margin-top:2px">${cls.sub}</div><div style="font-size:10px;color:var(--t3);font-family:var(--fm);margin-top:4px">Annual Revenue: ${fmt(annualRev)}</div></div></div>`);
   set('cls-desc',annualRev>0?`Based on your average monthly revenue of ${fmt(avgInc())}, this entity is classified as a <strong>${cls.lbl}</strong>. ${cls.min===0?'Micro enterprises qualify for Turnover Tax (up to R1M/yr) at 0%–3% — simpler than standard CIT.':cls.lbl==='Small Enterprise'?'Eligible for Small Business Corporation (SBC) tax rates — 0% on first R95,750, 7% up to R365,000, 21% to R550,000, 27% above.':'Standard Corporate Income Tax (CIT) of 27% applies.'}` : 'Add revenue transactions to classify your entity.');
   const barEl=document.getElementById('cls-bar');
-  if(barEl){barEl.innerHTML=BIZ_CLASSES.slice().reverse().map(c=>{const active=c.lbl===cls.lbl;return`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:var(--bw) solid var(--b1)"><span style="font-size:16px;width:26px">${c.icon}</span><div style="flex:1"><div style="font-size:12px;font-weight:${active?700:500};color:${active?'var(--t1)':'var(--t2)'}">${c.lbl}</div><div style="font-size:10px;color:var(--t3)">${c.sub}</div></div>${active?'<span style="font-size:9px;font-weight:700;color:var(--accent);letter-spacing:1px">YOUR ENTITY</span>':''}</div>`;}).join('');}
+  if(barEl){barEl.innerHTML=BIZ_CLASSES.slice().reverse().map(c=>{const active=c.lbl===cls.lbl;return`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:var(--bw) solid var(--b1)"><span style="width:26px;height:16px;display:flex;align-items:center;color:${c.color}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#${c.icon}"/></svg></span><div style="flex:1"><div style="font-size:12px;font-weight:${active?700:500};color:${active?'var(--t1)':'var(--t2)'}">${c.lbl}</div><div style="font-size:10px;color:var(--t3)">${c.sub}</div></div>${active?'<span style="font-size:9px;font-weight:700;color:var(--accent);letter-spacing:1px">YOUR ENTITY</span>':''}</div>`;}).join('');}
   const bgEl=document.getElementById('bank-grid');
   if(bgEl){
     const h1=document.querySelector('#pg-class .card:nth-child(2) .ct');
     if(h1)h1.textContent='Business Banking Packages — SA';
-    bgEl.innerHTML=SA_BIZ_BANKS.map(b=>{const recommended=annualRev>=b.min;return`<div style="background:var(--s2);border:${recommended&&SA_BIZ_BANKS.filter(bb=>annualRev>=bb.min)[0]===b?'2px solid var(--gold)':'var(--bw) solid var(--b2)'};border-radius:var(--r);padding:16px"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:20px">${b.icon}</span><span style="font-size:9px;font-weight:700;color:var(--t3);font-family:var(--fm)">${b.bank}</span></div><div style="font-weight:700;font-size:12px;margin-bottom:4px">${b.name}</div><div style="font-size:10px;color:var(--t3);margin-bottom:8px">${b.fees}</div><div style="font-size:10px;color:var(--t2);line-height:1.7">${b.perks}</div></div>`;}).join('');}
+    bgEl.innerHTML=SA_BIZ_BANKS.map(b=>{const recommended=annualRev>=b.min;return`<div style="background:var(--s2);border:${recommended&&SA_BIZ_BANKS.filter(bb=>annualRev>=bb.min)[0]===b?'2px solid var(--gold)':'var(--bw) solid var(--b2)'};border-radius:var(--r);padding:16px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="width:14px;height:14px;border-radius:50%;background:${b.bankColor};flex-shrink:0"></span><span style="font-size:9px;font-weight:700;color:var(--t3);font-family:var(--fm)">${b.bank}</span></div><div style="font-weight:700;font-size:12px;margin-bottom:4px">${b.name}</div><div style="font-size:10px;color:var(--t3);margin-bottom:8px">${b.fees}</div><div style="font-size:10px;color:var(--t2);line-height:1.7">${b.perks}</div></div>`;}).join('');}
 }
 
 /* ═══ HEALTH SCORE ═══ */
@@ -12347,7 +12352,7 @@ function rHealth(){
   const inc=avgInc(),exp=avgExp();
   if(!inc){
     if(wrap) wrap.innerHTML=`<div class="card" style="text-align:center;padding:48px 24px">
-      <div style="font-size:36px;margin-bottom:12px">📊</div>
+      <div style="margin-bottom:12px;display:flex;justify-content:center;opacity:.5"><svg width="36" height="36" viewBox="0 0 16 16" fill="none"><use href="#ki-bar-chart-2"/></svg></div>
       <div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:8px">No transaction data yet</div>
       <div style="font-size:13px;color:var(--t3);max-width:320px;margin:0 auto 20px;line-height:1.7">Add at least one month of transactions to generate your Financial Health Score.</div>
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
@@ -12430,18 +12435,19 @@ function rHealth(){
   const actions=items.filter(i=>i.score<i.max).map(i=>`<div class="ic"><div class="it">Improve: ${i.lbl}</div><div class="ib">${i.tip}</div></div>`);
   set('hs-act',actions.length?actions.join(''):'<div class="ic g"><div class="it">All areas covered!</div><div class="ib">Great work — keep maintaining your financial health.</div></div>',true);
   const milestones=[
-    {lbl:'First budget set',done:hasBudget,icon:'▣'},
-    {lbl:'Emergency fund started',done:hasEmFund,icon:'🛡'},
-    {lbl:'Savings goal created',done:hasGoals,icon:'🎯'},
-    {lbl:'Investing started',done:hasInvest,icon:'📈'},
-    {lbl:'20%+ savings rate',done:savRate>=0.2,icon:'💰'},
+    {lbl:'First budget set',done:hasBudget,icon:'ki-pie'},
+    {lbl:'Emergency fund started',done:hasEmFund,icon:'ki-shield'},
+    {lbl:'Savings goal created',done:hasGoals,icon:'ki-target'},
+    {lbl:'Investing started',done:hasInvest,icon:'ki-chart-up'},
+    {lbl:'20%+ savings rate',done:savRate>=0.2,icon:'ki-cat-piggy'},
     {lbl:'Debt under 20% of income',done:debtRatio<0.2,icon:'⊘'},
-    {lbl:_isCorpHs?'Cash working, not idle':_isUK?'ISA account active':_isOtherHs?'Investing consistently':'TFSA account active',done:hasTfsa,icon:'🏦'},
-    {lbl:'Property tracked',done:hasProperty,icon:'🏠'},
-    {lbl:'Insurance in place',done:hasInsurance,icon:'🔒'},
+    {lbl:_isCorpHs?'Cash working, not idle':_isUK?'ISA account active':_isOtherHs?'Investing consistently':'TFSA account active',done:hasTfsa,icon:'ki-bank'},
+    {lbl:'Property tracked',done:hasProperty,icon:'ki-home2'},
+    {lbl:'Insurance in place',done:hasInsurance,icon:'ki-lock'},
     {lbl:'Fully diversified portfolio',done:scores.diversified>0,icon:'◈'},
   ];
-  set('hs-ms',milestones.map(m=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:var(--bw) solid var(--b1)"><div style="width:28px;height:28px;border-radius:8px;background:${m.done?'var(--green-d)':'var(--s3)'};color:${m.done?'var(--green)':'var(--t4)'};display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">${m.icon}</div><div style="font-size:12px;color:${m.done?'var(--t1)':'var(--t3)'};font-weight:${m.done?600:400}">${m.lbl}</div>${m.done?'<span style="margin-left:auto;font-size:10px;color:var(--green);font-weight:700">✓</span>':''}</div>`).join(''),true);
+  const _msIcon=ic=>ic.startsWith('ki-')?`<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><use href="#${ic}"/></svg>`:ic;
+  set('hs-ms',milestones.map(m=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:var(--bw) solid var(--b1)"><div style="width:28px;height:28px;border-radius:8px;background:${m.done?'var(--green-d)':'var(--s3)'};color:${m.done?'var(--green)':'var(--t4)'};display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">${_msIcon(m.icon)}</div><div style="font-size:12px;color:${m.done?'var(--t1)':'var(--t3)'};font-weight:${m.done?600:400}">${m.lbl}</div>${m.done?'<span style="margin-left:auto;font-size:10px;color:var(--green);font-weight:700">✓</span>':''}</div>`).join(''),true);
 }
 
 /* ═══ INSIGHTS ═══ */
@@ -12452,28 +12458,29 @@ function rInsights(){
   const insights=[];
   if(inc>0&&net/inc<0.1) insights.push({type:'r',icon:'⚠',title:'Savings Rate Below 10%',body:`You're saving ${Math.round((net/inc)*100)}% of income. Financial experts recommend at least 20%. Try cutting ${fmt(inc*0.1-net)} of discretionary spending.`});
   if(inc>0&&net/inc>=0.2){const _isrRegion=S.prefs&&S.prefs.region;const _isrTip=isCorp()?'a money market fund or fixed deposit.':_isrRegion==='uk'?'a Stocks & Shares ISA or SIPP.':_isrRegion==='other'?'a tax-advantaged retirement account or low-cost index fund.':'a TFSA or RA.';const _isrTitle=isCorp()?'Strong Margin':'Strong Savings Rate';insights.push({type:'g',icon:'✓',title:_isrTitle,body:`You're ${isCorp()?'retaining':'saving'} ${Math.round((net/inc)*100)}% of ${isCorp()?'revenue':'income'} — faithful with what's in your hand. Consider investing your surplus in ${_isrTip}`});}
-  {const _l6=last6();const _l6moCount=Math.max(_l6.filter(m=>S.transactions.some(t=>t.date&&t.date.startsWith(m))).length,1);const _l6txns=S.transactions.filter(t=>t.type==='expense'&&_l6.some(m=>t.date&&t.date.startsWith(m)));const cats6={};_l6txns.forEach(t=>{cats6[t.category]=(cats6[t.category]||0)+t.amount;});const topCat6=Object.entries(cats6).sort((a,b)=>b[1]-a[1])[0];if(topCat6) insights.push({type:'b',icon:'📊',title:'Top Spending Category',body:`Your largest expense category is <strong>${catLbl(topCat6[0])}</strong> at ${fmt(topCat6[1]/_l6moCount)}/mo average over the last ${_l6moCount} month${_l6moCount>1?'s':''}. Review if this aligns with your priorities.`});
+  {const _l6=last6();const _l6moCount=Math.max(_l6.filter(m=>S.transactions.some(t=>t.date&&t.date.startsWith(m))).length,1);const _l6txns=S.transactions.filter(t=>t.type==='expense'&&_l6.some(m=>t.date&&t.date.startsWith(m)));const cats6={};_l6txns.forEach(t=>{cats6[t.category]=(cats6[t.category]||0)+t.amount;});const topCat6=Object.entries(cats6).sort((a,b)=>b[1]-a[1])[0];if(topCat6) insights.push({type:'b',icon:'ki-bar-chart-2',title:'Top Spending Category',body:`Your largest expense category is <strong>${catLbl(topCat6[0])}</strong> at ${fmt(topCat6[1]/_l6moCount)}/mo average over the last ${_l6moCount} month${_l6moCount>1?'s':''}. Review if this aligns with your priorities.`});
     const _giveAvg=(cats6['church']||0)/_l6moCount;
-    if(inc>0&&_giveAvg>0){const _giveRate=Math.round((_giveAvg/inc)*100);const _giveTitle=_giveRate>=10?'Consistent Generosity':'Growing in Generosity';const _giveBody=_giveRate>=10?`You're giving ${fmt(_giveAvg)}/mo (~${_giveRate}% of income) — a steady, faithful rhythm. Well done.`:`You're giving ${fmt(_giveAvg)}/mo (~${_giveRate}% of income). A small, steady rhythm compounds over time — even more than the amount.`;insights.push({type:'g',icon:'🤲',title:_giveTitle,body:_giveBody});}}
+    if(inc>0&&_giveAvg>0){const _giveRate=Math.round((_giveAvg/inc)*100);const _giveTitle=_giveRate>=10?'Consistent Generosity':'Growing in Generosity';const _giveBody=_giveRate>=10?`You're giving ${fmt(_giveAvg)}/mo (~${_giveRate}% of income) — a steady, faithful rhythm. Well done.`:`You're giving ${fmt(_giveAvg)}/mo (~${_giveRate}% of income). A small, steady rhythm compounds over time — even more than the amount.`;insights.push({type:'g',icon:'ki-cat-gift',title:_giveTitle,body:_giveBody});}}
   const subMo=(S.subscriptions||[]).reduce((s,sub)=>s+toMo(sub.amount,sub.cycle),0);
   if(subMo>inc*0.05) insights.push({type:'a',icon:'↻',title:'High Subscription Spend',body:`Subscriptions cost ${fmt(subMo)}/mo (${Math.round((subMo/inc)*100)}% of income). Review unused services — every ${fmt(100)} cut saves ${fmt(1200)}/year.`});
-  if((S.debts||[]).length){const highRate=(S.debts||[]).filter(d=>d.rate>20);if(highRate.length) insights.push({type:'r',icon:'💳',title:'High-Interest Debt Alert',body:`You have ${highRate.length} debt${highRate.length>1?'s':''} above 20% interest. Prioritise paying these off — they cost ${fmt(highRate.reduce((s,d)=>s+d.balance*d.rate/100,0))}/year in interest.`});}
-  if(!(S.goals||[]).length) insights.push({type:'a',icon:'🎯',title:'No Savings Goals Set',body:'Goals give your savings purpose. Gather in the season of plenty for the season of need — add an emergency fund goal (3-6 months of expenses = '+fmt(exp*4)+') as your first target.'});
-  {const _insRegion=S.prefs?.region||'za';const _isUKi=_insRegion==='uk';const _isOtherI=_insRegion==='other';const _fv10=(pmt,rAnn)=>Math.round(pmt*((Math.pow(1+rAnn/12,120)-1)/(rAnn/12)));const _insCur=S.prefs.cur||(_isUKi?'£':_isOtherI?'$':'R');const _invTip=isCorp()?`With a monthly surplus of ${fmt(Math.max(net,0))}, consider a money market fund for liquidity or a fixed deposit for surplus you won't need short-term, rather than leaving it idle in a current account.`:_isUKi?`With a monthly surplus of ${fmt(Math.max(net,0))}, consider opening a Stocks &amp; Shares ISA via Vanguard or Hargreaves Lansdown. ${_insCur}500/mo into a global index ETF (e.g. FTSE All-World) could grow to ${fmt(_fv10(500,0.10))} in 10 years at 10% p.a.`:_isOtherI?`With a monthly surplus of ${fmt(Math.max(net,0))}, consider opening a brokerage account via Vanguard or Fidelity International. ${_insCur}500/mo into a global index fund could grow to ${fmt(_fv10(500,0.10))} in 10 years at 10% p.a.`:`With a monthly surplus of ${fmt(Math.max(net,0))}, consider opening a TFSA via Easy Equities. ${_insCur}500/mo into an index ETF could grow to ${fmt(_fv10(500,0.10))} in 10 years at 10% p.a.`;if(inc>0&&!Object.values(S.invAllocations||{}).some(v=>v>0)&&!(S.holdings||[]).length) insights.push({type:'b',icon:'📈',title:isCorp()?'Put Surplus Cash to Work':'Start Investing',body:_invTip});}
+  if((S.debts||[]).length){const highRate=(S.debts||[]).filter(d=>d.rate>20);if(highRate.length) insights.push({type:'r',icon:'ki-credit-card',title:'High-Interest Debt Alert',body:`You have ${highRate.length} debt${highRate.length>1?'s':''} above 20% interest. Prioritise paying these off — they cost ${fmt(highRate.reduce((s,d)=>s+d.balance*d.rate/100,0))}/year in interest.`});}
+  if(!(S.goals||[]).length) insights.push({type:'a',icon:'ki-target',title:'No Savings Goals Set',body:'Goals give your savings purpose. Gather in the season of plenty for the season of need — add an emergency fund goal (3-6 months of expenses = '+fmt(exp*4)+') as your first target.'});
+  {const _insRegion=S.prefs?.region||'za';const _isUKi=_insRegion==='uk';const _isOtherI=_insRegion==='other';const _fv10=(pmt,rAnn)=>Math.round(pmt*((Math.pow(1+rAnn/12,120)-1)/(rAnn/12)));const _insCur=S.prefs.cur||(_isUKi?'£':_isOtherI?'$':'R');const _invTip=isCorp()?`With a monthly surplus of ${fmt(Math.max(net,0))}, consider a money market fund for liquidity or a fixed deposit for surplus you won't need short-term, rather than leaving it idle in a current account.`:_isUKi?`With a monthly surplus of ${fmt(Math.max(net,0))}, consider opening a Stocks &amp; Shares ISA via Vanguard or Hargreaves Lansdown. ${_insCur}500/mo into a global index ETF (e.g. FTSE All-World) could grow to ${fmt(_fv10(500,0.10))} in 10 years at 10% p.a.`:_isOtherI?`With a monthly surplus of ${fmt(Math.max(net,0))}, consider opening a brokerage account via Vanguard or Fidelity International. ${_insCur}500/mo into a global index fund could grow to ${fmt(_fv10(500,0.10))} in 10 years at 10% p.a.`:`With a monthly surplus of ${fmt(Math.max(net,0))}, consider opening a TFSA via Easy Equities. ${_insCur}500/mo into an index ETF could grow to ${fmt(_fv10(500,0.10))} in 10 years at 10% p.a.`;if(inc>0&&!Object.values(S.invAllocations||{}).some(v=>v>0)&&!(S.holdings||[]).length) insights.push({type:'b',icon:'ki-chart-up',title:isCorp()?'Put Surplus Cash to Work':'Start Investing',body:_invTip});}
   const months=last6();const hasData=months.filter(m=>S.transactions.some(t=>t.date&&t.date.startsWith(m))).length;
   if(hasData>=2){const recent=moTxns(months[5]),prev=moTxns(months[4]);const rExp=recent.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);const pExp=prev.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);if(rExp>pExp*1.15) insights.push({type:'a',icon:'↑',title:'Spending Up This Month',body:`Expenses are ${Math.round(((rExp-pExp)/pExp)*100)}% higher than last month (${fmt(rExp)} vs ${fmt(pExp)}). Review recent transactions for any unusual spend.`});}
   // Weekly spending pace
   const today=new Date();const dayOfMo=today.getDate();const daysInMo=new Date(today.getFullYear(),today.getMonth()+1,0).getDate();
   const spentSoFar=moTxns().filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
   const projectedMo=dayOfMo>0?Math.round((spentSoFar/dayOfMo)*daysInMo):0;
-  if(spentSoFar>0&&exp>0){if(projectedMo>exp*1.2) insights.push({type:'r',icon:'📅',title:'Spending Pace Warning',body:`At your current rate you'll spend ${fmt(projectedMo)} this month — ${Math.round(((projectedMo-exp)/exp)*100)}% above your average of ${fmt(exp)}. Day ${dayOfMo} of ${daysInMo}.`});else if(projectedMo<exp*0.8) insights.push({type:'g',icon:'📅',title:'Well Below Spending Pace',body:`On track to spend only ${fmt(projectedMo)} this month — ${Math.round(((exp-projectedMo)/exp)*100)}% below your average. Day ${dayOfMo} of ${daysInMo}.`});}
+  if(spentSoFar>0&&exp>0){if(projectedMo>exp*1.2) insights.push({type:'r',icon:'ki-calendar',title:'Spending Pace Warning',body:`At your current rate you'll spend ${fmt(projectedMo)} this month — ${Math.round(((projectedMo-exp)/exp)*100)}% above your average of ${fmt(exp)}. Day ${dayOfMo} of ${daysInMo}.`});else if(projectedMo<exp*0.8) insights.push({type:'g',icon:'ki-calendar',title:'Well Below Spending Pace',body:`On track to spend only ${fmt(projectedMo)} this month — ${Math.round(((exp-projectedMo)/exp)*100)}% below your average. Day ${dayOfMo} of ${daysInMo}.`});}
   // Day-of-week spending pattern
   const dayTotals=[0,0,0,0,0,0,0];const dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   (S.transactions||[]).filter(t=>t.type==='expense'&&t.date).forEach(t=>{const d=new Date(t.date);if(!isNaN(d))dayTotals[d.getDay()]+=t.amount;});
   const maxDay=dayTotals.indexOf(Math.max(...dayTotals));
-  if(Math.max(...dayTotals)>0) insights.push({type:'b',icon:'📆',title:'Peak Spending Day',body:`You spend most on <strong>${dayNames[maxDay]}days</strong> (${fmt(dayTotals[maxDay])} total). If that's not intentional, consider reviewing your ${dayNames[maxDay]} habits.`});
+  if(Math.max(...dayTotals)>0) insights.push({type:'b',icon:'ki-calendar',title:'Peak Spending Day',body:`You spend most on <strong>${dayNames[maxDay]}days</strong> (${fmt(dayTotals[maxDay])} total). If that's not intentional, consider reviewing your ${dayNames[maxDay]} habits.`});
   if(!insights.length) insights.push({type:'g',icon:'✓',title:'Looking Good!',body:'Add more transaction history for personalised insights. <button class="btn btn-ghost btn-xs" onclick="goPg(\'transactions\')" style="margin-left:6px">+ Add Transactions</button>'});
-  el.innerHTML=insights.map(i=>`<div class="ic ${i.type}" style="margin-bottom:12px"><div style="display:flex;align-items:flex-start;gap:10px"><div style="font-size:20px;flex-shrink:0">${i.icon}</div><div><div class="ih">${i.title}</div><div class="ib">${i.body}</div></div></div></div>`).join('');
+  const _iIcon=ic=>ic.startsWith('ki-')?`<svg width="20" height="20" viewBox="0 0 16 16" fill="none"><use href="#${ic}"/></svg>`:ic;
+  el.innerHTML=insights.map(i=>`<div class="ic ${i.type}" style="margin-bottom:12px"><div style="display:flex;align-items:flex-start;gap:10px"><div style="font-size:20px;flex-shrink:0">${_iIcon(i.icon)}</div><div><div class="ih">${i.title}</div><div class="ib">${i.body}</div></div></div></div>`).join('');
 }
 
 function rInsightsReport() {
@@ -12527,9 +12534,9 @@ function rInsightsReport() {
     const sorted = Object.entries(cats).sort((a,b)=>b[1]-a[1]);
     const total = sorted.reduce((s,[,v])=>s+v,0);
     catEl.innerHTML = sorted.length ? sorted.map(([c,v])=>{
-      const cat=catBy(c); const pct=total>0?Math.round((v/total)*100):0;
+      const pct=total>0?Math.round((v/total)*100):0;
       return `<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:var(--bw) solid var(--b1)">
-        <span style="font-size:16px;flex-shrink:0">${cat.icon}</span>
+        <span style="font-size:16px;flex-shrink:0">${catIconSvg(c)}</span>
         <span style="flex:1;font-size:12.5px">${catLbl(c)}</span>
         <div style="width:120px"><div class="prt" style="height:5px"><div class="prf" style="width:${pct}%;background:${catClr(c)}"></div></div></div>
         <span style="font-family:var(--fm);font-size:11.5px;font-weight:700;min-width:70px;text-align:right">${fmt(v)}</span>
@@ -12551,21 +12558,20 @@ function rInsightsAnomalies() {
       const cAmt = cur.filter(t=>t.category===c&&t.type==='expense').reduce((s,t)=>s+t.amount,0);
       const pAmt = prev.filter(t=>t.category===c&&t.type==='expense').reduce((s,t)=>s+t.amount,0);
       if (pAmt > 200 && cAmt > pAmt * 1.5) {
-        const cat = catBy(c);
         const pct = Math.round(((cAmt-pAmt)/pAmt)*100);
         const date = new Date(m+'-01');
-        anomalies.push({cat, catId:c, m: date.toLocaleString('default',{month:'short',year:'2-digit'}), cAmt, pAmt, pct});
+        anomalies.push({catId:c, m: date.toLocaleString('default',{month:'short',year:'2-digit'}), cAmt, pAmt, pct});
       }
     });
   });
   el.innerHTML = anomalies.length
     ? anomalies.map(a=>`<div class="ic a" style="margin-bottom:10px">
         <div style="display:flex;align-items:flex-start;gap:10px">
-          <div style="font-size:20px;flex-shrink:0">${a.cat.icon}</div>
+          <div style="font-size:20px;flex-shrink:0">${catIconSvg(a.catId)}</div>
           <div>
             <div class="ih">${catLbl(a.catId)} — ${a.m} spike (+${a.pct}%)</div>
             <div class="ib">${fmt(a.cAmt)} spent vs ${fmt(a.pAmt)} the prior month — that's ${a.pct}% higher than usual.</div>
-            <div class="ib" style="margin-top:4px;color:var(--t2)">💡 Check for duplicate charges, billing errors, or a one-off expense in this category.</div>
+            <div class="ib" style="margin-top:4px;color:var(--t2);display:flex;align-items:flex-start;gap:5px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;margin-top:1px"><use href="#ki-lightbulb"/></svg>Check for duplicate charges, billing errors, or a one-off expense in this category.</div>
           </div>
         </div></div>`).join('')
     : '<div class="ic g"><div class="ih">No anomalies detected</div><div class="ib">Spending patterns look consistent across the last 6 months.</div></div>';
@@ -12797,7 +12803,7 @@ function rFocus(){
 /* ═══ ROUTINES ═══ */
 const DEFAULT_ROUTINES=[
   {id:'daily',icon:'☀',name:'Daily Check-in',freq:'daily',dur:5,steps:['Check account balance','Note any unexpected charges','Review today\'s budget capacity'],color:'var(--green)'},
-  {id:'weekly',icon:'📅',name:'Weekly Review',freq:'weekly',dur:18,steps:['Reconcile transactions','Review category spending','Update savings progress','Plan next week\'s big expenses','Reflect: did this week\'s spending match what matters most?'],color:'var(--blue)'},
+  {id:'weekly',icon:'ki-calendar',name:'Weekly Review',freq:'weekly',dur:18,steps:['Reconcile transactions','Review category spending','Update savings progress','Plan next week\'s big expenses','Reflect: did this week\'s spending match what matters most?'],color:'var(--blue)'},
   {id:'monthly',icon:'📊',name:'Monthly Close',freq:'monthly',dur:30,steps:['Review all transactions','Check budget vs actual','Reconcile all accounts','Update net worth','Review investment allocations','Set next month\'s goals'],color:'var(--accent)'},
   {id:'payday',icon:'💰',name:'Payday Ritual',freq:'payday',dur:20,steps:['Transfer savings first','Pay all scheduled bills','Top up TFSA contribution','Review debt payments','Update budget for month'],color:'var(--amber)'},
 ];
