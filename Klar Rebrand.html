@@ -1691,6 +1691,11 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <symbol id="ki-clock" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.3" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M8 4.5V8l2.8 1.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
   <symbol id="ki-road" viewBox="0 0 16 16"><path d="M5.5 1.5 2 14.5M10.5 1.5 14 14.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/><path d="M7.6 5.5h.8M7.3 9h1.4M7 12.5h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/></symbol>
   <symbol id="ki-undo" viewBox="0 0 16 16"><path d="M2 6h7.5a4 4 0 0 1 0 8H6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M5 3 2 6l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="ki-moon" viewBox="0 0 16 16"><path d="M13.5 9.5A6 6 0 1 1 6.5 2.5a5 5 0 0 0 7 7Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="ki-flame" viewBox="0 0 16 16"><path d="M8 1.5s3.5 3 3.5 6.5a3.5 3.5 0 0 1-7 0c0-1 .5-1.8 1-2.3-.1.9.3 1.5.9 1.5.8 0 .8-.9.6-1.7-.3-1.2 0-2.6 1-3.5C7.7 3 8 2.3 8 1.5Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="ki-save" viewBox="0 0 16 16"><path d="M2 2h9l3 3v9H2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" fill="none"/><path d="M4.5 2v4h6V2M4.5 14v-5h7v5" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="ki-compass" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.3" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M10.3 5.7 9 9l-3.3 1.3L7 7Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="ki-chat" viewBox="0 0 16 16"><path d="M2 3h12v8H6.5L3 14v-3H2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" fill="none"/></symbol>
 </svg>
 
 <!-- ═══ RAIL — 8 hubs ═══ -->
@@ -3407,10 +3412,10 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="card">
       <div class="ct">Theme</div>
       <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:18px">
-        <div onclick="setTheme('dark')" class="tsw" data-t="dark" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#9e9890">🌑<br>Dark</div>
+        <div onclick="setTheme('dark')" class="tsw" data-t="dark" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#9e9890"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><use href="#ki-moon"/></svg><br>Dark</div>
         <div onclick="setTheme('light')" class="tsw" data-t="light" style="background:#f5f0e8;border:1px solid #ddd8d0;color:#5a5550">☀<br>Light</div>
         <div onclick="setTheme('highcontrast')" class="tsw" data-t="highcontrast" style="background:#000;border:1px solid #2a2a2a;color:#fff">⬤<br>Hi-Con</div>
-        <div onclick="setTheme('warm')" class="tsw" data-t="warm" style="background:#1c1610;border:1px solid #4a3e30;color:#b89870">🕯<br>Warm</div>
+        <div onclick="setTheme('warm')" class="tsw" data-t="warm" style="background:#1c1610;border:1px solid #4a3e30;color:#b89870"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><use href="#ki-flame"/></svg><br>Warm</div>
         <div onclick="setTheme('amoled')" class="tsw" data-t="amoled" style="background:#000;border:1px solid #1e1e1e;color:#ff5535">⚫<br>AMOLED</div>
       </div>
       <div class="ct">Font Size</div>
@@ -3428,7 +3433,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     </div>
     <div class="card">
       <div class="ct">Display Preferences</div>
-      <div class="cr"><div><div class="cl">Region</div><div class="cs">Changes currency, tax tools, and bill providers</div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button id="pref-region-za" class="btn btn-xs" onclick="klSelectRegion('za');applyPrefsUI();renderAll()" style="padding:5px 12px">🇿🇦 South Africa</button><button id="pref-region-uk" class="btn btn-xs" onclick="klSelectRegion('uk');applyPrefsUI();renderAll()" style="padding:5px 12px">🇬🇧 United Kingdom</button><button id="pref-region-other" class="btn btn-xs" onclick="klSelectRegion('other');applyPrefsUI();renderAll()" style="padding:5px 12px">🌍 Other</button></div></div>
+      <div class="cr"><div><div class="cl">Region</div><div class="cs">Changes currency, tax tools, and bill providers</div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button id="pref-region-za" class="btn btn-xs" onclick="klSelectRegion('za');applyPrefsUI();renderAll()" style="padding:5px 12px">🇿🇦 South Africa</button><button id="pref-region-uk" class="btn btn-xs" onclick="klSelectRegion('uk');applyPrefsUI();renderAll()" style="padding:5px 12px">🇬🇧 United Kingdom</button><button id="pref-region-other" class="btn btn-xs" onclick="klSelectRegion('other');applyPrefsUI();renderAll()" style="padding:5px 12px;display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><use href="#ki-globe"/></svg>Other</button></div></div>
       <div class="cr"><div><div class="cl">Amounts look wrong after switching region?</div><div class="cs">Resets the currency conversion baseline to match your current region — use this if your numbers look multiplied or divided by an exchange rate incorrectly</div></div><button class="btn btn-ghost btn-xs" onclick="klFixCurrencyBaseline()">Fix currency conversion</button></div>
       <div class="cr"><div><div class="cl">Compact sidebar</div></div><label class="toggle"><input type="checkbox" id="pref-compact" onchange="applyCompact(this.checked)"><span class="tsl"></span></label></div>
       <div class="cr"><div><div class="cl">Currency symbol</div></div><select id="pref-cur" onchange="savePref()" style="width:110px"><option value="R">R (ZAR)</option><option value="$">$ (USD)</option><option value="€">€ (EUR)</option><option value="£">£ (GBP)</option><option value="₦">₦ (NGN)</option><option value="A$">A$ (AUD)</option><option value="C$">C$ (CAD)</option><option value="₹">₹ (INR)</option><option value="¥">¥ (JPY)</option><option value="CHF">CHF (CHF)</option><option value="kr">kr (SEK/NOK/DKK)</option><option value="NZ$">NZ$ (NZD)</option><option value="S$">S$ (SGD)</option><option value="HK$">HK$ (HKD)</option><option value="AED">AED (AED)</option><option value="CN¥">CN¥ (CNY)</option><option value="KSh">KSh (KES)</option><option value="GH₵">GH₵ (GHS)</option><option value="Mex$">Mex$ (MXN)</option><option value="R$">R$ (BRL)</option></select></div>
@@ -3480,7 +3485,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <div id="kl-notif-perm-row" style="margin-bottom:12px">
         <div style="font-size:12px;color:var(--t3);margin-bottom:10px;line-height:1.6">Get alerted for upcoming bills, budget overruns, savings milestones &amp; more — even when the tab is in the background.</div>
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-          <button class="btn btn-gold btn-sm" id="kl-notif-enable-btn" onclick="klNotifyPerm()">🔔 Enable Notifications</button>
+          <button class="btn btn-gold btn-sm" id="kl-notif-enable-btn" onclick="klNotifyPerm()" style="display:inline-flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><use href="#ki-bell"/></svg>Enable Notifications</button>
           <span id="kl-notif-perm-status" style="font-size:11px;color:var(--t3)"></span>
         </div>
       </div>
@@ -3497,20 +3502,20 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="card">
       <div class="ct">Data Management</div>
       <div style="display:flex;flex-direction:column;gap:9px">
-        <button class="btn btn-ghost" onclick="exportCsv('transactions')" style="justify-content:flex-start">📄 Export transactions (CSV)</button>
-        <button class="btn btn-ghost" onclick="exportXls()" style="justify-content:flex-start">📊 Export transactions (Excel)</button>
-        <button class="btn btn-ghost" onclick="exportCsv('budget')" style="justify-content:flex-start">📊 Export budget summary (CSV)</button>
-        <button class="btn btn-ghost" onclick="exportCsv('networth')" style="justify-content:flex-start">💹 Export net worth history (CSV)</button>
-        <button class="btn btn-ghost" onclick="printStatement()" style="justify-content:flex-start">🖨 Print monthly statement (PDF)</button>
-        <button class="btn btn-ghost" onclick="exportJson()" style="justify-content:flex-start">💾 Full data backup (JSON)</button>
+        <button class="btn btn-ghost" onclick="exportCsv('transactions')" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-file-text"/></svg>Export transactions (CSV)</button>
+        <button class="btn btn-ghost" onclick="exportXls()" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-bar-chart-2"/></svg>Export transactions (Excel)</button>
+        <button class="btn btn-ghost" onclick="exportCsv('budget')" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-bar-chart-2"/></svg>Export budget summary (CSV)</button>
+        <button class="btn btn-ghost" onclick="exportCsv('networth')" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-chart-up"/></svg>Export net worth history (CSV)</button>
+        <button class="btn btn-ghost" onclick="printStatement()" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-printer"/></svg>Print monthly statement (PDF)</button>
+        <button class="btn btn-ghost" onclick="exportJson()" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-save"/></svg>Full data backup (JSON)</button>
         <button class="btn btn-ghost" onclick="document.getElementById('restore-inp').click()" style="justify-content:flex-start">↑ Restore from backup</button>
-        <button class="btn btn-ghost" onclick="openImportHistory()" style="justify-content:flex-start">📋 Import history</button>
+        <button class="btn btn-ghost" onclick="openImportHistory()" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-clipboard"/></svg>Import history</button>
         <p style="font-size:12px;color:var(--t3);margin-top:8px">
-          💡 To import bank transactions via CSV, go to <a href="#" onclick="goHub('accounts');return false;" style="color:var(--accent)">Accounts</a> and tap "Import" on any account.
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-lightbulb"/></svg> To import bank transactions via CSV, go to <a href="#" onclick="goHub('accounts');return false;" style="color:var(--accent)">Accounts</a> and tap "Import" on any account.
         </p>
         <input type="file" id="restore-inp" accept=".json" style="display:none" onchange="restoreBackup(event)">
         <hr class="dv">
-        <button class="btn btn-ghost" onclick="S.prefs.onboardingComplete=false;save();showOnboarding()" style="justify-content:flex-start">🧭 Restart setup wizard</button>
+        <button class="btn btn-ghost" onclick="S.prefs.onboardingComplete=false;save();showOnboarding()" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-compass"/></svg>Restart setup wizard</button>
         <button class="btn btn-danger" onclick="confirmReset()">⚠ Reset all data</button>
       </div>
     </div>
@@ -3557,7 +3562,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     </div>
     <div style="font-size:12px;color:var(--t3);margin-bottom:10px">Klar learns a rule each time you re-categorise a transaction. You can also add rules manually.</div>
     <div id="cat-rule-suggest-wrap" style="display:none;margin-bottom:12px">
-      <div style="font-size:11.5px;font-weight:600;color:var(--amber);margin-bottom:8px">✨ Uncategorized merchants — suggest rules:</div>
+      <div style="font-size:11.5px;font-weight:600;color:var(--amber);margin-bottom:8px;display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-sparkles"/></svg>Uncategorized merchants — suggest rules:</div>
       <div id="cat-rule-suggest-list"></div>
     </div>
     <div id="cat-rules-list"></div>
@@ -3592,7 +3597,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <button class="btn btn-gold btn-sm" onclick="klCopyReferral()">Copy link</button>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-ghost btn-sm" onclick="klShareReferral('whatsapp')">💬 WhatsApp</button>
+      <button class="btn btn-ghost btn-sm" onclick="klShareReferral('whatsapp')" style="display:inline-flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-chat"/></svg>WhatsApp</button>
       <button class="btn btn-ghost btn-sm" onclick="klShareReferral('email')">✉ Email</button>
       <button class="btn btn-ghost btn-sm" onclick="klShareReferral('twitter')">𝕏 Twitter/X</button>
       <button class="btn btn-ghost btn-sm" onclick="klShareReferral('native')">↑ Share</button>
@@ -3605,7 +3610,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="ct">Help &amp; Support</div>
     <div style="font-size:12px;color:var(--t3);margin-bottom:14px;line-height:1.7">Have a question, found a bug, or need help with a feature? Our support team usually responds within a few hours.</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-      <button class="btn btn-gold btn-sm" onclick="klOpenSupport()">💬 Chat with support</button>
+      <button class="btn btn-gold btn-sm" onclick="klOpenSupport()" style="display:inline-flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-chat"/></svg>Chat with support</button>
       <button class="btn btn-ghost btn-sm" onclick="window.open('mailto:hello@klarmoney.app','_blank')">✉ Email us</button>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -3622,7 +3627,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px">
       <div style="background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:13px 14px">
         <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--t4);margin-bottom:4px">Data location</div>
-        <div style="font-size:13px;font-weight:700;color:var(--green)">📱 Local device</div>
+        <div style="font-size:13px;font-weight:700;color:var(--green);display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-cat-phone"/></svg>Local device</div>
         <div style="font-size:11px;color:var(--t3);margin-top:2px">Stored in your browser only</div>
       </div>
       <div style="background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:13px 14px">
@@ -3671,7 +3676,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
         <span style="font-size:10px;color:var(--t4)">opt-in</span>
       </div>
       <div style="display:flex;align-items:center;gap:12px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:10px 14px">
-        <div style="font-size:18px">🤖</div>
+        <div style="display:flex"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-bot"/></svg></div>
         <div style="flex:1">
           <div style="font-size:12px;font-weight:700;color:var(--t1)">Groq <span style="font-size:10px;color:var(--t4);font-weight:500">(AI Advisor — optional)</span></div>
           <div style="font-size:11px;color:var(--t3)">Financial summary only, no raw data · USA servers</div>
@@ -3681,7 +3686,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     </div>
 
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-gold btn-sm" onclick="klShowPolicy()">📄 Read full Privacy Policy</button>
+      <button class="btn btn-gold btn-sm" onclick="klShowPolicy()" style="display:inline-flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-file-text"/></svg>Read full Privacy Policy</button>
       <button class="btn btn-ghost btn-sm" onclick="klShowPrivacyGate()">Review consent notice</button>
     </div>
   </div>
@@ -16320,7 +16325,7 @@ document.addEventListener('click', function(e){
       klNotify('Klar Notifications Enabled ✓', 'You\'ll get alerts for bill reminders, budget limits & savings goals.', {tag:'klar-welcome'});
       klNotifPrefUI(); notify('Notifications enabled', 'ok');
     } else {
-      klNotifPrefUI(); notify('Notifications blocked — click the 🔒 in the address bar to allow', 'err');
+      klNotifPrefUI(); notify('Notifications blocked — click the lock icon in the address bar to allow', 'err');
     }
   };
 
@@ -16350,7 +16355,7 @@ document.addEventListener('click', function(e){
       Object.entries(map).forEach(([id,key]) => { const el=document.getElementById(id); if(el) el.checked = S.prefs[key] !== false; });
     } else if (perm === 'denied') {
       if (permBtn) permBtn.style.display = 'none';
-      if (permStatus) { permStatus.textContent = '✗ Blocked — click the 🔒 in your address bar to allow'; permStatus.style.color = 'var(--red)'; }
+      if (permStatus) { permStatus.textContent = '✗ Blocked — click the lock icon in your address bar to allow'; permStatus.style.color = 'var(--red)'; }
       if (togglesDiv) togglesDiv.style.display = 'none';
     } else {
       if (permBtn) { permBtn.style.display = 'inline-flex'; permBtn.textContent = '🔔 Enable Notifications'; }
