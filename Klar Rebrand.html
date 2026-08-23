@@ -1293,7 +1293,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 .bp-grid-inner{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px}
 @media(max-width:640px){.bp-grid-inner{grid-template-columns:repeat(2,1fr)}}
 .bp-saved-dot{position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px rgba(76,175,80,.5)}
-.bp-tile{background:var(--s2);border:1px solid var(--b1);border-radius:14px;padding:20px 14px;cursor:pointer;transition:background var(--dur),border-color var(--dur),transform .12s;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;position:relative;overflow:hidden}
+.bp-tile{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);box-shadow:var(--glass-shadow-combo);border-radius:14px;padding:20px 14px;cursor:pointer;transition:background var(--dur),border-color var(--dur),transform .12s;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;position:relative;overflow:hidden}
 .bp-tile:hover{background:var(--s3);border-color:var(--b2);transform:translateY(-2px)}
 .bp-tile:hover .bp-tile-glow{opacity:1}
 .bp-tile-glow{position:absolute;top:-30px;left:50%;transform:translateX(-50%);width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,var(--bp-color,var(--accent-d)) 0%,transparent 70%);opacity:0;transition:opacity var(--dur);pointer-events:none}
@@ -2271,7 +2271,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div id="budget-suggest-wrap" style="display:none;margin-bottom:18px">
     <div class="card" style="border:1px solid var(--blue);border-opacity:0.25;background:color-mix(in srgb,var(--blue) 6%,transparent)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div style="font-weight:700;font-size:13px">💡 Suggested Budgets <span id="budget-suggest-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
+        <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-lightbulb"/></svg>Suggested Budgets <span id="budget-suggest-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
         <div style="display:flex;gap:8px">
           <button class="btn btn-ok btn-xs" onclick="applyAllBudgetSuggestions()">Apply All</button>
           <button class="btn btn-ghost btn-xs" onclick="dismissAllBudgetSuggestions()">Dismiss All</button>
@@ -2379,7 +2379,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div id="bill-detected-wrap" style="display:none;margin-bottom:18px">
     <div class="card" style="border:1px solid var(--amber);border-opacity:0.25;background:color-mix(in srgb,var(--amber) 6%,transparent)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div style="font-weight:700;font-size:13px">🔍 Detected Recurring Bills <span id="bill-detected-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
+        <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-search"/></svg>Detected Recurring Bills <span id="bill-detected-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
         <button class="btn btn-ghost btn-xs" onclick="dismissAllDetectedBills()">Dismiss All</button>
       </div>
       <div id="bill-detected-list"></div>
@@ -17478,7 +17478,7 @@ function rGrocery(){
           <div><div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">${afterShopping>=0?'Remaining':'Over by'}</div><div style="font-weight:700;font-family:var(--fm);color:${afterShopping>=0?'var(--green)':'var(--red)'}">${fmt(Math.abs(afterShopping))}</div></div>
         </div>
         <div style="height:6px;background:var(--b2);border-radius:3px"><div style="height:100%;border-radius:3px;background:${color};width:${pct}%;transition:width .3s"></div></div>
-        ${budgetAmt===0?`<div style="font-size:11px;color:var(--t3);margin-top:8px">💡 Set a food budget in <a href="#" onclick="goPg('budget');return false" style="color:var(--accent)">Budget</a> to track your grocery spend.</div>`:''}
+        ${budgetAmt===0?`<div style="font-size:11px;color:var(--t3);margin-top:8px;display:flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-lightbulb"/></svg>Set a food budget in <a href="#" onclick="goPg('budget');return false" style="color:var(--accent)">Budget</a> to track your grocery spend.</div>`:''}
       </div>`;
     } else {
       budgetEl.innerHTML='';
@@ -17489,7 +17489,7 @@ function rGrocery(){
   if(!wrap)return;
   if(!lists.length){
     wrap.innerHTML=`<div class="card" style="text-align:center;padding:40px 20px">
-      <div style="font-size:36px;margin-bottom:12px">🛒</div>
+      <div style="margin-bottom:12px;display:flex;justify-content:center;opacity:.5"><svg width="36" height="36" viewBox="0 0 16 16" fill="none"><use href="#ki-cart"/></svg></div>
       <div style="font-weight:700;margin-bottom:6px">No shopping lists yet</div>
       <div style="font-size:12px;color:var(--t3);margin-bottom:18px">Create a list and Klar will estimate prices using AI</div>
       <button class="btn btn-gold btn-sm" onclick="openAddGroceryList()">+ Create your first list</button>
@@ -17513,10 +17513,10 @@ function rGrocery(){
         <div style="display:flex;align-items:center;gap:8px">
           <div style="font-weight:700;font-family:var(--fm);font-size:17px">${fmt(total)}</div>
           ${!isDone?`<button class="btn btn-ok btn-xs" onclick="completeGroceryList('${l.id}')">✓ Done</button>`:'<span style="font-size:10px;color:var(--green);font-weight:700">DONE</span>'}
-          <button class="btn btn-ghost btn-xs" onclick="deleteGroceryList('${l.id}')">🗑</button>
+          <button class="btn btn-ghost btn-xs" onclick="deleteGroceryList('${l.id}')" aria-label="Delete list"><svg viewBox="0 0 16 16"><use href="#ki-trash"/></svg></button>
         </div>
       </div>
-      ${!isDone?`<div style="margin-bottom:10px"><button class="btn btn-ghost btn-xs" onclick="openAddGroceryItem('${l.id}')">+ Add item</button>${(l.items||[]).some(i=>i.estimatedPrice==null&&i.manualPrice==null)?`<button class="btn btn-ghost btn-xs" style="margin-left:6px" onclick="_groceryFetchMissingPrices('${l.id}')">✨ Estimate prices</button>`:''}</div>`:''}
+      ${!isDone?`<div style="margin-bottom:10px"><button class="btn btn-ghost btn-xs" onclick="openAddGroceryItem('${l.id}')">+ Add item</button>${(l.items||[]).some(i=>i.estimatedPrice==null&&i.manualPrice==null)?`<button class="btn btn-ghost btn-xs" style="margin-left:6px" onclick="_groceryFetchMissingPrices('${l.id}')"><svg viewBox="0 0 16 16"><use href="#ki-sparkles"/></svg>Estimate prices</button>`:''}</div>`:''}
       ${(l.items||[]).length?`<div style="border-top:1px solid var(--b2);padding-top:10px">${(l.items||[]).map(item=>{
         const price=item.manualPrice!=null?item.manualPrice:item.estimatedPrice;
         const lineTotal=price!=null?price*(item.qty||1):null;
