@@ -1690,6 +1690,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <symbol id="ki-pin" viewBox="0 0 16 16"><path d="M8 14.5S13 9.8 13 6.3A5 5 0 0 0 3 6.3C3 9.8 8 14.5 8 14.5Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="8" cy="6.3" r="1.6" stroke="currentColor" stroke-width="1.2" fill="none"/></symbol>
   <symbol id="ki-clock" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.3" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M8 4.5V8l2.8 1.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
   <symbol id="ki-road" viewBox="0 0 16 16"><path d="M5.5 1.5 2 14.5M10.5 1.5 14 14.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/><path d="M7.6 5.5h.8M7.3 9h1.4M7 12.5h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="ki-undo" viewBox="0 0 16 16"><path d="M2 6h7.5a4 4 0 0 1 0 8H6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M5 3 2 6l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
 </svg>
 
 <!-- ═══ RAIL — 8 hubs ═══ -->
@@ -15462,15 +15463,16 @@ function rISA(){
   const _tyStart = _now >= new Date(_now.getFullYear(), 3, 6) ? _now.getFullYear() : _now.getFullYear() - 1;
   const _tyLabel = `6 April ${_tyStart} – 5 April ${_tyStart + 1}`;
   const rulesEl = document.getElementById('isa-rules');
+  const _isaIco=ic=>`<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#${ic}"/></svg>`;
   if(rulesEl) rulesEl.innerHTML = `<div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">${[
-    {i:'📅',t:'Tax year: '+_tyLabel},
-    {i:'💷',t:'Annual allowance: £20,000 (all ISA types combined)'},
-    {i:'🎯',t:'LISA limit: £4,000/year (counts toward £20k)'},
-    {i:'🏦',t:'Since April 2024: multiple ISAs of the same type allowed in the same tax year'},
-    {i:'📈',t:'Interest, dividends & capital gains are all tax-free'},
-    {i:'↩️',t:'Withdrawals cannot be re-contributed (unless flexible ISA)'},
-    {i:'⚠️',t:'LISA: 25% govt penalty on non-qualifying withdrawals before age 60'},
-  ].map(r=>`<div style="display:flex;gap:10px;align-items:flex-start"><div style="flex-shrink:0;font-size:16px">${r.i}</div><div style="font-size:12px;color:var(--t2);line-height:1.5">${r.t}</div></div>`).join('')}</div>`;
+    {i:'ki-calendar',t:'Tax year: '+_tyLabel},
+    {i:'ki-banknote',t:'Annual allowance: £20,000 (all ISA types combined)'},
+    {i:'ki-target',t:'LISA limit: £4,000/year (counts toward £20k)'},
+    {i:'ki-bank',t:'Since April 2024: multiple ISAs of the same type allowed in the same tax year'},
+    {i:'ki-chart-up',t:'Interest, dividends & capital gains are all tax-free'},
+    {i:'ki-undo',t:'Withdrawals cannot be re-contributed (unless flexible ISA)'},
+    {i:'ki-lock',t:'LISA: 25% govt penalty on non-qualifying withdrawals before age 60'},
+  ].map(r=>`<div style="display:flex;gap:10px;align-items:flex-start"><div style="flex-shrink:0;color:var(--accent)">${_isaIco(r.i)}</div><div style="font-size:12px;color:var(--t2);line-height:1.5">${r.t}</div></div>`).join('')}</div>`;
 
   // JISA
   const jisaEl = document.getElementById('isa-jisa');
