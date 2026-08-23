@@ -9107,7 +9107,7 @@ function openEditTxn(id){
   document.getElementById('txn-am').value=t.amount||'';
   const tyEl=document.getElementById('txn-ty');if(tyEl){tyEl.value=t.type||'expense';onTxnTypeChange(t.type||'expense');}
   document.getElementById('txn-acc').value=t.accountId||'';
-  const catEl=document.getElementById('txn-ca');if(catEl)catEl.value=t.category||'';
+  const catEl=document.getElementById('txn-ca');if(catEl){catEl.value=t.category||'';klEnhanceCatSelect('txn-ca');}
   const noteEl=document.getElementById('txn-note');if(noteEl)noteEl.value=t.note||'';
   const tagsEl=document.getElementById('txn-tags');if(tagsEl)tagsEl.value=(t.tags||[]).join(', ');
   const goalEl=document.getElementById('txn-goal-link');if(goalEl)goalEl.value=t.goalId||'';
