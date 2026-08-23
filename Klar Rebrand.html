@@ -3727,7 +3727,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 
 <!-- ══ MONTHLY CHECKLIST ══ -->
 <div id="pg-checklist" class="page">
-  <div class="ph"><div><div class="pt">Month-End <em>Checklist</em></div><div class="psub" id="checklist-hdr">Auto-generated from your data</div></div><button class="btn btn-gold" onclick="generateMonthChecklist()">✨ AI Generate</button></div>
+  <div class="ph"><div><div class="pt">Month-End <em>Checklist</em></div><div class="psub" id="checklist-hdr">Auto-generated from your data</div></div><button class="btn btn-gold" onclick="generateMonthChecklist()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><use href="#ki-sparkles"/></svg> AI Generate</button></div>
   <div class="card"><div id="checklist-wrap"></div></div>
 </div>
 
@@ -14218,7 +14218,7 @@ function rRetirementReadiness(){
   const el=document.getElementById('ret-readiness-wrap');if(!el)return;
   if(el&&_rrDefaultHTML===null&&document.getElementById('rr-ra-val'))_rrDefaultHTML=el.innerHTML;
   if(isCorp()){
-    el.innerHTML='<div class="card" style="text-align:center;padding:40px 24px"><div style="font-size:36px;margin-bottom:16px">👤</div><div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:8px">Personal Feature</div><div style="font-size:13px;color:var(--t3);max-width:340px;margin:0 auto;line-height:1.7">Retirement readiness planning is for personal finances — switch to Personal mode to use this calculator.</div><button class="btn btn-gold" style="margin-top:16px" onclick="toggleCorpMode()">Switch to Personal</button></div>';
+    el.innerHTML='<div class="card" style="text-align:center;padding:40px 24px"><div style="margin-bottom:16px;display:flex;justify-content:center;opacity:.6"><svg width="36" height="36" viewBox="0 0 16 16" fill="none"><use href="#ki-user"/></svg></div><div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:8px">Personal Feature</div><div style="font-size:13px;color:var(--t3);max-width:340px;margin:0 auto;line-height:1.7">Retirement readiness planning is for personal finances — switch to Personal mode to use this calculator.</div><button class="btn btn-gold" style="margin-top:16px" onclick="toggleCorpMode()">Switch to Personal</button></div>';
     return;
   }
   // Restore the real structure if a prior business-mode render left the personal-feature banner in place
@@ -14366,13 +14366,13 @@ function rFxRate(){
     const rate=parseFloat(rateInp?.value)||gbpUsdRate;
     const usdHoldings=(S.holdings||[]).filter(h=>h.currency==='USD');
     if(!usdHoldings.length){
-      const isaNote=`<div style="font-size:12px;color:var(--t3);margin-top:8px">💡 UK tip: Foreign holdings inside a Stocks &amp; Shares ISA grow free of Capital Gains Tax and dividend tax.</div>`;
+      const isaNote=`<div style="font-size:12px;color:var(--t3);margin-top:8px;display:flex;gap:6px;align-items:flex-start"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;margin-top:1px"><use href="#ki-lightbulb"/></svg>UK tip: Foreign holdings inside a Stocks &amp; Shares ISA grow free of Capital Gains Tax and dividend tax.</div>`;
       el.innerHTML='<div style="font-size:12px;color:var(--t3)">Add USD holdings in your portfolio to see GBP conversion.</div>'+isaNote;
       return;
     }
     el.innerHTML=usdHoldings.map(h=>`<div class="sr"><span class="lbl">${esc(h.name)}</span><span class="val">USD ${h.currentVal.toFixed(2)} = ${fmt(h.currentVal*rate)}</span></div>`).join('')
       +`<div class="sr" style="border-top:1px solid var(--b1);margin-top:8px"><span class="lbl" style="font-weight:700">Total USD (GBP)</span><span class="val pos">${fmt(usdHoldings.reduce((s,h)=>s+h.currentVal*rate,0))}</span></div>`
-      +`<div style="font-size:11px;color:var(--t3);margin-top:8px">💡 Foreign holdings in a Stocks &amp; Shares ISA are sheltered from CGT and dividend tax.</div>`;
+      +`<div style="font-size:11px;color:var(--t3);margin-top:8px;display:flex;gap:6px;align-items:flex-start"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;margin-top:1px"><use href="#ki-lightbulb"/></svg>Foreign holdings in a Stocks &amp; Shares ISA are sheltered from CGT and dividend tax.</div>`;
     return;
   }
   const rate=parseFloat(document.getElementById('fx-rate-inp')?.value)||S.prefs.zarUsd||18.5;
@@ -14397,7 +14397,7 @@ function rSarsReminder(){
                    mo<=7?`31 July ${yr} — Second payment on account due`:
                    mo<=9?`5 October ${yr} — Register for Self Assessment if needed`:
                          `31 January ${yr+1} — Online Self Assessment return &amp; tax payment due`;
-    el.innerHTML=`<div class="ic b" style="margin-bottom:16px"><div class="it">📋 HMRC Self Assessment</div><div class="ih">Next deadline: ${upcoming}</div><div class="ib">Key dates: ✓ 5 Oct — register for SA ✓ 31 Jan — online return &amp; payment ✓ 31 Jul — second payment on account. <a href="https://www.gov.uk/self-assessment-tax-returns" target="_blank" style="color:var(--accent)">GOV.UK Self Assessment →</a></div></div>`;
+    el.innerHTML=`<div class="ic b" style="margin-bottom:16px"><div class="it" style="display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><use href="#ki-clipboard"/></svg>HMRC Self Assessment</div><div class="ih">Next deadline: ${upcoming}</div><div class="ib">Key dates: ✓ 5 Oct — register for SA ✓ 31 Jan — online return &amp; payment ✓ 31 Jul — second payment on account. <a href="https://www.gov.uk/self-assessment-tax-returns" target="_blank" style="color:var(--accent)">GOV.UK Self Assessment →</a></div></div>`;
     return;
   }
   const now=new Date();const mo=now.getMonth()+1;
@@ -14413,7 +14413,7 @@ function rSarsReminder(){
     _set('dl-prov2',_febLast());    // 2nd provisional (IRP6): last day of Feb
   }
   if(mo>=8&&mo<=10){
-    el.innerHTML=`<div class="ic a" style="margin-bottom:16px"><div class="it">📋 SARS eFiling Season Open</div><div class="ih">Individual tax returns (ITR12) are due 31 October ${now.getFullYear()}</div><div class="ib">Checklist: ✓ IRP5 from employer ✓ Medical aid tax certificate ✓ RA certificate ✓ Travel logbook ✓ Home office records. <a href="https://www.sarsefiling.co.za" target="_blank" style="color:var(--accent)">Open eFiling →</a></div></div>`;
+    el.innerHTML=`<div class="ic a" style="margin-bottom:16px"><div class="it" style="display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><use href="#ki-clipboard"/></svg>SARS eFiling Season Open</div><div class="ih">Individual tax returns (ITR12) are due 31 October ${now.getFullYear()}</div><div class="ib">Checklist: ✓ IRP5 from employer ✓ Medical aid tax certificate ✓ RA certificate ✓ Travel logbook ✓ Home office records. <a href="https://www.sarsefiling.co.za" target="_blank" style="color:var(--accent)">Open eFiling →</a></div></div>`;
   } else el.innerHTML='';
 }
 
