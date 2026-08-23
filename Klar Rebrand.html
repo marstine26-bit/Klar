@@ -5576,20 +5576,22 @@ function _klSelectUpdateTrigger(selectEl,trigger,iconFn){
   if(ic)ic.innerHTML=o?_klSelectOptIcon(o.value,iconFn):'';
 }
 
-function klEnhanceCatSelect(selectId,iconFn){
-  const selectEl=document.getElementById(selectId);
+function klEnhanceCatSelect(selectOrId,iconFn){
+  const selectEl=typeof selectOrId==='string'?document.getElementById(selectOrId):selectOrId;
   if(!selectEl)return;
   let wrap=selectEl.nextElementSibling;
-  if(!wrap||!wrap.classList||!wrap.classList.contains('kl-select')||wrap.dataset.klFor!==selectId){
+  if(!wrap||!wrap.classList||!wrap.classList.contains('kl-select')||wrap._klSelectEl!==selectEl){
     // First-time enhance: build the wrapper DOM once
     const inlineWidth=selectEl.style.width;
     const inlineFontSize=selectEl.style.fontSize;
+    const inlineFlex=selectEl.style.flex;
     selectEl.style.display='none';
     wrap=document.createElement('div');
     wrap.className='kl-select';
-    wrap.dataset.klFor=selectId;
+    wrap._klSelectEl=selectEl;
     if(inlineWidth)wrap.style.width=inlineWidth;
     if(inlineFontSize)wrap.style.fontSize=inlineFontSize;
+    if(inlineFlex)wrap.style.flex=inlineFlex;
     wrap.innerHTML=`<button type="button" class="kl-select-trigger" aria-haspopup="listbox"><span class="kl-select-ic"></span><span class="kl-select-lbl"></span><span class="kl-select-chev"><svg viewBox="0 0 16 16" fill="none"><use href="#ki-chevron-down"/></svg></span></button><div class="kl-select-list" role="listbox"></div>`;
     selectEl.insertAdjacentElement('afterend',wrap);
     const trigger=wrap.querySelector('.kl-select-trigger');
@@ -5630,6 +5632,7 @@ function klEnhanceCatSelect(selectId,iconFn){
       }
     });
     list.addEventListener('click',e=>{
+      e.stopPropagation();
       const btn=e.target.closest('.kl-select-opt');
       if(!btn)return;
       _klSelectPick(selectEl,trigger,list,+btn.dataset.i,iconFn);
@@ -5845,6 +5848,7 @@ function openSplitTxn(id) {
     // Pre-select category in first part
     const firstSel=partsEl.querySelector('select');
     if(firstSel) firstSel.value=t.category||'other';
+    partsEl.querySelectorAll('select').forEach(sel=>{klEnhanceCatSelect(sel);sel.nextElementSibling?.classList.add('compact');});
   }
   updateSplitRemaining();
   openModal('m-split-txn');
@@ -5861,6 +5865,9 @@ function addSplitPart() {
     <select style="padding:5px 6px;font-size:11px">${catOpts}</select>
     <button class="btn btn-ghost btn-xs" style="color:var(--danger)" onclick="this.closest('.split-part').remove();updateSplitRemaining()">✕</button>`;
   partsEl.appendChild(div);
+  const newSel=div.querySelector('select');
+  klEnhanceCatSelect(newSel);
+  newSel.nextElementSibling?.classList.add('compact');
 }
 
 function updateSplitRemaining() {
@@ -8753,7 +8760,7 @@ function renderTxns(){
       <td><span class="badge" style="${typeBg}">${t.type}</span></td>
       <td class="mono ${amtCls}">${sign}${fmt(t.amount)}</td>
       ${rb}
-      <td>${linkedBtn}<select onchange="reCat('${t.id}',this.value)" onclick="event.stopPropagation()" style="width:auto;padding:3px 7px;font-size:11px;border-radius:6px">${catOpts}</select></td>
+      <td>${linkedBtn}<select class="txn-cat-sel" onchange="reCat('${t.id}',this.value)" onclick="event.stopPropagation()" style="width:auto;padding:3px 7px;font-size:11px;border-radius:6px">${catOpts}</select></td>
       <td style="white-space:nowrap"><button onclick="event.stopPropagation();explainTxn('${t.id}')" class="btn btn-ghost btn-xs" title="Ask AI to explain this transaction" style="margin-right:3px">✨</button><button onclick="event.stopPropagation();openSplitTxn('${t.id}')" class="btn btn-ghost btn-xs" title="Split transaction" style="margin-right:3px">⑂</button><button onclick="event.stopPropagation();openEditTxn('${t.id}')" class="btn btn-ghost btn-xs" title="Edit transaction" style="margin-right:3px">✏</button><button onclick="event.stopPropagation();delTxn('${t.id}')" class="btn btn-danger btn-xs">&times;</button></td>
     </tr>`;
   }).join('');
@@ -8775,6 +8782,11 @@ function renderTxns(){
     ${rbHeader}
     <th>Re-categorise</th><th></th>
   </tr></thead><tbody>${rows}${showMoreBtn}</tbody></table>`;
+
+  wrap.querySelectorAll('select.txn-cat-sel').forEach(sel=>{
+    klEnhanceCatSelect(sel);
+    sel.nextElementSibling?.classList.add('compact');
+  });
 
   const bcs = document.getElementById('bulk-cat-sel');
   if(bcs){bcs.innerHTML='<option value="">Re-categorise to…</option>'+buildCatOpts('',true);klEnhanceCatSelect('bulk-cat-sel');}
@@ -8886,6 +8898,7 @@ function openInlineEdit(id){
     </div>
   </td>`;
   row.after(editRow);
+  klEnhanceCatSelect('ie-cat');
   document.getElementById('ie-desc')?.focus();
 }
 function saveInlineEdit(id){
@@ -8960,6 +8973,9 @@ function addSplitRow(){
   div.style.cssText='display:flex;gap:6px;align-items:center;margin-bottom:6px';
   div.innerHTML=`<input type="number" class="split-amt" placeholder="Amount" step="0.01" style="width:110px;padding:5px 8px;font-size:12px"><select class="split-cat" style="flex:1;padding:5px 8px;font-size:12px">${catOpts}</select><input type="text" class="split-note" placeholder="Note" style="flex:1;padding:5px 8px;font-size:12px"><button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:16px">&times;</button>`;
   sr.appendChild(div);
+  const catSel=div.querySelector('.split-cat');
+  klEnhanceCatSelect(catSel);
+  catSel.nextElementSibling?.classList.add('compact');
 }
 
 
@@ -9763,9 +9779,10 @@ function renderTripItems(items) {
       <input type="text" value="${esc(item.name)}" placeholder="Item name" style="padding:5px 8px;font-size:12px;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1)" oninput="refreshTripTotals()">
       <input type="number" value="${item.amount||''}" placeholder="0" min="0" step="0.01" style="padding:5px 8px;font-size:12px;text-align:right;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1)" oninput="refreshTripTotals()">
       <select style="padding:4px 6px;font-size:11px;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1)" onchange="refreshTripTotals()">${curOpts.replace(`value="${item.currency}"`,`value="${item.currency}" selected`)}</select>
-      <select style="padding:4px 6px;font-size:11px;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1)">${catOpts.replace(`value="${item.category}"`,`value="${item.category}" selected`)}</select>
+      <select class="trip-cat-sel" style="padding:4px 6px;font-size:11px;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1)">${catOpts.replace(`value="${item.category}"`,`value="${item.category}" selected`)}</select>
       <button class="btn btn-danger btn-xs" onclick="this.closest('.trip-item-row').remove();refreshTripTotals()">✕</button>
     </div>`).join('');
+  el.querySelectorAll('.trip-cat-sel').forEach(sel=>klEnhanceCatSelect(sel,v=>TRIP_CATEGORIES.find(c=>c.id===v)?.icon||''));
 }
 
 function addTripItem() {
@@ -9779,8 +9796,9 @@ function addTripItem() {
   row.className='trip-item-row';
   row.dataset.i=i;
   row.style.cssText='display:grid;grid-template-columns:1fr 90px 70px 1fr 28px;gap:5px;align-items:center;margin-bottom:5px';
-  row.innerHTML=`<input type="text" placeholder="Item name" style="padding:5px 8px;font-size:12px;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1)" oninput="refreshTripTotals()"><input type="number" placeholder="0" min="0" step="0.01" style="padding:5px 8px;font-size:12px;text-align:right;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1)" oninput="refreshTripTotals()"><select style="padding:4px 6px;font-size:11px;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1)" onchange="refreshTripTotals()">${curOpts}</select><select style="padding:4px 6px;font-size:11px;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1)">${catOpts}</select><button class="btn btn-danger btn-xs" onclick="this.closest('.trip-item-row').remove();refreshTripTotals()">✕</button>`;
+  row.innerHTML=`<input type="text" placeholder="Item name" style="padding:5px 8px;font-size:12px;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1)" oninput="refreshTripTotals()"><input type="number" placeholder="0" min="0" step="0.01" style="padding:5px 8px;font-size:12px;text-align:right;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1)" oninput="refreshTripTotals()"><select style="padding:4px 6px;font-size:11px;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1)" onchange="refreshTripTotals()">${curOpts}</select><select class="trip-cat-sel" style="padding:4px 6px;font-size:11px;border-radius:6px;border:1px solid var(--b2);background:var(--s1);color:var(--t1)">${catOpts}</select><button class="btn btn-danger btn-xs" onclick="this.closest('.trip-item-row').remove();refreshTripTotals()">✕</button>`;
   el.appendChild(row);
+  klEnhanceCatSelect(row.querySelector('.trip-cat-sel'),v=>TRIP_CATEGORIES.find(c=>c.id===v)?.icon||'');
   refreshTripTotals();
 }
 
