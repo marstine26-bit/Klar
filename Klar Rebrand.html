@@ -1676,6 +1676,8 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <symbol id="ki-cat-idcard" viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3" fill="none"/><circle cx="5" cy="7" r="1.4" stroke="currentColor" stroke-width="1.1" fill="none"/><path d="M3.3 11c.3-1.2 1.3-2 1.7-2s1.4.8 1.7 2M9 6.5h4M9 9h4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" fill="none"/></symbol>
   <symbol id="ki-cat-swap" viewBox="0 0 16 16"><path d="M2 5.5h9l-2.2-2.2M14 10.5H5l2.2 2.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
   <symbol id="ki-paperclip" viewBox="0 0 16 16"><path d="M11.5 5.5 6 11a2 2 0 1 0 2.8 2.8l5.5-5.5a3.5 3.5 0 1 0-5-5L3.8 8.8a5 5 0 1 0 7 7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="ki-clipboard" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="11.5" rx="1.3" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M6 3V2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/><path d="M5.5 7h5M5.5 9.5h5M5.5 12h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="ki-camera" viewBox="0 0 16 16"><path d="M2 5.5h2.3L5.2 4h5.6l.9 1.5H14a1 1 0 0 1 1 1V13a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6.5a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" fill="none"/><circle cx="8" cy="9.3" r="2.6" stroke="currentColor" stroke-width="1.3" fill="none"/></symbol>
 </svg>
 
 <!-- ═══ RAIL — 8 hubs ═══ -->
@@ -2497,7 +2499,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div id="goal-detect-wrap" style="display:none;margin-bottom:16px">
       <div class="card" style="border:1px solid var(--green);border-opacity:0.25;background:color-mix(in srgb,var(--green) 6%,transparent)">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <div style="font-weight:700;font-size:13px">📈 Detected Savings Contributions <span id="goal-detect-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
+          <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-chart-up"/></svg>Detected Savings Contributions <span id="goal-detect-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
           <button class="btn btn-ghost btn-xs" onclick="dismissAllDetectedSavings()">Dismiss All</button>
         </div>
         <div id="goal-detect-list"></div>
@@ -2595,7 +2597,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
         <div id="sb-settlement" style="background:var(--s2);border-radius:var(--rsm);padding:12px;margin-bottom:12px"></div>
         <div class="mf" style="flex-wrap:wrap;gap:6px">
           <button class="btn btn-ghost" onclick="sbBack()">← Back</button>
-          <button class="btn btn-ghost" onclick="sbCopySettlement()" id="sb-copy-btn">📋 Copy for WhatsApp</button>
+          <button class="btn btn-ghost" onclick="sbCopySettlement()" id="sb-copy-btn"><svg viewBox="0 0 16 16"><use href="#ki-clipboard"/></svg>Copy for WhatsApp</button>
           <button class="btn btn-ghost btn-danger" onclick="sbDeleteGroup()" id="sb-del-btn">Delete</button>
           <button class="btn btn-gold" onclick="sbSave()">Save</button>
         </div>
@@ -2624,7 +2626,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div id="debt-detected-wrap" style="display:none;margin-bottom:18px">
     <div class="card" style="border:1px solid var(--red);border-opacity:0.25;background:color-mix(in srgb,var(--red) 6%,transparent)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div style="font-weight:700;font-size:13px">🔍 Detected Debt Repayments <span id="debt-detected-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
+        <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-search"/></svg>Detected Debt Repayments <span id="debt-detected-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
         <button class="btn btn-ghost btn-xs" onclick="dismissAllDetectedDebts()">Dismiss All</button>
       </div>
       <div id="debt-detected-list"></div>
@@ -2688,7 +2690,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="card" style="margin-top:16px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
       <div class="ct" style="margin-bottom:0">Net Worth History</div>
-      <button class="btn btn-ghost btn-sm" onclick="takeNwSnapshot()" style="font-size:11px">📸 Snapshot Now</button>
+      <button class="btn btn-ghost btn-sm" onclick="takeNwSnapshot()" style="font-size:11px"><svg viewBox="0 0 16 16"><use href="#ki-camera"/></svg>Snapshot Now</button>
     </div>
     <div id="nw-history-chart" style="min-height:160px"></div>
     <div id="nw-history-table" style="margin-top:14px"></div>
@@ -2717,7 +2719,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div id="forex-detected-wrap" style="display:none;margin-bottom:18px">
     <div class="card" style="border:1px solid var(--purple);border-opacity:0.3;background:color-mix(in srgb,var(--purple) 6%,transparent)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div style="font-weight:700;font-size:13px">🌍 Detected International Transactions <span id="forex-detected-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
+        <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-globe"/></svg>Detected International Transactions <span id="forex-detected-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
         <button class="btn btn-ghost btn-xs" onclick="dismissAllDetectedForex()">Dismiss All</button>
       </div>
       <div style="font-size:11px;color:var(--t3);margin-bottom:10px">These transactions may count against your SARB allowances. Log them to track your annual limit.</div>
@@ -9479,7 +9481,6 @@ const TRIP_CATEGORIES = [
   {id:'shopping',lbl:'Shopping',icon:'ki-cat-bag'},
   {id:'other',lbl:'Other',icon:'ki-grid'},
 ];
-const tripCatIconSvg=id=>{const c=TRIP_CATEGORIES.find(x=>x.id===id);const ic=c?c.icon:'';return ic.startsWith('ki-')?`<svg viewBox="0 0 16 16" style="width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.3;vertical-align:-0.15em"><use href="#${ic}"/></svg>`:esc(ic);};
 
 const TRIP_STATUS_COLORS = {planning:'var(--blue)',saving:'var(--gold)',booked:'var(--green)',completed:'var(--t3)'};
 
@@ -9676,7 +9677,7 @@ function rTravel() {
   if(!trips.length){
     if(sumEl) sumEl.innerHTML='';
     tripsEl.innerHTML=`<div class="empty" style="padding:60px 20px">
-      <div class="empty-i">✈</div>
+      <div class="empty-i"><svg viewBox="0 0 16 16" fill="none"><use href="#ki-plane"/></svg></div>
       <div class="empty-t">No trips planned yet</div>
       <div class="empty-s">Click <strong>+ New Trip</strong> to start planning your next adventure</div>
     </div>`;
@@ -9687,9 +9688,9 @@ function rTravel() {
   const totalNeeded=active.reduce((s,t)=>s+tripTotalZar(t),0);
   const avgMonthly=active.reduce((s,t)=>{const m=monthsUntil(t.departDate);return s+(m?tripTotalZar(t)/m:0);},0);
   if(sumEl) sumEl.innerHTML=`<div class="g3" style="margin-bottom:0">
-    <div class="kpi-card"><div class="kl">Active Trips</div><div class="kv">${active.length}</div></div>
-    <div class="kpi-card"><div class="kl">Total Budget Needed</div><div class="kv">${fmt(totalNeeded)}</div></div>
-    <div class="kpi-card"><div class="kl">Combined Monthly Saving</div><div class="kv" style="color:var(--gold)">${fmt(avgMonthly)}/mo</div></div>
+    <div class="stat-tile"><div class="sl">Active Trips</div><div class="sv">${active.length}</div></div>
+    <div class="stat-tile"><div class="sl">Total Budget Needed</div><div class="sv">${fmt(totalNeeded)}</div></div>
+    <div class="stat-tile"><div class="sl">Combined Monthly Saving</div><div class="sv" style="color:var(--gold)">${fmt(avgMonthly)}/mo</div></div>
   </div>`;
 
   tripsEl.innerHTML=trips.sort((a,b)=>(a.departDate||'').localeCompare(b.departDate||'')).map(trip=>{
@@ -9835,7 +9836,7 @@ function rForex() {
     :'International transactions detected. Log them to track your offshore holdings and foreign currency accounts.';
   if(fxCnt)fxCnt.textContent=detFx.length?`(${detFx.length} found)`:'';
   if(fxList)fxList.innerHTML=detFx.map(t=>`<div class="li" style="margin-bottom:8px">
-    <div class="lic" style="background:var(--purple)18;color:var(--purple)">🌍</div>
+    <div class="lic" style="background:var(--purple)18;color:var(--purple)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-globe"/></svg></div>
     <div class="lii"><div class="lin">${esc(t.description||'').slice(0,40)}</div><div class="lis">${t.date} · ${fmt(t.amount)}</div></div>
     <div style="display:flex;gap:6px;align-items:center">
       <button class="btn btn-ok btn-xs" onclick="logForexTx('${t.id}')">${showSarb?'Log vs DA':'Log Offshore'}</button>
@@ -10062,7 +10063,7 @@ function rSavings(){
   window._klDetectSavs=detSav;
   if(gdList)gdList.innerHTML=detSav.map((s,i)=>{
     return`<div class="li" style="margin-bottom:8px">
-      <div class="lic" style="background:var(--green)18;color:var(--green)">📈</div>
+      <div class="lic" style="background:var(--green)18;color:var(--green)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-chart-up"/></svg></div>
       <div class="lii"><div class="lin">${esc(s.name)}${s.lumpSum?' <span style="font-size:9px;font-weight:700;color:var(--amber)">LUMP-SUM</span>':''}</div><div class="lis">${s.occurrences} contributions · ${fmt(s.monthlyAmt)}/mo · ${fmt(s.totalSaved)} total</div></div>
       <div style="display:flex;gap:6px;align-items:center">
         <button class="btn btn-ok btn-xs" onclick="confirmDetectedSavings(window._klDetectSavs[${i}])">+ Goal</button>
@@ -10077,7 +10078,7 @@ function rSavings(){
   const scEl=document.getElementById('sav-strat');if(scEl&&!scEl.dataset.set){scEl.innerHTML=inc>0?`<div style="font-size:12.5px;color:var(--t2);line-height:2"><strong style="color:var(--t1)">50% Needs</strong> — ${fmt(inc*0.5)}<br><strong style="color:var(--t1)">30% Wants</strong> — ${fmt(inc*0.3)}<br><strong style="color:var(--t1)">20% Savings</strong> — ${fmt(inc*0.2)}</div>`:'<div style="font-size:12px;color:var(--t3)">Add income transactions to see allocation.</div>';}
   if(!Array.isArray(S.goals))S.goals=[];
   const gEl=document.getElementById('goals-list');if(!gEl)return;
-  if(!S.goals.length){gEl.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="font-size:36px;margin-bottom:10px">🏆</div><div class="empty-t">No savings goals yet</div><div class="empty-s">Goals give your savings purpose — add an emergency fund, holiday, or house deposit target to get started</div><button class="btn btn-gold" onclick="openAddGoal&&openAddGoal()" style="margin-top:14px">+ Add Goal</button></div>';return;}
+  if(!S.goals.length){gEl.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;opacity:.5"><svg width="36" height="36" viewBox="0 0 16 16" fill="none"><use href="#ki-target"/></svg></div><div class="empty-t">No savings goals yet</div><div class="empty-s">Goals give your savings purpose — add an emergency fund, holiday, or house deposit target to get started</div><button class="btn btn-gold" onclick="openAddGoal&&openAddGoal()" style="margin-top:14px">+ Add Goal</button></div>';return;}
   const surplus=Math.max(avgInc()-avgExp(),0);
   const activeGoals=S.goals.filter(g=>g.saved<g.target);
   gEl.innerHTML=S.goals.map(g=>{
@@ -10164,7 +10165,7 @@ function rDebt(){
   window._klDetectDebts=detDebts;
   if(ddList)ddList.innerHTML=detDebts.map((d,i)=>{
     return`<div class="li" style="margin-bottom:8px">
-      <div class="lic" style="background:var(--red)18;color:var(--red)">📄</div>
+      <div class="lic" style="background:var(--red)18;color:var(--red)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-file-text"/></svg></div>
       <div class="lii"><div class="lin">${esc(d.name)}</div><div class="lis">${d.occurrences} payments · avg ${fmt(d.minPmt)}/mo · est. balance added at 20% rate</div></div>
       <div style="display:flex;gap:6px;align-items:center">
         <button class="btn btn-ok btn-xs" onclick="confirmDetectedDebt(window._klDetectDebts[${i}])">+ Add</button>
@@ -10191,17 +10192,18 @@ function rDebt(){
   const freeBanner=document.getElementById('debt-free-banner');
   if(freeBanner)freeBanner.style.display=(S.debts.length>0&&tot===0)?'':'none';
   const el=document.getElementById('debt-list');if(!el)return;
-  if(!S.debts.length){el.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="font-size:36px;margin-bottom:10px">💳</div><div class="empty-t">No debts logged</div><div class="empty-s" style="margin-bottom:14px">Track credit cards, loans, and other debts to calculate payoff strategies</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn btn-gold" onclick="openAddDebt&&openAddDebt()">+ Add Debt</button><button class="btn btn-ghost" onclick="openImport()">↑ Import Transactions</button></div></div>';return;}
-  const icons={credit_card:'💳',personal_loan:'📄',home_loan:'🏠',car_loan:'🚗',student_loan:'🎓',other:'◉'};
+  if(!S.debts.length){el.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;opacity:.5"><svg width="36" height="36" viewBox="0 0 16 16" fill="none"><use href="#ki-credit-card"/></svg></div><div class="empty-t">No debts logged</div><div class="empty-s" style="margin-bottom:14px">Track credit cards, loans, and other debts to calculate payoff strategies</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn btn-gold" onclick="openAddDebt&&openAddDebt()">+ Add Debt</button><button class="btn btn-ghost" onclick="openImport()">↑ Import Transactions</button></div></div>';return;}
+  const icons={credit_card:'ki-credit-card',personal_loan:'ki-file-text',home_loan:'ki-home2',car_loan:'ki-car',student_loan:'ki-cat-book',other:'ki-grid'};
   el.innerHTML=S.debts.map(d=>{
     const linkedPmts=(S.transactions||[]).filter(t=>t.debtId===d.id&&t.type==='expense');
     const totalPaid=linkedPmts.reduce((s,t)=>s+t.amount,0);
     const effectiveBal=totalPaid>0&&d.originalBalance?Math.max(d.originalBalance-totalPaid,0):d.balance;
     const pct=d.originalBalance?Math.min((totalPaid/d.originalBalance)*100,100):0;
+    const dIcon=icons[d.type]||'ki-grid';
     return`<div class="dc">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px">
         <div>
-          <div style="font-weight:700;font-size:13px">${icons[d.type]||'◉'} ${esc(d.name)}</div>
+          <div style="font-weight:700;font-size:13px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="vertical-align:-2px;margin-right:2px"><use href="#${dIcon}"/></svg> ${esc(d.name)}</div>
           <div style="font-size:10.5px;color:var(--t3);font-family:var(--fm);margin-top:2px">${(d.type||'other').replace('_',' ')}</div>
         </div>
         <div style="text-align:right">
@@ -15332,7 +15334,7 @@ function klGate(required, featureName){
 function klLockedBanner(featureName, requiredTier){
   const tier = requiredTier.charAt(0).toUpperCase()+requiredTier.slice(1);
   return `<div style="text-align:center;padding:48px 24px">
-    <div style="font-size:32px;margin-bottom:12px">🔒</div>
+    <div style="margin-bottom:12px;display:flex;justify-content:center;opacity:.5"><svg width="32" height="32" viewBox="0 0 16 16" fill="none"><use href="#ki-lock"/></svg></div>
     <div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:6px">${featureName}</div>
     <div style="font-size:13px;color:var(--t3);margin-bottom:20px">Requires <strong>${tier}</strong> plan or higher</div>
     <button class="btn btn-gold" onclick="klShowPricing()">View Plans &amp; Pricing</button>
