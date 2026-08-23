@@ -1696,6 +1696,11 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <symbol id="ki-save" viewBox="0 0 16 16"><path d="M2 2h9l3 3v9H2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" fill="none"/><path d="M4.5 2v4h6V2M4.5 14v-5h7v5" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" fill="none"/></symbol>
   <symbol id="ki-compass" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.3" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M10.3 5.7 9 9l-3.3 1.3L7 7Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" fill="none"/></symbol>
   <symbol id="ki-chat" viewBox="0 0 16 16"><path d="M2 3h12v8H6.5L3 14v-3H2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="ki-cat-music" viewBox="0 0 16 16"><path d="M6 11.5V3l7-1.3v8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="4.3" cy="11.5" r="1.8" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="11.3" cy="9.7" r="1.8" stroke="currentColor" stroke-width="1.2" fill="none"/></symbol>
+  <symbol id="ki-apple" viewBox="0 0 16 16"><path d="M10.8 5.2c-1 0-1.8.6-2.4.6-.6 0-1.5-.6-2.4-.6C4.2 5.2 2.5 6.8 2.5 9.5c0 2.4 1.7 5.5 3 5.5.7 0 1-.5 2-.5s1.2.5 2 .5c1.2 0 2.7-2.7 2.9-4.9-1.6-.6-1.8-3-.6-4.4-.5-.4-1.2-.5-1-.5Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" fill="none"/><path d="M8.4 4.5c.2-.9.9-1.7 1.8-2-.1 1-.9 2-1.8 2Z" stroke="currentColor" stroke-width="1" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="ki-laptop" viewBox="0 0 16 16"><rect x="2.5" y="2.5" width="11" height="7.5" rx="1" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M1 13.5h14l-1.3-2.5h-11.4Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="ki-palette" viewBox="0 0 16 16"><path d="M8 1.5a6.5 6.5 0 1 0 0 13c.9 0 1.5-.6 1.5-1.4 0-.4-.2-.7-.2-1.1 0-.6.5-1 1.1-1H12a2.5 2.5 0 0 0 2.5-2.5C14.5 4.3 11.6 1.5 8 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" fill="none"/><circle cx="4.7" cy="7.2" r=".9" fill="currentColor"/><circle cx="6.7" cy="4.7" r=".9" fill="currentColor"/><circle cx="9.7" cy="4.7" r=".9" fill="currentColor"/><circle cx="11.3" cy="7.2" r=".9" fill="currentColor"/></symbol>
+  <symbol id="ki-code" viewBox="0 0 16 16"><path d="M5.5 4 1.5 8l4 4M10.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
 </svg>
 
 <!-- ═══ RAIL — 8 hubs ═══ -->
@@ -9116,43 +9121,44 @@ const delAsset=id=>{const a=(S.assets||[]).find(x=>x.id===id);klConfirm('Remove 
 ═══════════════════════════════════════════════════ */
 // Known service → icon mapping for auto-detection
 const SUB_ICONS = {
-  netflix:'🎬', spotify:'🎵', apple:'🍎', 'apple.com':'🍎', 'itunes':'🍎',
-  dstv:'📺', showmax:'📺', 'disney':'🏰', 'youtube':'▶️', 'youtube premium':'▶️',
-  google:'🔵', 'google one':'🔵', 'google play':'🔵',
-  microsoft:'💻', 'microsoft 365':'💻', 'office 365':'💻', xbox:'🎮',
-  amazon:'📦', 'amazon prime':'📦', prime:'📦',
-  dropbox:'📁', icloud:'☁️', onedrive:'☁️',
-  adobe:'🎨', canva:'🎨',
-  zoom:'📹', 'teams':'📹', slack:'💬',
-  linkedin:'💼', 'linkedin premium':'💼',
-  github:'🐙', notion:'📝',
-  gym:'💪', 'virgin active':'💪', 'planet fitness':'💪', 'curves':'💪', 'zone fitness':'💪',
-  'medical aid':'🏥', 'discovery health':'🏥', 'bonitas':'🏥', 'momentum health':'🏥',
-  insurance:'🛡', 'auto &general':'🛡', outsurance:'🛡', 'old mutual':'🛡',
-  'life cover':'🪦', 'funeral':'🪦', sanlam:'🛡', liberty:'🛡',
-  vodacom:'📱', mtn:'📱', 'cell c':'📱', telkom:'📡', rain:'📡',
-  dstv:'📺', 'multichoice':'📺',
-  'nsfas':'🎓', 'student loan':'🎓',
+  netflix:'ki-cat-film', spotify:'ki-cat-music', apple:'ki-apple', 'apple.com':'ki-apple', 'itunes':'ki-apple',
+  dstv:'ki-cat-tv', showmax:'ki-cat-film', 'disney':'ki-cat-film', 'youtube':'ki-cat-film', 'youtube premium':'ki-cat-film',
+  google:'ki-globe', 'google one':'ki-globe', 'google play':'ki-globe',
+  microsoft:'ki-laptop', 'microsoft 365':'ki-laptop', 'office 365':'ki-laptop', xbox:'ki-dice',
+  amazon:'ki-cat-bag', 'amazon prime':'ki-cat-bag', prime:'ki-cat-bag',
+  dropbox:'ki-save', icloud:'ki-save', onedrive:'ki-save',
+  adobe:'ki-palette', canva:'ki-palette',
+  zoom:'ki-camera', 'teams':'ki-camera', slack:'ki-chat',
+  linkedin:'ki-briefcase', 'linkedin premium':'ki-briefcase',
+  github:'ki-code', notion:'ki-file-text',
+  gym:'ki-cat-dumbbell', 'virgin active':'ki-cat-dumbbell', 'planet fitness':'ki-cat-dumbbell', 'curves':'ki-cat-dumbbell', 'zone fitness':'ki-cat-dumbbell',
+  'medical aid':'ki-cat-cross', 'discovery health':'ki-cat-cross', 'bonitas':'ki-cat-cross', 'momentum health':'ki-cat-cross',
+  insurance:'ki-shield', 'auto &general':'ki-shield', outsurance:'ki-shield', 'old mutual':'ki-shield',
+  'life cover':'ki-tombstone', 'funeral':'ki-tombstone', sanlam:'ki-shield', liberty:'ki-shield',
+  vodacom:'ki-cat-phone', mtn:'ki-cat-phone', 'cell c':'ki-cat-phone', telkom:'ki-cat-wifi', rain:'ki-cat-wifi',
+  'multichoice':'ki-cat-tv',
+  'nsfas':'ki-cat-book', 'student loan':'ki-cat-book',
   // UK-specific
-  'sky tv':'📺', 'now tv':'📺', 'now entertainment':'📺', 'sky sports':'⚽', 'sky cinema':'📺',
-  'bt sport':'⚽', 'bt broadband':'📡', 'bt group':'📡',
-  'virgin media':'📡', 'virgin active':'💪',
-  'ee ':'📱', 'o2 ':'📱', 'three ':'📱', 'vodafone':'📱', 'giffgaff':'📱', 'smarty':'📱',
-  'puregym':'💪', 'anytime fitness':'💪', 'david lloyd':'💪', 'the gym':'💪', 'snap fitness':'💪',
-  'deliveroo':'🍔', 'just eat':'🍔', 'uber eats':'🍔',
-  'audible':'🎧', 'kindle':'📚',
-  'times digital':'📰', 'guardian':'📰', 'telegraph':'📰', 'bbc sounds':'📻',
-  'apple tv':'📺', 'apple arcade':'🎮', 'apple fitness':'💪',
-  'chip':'🏦', 'monzo':'🏦', 'starling':'🏦', 'revolut':'💳',
-  'headspace':'🧘', 'calm':'🧘',
-  'duolingo':'📖', 'babbel':'📖',
+  'sky tv':'ki-cat-tv', 'now tv':'ki-cat-tv', 'now entertainment':'ki-cat-tv', 'sky sports':'ki-cat-ball', 'sky cinema':'ki-cat-tv',
+  'bt sport':'ki-cat-ball', 'bt broadband':'ki-cat-wifi', 'bt group':'ki-cat-wifi',
+  'virgin media':'ki-cat-wifi',
+  'ee ':'ki-cat-phone', 'o2 ':'ki-cat-phone', 'three ':'ki-cat-phone', 'vodafone':'ki-cat-phone', 'giffgaff':'ki-cat-phone', 'smarty':'ki-cat-phone',
+  'puregym':'ki-cat-dumbbell', 'anytime fitness':'ki-cat-dumbbell', 'david lloyd':'ki-cat-dumbbell', 'the gym':'ki-cat-dumbbell', 'snap fitness':'ki-cat-dumbbell',
+  'deliveroo':'ki-cat-eatout', 'just eat':'ki-cat-eatout', 'uber eats':'ki-cat-eatout',
+  'audible':'ki-cat-book', 'kindle':'ki-cat-book',
+  'times digital':'ki-file-text', 'guardian':'ki-file-text', 'telegraph':'ki-file-text', 'bbc sounds':'ki-cat-tv',
+  'apple tv':'ki-cat-tv', 'apple arcade':'ki-dice', 'apple fitness':'ki-cat-dumbbell',
+  'chip':'ki-bank', 'monzo':'ki-bank', 'starling':'ki-bank', 'revolut':'ki-credit-card',
+  'headspace':'ki-cat-leaf', 'calm':'ki-cat-leaf',
+  'duolingo':'ki-cat-book', 'babbel':'ki-cat-book',
 };
 
 function iconForSub(name) {
   const n=(name||'').toLowerCase();
   for(const [k,v] of Object.entries(SUB_ICONS)){if(n.includes(k))return v;}
-  return '📱';
+  return 'ki-cat-phone';
 }
+const subIconSvg=ic=>ic&&ic.startsWith('ki-')?`<svg viewBox="0 0 16 16" style="width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.3;vertical-align:-0.15em"><use href="#${ic}"/></svg>`:esc(ic||'');
 
 function normaliseSubDesc(desc) {
   return (desc||'')
@@ -9272,7 +9278,7 @@ function rSubs(){
         const moAmt=toMo(d.amount,d.cycle);
         const safeKey=encodeURIComponent(d.key);
         return`<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--b2)">
-          <span style="font-size:20px;flex-shrink:0">${icon}</span>
+          <span style="font-size:20px;flex-shrink:0;color:var(--accent)">${subIconSvg(icon)}</span>
           <div style="flex:1;min-width:0">
             <div style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(d.rawDesc)}</div>
             <div style="font-size:11px;color:var(--t3)">${d.cycle} · seen ${d.occurrences}× · last ${d.lastDate}</div>
@@ -9294,7 +9300,7 @@ function rSubs(){
   // Active subscriptions list — sorted by nextDt soonest first
   const el=document.getElementById('sub-list');if(!el)return;
   if(!S.subscriptions.length){
-    el.innerHTML=`<div class="empty" style="padding:32px;text-align:center"><div style="font-size:36px;margin-bottom:10px">📱</div><div class="empty-t">No subscriptions yet</div><div class="empty-s" style="margin-bottom:14px">Klar auto-detects recurring charges from your transactions — or add one manually.</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn btn-gold" onclick="openAddSub&&openAddSub()">+ Add Manually</button><button class="btn btn-ghost" onclick="openImport&&openImport()">↑ Import Transactions</button></div></div>`;
+    el.innerHTML=`<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;display:flex;justify-content:center;opacity:.6"><svg width="36" height="36" viewBox="0 0 16 16" fill="none"><use href="#ki-cat-phone"/></svg></div><div class="empty-t">No subscriptions yet</div><div class="empty-s" style="margin-bottom:14px">Klar auto-detects recurring charges from your transactions — or add one manually.</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn btn-gold" onclick="openAddSub&&openAddSub()">+ Add Manually</button><button class="btn btn-ghost" onclick="openImport&&openImport()">↑ Import Transactions</button></div></div>`;
     return;
   }
   const todayStr=localDateStr();
@@ -9308,7 +9314,7 @@ function rSubs(){
     const cardStyle=isPaused?'opacity:0.55;border-style:dashed':'';
     const pauseBtn=`<button onclick="toggleSubActive('${sub.id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:13px;padding:2px 4px;line-height:1" title="${isPaused?'Resume':'Pause'}">${isPaused?'▶':'⏸'}</button>`;
     const overdueBadge=isOverdue?`<div onclick="advanceSubDate('${sub.id}')" style="font-size:9px;color:var(--red);font-weight:700;margin-top:2px;cursor:pointer" title="Click to advance to next billing date">Past due — click to advance ↻</div>`:'';
-    return`<div class="li" style="${cardStyle}"><div class="lic" style="background:var(--s3);font-size:17px">${esc(sub.icon||'📱')}</div><div class="lii"><div class="lin">${esc(sub.name)}${isPaused?' <span style="font-size:9px;color:var(--t3);font-weight:400;margin-left:4px">PAUSED</span>':''}</div><div class="lis">Next: ${esc(sub.nextDt||'—')} · ${sub.cycle||'monthly'}</div>${overdueBadge}</div><div style="text-align:right"><div class="lia">${fmt(sub.amount)}</div><div style="font-size:9.5px;color:var(--t3);font-family:var(--fm)">${fmt(m)}/mo</div></div>${pauseBtn}<button onclick="delSub('${sub.id}')" aria-label="Delete subscription: ${esc(sub.name)}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:16px;padding:4px">&times;</button></div>`;
+    return`<div class="li" style="${cardStyle}"><div class="lic" style="background:var(--s3);font-size:17px">${subIconSvg(sub.icon||'ki-cat-phone')}</div><div class="lii"><div class="lin">${esc(sub.name)}${isPaused?' <span style="font-size:9px;color:var(--t3);font-weight:400;margin-left:4px">PAUSED</span>':''}</div><div class="lis">Next: ${esc(sub.nextDt||'—')} · ${sub.cycle||'monthly'}</div>${overdueBadge}</div><div style="text-align:right"><div class="lia">${fmt(sub.amount)}</div><div style="font-size:9.5px;color:var(--t3);font-family:var(--fm)">${fmt(m)}/mo</div></div>${pauseBtn}<button onclick="delSub('${sub.id}')" aria-label="Delete subscription: ${esc(sub.name)}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:16px;padding:4px">&times;</button></div>`;
   }).join('');
 }
 
@@ -15647,67 +15653,67 @@ window.ukSlSetPlan = function(plan){
 /* ═══ BILL HUB — Region-aware service providers ═══ */
 const KL_BILL_PROVIDERS_ZA = [
   // Electricity
-  {id:'eskom_prepaid',  name:'Eskom Prepaid',    category:'Electricity',      emoji:'⚡', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'13-digit meter number',            portalUrl:'https://www.eskom.co.za/distribution/customer-service/electricity-billing/prepaid-vending/'},
-  {id:'citypower',      name:'CityPower (JHB)',   category:'Electricity',      emoji:'⚡', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Account number',                   portalUrl:'https://www.citypower.co.za/customers/Pages/Buy-Electricity.aspx'},
-  {id:'coct_elec',      name:'Cape Town (CoCT)',  category:'Electricity',      emoji:'⚡', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Account number',                   portalUrl:'https://eservices.capetown.gov.za/irj/portal'},
-  {id:'ethekwini_elec', name:'eThekwini (DBN)',   category:'Electricity',      emoji:'⚡', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Account number',                   portalUrl:'https://www.durban.gov.za/pages/residents/electricity'},
-  {id:'muni_elec',      name:'Municipality',      category:'Electricity',      emoji:'⚡', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Account or meter number',          portalUrl:''},
+  {id:'eskom_prepaid',  name:'Eskom Prepaid',    category:'Electricity',      emoji:'ki-cat-bolt', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'13-digit meter number',            portalUrl:'https://www.eskom.co.za/distribution/customer-service/electricity-billing/prepaid-vending/'},
+  {id:'citypower',      name:'CityPower (JHB)',   category:'Electricity',      emoji:'ki-cat-bolt', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Account number',                   portalUrl:'https://www.citypower.co.za/customers/Pages/Buy-Electricity.aspx'},
+  {id:'coct_elec',      name:'Cape Town (CoCT)',  category:'Electricity',      emoji:'ki-cat-bolt', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Account number',                   portalUrl:'https://eservices.capetown.gov.za/irj/portal'},
+  {id:'ethekwini_elec', name:'eThekwini (DBN)',   category:'Electricity',      emoji:'ki-cat-bolt', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Account number',                   portalUrl:'https://www.durban.gov.za/pages/residents/electricity'},
+  {id:'muni_elec',      name:'Municipality',      category:'Electricity',      emoji:'ki-cat-bolt', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Account or meter number',          portalUrl:''},
   // Water
-  {id:'muni_water',     name:'Municipal Water',   category:'Water & Sewage',   emoji:'💧', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',                   portalUrl:''},
-  {id:'rand_water',     name:'Rand Water',        category:'Water & Sewage',   emoji:'💧', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',                   portalUrl:'https://www.randwater.co.za'},
+  {id:'muni_water',     name:'Municipal Water',   category:'Water & Sewage',   emoji:'ki-cat-droplet', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',                   portalUrl:''},
+  {id:'rand_water',     name:'Rand Water',        category:'Water & Sewage',   emoji:'ki-cat-droplet', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',                   portalUrl:'https://www.randwater.co.za'},
   // Rates
-  {id:'rates_za',       name:'Rates & Taxes',     category:'Municipal',        emoji:'🏛', color:'rgba(76,175,80,.18)',  textColor:'#4CAF50', hint:'Property account number',          portalUrl:''},
+  {id:'rates_za',       name:'Rates & Taxes',     category:'Municipal',        emoji:'ki-cat-building', color:'rgba(76,175,80,.18)',  textColor:'#4CAF50', hint:'Property account number',          portalUrl:''},
   // Internet
-  {id:'vumatel',        name:'Vumatel',           category:'Internet & Fibre', emoji:'📡', color:'rgba(155,127,212,.18)',textColor:'#9B7FD4', hint:'Service reference number',         portalUrl:'https://portal.vumatel.co.za'},
-  {id:'openserve',      name:'Openserve',         category:'Internet & Fibre', emoji:'📡', color:'rgba(155,127,212,.18)',textColor:'#9B7FD4', hint:'Account number',                   portalUrl:'https://www.openserve.co.za'},
-  {id:'telkom_fibre',   name:'Telkom Fibre',      category:'Internet & Fibre', emoji:'📡', color:'rgba(155,127,212,.18)',textColor:'#9B7FD4', hint:'Account number',                   portalUrl:'https://www.telkom.co.za/today/my-account'},
-  {id:'frogfoot',       name:'Frogfoot',          category:'Internet & Fibre', emoji:'📡', color:'rgba(155,127,212,.18)',textColor:'#9B7FD4', hint:'Account number',                   portalUrl:'https://www.frogfoot.com'},
+  {id:'vumatel',        name:'Vumatel',           category:'Internet & Fibre', emoji:'ki-cat-wifi', color:'rgba(155,127,212,.18)',textColor:'#9B7FD4', hint:'Service reference number',         portalUrl:'https://portal.vumatel.co.za'},
+  {id:'openserve',      name:'Openserve',         category:'Internet & Fibre', emoji:'ki-cat-wifi', color:'rgba(155,127,212,.18)',textColor:'#9B7FD4', hint:'Account number',                   portalUrl:'https://www.openserve.co.za'},
+  {id:'telkom_fibre',   name:'Telkom Fibre',      category:'Internet & Fibre', emoji:'ki-cat-wifi', color:'rgba(155,127,212,.18)',textColor:'#9B7FD4', hint:'Account number',                   portalUrl:'https://www.telkom.co.za/today/my-account'},
+  {id:'frogfoot',       name:'Frogfoot',          category:'Internet & Fibre', emoji:'ki-cat-wifi', color:'rgba(155,127,212,.18)',textColor:'#9B7FD4', hint:'Account number',                   portalUrl:'https://www.frogfoot.com'},
   // TV
-  {id:'dstv',           name:'DStv',              category:'TV & Streaming',   emoji:'📺', color:'rgba(245,83,79,.18)',  textColor:'#F5534F', hint:'Smartcard number',                 portalUrl:'https://www.dstv.com/en-za/pay-my-bill'},
-  {id:'sabc_tvlic',     name:'SABC TV Licence',   category:'TV & Streaming',   emoji:'📻', color:'rgba(76,175,80,.18)',  textColor:'#4CAF50', hint:'TV licence number',                portalUrl:'https://www.tvl.co.za'},
-  {id:'showmax',        name:'Showmax',           category:'TV & Streaming',   emoji:'🎥', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Account email',                    portalUrl:'https://www.showmax.com/eng/account/manage'},
-  {id:'netflix_za',     name:'Netflix',           category:'TV & Streaming',   emoji:'🎬', color:'rgba(245,83,79,.18)',  textColor:'#F5534F', hint:'Account email',                    portalUrl:'https://www.netflix.com/account'},
+  {id:'dstv',           name:'DStv',              category:'TV & Streaming',   emoji:'ki-cat-tv', color:'rgba(245,83,79,.18)',  textColor:'#F5534F', hint:'Smartcard number',                 portalUrl:'https://www.dstv.com/en-za/pay-my-bill'},
+  {id:'sabc_tvlic',     name:'SABC TV Licence',   category:'TV & Streaming',   emoji:'ki-cat-tv', color:'rgba(76,175,80,.18)',  textColor:'#4CAF50', hint:'TV licence number',                portalUrl:'https://www.tvl.co.za'},
+  {id:'showmax',        name:'Showmax',           category:'TV & Streaming',   emoji:'ki-cat-film', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Account email',                    portalUrl:'https://www.showmax.com/eng/account/manage'},
+  {id:'netflix_za',     name:'Netflix',           category:'TV & Streaming',   emoji:'ki-cat-film', color:'rgba(245,83,79,.18)',  textColor:'#F5534F', hint:'Account email',                    portalUrl:'https://www.netflix.com/account'},
   // Mobile
-  {id:'vodacom',        name:'Vodacom',           category:'Mobile',           emoji:'📱', color:'rgba(245,83,79,.18)',  textColor:'#F5534F', hint:'Mobile number or account',         portalUrl:'https://myvodacom.vodacom.co.za'},
-  {id:'mtn',            name:'MTN',               category:'Mobile',           emoji:'📱', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Mobile number',                    portalUrl:'https://www.mtn.co.za/pages/account-management'},
-  {id:'telkom_mobile',  name:'Telkom Mobile',     category:'Mobile',           emoji:'📱', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Mobile number',                    portalUrl:'https://www.telkom.co.za/today/my-account'},
-  {id:'cell_c',         name:'Cell C',            category:'Mobile',           emoji:'📱', color:'rgba(245,83,79,.18)',  textColor:'#F5534F', hint:'Mobile number',                    portalUrl:'https://www.cellc.co.za'},
+  {id:'vodacom',        name:'Vodacom',           category:'Mobile',           emoji:'ki-cat-phone', color:'rgba(245,83,79,.18)',  textColor:'#F5534F', hint:'Mobile number or account',         portalUrl:'https://myvodacom.vodacom.co.za'},
+  {id:'mtn',            name:'MTN',               category:'Mobile',           emoji:'ki-cat-phone', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Mobile number',                    portalUrl:'https://www.mtn.co.za/pages/account-management'},
+  {id:'telkom_mobile',  name:'Telkom Mobile',     category:'Mobile',           emoji:'ki-cat-phone', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Mobile number',                    portalUrl:'https://www.telkom.co.za/today/my-account'},
+  {id:'cell_c',         name:'Cell C',            category:'Mobile',           emoji:'ki-cat-phone', color:'rgba(245,83,79,.18)',  textColor:'#F5534F', hint:'Mobile number',                    portalUrl:'https://www.cellc.co.za'},
   // Insurance
-  {id:'discovery',      name:'Discovery',         category:'Insurance',        emoji:'🛡', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Member / policy number',           portalUrl:'https://www.discovery.co.za'},
-  {id:'old_mutual',     name:'Old Mutual',        category:'Insurance',        emoji:'🛡', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Policy number',                    portalUrl:'https://www.oldmutual.co.za'},
-  {id:'outsurance',     name:'OUTsurance',        category:'Insurance',        emoji:'🛡', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Policy number',                    portalUrl:'https://www.outsurance.co.za'},
-  {id:'sanlam',         name:'Sanlam',            category:'Insurance',        emoji:'🛡', color:'rgba(76,175,80,.18)',  textColor:'#4CAF50', hint:'Policy number',                    portalUrl:'https://www.sanlam.co.za'},
-  {id:'other_za',       name:'Other Provider',    category:'Other',            emoji:'📋', color:'rgba(138,138,152,.18)',textColor:'#8A8A98', hint:'Account or reference number',      portalUrl:''},
+  {id:'discovery',      name:'Discovery',         category:'Insurance',        emoji:'ki-shield', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Member / policy number',           portalUrl:'https://www.discovery.co.za'},
+  {id:'old_mutual',     name:'Old Mutual',        category:'Insurance',        emoji:'ki-shield', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Policy number',                    portalUrl:'https://www.oldmutual.co.za'},
+  {id:'outsurance',     name:'OUTsurance',        category:'Insurance',        emoji:'ki-shield', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Policy number',                    portalUrl:'https://www.outsurance.co.za'},
+  {id:'sanlam',         name:'Sanlam',            category:'Insurance',        emoji:'ki-shield', color:'rgba(76,175,80,.18)',  textColor:'#4CAF50', hint:'Policy number',                    portalUrl:'https://www.sanlam.co.za'},
+  {id:'other_za',       name:'Other Provider',    category:'Other',            emoji:'ki-clipboard', color:'rgba(138,138,152,.18)',textColor:'#8A8A98', hint:'Account or reference number',      portalUrl:''},
 ];
 
 const KL_BILL_PROVIDERS_UK = [
   // Energy
-  {id:'octopus',        name:'Octopus Energy',    category:'Energy',           emoji:'⚡', color:'rgba(155,127,212,.18)',textColor:'#9B7FD4', hint:'Account number',                   portalUrl:'https://octopus.energy/dashboard'},
-  {id:'british_gas',    name:'British Gas',       category:'Energy',           emoji:'🔥', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',                   portalUrl:'https://www.britishgas.co.uk/sign-in'},
-  {id:'eon_uk',         name:'E.ON',              category:'Energy',           emoji:'⚡', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Account number',                   portalUrl:'https://www.eonenergy.com/my-account'},
-  {id:'ovo_energy',     name:'OVO Energy',        category:'Energy',           emoji:'⚡', color:'rgba(76,175,80,.18)',  textColor:'#4CAF50', hint:'Account number',                   portalUrl:'https://www.ovoenergy.com/my-ovo'},
-  {id:'edf_energy',     name:'EDF Energy',        category:'Energy',           emoji:'⚡', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',                   portalUrl:'https://www.edfenergy.com/my-account'},
+  {id:'octopus',        name:'Octopus Energy',    category:'Energy',           emoji:'ki-cat-bolt', color:'rgba(155,127,212,.18)',textColor:'#9B7FD4', hint:'Account number',                   portalUrl:'https://octopus.energy/dashboard'},
+  {id:'british_gas',    name:'British Gas',       category:'Energy',           emoji:'ki-flame', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',                   portalUrl:'https://www.britishgas.co.uk/sign-in'},
+  {id:'eon_uk',         name:'E.ON',              category:'Energy',           emoji:'ki-cat-bolt', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Account number',                   portalUrl:'https://www.eonenergy.com/my-account'},
+  {id:'ovo_energy',     name:'OVO Energy',        category:'Energy',           emoji:'ki-cat-bolt', color:'rgba(76,175,80,.18)',  textColor:'#4CAF50', hint:'Account number',                   portalUrl:'https://www.ovoenergy.com/my-ovo'},
+  {id:'edf_energy',     name:'EDF Energy',        category:'Energy',           emoji:'ki-cat-bolt', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',                   portalUrl:'https://www.edfenergy.com/my-account'},
   // Internet & TV
-  {id:'bt_uk',          name:'BT',                category:'Internet & TV',    emoji:'📡', color:'rgba(155,127,212,.18)',textColor:'#9B7FD4', hint:'Account number',                   portalUrl:'https://www.bt.com/my-bt'},
-  {id:'virgin_media',   name:'Virgin Media',      category:'Internet & TV',    emoji:'📡', color:'rgba(245,83,79,.18)',  textColor:'#F5534F', hint:'Account number',                   portalUrl:'https://www.virginmedia.com/my-virgin-media'},
-  {id:'sky_uk',         name:'Sky',               category:'Internet & TV',    emoji:'📡', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',                   portalUrl:'https://www.sky.com/mysky'},
+  {id:'bt_uk',          name:'BT',                category:'Internet & TV',    emoji:'ki-cat-wifi', color:'rgba(155,127,212,.18)',textColor:'#9B7FD4', hint:'Account number',                   portalUrl:'https://www.bt.com/my-bt'},
+  {id:'virgin_media',   name:'Virgin Media',      category:'Internet & TV',    emoji:'ki-cat-wifi', color:'rgba(245,83,79,.18)',  textColor:'#F5534F', hint:'Account number',                   portalUrl:'https://www.virginmedia.com/my-virgin-media'},
+  {id:'sky_uk',         name:'Sky',               category:'Internet & TV',    emoji:'ki-cat-wifi', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',                   portalUrl:'https://www.sky.com/mysky'},
   // Municipal
-  {id:'council_tax_uk', name:'Council Tax',       category:'Municipal',        emoji:'🏛', color:'rgba(76,175,80,.18)',  textColor:'#4CAF50', hint:'Council reference number',         portalUrl:''},
-  {id:'tv_licence_uk',  name:'TV Licence',        category:'Municipal',        emoji:'📺', color:'rgba(76,175,80,.18)',  textColor:'#4CAF50', hint:'TV Licence number',                portalUrl:'https://www.tvlicensing.co.uk/pay'},
+  {id:'council_tax_uk', name:'Council Tax',       category:'Municipal',        emoji:'ki-cat-building', color:'rgba(76,175,80,.18)',  textColor:'#4CAF50', hint:'Council reference number',         portalUrl:''},
+  {id:'tv_licence_uk',  name:'TV Licence',        category:'Municipal',        emoji:'ki-cat-tv', color:'rgba(76,175,80,.18)',  textColor:'#4CAF50', hint:'TV Licence number',                portalUrl:'https://www.tvlicensing.co.uk/pay'},
   // Water (UK regional)
-  {id:'thames_water',   name:'Thames Water',      category:'Water',            emoji:'💧', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',                   portalUrl:'https://myaccount.thameswater.co.uk'},
-  {id:'united_util',    name:'United Utilities',  category:'Water',            emoji:'💧', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',                   portalUrl:'https://www.unitedutilities.com/my-account'},
-  {id:'severn_trent',   name:'Severn Trent',      category:'Water',            emoji:'💧', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',                   portalUrl:'https://www.stwater.co.uk/my-account'},
-  {id:'other_water_uk', name:'Water (Other)',      category:'Water',            emoji:'💧', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',                   portalUrl:''},
+  {id:'thames_water',   name:'Thames Water',      category:'Water',            emoji:'ki-cat-droplet', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',                   portalUrl:'https://myaccount.thameswater.co.uk'},
+  {id:'united_util',    name:'United Utilities',  category:'Water',            emoji:'ki-cat-droplet', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',                   portalUrl:'https://www.unitedutilities.com/my-account'},
+  {id:'severn_trent',   name:'Severn Trent',      category:'Water',            emoji:'ki-cat-droplet', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',                   portalUrl:'https://www.stwater.co.uk/my-account'},
+  {id:'other_water_uk', name:'Water (Other)',      category:'Water',            emoji:'ki-cat-droplet', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',                   portalUrl:''},
   // Mobile
-  {id:'ee_uk',          name:'EE',                category:'Mobile',           emoji:'📱', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Mobile number',                    portalUrl:'https://myaccount.ee.co.uk'},
-  {id:'o2_uk',          name:'O2',                category:'Mobile',           emoji:'📱', color:'rgba(155,127,212,.18)',textColor:'#9B7FD4', hint:'Mobile number',                    portalUrl:'https://www.o2.co.uk/my-o2'},
-  {id:'three_uk',       name:'Three',             category:'Mobile',           emoji:'📱', color:'rgba(245,83,79,.18)',  textColor:'#F5534F', hint:'Mobile number',                    portalUrl:'https://www.three.co.uk/support/account-management'},
-  {id:'vodafone_uk',    name:'Vodafone UK',       category:'Mobile',           emoji:'📱', color:'rgba(245,83,79,.18)',  textColor:'#F5534F', hint:'Mobile number',                    portalUrl:'https://www.vodafone.co.uk/my-vodafone'},
+  {id:'ee_uk',          name:'EE',                category:'Mobile',           emoji:'ki-cat-phone', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Mobile number',                    portalUrl:'https://myaccount.ee.co.uk'},
+  {id:'o2_uk',          name:'O2',                category:'Mobile',           emoji:'ki-cat-phone', color:'rgba(155,127,212,.18)',textColor:'#9B7FD4', hint:'Mobile number',                    portalUrl:'https://www.o2.co.uk/my-o2'},
+  {id:'three_uk',       name:'Three',             category:'Mobile',           emoji:'ki-cat-phone', color:'rgba(245,83,79,.18)',  textColor:'#F5534F', hint:'Mobile number',                    portalUrl:'https://www.three.co.uk/support/account-management'},
+  {id:'vodafone_uk',    name:'Vodafone UK',       category:'Mobile',           emoji:'ki-cat-phone', color:'rgba(245,83,79,.18)',  textColor:'#F5534F', hint:'Mobile number',                    portalUrl:'https://www.vodafone.co.uk/my-vodafone'},
   // Insurance
-  {id:'aviva_uk',       name:'Aviva',             category:'Insurance',        emoji:'🛡', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Policy number',                    portalUrl:'https://www.aviva.co.uk/my-aviva'},
-  {id:'admiral_uk',     name:'Admiral',           category:'Insurance',        emoji:'🛡', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Policy number',                    portalUrl:'https://www.admiral.com'},
-  {id:'other_uk',       name:'Other Provider',    category:'Other',            emoji:'📋', color:'rgba(138,138,152,.18)',textColor:'#8A8A98', hint:'Account or reference number',      portalUrl:''},
+  {id:'aviva_uk',       name:'Aviva',             category:'Insurance',        emoji:'ki-shield', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Policy number',                    portalUrl:'https://www.aviva.co.uk/my-aviva'},
+  {id:'admiral_uk',     name:'Admiral',           category:'Insurance',        emoji:'ki-shield', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Policy number',                    portalUrl:'https://www.admiral.com'},
+  {id:'other_uk',       name:'Other Provider',    category:'Other',            emoji:'ki-clipboard', color:'rgba(138,138,152,.18)',textColor:'#8A8A98', hint:'Account or reference number',      portalUrl:''},
 ];
 
 // 'other'/ROW: Klar has no real payment-portal integrations for arbitrary countries' utility
@@ -15715,29 +15721,29 @@ const KL_BILL_PROVIDERS_UK = [
 // generic categories instead — no portalUrl means bpProceed() just records the reference/amount
 // and logs a transaction, skipping the "open provider portal" convenience step entirely.
 const KL_BILL_PROVIDERS_OTHER = [
-  {id:'electricity_other', name:'Electricity',        category:'Utilities',        emoji:'⚡', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Account or meter number', portalUrl:''},
-  {id:'water_other',       name:'Water',               category:'Utilities',        emoji:'💧', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',          portalUrl:''},
-  {id:'internet_other',    name:'Internet',            category:'Internet & TV',    emoji:'📡', color:'rgba(155,127,212,.18)',textColor:'#9B7FD4', hint:'Account number',          portalUrl:''},
-  {id:'mobile_other',      name:'Mobile / Phone',      category:'Mobile',           emoji:'📱', color:'rgba(245,83,79,.18)',  textColor:'#F5534F', hint:'Account or mobile number', portalUrl:''},
-  {id:'streaming_other',   name:'Streaming / TV',      category:'Internet & TV',    emoji:'📺', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Account email',           portalUrl:''},
-  {id:'insurance_other',   name:'Insurance',           category:'Insurance',        emoji:'🛡', color:'rgba(76,175,80,.18)',  textColor:'#4CAF50', hint:'Policy number',           portalUrl:''},
-  {id:'other_row',         name:'Other Provider',      category:'Other',            emoji:'📋', color:'rgba(138,138,152,.18)',textColor:'#8A8A98', hint:'Account or reference number', portalUrl:''},
+  {id:'electricity_other', name:'Electricity',        category:'Utilities',        emoji:'ki-cat-bolt', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Account or meter number', portalUrl:''},
+  {id:'water_other',       name:'Water',               category:'Utilities',        emoji:'ki-cat-droplet', color:'rgba(79,142,247,.18)', textColor:'#4F8EF7', hint:'Account number',          portalUrl:''},
+  {id:'internet_other',    name:'Internet',            category:'Internet & TV',    emoji:'ki-cat-wifi', color:'rgba(155,127,212,.18)',textColor:'#9B7FD4', hint:'Account number',          portalUrl:''},
+  {id:'mobile_other',      name:'Mobile / Phone',      category:'Mobile',           emoji:'ki-cat-phone', color:'rgba(245,83,79,.18)',  textColor:'#F5534F', hint:'Account or mobile number', portalUrl:''},
+  {id:'streaming_other',   name:'Streaming / TV',      category:'Internet & TV',    emoji:'ki-cat-tv', color:'rgba(245,166,35,.18)', textColor:'#F5A623', hint:'Account email',           portalUrl:''},
+  {id:'insurance_other',   name:'Insurance',           category:'Insurance',        emoji:'ki-shield', color:'rgba(76,175,80,.18)',  textColor:'#4CAF50', hint:'Policy number',           portalUrl:''},
+  {id:'other_row',         name:'Other Provider',      category:'Other',            emoji:'ki-clipboard', color:'rgba(138,138,152,.18)',textColor:'#8A8A98', hint:'Account or reference number', portalUrl:''},
 ];
 
 /* Keep legacy BP_CATEGORIES for backward compat with existing billPayHistory records */
 const BP_CATEGORIES = [
-  {id:'electricity',name:'Electricity',emoji:'⚡',color:'rgba(245,166,35,.18)',textColor:'#F5A623'},
-  {id:'water',name:'Water & Sewage',emoji:'💧',color:'rgba(79,142,247,.18)',textColor:'#4F8EF7'},
-  {id:'rates',name:'Rates & Taxes',emoji:'🏛',color:'rgba(76,175,80,.18)',textColor:'#4CAF50'},
-  {id:'internet',name:'Internet',emoji:'📡',color:'rgba(155,127,212,.18)',textColor:'#9B7FD4'},
-  {id:'dstv',name:'DStv / TV',emoji:'📺',color:'rgba(245,83,79,.18)',textColor:'#F5534F'},
-  {id:'insurance',name:'Insurance',emoji:'🛡',color:'rgba(245,166,35,.18)',textColor:'#F5A623'},
-  {id:'phone',name:'Mobile / Phone',emoji:'📱',color:'rgba(79,142,247,.18)',textColor:'#4F8EF7'},
-  {id:'gas',name:'Gas',emoji:'🔥',color:'rgba(245,83,79,.18)',textColor:'#F5534F'},
+  {id:'electricity',name:'Electricity',emoji:'ki-cat-bolt',color:'rgba(245,166,35,.18)',textColor:'#F5A623'},
+  {id:'water',name:'Water & Sewage',emoji:'ki-cat-droplet',color:'rgba(79,142,247,.18)',textColor:'#4F8EF7'},
+  {id:'rates',name:'Rates & Taxes',emoji:'ki-cat-building',color:'rgba(76,175,80,.18)',textColor:'#4CAF50'},
+  {id:'internet',name:'Internet',emoji:'ki-cat-wifi',color:'rgba(155,127,212,.18)',textColor:'#9B7FD4'},
+  {id:'dstv',name:'DStv / TV',emoji:'ki-cat-tv',color:'rgba(245,83,79,.18)',textColor:'#F5534F'},
+  {id:'insurance',name:'Insurance',emoji:'ki-shield',color:'rgba(245,166,35,.18)',textColor:'#F5A623'},
+  {id:'phone',name:'Mobile / Phone',emoji:'ki-cat-phone',color:'rgba(79,142,247,.18)',textColor:'#4F8EF7'},
+  {id:'gas',name:'Gas',emoji:'ki-flame',color:'rgba(245,83,79,.18)',textColor:'#F5534F'},
 ];
 
 function _klGetProviders(){ const r=S.prefs.region; return r==='uk' ? KL_BILL_PROVIDERS_UK : r==='other' ? KL_BILL_PROVIDERS_OTHER : KL_BILL_PROVIDERS_ZA; }
-function _klFindProvider(id){ return _klGetProviders().find(p=>p.id===id) || BP_CATEGORIES.find(c=>c.id===id) || {emoji:'💳',name:id,color:'rgba(155,127,212,.18)',textColor:'#9B7FD4'}; }
+function _klFindProvider(id){ return _klGetProviders().find(p=>p.id===id) || BP_CATEGORIES.find(c=>c.id===id) || {emoji:'ki-credit-card',name:id,color:'rgba(155,127,212,.18)',textColor:'#9B7FD4'}; }
 
 /* ── Lemon Squeezy configuration ────────────────────────────────────────────
    Two stores: LS has no fixed multi-currency pricing per product, so ZAR and
@@ -15804,7 +15810,7 @@ function _rBpGrid(){
           <div class="bp-tile" onclick="bpOpenModal('${p.id}')" style="--bp-color:${p.color}">
             <div class="bp-tile-glow"></div>
             ${saved[p.id] ? '<div class="bp-saved-dot"></div>' : ''}
-            <div class="bp-tile-icon" style="background:${p.color}">${p.emoji}</div>
+            <div class="bp-tile-icon" style="background:${p.color};color:${p.textColor}"><svg width="21" height="21" viewBox="0 0 16 16" fill="none"><use href="#${p.emoji}"/></svg></div>
             <div class="bp-tile-name">${p.name}</div>
             <div class="bp-tile-last" id="bp-last-${p.id}">${_bpLastPayment(p.id)}</div>
           </div>
@@ -15843,7 +15849,7 @@ function _rBpHistory(){
       ? '<span style="font-size:9px;background:rgba(76,175,80,.15);color:#4CAF50;padding:2px 6px;border-radius:4px;margin-left:6px">Portal</span>'
       : p.status==='recorded' ? '<span style="font-size:9px;background:rgba(79,142,247,.15);color:#4F8EF7;padding:2px 6px;border-radius:4px;margin-left:6px">Logged</span>' : '';
     return `<div class="bp-history-item">
-      <div class="bp-history-icon" style="background:${prov.color}">${prov.emoji}</div>
+      <div class="bp-history-icon" style="background:${prov.color};color:${prov.textColor}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#${prov.emoji}"/></svg></div>
       <div class="bp-history-main">
         <div class="bp-history-name">${prov.name||p.catName||p.cat}${badge}</div>
         <div class="bp-history-ref">${esc(p.ref)||'—'}</div>
@@ -15859,8 +15865,9 @@ function _rBpHistory(){
 function bpOpenModal(catId){
   const cat = _klFindProvider(catId); if(!cat||!cat.id) return;
   _bpActive = cat;
-  document.getElementById('bp-m-icon').innerHTML = `<span style="font-size:24px">${cat.emoji}</span>`;
+  document.getElementById('bp-m-icon').innerHTML = `<svg width="24" height="24" viewBox="0 0 16 16" fill="none"><use href="#${cat.emoji}"/></svg>`;
   document.getElementById('bp-m-icon').style.background = cat.color;
+  document.getElementById('bp-m-icon').style.color = cat.textColor;
   document.getElementById('bp-m-title').textContent = cat.name;
   document.getElementById('bp-m-sub').textContent = cat.hint || 'Enter your account or reference number';
   // Pre-fill saved account ref for this provider
