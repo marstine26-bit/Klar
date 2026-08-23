@@ -962,6 +962,31 @@ select option{background:var(--s2)}
 label{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:1px;display:block;margin-bottom:6px;text-transform:uppercase}
 input[type=color]{width:46px;height:36px;padding:2px;cursor:pointer}
 
+/* Custom icon-capable dropdown — progressively enhances an existing <select>.
+   See klEnhanceCatSelect(). Trigger mirrors the base input/select field style;
+   the list mirrors .rail-more-panel (position:fixed listbox anchored via JS
+   getBoundingClientRect, so it isn't clipped by a modal's overflow body). */
+.kl-select{position:relative;font-size:13px}
+.kl-select-trigger{display:flex;align-items:center;gap:8px;width:100%;background:var(--s2);border:var(--bw) solid var(--b2);border-radius:var(--rsm);color:var(--t1);font-family:var(--ff);font-size:inherit;font-weight:500;padding:10px 14px;cursor:pointer;text-align:left;transition:border var(--dur),box-shadow var(--dur)}
+.kl-select-trigger:focus-visible,.kl-select-trigger.open{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-d);outline:none}
+.kl-select-trigger .kl-select-ic{display:flex;flex-shrink:0;width:15px;height:15px;color:var(--t3)}
+.kl-select-trigger .kl-select-lbl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kl-select-trigger .kl-select-chev{flex-shrink:0;width:12px;height:12px;color:var(--t4);transition:transform var(--dur)}
+.kl-select-trigger.open .kl-select-chev{transform:rotate(180deg)}
+.kl-select-list{position:fixed;z-index:210;min-width:180px;max-height:280px;overflow-y:auto;background:var(--s2);border:var(--bw) solid var(--b1);border-radius:var(--r);padding:6px;box-shadow:0 12px 40px rgba(0,0,0,.4);display:none;flex-direction:column;gap:1px}
+.kl-select-list.open{display:flex}
+.kl-select-opt{display:flex;align-items:center;gap:9px;width:100%;padding:8px 10px;border-radius:8px;border:none;background:transparent;color:var(--t2);font-size:12.5px;font-weight:500;font-family:var(--ff);text-align:left;cursor:pointer;transition:background var(--dur),color var(--dur)}
+.kl-select-opt .kl-select-ic{display:flex;flex-shrink:0;width:14px;height:14px;color:var(--t3)}
+.kl-select-opt:hover,.kl-select-opt.hl{background:var(--s3);color:var(--t1)}
+.kl-select-opt.sel{color:var(--accent);background:var(--accent-d)}
+.kl-select-opt.sel .kl-select-ic{color:var(--accent)}
+/* Compact variant, reserved for future per-row / table usage */
+.kl-select.compact .kl-select-trigger{padding:3px 7px;font-size:11px;border-radius:6px;gap:5px}
+.kl-select.compact .kl-select-trigger .kl-select-ic{width:12px;height:12px}
+/* Match sibling input/select sizing when a select this component enhances lives in a filter bar */
+.fb .kl-select{flex:1;min-width:120px}
+.fg2 .kl-select,.fr .kl-select{width:100%}
+
 .toggle{position:relative;width:40px;height:22px;flex-shrink:0}
 .toggle input{opacity:0;width:0;height:0}
 .tsl{position:absolute;inset:0;background:var(--s4);border-radius:11px;cursor:pointer;transition:background var(--dur)}
@@ -1701,6 +1726,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <symbol id="ki-laptop" viewBox="0 0 16 16"><rect x="2.5" y="2.5" width="11" height="7.5" rx="1" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M1 13.5h14l-1.3-2.5h-11.4Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" fill="none"/></symbol>
   <symbol id="ki-palette" viewBox="0 0 16 16"><path d="M8 1.5a6.5 6.5 0 1 0 0 13c.9 0 1.5-.6 1.5-1.4 0-.4-.2-.7-.2-1.1 0-.6.5-1 1.1-1H12a2.5 2.5 0 0 0 2.5-2.5C14.5 4.3 11.6 1.5 8 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" fill="none"/><circle cx="4.7" cy="7.2" r=".9" fill="currentColor"/><circle cx="6.7" cy="4.7" r=".9" fill="currentColor"/><circle cx="9.7" cy="4.7" r=".9" fill="currentColor"/><circle cx="11.3" cy="7.2" r=".9" fill="currentColor"/></symbol>
   <symbol id="ki-code" viewBox="0 0 16 16"><path d="M5.5 4 1.5 8l4 4M10.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="ki-chevron-down" viewBox="0 0 16 16"><path d="M3.5 6 8 10.5 12.5 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
 </svg>
 
 <!-- ═══ RAIL — 8 hubs ═══ -->
@@ -5489,6 +5515,152 @@ function buildCatOpts(selectedId,includeAddNew=true){
   return opts+(includeAddNew?`<option value="__new_cat__" style="color:var(--accent);font-weight:700">＋ New category…</option>`:'');
 }
 
+/* ═══════════════════════════════════════════════════
+   CUSTOM ICON-CAPABLE DROPDOWN
+   Progressively enhances an already-populated <select> in place — reads its
+   own <option>s, hides it, and renders a custom trigger+listbox next to it
+   that shows an icon per option (native <select>/<option> can't render
+   icons in any browser). Selecting an option sets the real select's .value
+   and dispatches a real 'change' event, so every existing onchange handler,
+   .value read, and save-path function keeps working unchanged.
+   Call klEnhanceCatSelect(id) once after a select is first populated, and
+   klRefreshCatSelect(id) (or just call klEnhanceCatSelect again — it's
+   idempotent) after its <option>s are rebuilt in place (e.g. region change).
+═══════════════════════════════════════════════════ */
+let _klSelectOpen=null; // the currently-open .kl-select-list, or null
+
+function _klSelectOptIcon(value,iconFn){
+  if(!value)return'';
+  // Look up via the real category list directly (not catBy(), which falls back to
+  // the "Other" category's icon for unknown ids — wrong for special option values
+  // like "__new_cat__"/"__uncat__" that aren't real categories at all).
+  const ic=iconFn?iconFn(value):(getAllCats().find(c=>c.id===value)?.icon||'');
+  return ic&&ic.startsWith('ki-')?`<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><use href="#${ic}"/></svg>`:(ic?`<span style="font-size:13px;line-height:1">${esc(ic)}</span>`:'');
+}
+
+function klCloseSelect(){
+  if(!_klSelectOpen)return;
+  _klSelectOpen.classList.remove('open');
+  const trig=_klSelectOpen._klTrigger;
+  if(trig)trig.classList.remove('open');
+  _klSelectOpen=null;
+}
+
+function _klSelectPosition(list,trigger){
+  const r=trigger.getBoundingClientRect();
+  const naturalH=Math.min(280,list.scrollHeight||280);
+  const spaceBelow=window.innerHeight-r.bottom-8;
+  const spaceAbove=r.top-8;
+  const openUp=spaceBelow<naturalH&&spaceAbove>spaceBelow;
+  // Clamp to whichever side we're opening into, so a short viewport never lets
+  // the list run off-screen — it scrolls internally instead (.kl-select-list
+  // already has overflow-y:auto).
+  const listH=Math.max(80,Math.min(naturalH,openUp?spaceAbove:spaceBelow));
+  list.style.maxHeight=listH+'px';
+  list.style.left=r.left+'px';
+  list.style.width=Math.max(r.width,180)+'px';
+  if(openUp){list.style.top='auto';list.style.bottom=(window.innerHeight-r.top+4)+'px';}
+  else{list.style.bottom='auto';list.style.top=(r.bottom+4)+'px';}
+}
+
+function _klSelectRenderList(selectEl,list,iconFn){
+  const opts=[...selectEl.options];
+  list.innerHTML=opts.map((o,i)=>`<button type="button" class="kl-select-opt${o.selected?' sel':''}" data-i="${i}"><span class="kl-select-ic">${_klSelectOptIcon(o.value,iconFn)}</span><span>${esc(o.textContent)}</span></button>`).join('');
+}
+
+function _klSelectUpdateTrigger(selectEl,trigger,iconFn){
+  const o=selectEl.options[selectEl.selectedIndex];
+  const lbl=trigger.querySelector('.kl-select-lbl');
+  const ic=trigger.querySelector('.kl-select-ic');
+  if(lbl)lbl.textContent=o?o.textContent:'';
+  if(ic)ic.innerHTML=o?_klSelectOptIcon(o.value,iconFn):'';
+}
+
+function klEnhanceCatSelect(selectId,iconFn){
+  const selectEl=document.getElementById(selectId);
+  if(!selectEl)return;
+  let wrap=selectEl.nextElementSibling;
+  if(!wrap||!wrap.classList||!wrap.classList.contains('kl-select')||wrap.dataset.klFor!==selectId){
+    // First-time enhance: build the wrapper DOM once
+    const inlineWidth=selectEl.style.width;
+    const inlineFontSize=selectEl.style.fontSize;
+    selectEl.style.display='none';
+    wrap=document.createElement('div');
+    wrap.className='kl-select';
+    wrap.dataset.klFor=selectId;
+    if(inlineWidth)wrap.style.width=inlineWidth;
+    if(inlineFontSize)wrap.style.fontSize=inlineFontSize;
+    wrap.innerHTML=`<button type="button" class="kl-select-trigger" aria-haspopup="listbox"><span class="kl-select-ic"></span><span class="kl-select-lbl"></span><span class="kl-select-chev"><svg viewBox="0 0 16 16" fill="none"><use href="#ki-chevron-down"/></svg></span></button><div class="kl-select-list" role="listbox"></div>`;
+    selectEl.insertAdjacentElement('afterend',wrap);
+    const trigger=wrap.querySelector('.kl-select-trigger');
+    const list=wrap.querySelector('.kl-select-list');
+    list._klTrigger=trigger;
+    let hlIdx=-1;
+    const openList=()=>{
+      klCloseSelect();
+      _klSelectRenderList(selectEl,list,iconFn);
+      _klSelectPosition(list,trigger);
+      list.classList.add('open');trigger.classList.add('open');
+      _klSelectOpen=list;
+      hlIdx=selectEl.selectedIndex;
+      _klSelectSetHl(list,hlIdx);
+    };
+    trigger.addEventListener('click',e=>{
+      e.stopPropagation();
+      if(list.classList.contains('open'))klCloseSelect();else openList();
+    });
+    trigger.addEventListener('keydown',e=>{
+      const opts=selectEl.options;
+      if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+        e.preventDefault();
+        if(!list.classList.contains('open')){openList();return;}
+        hlIdx=Math.max(0,Math.min(opts.length-1,hlIdx+(e.key==='ArrowDown'?1:-1)));
+        _klSelectSetHl(list,hlIdx);
+      } else if(e.key==='Enter'||e.key===' '){
+        e.preventDefault();
+        if(!list.classList.contains('open')){openList();return;}
+        if(hlIdx>=0&&opts[hlIdx])_klSelectPick(selectEl,trigger,list,hlIdx,iconFn);
+      } else if(e.key==='Escape'){
+        if(list.classList.contains('open')){e.preventDefault();klCloseSelect();}
+      } else if(e.key.length===1&&/[a-z0-9]/i.test(e.key)){
+        const i=[...opts].findIndex((o,idx)=>idx>hlIdx&&o.textContent.toLowerCase().startsWith(e.key.toLowerCase()));
+        const fallback=[...opts].findIndex(o=>o.textContent.toLowerCase().startsWith(e.key.toLowerCase()));
+        const pick=i>=0?i:fallback;
+        if(pick>=0){hlIdx=pick;_klSelectSetHl(list,hlIdx);if(list.classList.contains('open'))list.children[pick]?.scrollIntoView({block:'nearest'});}
+      }
+    });
+    list.addEventListener('click',e=>{
+      const btn=e.target.closest('.kl-select-opt');
+      if(!btn)return;
+      _klSelectPick(selectEl,trigger,list,+btn.dataset.i,iconFn);
+    });
+  }
+  // (Re-)sync trigger + list content with the select's current options/value
+  _klSelectUpdateTrigger(selectEl,wrap.querySelector('.kl-select-trigger'),iconFn);
+  if(wrap.querySelector('.kl-select-list').classList.contains('open'))
+    _klSelectRenderList(selectEl,wrap.querySelector('.kl-select-list'),iconFn);
+}
+const klRefreshCatSelect=klEnhanceCatSelect;
+
+function _klSelectSetHl(list,idx){
+  [...list.children].forEach((el,i)=>el.classList.toggle('hl',i===idx));
+  list.children[idx]?.scrollIntoView({block:'nearest'});
+}
+function _klSelectPick(selectEl,trigger,list,idx,iconFn){
+  const opt=selectEl.options[idx];if(!opt)return;
+  selectEl.value=opt.value;
+  selectEl.dispatchEvent(new Event('change',{bubbles:true}));
+  _klSelectUpdateTrigger(selectEl,trigger,iconFn);
+  klCloseSelect();
+  trigger.focus();
+}
+document.addEventListener('click',e=>{
+  if(_klSelectOpen&&!_klSelectOpen.contains(e.target)&&!_klSelectOpen._klTrigger?.contains(e.target))klCloseSelect();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&_klSelectOpen)klCloseSelect();});
+window.addEventListener('resize',()=>{if(_klSelectOpen)klCloseSelect();});
+window.addEventListener('scroll',e=>{if(_klSelectOpen&&!_klSelectOpen.contains(e.target))klCloseSelect();},true);
+
 const CAT_RULES = [
   {p:['bond payment','home loan','nedbank bond','absa bond','fnb bond','standard bank bond','mortgage'],c:'home-loan'},
   {p:['rent ','rental','landlord','lease','hoa levy','body corporate','sectional title levy'],c:'housing'},
@@ -5802,6 +5974,7 @@ function openAddCatRule() {
   const sel=document.getElementById('catr-cat');
   if(sel){
     const _rgCatr=(S.prefs?.region||'za');const _isUKcatr=_rgCatr==='uk';sel.innerHTML=CATS.filter(c=>!c.region||c.region===_rgCatr).map(c=>{const _l=_isUKcatr&&c.lbl_uk?c.lbl_uk:_rgCatr==='other'&&c.lbl_other?c.lbl_other:c.lbl;return`<option value="${c.id}">${_l}</option>`;}).join('');
+    klEnhanceCatSelect('catr-cat');
   }
   document.getElementById('catr-keyword').value='';
   openModal('m-add-cat-rule');
@@ -6895,6 +7068,7 @@ function popCatDDs() {
     const cur=el.value;
     const _catRegionRaw=(S.prefs?.region||'za');const _isUKcat=_catRegionRaw==='uk';el.innerHTML=(isF?'<option value="">All Categories</option><option value="__uncat__">Uncategorised</option>':'')+catList.filter(c=>!c.region||c.region===_catRegionRaw).map(c=>'<option value="'+c.id+'">'+(_isUKcat&&c.lbl_uk?c.lbl_uk:_catRegionRaw==='other'&&c.lbl_other?c.lbl_other:c.lbl)+'</option>').join('');
     if(cur) el.value=cur;
+    klEnhanceCatSelect(id);
   });
 }
 
@@ -8603,7 +8777,7 @@ function renderTxns(){
   </tr></thead><tbody>${rows}${showMoreBtn}</tbody></table>`;
 
   const bcs = document.getElementById('bulk-cat-sel');
-  if(bcs) bcs.innerHTML='<option value="">Re-categorise to…</option>'+buildCatOpts('',true);
+  if(bcs){bcs.innerHTML='<option value="">Re-categorise to…</option>'+buildCatOpts('',true);klEnhanceCatSelect('bulk-cat-sel');}
 }
 
 function scrollToTxn(id) {
