@@ -1685,6 +1685,11 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <symbol id="ki-star" viewBox="0 0 16 16"><path d="M8 1.3 9.9 6l5 .4-3.8 3.3 1.2 4.9L8 11.9 3.7 14.6l1.2-4.9L1.1 6.4l5-.4Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" fill="none"/></symbol>
   <symbol id="ki-clipboard" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="11.5" rx="1.3" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M6 3V2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/><path d="M5.5 7h5M5.5 9.5h5M5.5 12h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none"/></symbol>
   <symbol id="ki-camera" viewBox="0 0 16 16"><path d="M2 5.5h2.3L5.2 4h5.6l.9 1.5H14a1 1 0 0 1 1 1V13a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6.5a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" fill="none"/><circle cx="8" cy="9.3" r="2.6" stroke="currentColor" stroke-width="1.3" fill="none"/></symbol>
+  <symbol id="ki-tombstone" viewBox="0 0 16 16"><path d="M3.5 14.5V7a4.5 4.5 0 0 1 9 0v7.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M1.5 14.5h13M6.5 6.5v4M8.5 6.5v4M6.5 8.5h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="ki-pill" viewBox="0 0 16 16"><rect x="1.7" y="6.3" width="12.6" height="5.4" rx="2.7" transform="rotate(-35 8 8)" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M6.3 5.7 9.7 10.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="ki-pin" viewBox="0 0 16 16"><path d="M8 14.5S13 9.8 13 6.3A5 5 0 0 0 3 6.3C3 9.8 8 14.5 8 14.5Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="8" cy="6.3" r="1.6" stroke="currentColor" stroke-width="1.2" fill="none"/></symbol>
+  <symbol id="ki-clock" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.3" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M8 4.5V8l2.8 1.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="ki-road" viewBox="0 0 16 16"><path d="M5.5 1.5 2 14.5M10.5 1.5 14 14.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/><path d="M7.6 5.5h.8M7.3 9h1.4M7 12.5h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/></symbol>
 </svg>
 
 <!-- ═══ RAIL — 8 hubs ═══ -->
@@ -3234,14 +3239,14 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div id="petrol-detected-wrap" style="display:none;margin-bottom:16px">
     <div class="card" style="border:1px solid var(--amber);border-opacity:0.3;background:color-mix(in srgb,var(--amber) 6%,transparent)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div style="font-weight:700;font-size:13px">⛽ Detected Petrol Purchases <span id="petrol-detected-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
+        <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><use href="#ki-cat-fuel"/></svg>Detected Petrol Purchases <span id="petrol-detected-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
         <button class="btn btn-ghost btn-xs" onclick="dismissAllDetectedPetrol()">Dismiss All</button>
       </div>
       <div id="petrol-detected-list"></div>
     </div>
   </div>
   <div class="card">
-    <div class="ct">⛽ Petrol Cost Tracker</div>
+    <div class="ct" style="display:flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><use href="#ki-cat-fuel"/></svg>Petrol Cost Tracker</div>
     <div class="g2">
       <div>
         <div class="fg2" style="margin-bottom:12px">
@@ -3264,7 +3269,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 <!-- ══ LOAD-SHEDDING TRACKER ══ -->
 <div style="padding:0 0 18px">
   <div class="card">
-    <div class="ct">🕯 Load-Shedding Cost Tracker</div>
+    <div class="ct" style="display:flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><use href="#ki-cat-bolt"/></svg>Load-Shedding Cost Tracker</div>
     <div class="g2">
       <div>
         <div class="ic a" style="margin-bottom:12px"><div class="it">Track Your Eskom Costs</div><div class="ib">Log generator fuel, candles, UPS battery replacements and other load-shedding expenses. See the real monthly cost of load-shedding on your budget.</div></div>
@@ -10510,7 +10515,7 @@ function rFuelPricesCard(){
   // UK guard: replace SA fuel price card with UK benchmark info
   if((S.prefs?.region||'za')==='uk'){
     el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-      <div class="ct" style="margin:0">⛽ UK Fuel Price Benchmark</div>
+      <div class="ct" style="margin:0;display:flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><use href="#ki-cat-fuel"/></svg>UK Fuel Price Benchmark</div>
     </div>
     <div class="g4" style="margin-bottom:10px">
       <div class="stat-tile"><div class="sl">Petrol (E10)</div><div class="sv" style="color:var(--blue);font-size:18px">~153p/L</div></div>
@@ -10523,7 +10528,7 @@ function rFuelPricesCard(){
   const loc=(S.prefs?.fuelLoc==='coastal')?'coastal':'inland';
   const p=prices[loc];
   el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-    <div class="ct" style="margin:0">⛽ Current SA Fuel Prices <span style="font-size:10px;font-weight:400;color:var(--t3)">${loc==='coastal'?'Coastal':'Inland'}</span></div>
+    <div class="ct" style="margin:0;display:flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><use href="#ki-cat-fuel"/></svg>Current SA Fuel Prices <span style="font-size:10px;font-weight:400;color:var(--t3)">${loc==='coastal'?'Coastal':'Inland'}</span></div>
     <div style="display:flex;gap:8px;align-items:center">
       <span style="font-size:10px;color:var(--t3)">Updated ${prices.updated}</span>
       <button class="btn btn-ghost btn-xs" onclick="refreshFuelPrices()">↻</button>
@@ -11269,17 +11274,17 @@ function rItr12Checklist(){
   if((S.prefs&&S.prefs.region)==='uk')return;
   const el=document.getElementById('itr-checklist');if(!el)return;
   const items=[
-    {icon:'💼',lbl:'IRP5 from employer',desc:'Get from HR or SARS eFiling'},
-    {icon:'🏦',lbl:'Interest certificates',desc:'From bank — exempt up to R23,800 (u65)'},
-    {icon:'🏠',lbl:'Rental income & expenses',desc:'Declare gross rent, deduct bond interest & repairs'},
-    {icon:'🎯',lbl:'RA certificates',desc:'Section 11F — from your RA provider'},
-    {icon:'🏥',lbl:'Medical aid certificate',desc:'From Discovery/Bonitas for MATC'},
-    {icon:'🚗',lbl:'Travel logbook',desc:'SARS requires a logbook if claiming travel'},
-    {icon:'📊',lbl:'Section 18A donations',desc:'Donations to approved NPOs are deductible'},
-    {icon:'🌍',lbl:'Foreign income',desc:'Declare all foreign earnings and tax paid abroad'},
+    {icon:'ki-briefcase',lbl:'IRP5 from employer',desc:'Get from HR or SARS eFiling'},
+    {icon:'ki-bank',lbl:'Interest certificates',desc:'From bank — exempt up to R23,800 (u65)'},
+    {icon:'ki-home2',lbl:'Rental income & expenses',desc:'Declare gross rent, deduct bond interest & repairs'},
+    {icon:'ki-target',lbl:'RA certificates',desc:'Section 11F — from your RA provider'},
+    {icon:'ki-cat-cross',lbl:'Medical aid certificate',desc:'From Discovery/Bonitas for MATC'},
+    {icon:'ki-car',lbl:'Travel logbook',desc:'SARS requires a logbook if claiming travel'},
+    {icon:'ki-bar-chart-2',lbl:'Section 18A donations',desc:'Donations to approved NPOs are deductible'},
+    {icon:'ki-globe',lbl:'Foreign income',desc:'Declare all foreign earnings and tax paid abroad'},
   ];
   el.innerHTML=items.map(i=>`<div style="display:flex;gap:10px;align-items:flex-start;background:var(--s2);border-radius:var(--rsm);padding:10px">
-    <div style="font-size:18px">${i.icon}</div>
+    <div style="color:var(--accent)"><svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#${i.icon}"/></svg></div>
     <div><div style="font-size:12px;font-weight:700">${i.lbl}</div><div style="font-size:10.5px;color:var(--t3);margin-top:2px">${i.desc}</div></div>
   </div>`).join('');
 }
@@ -11604,8 +11609,8 @@ function saveInsurance(){
   if(!premiumVal||premiumVal<=0){notify('Enter a premium amount greater than 0','err');return;}
   if(!renewal){notify('Renewal date is required','err');return;}
   if(!S.insurancePolicies)S.insurancePolicies=[];
-  const icons={life:'❤️',disability:'🛡',medical:'🏥',vehicle:'🚗',home:'🏠',gap:'⚕️',funeral:'🪦',critical:'💊',pmi:'🏥',business:'💼',other:'📋'};
-  S.insurancePolicies.push({id:uid(),type,insurer,premium:parseFloat(document.getElementById('ins-premium').value)||0,cover:parseFloat(document.getElementById('ins-cover').value)||0,renewal:document.getElementById('ins-renewal').value,policyNo:document.getElementById('ins-polno').value,notes:document.getElementById('ins-notes').value,icon:icons[type]||'📋'});
+  const icons={life:'ki-heart-pulse',disability:'ki-shield',medical:'ki-cat-cross',vehicle:'ki-car',home:'ki-home2',gap:'ki-shield',funeral:'ki-tombstone',critical:'ki-pill',pmi:'ki-cat-cross',business:'ki-briefcase',other:'ki-file-text'};
+  S.insurancePolicies.push({id:uid(),type,insurer,premium:parseFloat(document.getElementById('ins-premium').value)||0,cover:parseFloat(document.getElementById('ins-cover').value)||0,renewal:document.getElementById('ins-renewal').value,policyNo:document.getElementById('ins-polno').value,notes:document.getElementById('ins-notes').value,icon:icons[type]||'ki-file-text'});
   save();closeModal('m-add-insurance');rInsurance();notify('Policy saved','ok');
   // Auto-create renewal reminder if renewal date set
   if(renewal&&_daysUntil(renewal)>0&&_daysUntil(renewal)<=365){
@@ -11619,16 +11624,16 @@ function rInsurance(){
   const policies=S.insurancePolicies;
   const listEl=document.getElementById('ins-list');
   if(listEl){
-    if(!policies.length)listEl.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="font-size:36px;margin-bottom:10px">🛡️</div><div class="empty-t">No policies yet</div><div class="empty-s">Track your car, home, life and income protection policies — see total premiums and upcoming renewals</div><button class="btn btn-gold" onclick="openAddInsurance&&openAddInsurance()" style="margin-top:14px">+ Add Policy</button></div>';
-    else{const sorted=[...policies].sort((a,b)=>{if(!a.renewal&&!b.renewal)return 0;if(!a.renewal)return 1;if(!b.renewal)return -1;return a.renewal.localeCompare(b.renewal);});listEl.innerHTML=`<div class="g2">${sorted.map(p=>{const days=_daysUntil(p.renewal);const expired=p.renewal&&days<0;const renewalColor=expired?'var(--red)':days<30?'var(--amber)':'var(--t2)';return`<div class="card" style="position:relative${expired?';border-left:3px solid var(--red)':''}">
+    if(!policies.length)listEl.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;display:flex;justify-content:center;opacity:.6"><svg width="36" height="36" viewBox="0 0 16 16" fill="none"><use href="#ki-shield"/></svg></div><div class="empty-t">No policies yet</div><div class="empty-s">Track your car, home, life and income protection policies — see total premiums and upcoming renewals</div><button class="btn btn-gold" onclick="openAddInsurance&&openAddInsurance()" style="margin-top:14px">+ Add Policy</button></div>';
+    else{const sorted=[...policies].sort((a,b)=>{if(!a.renewal&&!b.renewal)return 0;if(!a.renewal)return 1;if(!b.renewal)return -1;return a.renewal.localeCompare(b.renewal);});listEl.innerHTML=`<div class="g2">${sorted.map(p=>{const days=_daysUntil(p.renewal);const expired=p.renewal&&days<0;const renewalColor=expired?'var(--red)':days<30?'var(--amber)':'var(--t2)';const _pIcon=p.icon&&p.icon.startsWith('ki-')?`<svg width="20" height="20" viewBox="0 0 16 16" fill="none"><use href="#${p.icon}"/></svg>`:esc(p.icon||'');return`<div class="card" style="position:relative${expired?';border-left:3px solid var(--red)':''}">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-        <div style="display:flex;gap:10px;align-items:center"><span style="font-size:20px">${p.icon}</span><div><div style="font-weight:700;font-size:13px">${esc(p.insurer)}</div><div style="font-size:10.5px;color:var(--t3);text-transform:capitalize">${p.type.replace('_',' ')}</div></div></div>
+        <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--accent)">${_pIcon}</span><div><div style="font-weight:700;font-size:13px">${esc(p.insurer)}</div><div style="font-size:10.5px;color:var(--t3);text-transform:capitalize">${p.type.replace('_',' ')}</div></div></div>
         <button onclick="delInsurance('${p.id}')" aria-label="Delete policy: ${esc(p.insurer)} ${esc(p.type.replace('_',' '))}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:15px">&times;</button>
       </div>
       <div class="g2" style="gap:6px">
         <div class="sr"><span class="lbl">Monthly Premium</span><span class="val mono neg">${fmt(p.premium)}</span></div>
         ${p.cover?`<div class="sr"><span class="lbl">Cover</span><span class="val mono">${fmt(p.cover)}</span></div>`:''}
-        ${p.renewal?`<div class="sr"><span class="lbl">Renewal</span><span class="val" style="font-size:11px;color:${renewalColor}">${p.renewal}${expired?' 🔴 EXPIRED':days<30?' ⚠️':''}</span></div>`:''}
+        ${p.renewal?`<div class="sr"><span class="lbl">Renewal</span><span class="val" style="font-size:11px;color:${renewalColor}">${p.renewal}${expired?' — EXPIRED':days<30?' ⚠':''}</span></div>`:''}
         ${p.notes?`<div style="font-size:10.5px;color:var(--t3);margin-top:4px">${esc(p.notes)}</div>`:''}
       </div>
     </div>`;}).join('')}</div>`;}}
@@ -11643,10 +11648,10 @@ function rInsurance(){
   </div>`;
   const now=new Date();
   const rEl=document.getElementById('ins-renewals');
-  if(rEl){const due=policies.filter(p=>p.renewal&&_daysUntil(p.renewal)>=0&&_daysUntil(p.renewal)<=90).sort((a,b)=>a.renewal.localeCompare(b.renewal));rEl.innerHTML=due.length?due.map(p=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--b1)"><span style="font-size:12px">${p.icon} ${esc(p.insurer)}</span><span style="font-size:11px;font-family:var(--fm);color:${_daysUntil(p.renewal)<30?'var(--amber)':'var(--t2)'}">${p.renewal} · ${_daysUntil(p.renewal)}d</span></div>`).join(''):'<div style="font-size:12px;color:var(--t3);padding:8px 0">No renewals due in the next 90 days</div>';}
+  if(rEl){const due=policies.filter(p=>p.renewal&&_daysUntil(p.renewal)>=0&&_daysUntil(p.renewal)<=90).sort((a,b)=>a.renewal.localeCompare(b.renewal));rEl.innerHTML=due.length?due.map(p=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--b1)"><span style="font-size:12px">${esc(p.insurer)}</span><span style="font-size:11px;font-family:var(--fm);color:${_daysUntil(p.renewal)<30?'var(--amber)':'var(--t2)'}">${p.renewal} · ${_daysUntil(p.renewal)}d</span></div>`).join(''):'<div style="font-size:12px;color:var(--t3);padding:8px 0">No renewals due in the next 90 days</div>';}
 }
 const delInsurance=id=>{const p=(S.insurancePolicies||[]).find(x=>x.id===id);klConfirm(`Remove "${p?p.insurer:'this policy'}"?`,()=>{S.insurancePolicies=(S.insurancePolicies||[]).filter(x=>x.id!==id);save();rInsurance();notify('Policy removed');},{okLabel:'Remove',danger:true});};
-const _daysUntil=dateStr=>{if(!dateStr)return999;const d=new Date(dateStr);const now=new Date();now.setHours(0,0,0,0);d.setHours(0,0,0,0);return Math.ceil((d-now)/(1000*60*60*24));};
+const _daysUntil=dateStr=>{if(!dateStr)return 999;const d=new Date(dateStr);const now=new Date();now.setHours(0,0,0,0);d.setHours(0,0,0,0);return Math.ceil((d-now)/(1000*60*60*24));};
 
 /* ═══ UIF CALCULATOR ═══ */
 let _uifDefaultHTML=null;
@@ -11686,13 +11691,14 @@ function calcUif(){
     </div>
   </div>`;
   const infoEl=document.getElementById('uif-info');
+  const _uifIco=ic=>`<svg width="14" height="14" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;margin-top:1px"><use href="#${ic}"/></svg>`;
   if(infoEl)infoEl.innerHTML=`<div style="display:grid;gap:8px;font-size:12px">
-    <div style="display:flex;gap:8px"><span>📋</span><span>You and your employer each contribute <strong>1% of salary</strong> to UIF (max R177.12/mo each)</span></div>
-    <div style="display:flex;gap:8px"><span>📅</span><span>Accrual: 1 credit day for every <strong>4 days worked</strong> (max 238 days total)</span></div>
-    <div style="display:flex;gap:8px"><span>💵</span><span>Benefit is <strong>38–58%</strong> of your salary, scaled by income level</span></div>
-    <div style="display:flex;gap:8px"><span>📍</span><span>Apply at your nearest <strong>Labour Centre</strong> or on the <strong>uFiling portal</strong> (ufiling.labour.gov.za)</span></div>
-    <div style="display:flex;gap:8px"><span>⏱</span><span>Apply within <strong>6 months</strong> of becoming unemployed</span></div>
-    ${reason==='maternity'?'<div style="display:flex;gap:8px"><span>👶</span><span>Maternity benefit: up to <strong>17.32 weeks</strong> (about 4 months) at 66% of daily rate</span></div>':''}
+    <div style="display:flex;gap:8px">${_uifIco('ki-clipboard')}<span>You and your employer each contribute <strong>1% of salary</strong> to UIF (max R177.12/mo each)</span></div>
+    <div style="display:flex;gap:8px">${_uifIco('ki-calendar')}<span>Accrual: 1 credit day for every <strong>4 days worked</strong> (max 238 days total)</span></div>
+    <div style="display:flex;gap:8px">${_uifIco('ki-banknote')}<span>Benefit is <strong>38–58%</strong> of your salary, scaled by income level</span></div>
+    <div style="display:flex;gap:8px">${_uifIco('ki-pin')}<span>Apply at your nearest <strong>Labour Centre</strong> or on the <strong>uFiling portal</strong> (ufiling.labour.gov.za)</span></div>
+    <div style="display:flex;gap:8px">${_uifIco('ki-clock')}<span>Apply within <strong>6 months</strong> of becoming unemployed</span></div>
+    ${reason==='maternity'?`<div style="display:flex;gap:8px">${_uifIco('ki-cat-baby')}<span>Maternity benefit: up to <strong>17.32 weeks</strong> (about 4 months) at 66% of daily rate</span></div>`:''}
   </div>`;
 }
 
@@ -12940,9 +12946,10 @@ function rStokvels(){
   const nxt=(S.stokvels||[]).filter(s=>s.payoutMonth).sort((a,b)=>a.payoutMonth.localeCompare(b.payoutMonth))[0];
   set('stok-nxt',nxt?nxt.name+' · '+nxt.payoutMonth:'—');
   const el=document.getElementById('stok-list');if(!el)return;
-  if(!(S.stokvels||[]).length){el.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="font-size:36px;margin-bottom:10px">🤝</div><div class="empty-t">No stokvels yet</div><div class="empty-s">Track your stokvel group contributions, payouts and member balances in one place</div><button class="btn btn-gold" onclick="openAddStokvel&&openAddStokvel()" style="margin-top:14px">+ Add Stokvel</button></div>';return;}
-  const icons={grocery:'🛒',burial:'⚫',investment:'📈',holiday:'✈️',education:'📚'};
-  el.innerHTML=(S.stokvels||[]).map(stk=>`<div class="dc"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><div><div style="font-weight:700;font-size:13px">${icons[stk.type]||'🤝'} ${esc(stk.name)}</div><div style="font-size:10px;color:var(--t3);font-family:var(--fm)">${esc(stk.type||'')} · ${stk.members||'?'} members</div></div><div style="text-align:right"><div style="font-family:var(--fs);font-size:15px;font-style:italic;color:var(--t1)">${fmt(stk.contribution)}/mo</div><button onclick="delStokvel('${stk.id}')" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:11px">Remove</button></div></div>${stk.payoutMonth?`<div style="font-size:10px;color:var(--green);font-family:var(--fm)">Payout: ${stk.payoutMonth} · Position #${stk.position||'?'}</div>`:''}<div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px"><div><div style="font-size:10px;color:var(--t3);margin-bottom:1px">Pot balance</div><div style="font-family:var(--fs);font-size:13px;font-weight:700;color:var(--green)">${fmt(stk.pot||0)}</div>${stk.contribution>0?`<div style="font-size:10px;color:var(--t3);margin-top:2px">Annual: ${fmt(stk.contribution*12)}</div>`:''}</div><div style="display:flex;gap:6px"><button class="btn btn-ghost btn-sm" onclick="stokvelContrib('${stk.id}')">Contribute</button><button class="btn btn-ghost btn-sm" onclick="stokvelPayout('${stk.id}')" ${!(stk.pot>0)?'disabled style="opacity:0.4"':''}>Payout</button></div></div>
+  if(!(S.stokvels||[]).length){el.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;display:flex;justify-content:center;opacity:.6"><svg width="36" height="36" viewBox="0 0 16 16" fill="none"><use href="#ki-users"/></svg></div><div class="empty-t">No stokvels yet</div><div class="empty-s">Track your stokvel group contributions, payouts and member balances in one place</div><button class="btn btn-gold" onclick="openAddStokvel&&openAddStokvel()" style="margin-top:14px">+ Add Stokvel</button></div>';return;}
+  const icons={grocery:'ki-cart',burial:'ki-tombstone',investment:'ki-chart-up',holiday:'ki-plane',education:'ki-cat-book'};
+  const _skIcon=ic=>ic?`<svg width="14" height="14" viewBox="0 0 16 16" fill="none" style="vertical-align:-2px;margin-right:4px"><use href="#${ic}"/></svg>`:'';
+  el.innerHTML=(S.stokvels||[]).map(stk=>`<div class="dc"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><div><div style="font-weight:700;font-size:13px">${_skIcon(icons[stk.type]||'ki-users')}${esc(stk.name)}</div><div style="font-size:10px;color:var(--t3);font-family:var(--fm)">${esc(stk.type||'')} · ${stk.members||'?'} members</div></div><div style="text-align:right"><div style="font-family:var(--fs);font-size:15px;font-style:italic;color:var(--t1)">${fmt(stk.contribution)}/mo</div><button onclick="delStokvel('${stk.id}')" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:11px">Remove</button></div></div>${stk.payoutMonth?`<div style="font-size:10px;color:var(--green);font-family:var(--fm)">Payout: ${stk.payoutMonth} · Position #${stk.position||'?'}</div>`:''}<div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px"><div><div style="font-size:10px;color:var(--t3);margin-bottom:1px">Pot balance</div><div style="font-family:var(--fs);font-size:13px;font-weight:700;color:var(--green)">${fmt(stk.pot||0)}</div>${stk.contribution>0?`<div style="font-size:10px;color:var(--t3);margin-top:2px">Annual: ${fmt(stk.contribution*12)}</div>`:''}</div><div style="display:flex;gap:6px"><button class="btn btn-ghost btn-sm" onclick="stokvelContrib('${stk.id}')">Contribute</button><button class="btn btn-ghost btn-sm" onclick="stokvelPayout('${stk.id}')" ${!(stk.pot>0)?'disabled style="opacity:0.4"':''}>Payout</button></div></div>
 <div style="margin-top:10px;border-top:var(--bw) solid var(--b1);padding-top:10px">
   <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t4);margin-bottom:5px">Members (${(stk.memberNames||[]).length||stk.members||0})</div>
   <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px">${(stk.memberNames||[]).map(n=>`<span style="display:inline-flex;align-items:center;gap:3px;background:var(--s3);border:1px solid var(--b2);border-radius:12px;padding:2px 8px;font-size:11px">${esc(n)}<button onclick="removeStokvelMember('${stk.id}','${encodeURIComponent(n)}')" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:13px;padding:0 0 0 2px;line-height:1">&times;</button></span>`).join('')||'<span style="font-size:11px;color:var(--t4)">No names added yet</span>'}</div>
@@ -12990,11 +12997,11 @@ const HOUSING=[
   {name:'NHFC Social Housing',amount:'Subsidised rent',desc:'Income R1,500–R22,000/mo · Urban areas'},
 ];
 const SMME=[
-  {name:'SEDA Business Support',icon:'🏢',desc:'Free mentoring, training, business plans · seda.org.za'},
-  {name:'IDC Funding',icon:'💼',desc:'R1M–R1B loans for SA manufacturers · idc.co.za'},
-  {name:'NEF Youth Fund',icon:'👨‍💼',desc:'R250k–R75M for black entrepreneurs · nefcorp.co.za'},
-  {name:'NYDA Grant',icon:'🌱',desc:'Up to R1,000 grant for youth 18-35 · nyda.gov.za'},
-  {name:'DSBD SMME Fund',icon:'📊',desc:'Working capital and asset finance · dsbd.gov.za'},
+  {name:'SEDA Business Support',icon:'ki-cat-building',desc:'Free mentoring, training, business plans · seda.org.za'},
+  {name:'IDC Funding',icon:'ki-briefcase',desc:'R1M–R1B loans for SA manufacturers · idc.co.za'},
+  {name:'NEF Youth Fund',icon:'ki-users',desc:'R250k–R75M for black entrepreneurs · nefcorp.co.za'},
+  {name:'NYDA Grant',icon:'ki-cat-leaf',desc:'Up to R1,000 grant for youth 18-35 · nyda.gov.za'},
+  {name:'DSBD SMME Fund',icon:'ki-bar-chart-2',desc:'Working capital and asset finance · dsbd.gov.za'},
 ];
 let _grantsDefaultHTML=null;
 function rGrants(){
@@ -13016,9 +13023,9 @@ function rGrants(){
   const sEl=document.getElementById('sassa-list');
   if(sEl){sEl.innerHTML=SASSA_GRANTS.map(g=>`<div class="li"><div class="lic" style="background:var(--green-d);color:var(--green);font-weight:700;font-size:11px">R</div><div class="lii"><div class="lin">${g.name}</div><div class="lis">${g.desc}</div></div><div class="lia">${fmt(g.amount)}</div></div>`).join('');}
   const hEl=document.getElementById('housing-list');
-  if(hEl){hEl.innerHTML=HOUSING.map(h=>`<div class="li"><div class="lic" style="background:var(--blue-d);color:var(--blue)">🏠</div><div class="lii"><div class="lin">${h.name}</div><div class="lis">${h.desc}</div></div><div style="font-size:10px;color:var(--green);font-family:var(--fm);text-align:right;white-space:nowrap">${h.amount}</div></div>`).join('');}
+  if(hEl){hEl.innerHTML=HOUSING.map(h=>`<div class="li"><div class="lic" style="background:var(--blue-d);color:var(--blue)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><use href="#ki-home2"/></svg></div><div class="lii"><div class="lin">${h.name}</div><div class="lis">${h.desc}</div></div><div style="font-size:10px;color:var(--green);font-family:var(--fm);text-align:right;white-space:nowrap">${h.amount}</div></div>`).join('');}
   const smEl=document.getElementById('smme-list');
-  if(smEl){smEl.innerHTML=SMME.map(s=>`<div class="li"><div class="lic" style="background:var(--purple)18;color:var(--purple)">${s.icon}</div><div class="lii"><div class="lin">${s.name}</div><div class="lis">${s.desc}</div></div></div>`).join('');}
+  if(smEl){smEl.innerHTML=SMME.map(s=>`<div class="li"><div class="lic" style="background:var(--purple)18;color:var(--purple)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><use href="#${s.icon}"/></svg></div><div class="lii"><div class="lin">${s.name}</div><div class="lis">${s.desc}</div></div></div>`).join('');}
 }
 
 /* ═══ SETTINGS & PREFS ═══ */
@@ -13519,7 +13526,7 @@ function rPetrolTracker(){
   if(pfWrap)pfWrap.style.display=detFills.length?'block':'none';
   if(pfCnt)pfCnt.textContent=detFills.length?`(${detFills.length} found)`:'';
   if(pfList)pfList.innerHTML=detFills.map(f=>`<div class="li" style="margin-bottom:8px">
-    <div class="lic" style="background:var(--amber)18;color:var(--amber)">⛽</div>
+    <div class="lic" style="background:var(--amber)18;color:var(--amber)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><use href="#ki-cat-fuel"/></svg></div>
     <div class="lii"><div class="lin">${esc(f.description).slice(0,40)}</div><div class="lis">${f.date} · ${fmt(f.amount)} · est. ${f.estLitres}L @ ${fmt(f.estPrice)}/L</div></div>
     <div style="display:flex;gap:6px;align-items:center">
       <button class="btn btn-ok btn-xs" onclick="importDetectedPetrolFill('${f.txnId}')">+ Log</button>
@@ -13539,7 +13546,7 @@ function rPetrolTracker(){
   let cpkm='';
   if(withOdo.length>=2){const km=withOdo[withOdo.length-1].odo-withOdo[0].odo;const spent=withOdo.slice(1).reduce((s,f)=>s+f.total,0);if(km>0)cpkm=fmt(spent/km)+'/km';}
   if(resEl)resEl.innerHTML=`<div class="calc-result"><div class="sr"><span class="lbl">Total spent</span><span class="val neg">${fmt(totalSpent)}</span></div><div class="sr"><span class="lbl">Avg price/litre</span><span class="val">${fmt(avgPrice)}</span></div>${cpkm?`<div class="sr"><span class="lbl">Cost per km</span><span class="val">${cpkm}</span></div>`:''}<div class="sr"><span class="lbl">Fill-ups logged</span><span class="val">${fills.length}</span></div></div>`;
-  if(histEl)histEl.innerHTML=fills.slice().reverse().slice(0,8).map(f=>`<div class="li" style="padding:8px 0"><div class="lii"><div class="lin" style="font-size:12px">⛽ ${f.litres}L @ ${fmt(f.price)}/L</div><div class="lis">${f.date}${f.odo?' · '+f.odo.toLocaleString()+'km':''}</div></div><div style="font-family:var(--fm);font-size:12px;color:var(--red);font-weight:600">${fmt(f.total)}</div><button onclick="delPetrolFill('${f.id}')" aria-label="Delete fuel fill-up: ${f.litres}L, ${f.date}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px">&times;</button></div>`).join('');
+  if(histEl)histEl.innerHTML=fills.slice().reverse().slice(0,8).map(f=>`<div class="li" style="padding:8px 0"><div class="lii"><div class="lin" style="font-size:12px">${f.litres}L @ ${fmt(f.price)}/L</div><div class="lis">${f.date}${f.odo?' · '+f.odo.toLocaleString()+'km':''}</div></div><div style="font-family:var(--fm);font-size:12px;color:var(--red);font-weight:600">${fmt(f.total)}</div><button onclick="delPetrolFill('${f.id}')" aria-label="Delete fuel fill-up: ${f.litres}L, ${f.date}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px">&times;</button></div>`).join('');
 }
 const delPetrolFill=id=>{S.petrolFills=(S.petrolFills||[]).filter(f=>f.id!==id);save();rPetrolTracker();};
 
@@ -14072,10 +14079,10 @@ function rVehicleCosts(){
   const fillTotal=fills.reduce((s,f)=>s+f.total,0);
   const totalVehicle=petrol+fillTotal+insurance+carRepay+carService+toll;
   if(!totalVehicle){el.innerHTML='<div class="empty" style="padding:12px"><div class="empty-s">No vehicle expenses this month</div></div>';return;}
-  const rows=[['⛽ Petrol/Fuel',petrol+fillTotal],['🛡 Insurance',insurance],['🚗 Car Repayment',carRepay],['🔧 Service/Maintenance',carService],['🛣 Tolls/Parking',toll]].filter(r=>r[1]>0);
+  const rows=[['ki-cat-fuel','Petrol/Fuel',petrol+fillTotal],['ki-shield','Insurance',insurance],['ki-car','Car Repayment',carRepay],['ki-cat-wrench','Service/Maintenance',carService],['ki-road','Tolls/Parking',toll]].filter(r=>r[2]>0);
   el.innerHTML=`<div style="font-size:10px;font-weight:700;color:var(--t3);margin-bottom:8px;letter-spacing:1px">TOTAL VEHICLE COST THIS MONTH</div>
     <div style="font-family:var(--fs);font-size:28px;font-weight:700;color:var(--red);margin-bottom:12px">${fmt(totalVehicle)}</div>
-    ${rows.map(([l,v])=>`<div class="sr"><span class="lbl">${l}</span><span class="val neg">${fmt(v)}</span></div>`).join('')}
+    ${rows.map(([ic,l,v])=>`<div class="sr"><span class="lbl" style="display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><use href="#${ic}"/></svg>${l}</span><span class="val neg">${fmt(v)}</span></div>`).join('')}
     <div style="font-size:10px;color:var(--t3);margin-top:8px">Annual projection: ${fmt(totalVehicle*12)}</div>`;
 }
 
@@ -14586,7 +14593,7 @@ function rVehicleCostsPage(){
   const h=document.getElementById('pt-history-vehicle');
   const s=document.getElementById('pt-summary-vehicle');
   const _isUKvc=(S.prefs?.region||'za')==='uk';
-  if(h){const fills=(S.petrolFills||[]);if(!fills.length){h.innerHTML=`<div class="empty" style="padding:12px"><div class="empty-s">${_isUKvc?'Log fuel fill-ups using the Petrol Tracker in the Tools section':'Log petrol fill-ups on the SA Tools page'}</div></div>`;}else{h.innerHTML=fills.slice().reverse().slice(0,6).map(f=>`<div class="li" style="padding:7px 0"><div class="lii"><div class="lin" style="font-size:12px">⛽ ${f.litres}L @ ${fmt(f.price)}/L</div><div class="lis">${f.date}</div></div><div style="font-family:var(--fm);font-size:12px;color:var(--red)">${fmt(f.total)}</div></div>`).join('');}}
+  if(h){const fills=(S.petrolFills||[]);if(!fills.length){h.innerHTML=`<div class="empty" style="padding:12px"><div class="empty-s">${_isUKvc?'Log fuel fill-ups using the Petrol Tracker in the Tools section':'Log petrol fill-ups on the SA Tools page'}</div></div>`;}else{h.innerHTML=fills.slice().reverse().slice(0,6).map(f=>`<div class="li" style="padding:7px 0"><div class="lii"><div class="lin" style="font-size:12px">${f.litres}L @ ${fmt(f.price)}/L</div><div class="lis">${f.date}</div></div><div style="font-family:var(--fm);font-size:12px;color:var(--red)">${fmt(f.total)}</div></div>`).join('');}}
   rVehicleCosts();
 }
 
