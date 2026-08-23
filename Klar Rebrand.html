@@ -587,7 +587,7 @@ body[data-density="compact"] .card{padding:18px}
 .psub{font-size:12px;color:var(--t3);margin-top:6px;font-weight:500;letter-spacing:0.3px}
 .pa{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
-.banner{background:var(--s1);border:var(--bw) solid var(--b1);border-radius:var(--r);padding:28px 32px;margin-bottom:24px;position:relative;overflow:hidden}
+.banner{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--bw) solid var(--glass-border);border-radius:var(--r);box-shadow:var(--glass-shadow-combo);padding:28px 32px;margin-bottom:24px;position:relative;overflow:hidden}
 
 /* ═══ DASHBOARD — mode toggle + narrative hero + KPI strip ═══ */
 .d-modetog{
@@ -1050,7 +1050,7 @@ tbody tr:hover td{background:var(--s2)}
 .sr:last-child{border-bottom:none}
 .sr .lbl{color:var(--t2);font-weight:500}.sr .val{font-size:12px;font-weight:700}
 
-.dc{background:var(--s2);border:var(--bw) solid var(--b1);border-radius:var(--r);padding:16px 18px;margin-bottom:9px}
+.dc{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--bw) solid var(--glass-border);border-radius:var(--r);box-shadow:var(--glass-shadow-combo);padding:16px 18px;margin-bottom:9px}
 
 .cg{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
 .cd{min-height:64px;border-radius:var(--rxs);padding:6px;background:var(--s2);border:var(--bw) solid var(--b1);transition:border-color var(--dur)}
@@ -1066,7 +1066,7 @@ tbody tr:hover td{background:var(--s2)}
 .zen-overlay{display:none;position:fixed;inset:0;background:var(--bg);z-index:300;align-items:center;justify-content:center;flex-direction:column}
 .zen-overlay.active{display:flex}
 
-.inv-card{background:var(--s2);border:var(--bw) solid var(--b2);border-radius:var(--r);padding:18px;transition:all var(--dur)}
+.inv-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--bw) solid var(--glass-border);border-radius:var(--r);box-shadow:var(--glass-shadow-combo);padding:18px;transition:all var(--dur)}
 .inv-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
 .risk-badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
 .risk-low{background:var(--green-d);color:var(--green);border:var(--bw) solid rgba(78,203,133,.2)}
@@ -1095,7 +1095,7 @@ tbody tr:hover td{background:var(--s2)}
 
 /* ── TRANSFER DETECTION BANNER ── */
 .transfer-detect-wrap{margin-bottom:16px}
-.transfer-card{background:var(--s1);border:var(--bw) solid var(--blue);border-left:3px solid var(--blue);border-radius:var(--r);padding:16px 18px;margin-bottom:9px;animation:pgIn .3s var(--ease)}
+.transfer-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--bw) solid var(--blue);border-left:3px solid var(--blue);border-radius:var(--r);padding:16px 18px;margin-bottom:9px;animation:pgIn .3s var(--ease)}
 .transfer-card .tc-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px}
 .transfer-card .tc-tag{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue)}
 .transfer-card .tc-pair{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
@@ -1106,12 +1106,12 @@ tbody tr:hover td{background:var(--s2)}
 .acc-chip{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:var(--s2);color:var(--t2)}
 
 /* ── ACCOUNT CARD ── */
-.acc-card{background:var(--s1);border:var(--bw) solid var(--b1);border-radius:var(--r);padding:20px;position:relative;overflow:hidden;transition:all var(--dur)}
-.acc-card:hover{border-color:var(--b2);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+.acc-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--bw) solid var(--glass-border);border-radius:var(--r);box-shadow:var(--glass-shadow-combo);padding:20px;position:relative;overflow:hidden;transition:all var(--dur)}
+.acc-card:hover{border-color:var(--b2);transform:translateY(-2px)}
 .acc-card-stripe{position:absolute;top:0;left:0;right:0;height:3px}
 
 /* ── RECONCILE ── */
-.recon-card{background:var(--s2);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.recon-card{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--bw) solid var(--glass-border);border-radius:var(--r);box-shadow:var(--glass-shadow-combo);padding:16px;margin-bottom:12px}
 .recon-status{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700}
 .recon-ok{background:var(--green-d);color:var(--green)}
 .recon-diff{background:var(--amber-d);color:var(--amber)}
