@@ -6,7 +6,7 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(self)"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://assets.lemonsqueezy.com https://cdn.jsdelivr.net https://static.cloudflareinsights.com https://cdnjs.cloudflare.com; connect-src 'self' https://*.supabase.co https://api.groq.com https://*.lemonsqueezy.com https://app.posthog.com https://*.crisp.chat https://api.saltedge.com https://api.frankfurter.app https://api.frankfurter.dev; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src https://*.lemonsqueezy.com; frame-ancestors 'none'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://assets.lemonsqueezy.com https://cdn.jsdelivr.net https://static.cloudflareinsights.com https://cdnjs.cloudflare.com; connect-src 'self' https://*.supabase.co https://api.groq.com https://*.lemonsqueezy.com https://app.posthog.com https://*.crisp.chat https://api.saltedge.com https://api.frankfurter.app https://api.frankfurter.dev https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src https://*.lemonsqueezy.com; frame-ancestors 'none'"
 
 # Always revalidate HTML files, but allow conditional GETs (304s) instead of forcing a full
 # re-download every load — no-store previously blocked even ETag-based revalidation, which
