@@ -956,6 +956,11 @@ body[data-density="compact"] .card{padding:18px}
 .btn-sm{padding:6px 13px;font-size:11px}.btn-xs{padding:3px 9px;font-size:10px}
 
 input,select,textarea{background:var(--s2);border:var(--bw) solid var(--b2);border-radius:var(--rsm);color:var(--t1);font-family:var(--ff);font-size:13px;font-weight:500;padding:10px 14px;outline:none;transition:border var(--dur),box-shadow var(--dur);width:100%}
+/* Checkboxes/radios must never inherit the width:100% above — a bare
+   <input type="checkbox"> in a flex row (e.g. the onboarding consent
+   checkbox) would otherwise stretch to fill the entire row, squeezing its
+   label text into a near-zero-width column that wraps one word per line. */
+input[type=checkbox],input[type=radio]{width:auto;flex:none}
 input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-d)}
 input::placeholder{color:var(--t4)}
 select option{background:var(--s2)}
