@@ -1,0 +1,32 @@
+# Files that must NOT be publicly servable from the deployed site, even
+# though they live in this repo's root (which is the assets directory per
+# wrangler.jsonc). Netlify's publish="." never excluded any of these, so
+# they've been publicly fetchable at klarmoney.netlify.app the whole time —
+# fixed here going forward for the Cloudflare deploy.
+
+# Internal business/strategy docs — never public
+klar-beta-findings.md
+klar-competitive-brief.md
+klar-error-handling-review.md
+klar-financial-model.html
+klar-pitch-materials.md
+klar-review-accounts-budget-tax.md
+klar-review-properties-holdings-networth.md
+klar-review-subs-split-insurance-ai.md
+klar-sa-funding-landscape.md
+klar-sa-seed-application-draft.md
+
+# One-off dev utility, not linked from the live app
+generate-assets.html
+
+# Supabase Edge Function source — deployed separately via Supabase, not
+# meant to be served as static files here
+functions/
+
+# Config files — not meant to be served as literal downloadable files
+# (_headers/_redirects exclusion is Cloudflare's own recommended practice)
+netlify.toml
+wrangler.jsonc
+_headers
+_redirects
+.gitignore

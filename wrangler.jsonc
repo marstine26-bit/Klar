@@ -1,0 +1,14 @@
+{
+  // Cloudflare Workers "static assets" config — the current recommended way to
+  // host a pure static site (Cloudflare has folded classic Pages' Git-import
+  // flow into this). No "main" entry point on purpose: its absence is what
+  // tells Cloudflare this is assets-only, so every request is served straight
+  // from the edge with no Worker invocation, no cold start, no CPU billing.
+  // _headers and _redirects at the repo root are picked up natively from this
+  // same directory, same as they would be under classic Pages.
+  "name": "klar",
+  "compatibility_date": "2026-08-23",
+  "assets": {
+    "directory": "."
+  }
+}
