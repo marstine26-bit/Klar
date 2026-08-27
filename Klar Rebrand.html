@@ -16280,8 +16280,12 @@ document.addEventListener('click', function(e){
     if (typeof _sb === 'undefined' || !_sb || !_sbUser) {
       notify('Sign in to cloud sync first — use the ☁ button in the top bar', 'err'); return;
     }
+    const _hasPaidPlan = (S.prefs.tier||'free') !== 'free';
+    const _delMsg = 'This permanently deletes your Klar account — your cloud data AND your login itself. This cannot be undone; there is no recovery. Your local data on this device is not affected.'
+      + (_hasPaidPlan ? ' IMPORTANT: this does NOT cancel your subscription. Deleting your account does not stop billing — cancel first at Settings → Manage Subscription & Billing (or app.lemonsqueezy.com/my-orders), or you will keep being charged with no way to sign back in.' : '')
+      + ' Continue?';
     klConfirm(
-      'This permanently deletes your Klar account — your cloud data AND your login itself. This cannot be undone; there is no recovery. Your local data on this device is not affected. Continue?',
+      _delMsg,
       async function(){
         try {
           const { data: { session } } = await _sb.auth.getSession();

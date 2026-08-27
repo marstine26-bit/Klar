@@ -269,7 +269,7 @@
     </div>
     <div class="flag-row">
       <span class="flag-icon">🤖</span>
-      <span><strong>AI Advisor (optional — opt-in):</strong> When you send a message to the AI Advisor, a <em>financial summary only</em> (average monthly income, average monthly expenses, account count, debt count, region) is sent to Groq Inc's API. Raw transactions, descriptions, names, and account numbers are <em>never</em> transmitted to Groq.</span>
+      <span><strong>AI Advisor (optional — opt-in):</strong> When you chat with the AI Advisor, a <em>financial summary only</em> (average monthly income, average monthly expenses, account count, debt count, region) is sent to Groq Inc's API — never raw transaction data. Two specific features work differently: "Explain transaction" sends that one transaction's description and amount to Groq so it can explain it, and the month-end checklist sends your upcoming bill names and amounts to generate a checklist. Both are actions you trigger yourself. Account numbers are never transmitted to Groq under any feature.</span>
     </div>
     <div class="flag-row">
       <span class="flag-icon">🤖</span>
@@ -289,7 +289,7 @@
     </div>
     <div class="flag-row">
       <span class="flag-icon">📊</span>
-      <span><strong>Analytics (optional):</strong> We use PostHog (EU-hosted) to collect anonymised usage events (page views, feature use, plan selected). No financial data is included. You can opt out by blocking analytics in your browser or ad-blocker.</span>
+      <span><strong>Analytics (optional):</strong> We use PostHog (EU-hosted) to collect usage events (page views, feature use, plan selected). No financial data is included. Before you sign in, events are anonymous; once you sign in for cloud sync, events are linked to your account (email and user ID) so we can improve the product and support you. You can opt out by blocking analytics in your browser or ad-blocker.</span>
     </div>
   </div>
 
@@ -301,15 +301,15 @@
       </thead>
       <tbody>
         <tr><td><strong>Supabase</strong></td><td>Cloud backup &amp; auth</td><td>Encrypted app data, email</td><td>EU / USA</td><td>Only if signed in</td></tr>
-        <tr><td><strong>Groq</strong></td><td>AI Advisor responses</td><td>Financial summary only</td><td>USA</td><td>Only when you query AI</td></tr>
+        <tr><td><strong>Groq</strong></td><td>AI Advisor responses</td><td>Financial summary; transaction/bill details for "Explain transaction" &amp; the month-end checklist</td><td>USA</td><td>Only when you query AI</td></tr>
         <tr><td><strong>Lemon Squeezy</strong></td><td>Subscription billing</td><td>Email, payment details</td><td>Global</td><td>Only when subscribing</td></tr>
         <tr><td><strong>Saltedge</strong></td><td>UK bank feeds</td><td>OAuth token, account list</td><td>EU</td><td>Only if bank feed connected</td></tr>
         <tr><td><strong>Frankfurter</strong></td><td>Live FX rates</td><td>Currency pair (no personal data)</td><td>EU</td><td>When FX conversion active</td></tr>
         <tr><td><strong>Crisp</strong></td><td>Support chat</td><td>Chat messages, email (optional)</td><td>EU</td><td>When chat opened</td></tr>
-        <tr><td><strong>PostHog EU</strong></td><td>Product analytics</td><td>Anonymised events, region, plan tier</td><td>EU</td><td>Always (anonymised)</td></tr>
+        <tr><td><strong>PostHog EU</strong></td><td>Product analytics</td><td>Usage events, region, plan tier — plus email &amp; user ID once signed in</td><td>EU</td><td>Always; anonymous until sign-in</td></tr>
       </tbody>
     </table>
-    <p>All third-party services operate under their own privacy policies and are bound by applicable data-protection law. None are active unless you use the specific feature (except PostHog, which is anonymised).</p>
+    <p>All third-party services operate under their own privacy policies and are bound by applicable data-protection law. None are active unless you use the specific feature, except PostHog, which runs by default (anonymously before sign-in, linked to your account afterward).</p>
   </div>
 
   <div class="section" id="s5">
@@ -384,7 +384,7 @@
       <li><strong>Cloud data</strong> (Supabase) persists until you delete your account or use Settings → Privacy → Delete cloud data.</li>
       <li><strong>AI query context</strong> is not retained by Groq beyond the API response cycle (per Groq's privacy policy).</li>
       <li><strong>Support chat</strong> transcripts are retained by Crisp subject to their data retention policy.</li>
-      <li><strong>Analytics events</strong> are retained by PostHog for up to 12 months in anonymised form.</li>
+      <li><strong>Analytics events</strong> are retained by PostHog for up to 12 months — anonymised for pre-sign-in usage, linked to your account (email, user ID) for events recorded while signed in.</li>
     </ul>
   </div>
 
@@ -393,7 +393,7 @@
     <ul>
       <li><strong>Local data:</strong> stored in browser localStorage, accessible only to the origin serving the app. We recommend using the app PIN lock (Settings → App Lock) if you share a device.</li>
       <li><strong>Cloud data:</strong> transmitted via TLS 1.2+; stored with Supabase's encryption-at-rest (AES-256). Row Level Security ensures only you can read your data.</li>
-      <li><strong>AI data:</strong> transmitted via TLS to Groq's API; only a minimal financial summary is sent — no raw transaction data.</li>
+      <li><strong>AI data:</strong> transmitted via TLS to Groq's API. General AI Advisor chat sends a financial summary only. "Explain transaction" and the month-end checklist additionally send the specific transaction description or bill name/amount you're asking about.</li>
       <li><strong>Payments:</strong> all card data for subscriptions is handled by Lemon Squeezy's PCI-DSS-compliant infrastructure. We never see your card details. Bill Hub has no payment processor at all — it never collects card data in the first place.</li>
     </ul>
     <div class="callout amber">
@@ -406,7 +406,7 @@
     <p>If you use optional features, your data may be transferred to servers outside your country of residence:</p>
     <ul>
       <li><strong>Supabase</strong> — EU-hosted by default; may also use USA infrastructure. Supabase maintains GDPR Standard Contractual Clauses (SCCs) and is certified under the EU-US Data Privacy Framework.</li>
-      <li><strong>Groq</strong> — USA. By enabling the AI Advisor, you consent to the transfer of a financial summary to Groq's USA servers.</li>
+      <li><strong>Groq</strong> — USA. By enabling the AI Advisor, you consent to the transfer of a financial summary — and, for "Explain transaction" and the month-end checklist, the specific transaction or bill details involved — to Groq's USA servers.</li>
       <li><strong>Lemon Squeezy</strong> — Global. Lemon Squeezy is GDPR-compliant and maintains SCCs for cross-border transfers.</li>
     </ul>
     <p>By enabling these optional features, you consent to the associated cross-border transfers described above.</p>
@@ -436,7 +436,7 @@
     <ul>
       <li><strong>localStorage</strong> — Your financial data, preferences, and app state are stored in your browser's localStorage on your device only. This is not a cookie and is not transmitted to any server by default. You can clear it at any time via Settings → Data Management → Reset all data.</li>
       <li><strong>sessionStorage</strong> — Temporary session data (e.g. draft form values) may be stored for the duration of your browser session and cleared when you close the tab.</li>
-      <li><strong>Analytics (optional)</strong> — If analytics is active, we use PostHog in cookieless, memory-only mode (no persistent cookie, no cross-site tracking, PECR compliant). No personal data is included in analytics events.</li>
+      <li><strong>Analytics (optional)</strong> — If analytics is active, we use PostHog in cookieless, memory-only mode (no persistent cookie, no cross-site tracking, PECR compliant). Events are anonymous until you sign in for cloud sync, after which they're linked to your account (email, user ID) for support and product-improvement purposes.</li>
       <li><strong>Supabase auth (optional)</strong> — If you sign in for cloud sync, your authentication token is stored in localStorage to keep you signed in. You can sign out at any time.</li>
     </ul>
     <p>No third-party advertising networks, social media trackers, or behavioural profiling cookies are used on this site.</p>
