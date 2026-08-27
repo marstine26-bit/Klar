@@ -21,6 +21,10 @@ klar-open-banking-compliance-roadmap.md
 klar-unit-economics-check.md
 klar-moneyhub-acquisition-campaign.md
 klar-analytics-instrumentation-audit.md
+klar-security-review.md
+klar-legal-docs-review.md
+klar-support-readiness-and-faq.md
+klar-accessibility-audit.md
 
 # One-off dev utility, not linked from the live app
 generate-assets.html
