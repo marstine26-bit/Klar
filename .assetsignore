@@ -25,6 +25,7 @@ klar-security-review.md
 klar-legal-docs-review.md
 klar-support-readiness-and-faq.md
 klar-accessibility-audit.md
+klar-pnl-cashflow-management-accounts.md
 
 # One-off dev utility, not linked from the live app
 generate-assets.html
