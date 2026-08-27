@@ -9195,6 +9195,7 @@ function saveTxn(){
   const debtId=document.getElementById('txn-debt-link')?.value||'';
   const tagsRaw=document.getElementById('txn-tags')?.value||'';
   const tags=tagsRaw.split(',').map(t=>t.trim().replace(/^#/,'')).filter(Boolean);
+  const isFirstTxn=S.transactions.length===0;
   const isRecurring=document.getElementById('txn-recurring')?.checked||false;
   const recurFreq=document.getElementById('txn-recur-freq')?.value||'monthly';
   // Check for splits
@@ -9229,6 +9230,7 @@ function saveTxn(){
   // Update debt original baseline if linking
   if(debtId){const debt=S.debts.find(x=>x.id===debtId);if(debt&&debt.originalBalance===undefined)debt.originalBalance=debt.balance;}
   syncConnectedData();
+  klTrack('transaction_added',{isFirstTxn,type});
   save();closeModal('m-add-txn');renderAll();notify('Transaction added','ok');
 }
 
@@ -9558,7 +9560,7 @@ function openAddSub(){
   if(nameInp)nameInp.placeholder=(S.prefs?.region||'za')==='uk'?'e.g. Netflix, Spotify, Sky, Apple TV+':'e.g. Netflix, Spotify, DSTV';
   document.getElementById('m-add-sub').classList.add('open');
 }
-function saveSub(){const name=document.getElementById('s-name').value.trim();const amount=parseFloat(document.getElementById('s-amt').value);const cycle=document.getElementById('s-cyc').value;const nextDt=document.getElementById('s-dt').value;const icon=document.getElementById('s-ic').value||'📱';if(!name){notify('Name is required','err');return;}if(isNaN(amount)||amount<=0){notify('Amount must be greater than zero','err');return;}if(!nextDt||!/^\d{4}-\d{2}-\d{2}$/.test(nextDt)){notify('Enter a valid next billing date','err');return;}if(!S._dismissedSubs)S._dismissedSubs=[];S._dismissedSubs.push(normaliseSubDesc(name));if(!Array.isArray(S.subscriptions))S.subscriptions=[];S.subscriptions.push({id:uid(),name,amount,cycle,nextDt,icon,active:true});save();closeModal('m-add-sub');renderAll();notify('Subscription added','ok');}
+function saveSub(){const name=document.getElementById('s-name').value.trim();const amount=parseFloat(document.getElementById('s-amt').value);const cycle=document.getElementById('s-cyc').value;const nextDt=document.getElementById('s-dt').value;const icon=document.getElementById('s-ic').value||'📱';if(!name){notify('Name is required','err');return;}if(isNaN(amount)||amount<=0){notify('Amount must be greater than zero','err');return;}if(!nextDt||!/^\d{4}-\d{2}-\d{2}$/.test(nextDt)){notify('Enter a valid next billing date','err');return;}if(!S._dismissedSubs)S._dismissedSubs=[];S._dismissedSubs.push(normaliseSubDesc(name));if(!Array.isArray(S.subscriptions))S.subscriptions=[];S.subscriptions.push({id:uid(),name,amount,cycle,nextDt,icon,active:true});klTrack('subscription_tracked');save();closeModal('m-add-sub');renderAll();notify('Subscription added','ok');}
 const delSub=id=>{const sub=(S.subscriptions||[]).find(s=>s.id===id);const nm=sub?sub.name:'this subscription';klConfirm('Remove '+nm+'?',()=>{S.subscriptions=S.subscriptions.filter(s=>s.id!==id);save();renderAll();notify('Subscription removed');},{okLabel:'Remove',okClass:'btn-red'});};
 
 function toggleRollover(){
@@ -10356,7 +10358,7 @@ function rSavings(){
 }
 function swSavTab(type,el){document.querySelectorAll('#pg-savings .tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');const scEl=document.getElementById('sav-strat');if(!scEl)return;scEl.dataset.set='1';const maps={'502030':'<div style="font-size:12.5px;color:var(--t2);line-height:2"><strong style="color:var(--t1)">50% Needs</strong> — rent, food, utilities<br><strong style="color:var(--t1)">30% Wants</strong> — entertainment, dining<br><strong style="color:var(--t1)">20% Savings</strong> — investments, debt repayment</div>',payfirst:'<div style="font-size:12.5px;color:var(--t2);line-height:2"><strong style="color:var(--t1)">Pay Yourself First</strong><br><br>Automate a savings transfer the moment you are paid — before any bills. Start at 10%, grow to 20%+.</div>',sinking:'<div style="font-size:12.5px;color:var(--t2);line-height:2"><strong style="color:var(--t1)">Sinking Funds</strong><br><br>Save small monthly amounts for large annual expenses: car service, holiday, insurance. Prevents budget shock.</div>'};scEl.innerHTML=maps[type]||'';}
 function openAddGoal(){document.getElementById('m-add-goal').classList.add('open');}
-function saveGoal(){const name=document.getElementById('g-name').value.trim();const target=parseFloat(document.getElementById('g-tgt').value);const saved=Math.max(parseFloat(document.getElementById('g-sav').value)||0,0);const monthly=parseFloat(document.getElementById('g-mo').value)||0;const targetDt=document.getElementById('g-dt').value;const icon=document.getElementById('g-ic').value||'🎯';if(!name||isNaN(target)||target<=0){notify('Fill goal name & target','err');return;}if(targetDt&&new Date(targetDt)<new Date(new Date().toDateString()))notify('Target date is in the past — goal will show as behind schedule','warn');S.goals.push({id:uid(),name,target,saved,monthly,targetDt,icon,originalSaved:saved});save();closeModal('m-add-goal');renderAll();notify('Goal created','ok');}
+function saveGoal(){const name=document.getElementById('g-name').value.trim();const target=parseFloat(document.getElementById('g-tgt').value);const saved=Math.max(parseFloat(document.getElementById('g-sav').value)||0,0);const monthly=parseFloat(document.getElementById('g-mo').value)||0;const targetDt=document.getElementById('g-dt').value;const icon=document.getElementById('g-ic').value||'🎯';if(!name||isNaN(target)||target<=0){notify('Fill goal name & target','err');return;}if(targetDt&&new Date(targetDt)<new Date(new Date().toDateString()))notify('Target date is in the past — goal will show as behind schedule','warn');S.goals.push({id:uid(),name,target,saved,monthly,targetDt,icon,originalSaved:saved});klTrack('goal_created');save();closeModal('m-add-goal');renderAll();notify('Goal created','ok');}
 function addToGoal(id){
   const val=parseFloat(document.getElementById('gadd-'+id)?.value);
   if(isNaN(val)||val<=0)return;
@@ -10587,6 +10589,7 @@ function saveDebt(){
     if(d){Object.assign(d,{name,balance,rate,minPmt,type});save();closeModal('m-add-debt');renderAll();notify('Debt updated','ok');return;}
   }
   S.debts.push({id:uid(),name,balance,rate,minPmt,type});
+  klTrack('debt_added',{type});
   save();closeModal('m-add-debt');renderAll();notify('Debt added','ok');
 }
 const delDebt=id=>{const d=S.debts.find(x=>x.id===id);klConfirm('Remove debt'+(d?' "'+d.name+'"':'')+' permanently?',()=>{S.debts=S.debts.filter(x=>x.id!==id);save();renderAll();},{title:'Remove Debt',danger:true});};
@@ -13916,6 +13919,7 @@ async function sendChat(){
     msgs.innerHTML+=`<div class="chat-ai" style="color:var(--amber)">⚠ No API key set. Go to <strong>Settings → AI Advisor</strong> and paste your Groq API key to enable AI features.</div>`;
     msgs.scrollTop=msgs.scrollHeight;return;
   }
+  klTrack('ai_advisor_used');
   msgs.innerHTML+=`<div class="chat-user">${esc(msg)}</div>`;
   inp.value='';if(btn)btn.disabled=true;
   msgs.scrollTop=msgs.scrollHeight;
@@ -14890,6 +14894,7 @@ let _obStep=1;
 function showOnboarding(){
   const el=document.getElementById('klar-onboard');
   if(!el)return;
+  klTrack('onboarding_started');
   el.style.display='flex';
   el.style.opacity='0';
   requestAnimationFrame(()=>{el.style.transition='opacity .4s';el.style.opacity='1';});
@@ -14898,6 +14903,7 @@ function showOnboarding(){
 
 function _obGoStep(n){
   _obStep=n;
+  klTrack('onboarding_step',{step:n});
   document.querySelectorAll('.ob-step').forEach((el,i)=>{
     el.classList.toggle('ob-active',i+1===n);
   });
@@ -14977,6 +14983,7 @@ function obPrev(){
 }
 
 function obSkip(){
+  klTrack(_obStep>=5?'onboarding_completed':'onboarding_skipped',{step:_obStep,via:'manual'});
   S.prefs.onboardingComplete=true;
   save();
   const el=document.getElementById('klar-onboard');
@@ -14994,6 +15001,7 @@ function obSkip(){
 }
 
 function obImport(){
+  klTrack('onboarding_completed',{step:_obStep,via:'import'});
   S.prefs.onboardingComplete=true;
   save();
   const el=document.getElementById('klar-onboard');
@@ -15272,6 +15280,7 @@ function klTrack(event,props){
 let _sb = null;       // supabase client
 let _sbUser = null;   // current auth user
 let _sbMode = 'signin'; // 'signin' | 'signup'
+let _sbPendingSignup = false; // set true right before the SIGNED_IN event we expect is actually a new signup
 let _sbSyncing = false;
 let _sbLastSync = null;
 
@@ -15285,7 +15294,8 @@ function _initSupabase(){
     _sbUpdateUI();
     if(_sbUser && event === 'SIGNED_IN'){
       sbPullAndMerge();
-      klTrack('signed_in');
+      klTrack(_sbPendingSignup?'signed_up':'signed_in');
+      _sbPendingSignup = false;
       if(typeof posthog!=='undefined'&&posthog.identify) posthog.identify(_sbUser.id, {email:_sbUser.email});
     }
     if(event === 'SIGNED_OUT') klTrack('signed_out');
@@ -15391,6 +15401,7 @@ async function sbSubmit(){
   try {
     let res;
     if(_sbMode === 'signup'){
+      _sbPendingSignup = true;
       res = await _sb.auth.signUp({
         email, password:pass,
         options:{ emailRedirectTo: window.location.href.split('?')[0].split('#')[0] }
@@ -15401,7 +15412,8 @@ async function sbSubmit(){
     if(res.error) throw res.error;
     if(_sbMode === 'signup' && !res.data?.session){
       _sbShowMsg('Account created! You can sign in immediately — no email confirmation needed.','ok');
-      // Auto sign-in after signup
+      // Auto sign-in after signup (_sbPendingSignup is still true from above, so the
+      // SIGNED_IN handler correctly attributes this as signed_up, not signed_in)
       const si = await _sb.auth.signInWithPassword({ email, password:pass });
       if(!si.error){ sbCloseAuth(); notify('Signed in — syncing your data…','ok'); }
     } else {
@@ -16959,6 +16971,7 @@ document.addEventListener('click', function(e){
     try {
       let user;
       if (_klAgMode === 'signup') {
+        _sbPendingSignup = true;
         const { data, error } = await _sb.auth.signUp({ email, password: pass, options: { data: { name } } });
         if (error) throw error;
         if (!data.session) {
@@ -17165,6 +17178,7 @@ document.addEventListener('click', function(e){
   let _klPgBilling = 'monthly';
 
   window.klShowPlanGate = function() {
+    klTrack('paywall_shown');
     _klPgBilling = 'annual';
     document.getElementById('kl-pg-tog').checked = true;
     klPgRenderCards();
