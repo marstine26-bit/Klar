@@ -4,12 +4,14 @@
 # they've been publicly fetchable at klarmoney.netlify.app the whole time —
 # fixed here going forward for the Cloudflare deploy.
 
-# Internal business/strategy docs — never public
+# Internal business/strategy docs — never public.
+# NOTE: klar-financial-model.html, klar-competitive-brief.md, and
+# klar-pitch-materials.md are deliberately NOT in this list — the landing
+# page's "INVESTING IN KLAR" section links straight to all three
+# (klarmoney-landing.html:971-973) for prospective investors. Caught this
+# before shipping the exclusion list, which would have 404'd that section.
 klar-beta-findings.md
-klar-competitive-brief.md
 klar-error-handling-review.md
-klar-financial-model.html
-klar-pitch-materials.md
 klar-review-accounts-budget-tax.md
 klar-review-properties-holdings-networth.md
 klar-review-subs-split-insurance-ai.md
