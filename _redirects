@@ -1,0 +1,9 @@
+# Cloudflare Pages redirects config — same format Netlify uses, ported from
+# netlify.toml's [[redirects]] blocks (not replacing netlify.toml).
+# Note: the target filename has a literal space, which must be URL-encoded
+# here since this plain-text format uses whitespace as the field separator
+# (unlike netlify.toml, where it's just a quoted TOML string).
+
+# Landing page at root — app accessible at /app
+/     /klarmoney-landing.html   200
+/app  /Klar%20Rebrand.html      200
