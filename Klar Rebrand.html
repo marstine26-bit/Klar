@@ -1731,6 +1731,11 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <symbol id="ki-laptop" viewBox="0 0 16 16"><rect x="2.5" y="2.5" width="11" height="7.5" rx="1" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M1 13.5h14l-1.3-2.5h-11.4Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" fill="none"/></symbol>
   <symbol id="ki-palette" viewBox="0 0 16 16"><path d="M8 1.5a6.5 6.5 0 1 0 0 13c.9 0 1.5-.6 1.5-1.4 0-.4-.2-.7-.2-1.1 0-.6.5-1 1.1-1H12a2.5 2.5 0 0 0 2.5-2.5C14.5 4.3 11.6 1.5 8 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" fill="none"/><circle cx="4.7" cy="7.2" r=".9" fill="currentColor"/><circle cx="6.7" cy="4.7" r=".9" fill="currentColor"/><circle cx="9.7" cy="4.7" r=".9" fill="currentColor"/><circle cx="11.3" cy="7.2" r=".9" fill="currentColor"/></symbol>
   <symbol id="ki-code" viewBox="0 0 16 16"><path d="M5.5 4 1.5 8l4 4M10.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="ki-handshake" viewBox="0 0 16 16"><path d="M1.5 8.5 4 6l2.3 2-1.4 1.4a1 1 0 0 0 1.4 1.4L9 8.1 12 11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M4 6 6.8 3.3a1.4 1.4 0 0 1 1.9 0L11 5.6M12 4.5 14.5 7l-3 3-1.4-1.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="ki-mail" viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="10" rx="1.3" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="ki-megaphone" viewBox="0 0 16 16"><path d="M1.5 6.5v3a1 1 0 0 0 1 1H4l6 3V2.5L4 5.5H2.5a1 1 0 0 0-1 1Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" fill="none"/><path d="M6.5 12.3v1.7a1.2 1.2 0 0 1-2.4 0v-3.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="ki-scale" viewBox="0 0 16 16"><path d="M8 1.5v12M4.5 3.5h7M2 13.5h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/><path d="M4.5 3.5 2 8.5h5Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" fill="none"/><path d="M11.5 3.5 9 8.5h5Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" fill="none"/><circle cx="4.5" cy="8.5" r=".5" fill="currentColor"/><circle cx="11.5" cy="8.5" r=".5" fill="currentColor"/></symbol>
+  <symbol id="ki-box" viewBox="0 0 16 16"><path d="M1.5 5 8 1.5 14.5 5 8 8.5 1.5 5Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" fill="none"/><path d="M1.5 5v6.5L8 15l6.5-3.5V5M8 8.5V15" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
   <symbol id="ki-chevron-down" viewBox="0 0 16 16"><path d="M3.5 6 8 10.5 12.5 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
 </svg>
 
@@ -12916,22 +12921,22 @@ function rSavQuickProj() {
 /* ═══ CORPORATE / PERSONAL MODE ═══ */
 const CORP_CATS = {
   income:[
-    {id:'revenue',lbl:'Revenue',icon:'💼'},
-    {id:'consulting',lbl:'Consulting',icon:'🤝'},
-    {id:'grants-income',lbl:'Grants / Subsidies',icon:'🏛'},
-    {id:'other-income',lbl:'Other Income',icon:'📥'},
+    {id:'revenue',lbl:'Revenue',icon:'ki-briefcase'},
+    {id:'consulting',lbl:'Consulting',icon:'ki-handshake'},
+    {id:'grants-income',lbl:'Grants / Subsidies',icon:'ki-landmark'},
+    {id:'other-income',lbl:'Other Income',icon:'ki-mail'},
   ],
   expense:[
-    {id:'salaries',lbl:'Salaries & Wages',icon:'👥'},
-    {id:'rent-corp',lbl:'Rent / Premises',icon:'🏢'},
-    {id:'it-software',lbl:'IT & Software',icon:'💻'},
-    {id:'marketing',lbl:'Marketing',icon:'📣'},
-    {id:'professional',lbl:'Professional Services',icon:'⚖'},
-    {id:'travel-corp',lbl:'Travel & Subsistence',icon:'✈'},
-    {id:'utilities-corp',lbl:'Utilities',icon:'💡'},
-    {id:'cost-of-sales',lbl:'Cost of Sales',icon:'📦'},
-    {id:'insurance-corp',lbl:'Insurance',icon:'🛡'},
-    {id:'bank-charges',lbl:'Bank Charges',icon:'🏦'},
+    {id:'salaries',lbl:'Salaries & Wages',icon:'ki-users'},
+    {id:'rent-corp',lbl:'Rent / Premises',icon:'ki-home2'},
+    {id:'it-software',lbl:'IT & Software',icon:'ki-laptop'},
+    {id:'marketing',lbl:'Marketing',icon:'ki-megaphone'},
+    {id:'professional',lbl:'Professional Services',icon:'ki-scale'},
+    {id:'travel-corp',lbl:'Travel & Subsistence',icon:'ki-plane'},
+    {id:'utilities-corp',lbl:'Utilities',icon:'ki-lightbulb'},
+    {id:'cost-of-sales',lbl:'Cost of Sales',icon:'ki-box'},
+    {id:'insurance-corp',lbl:'Insurance',icon:'ki-shield'},
+    {id:'bank-charges',lbl:'Bank Charges',icon:'ki-bank'},
   ],
 };
 const PERS_LABELS = {income:'Income',expense:'Expenses',savings:'Savings',budget:'Budget',net:'Net',revenue:'Income'};
