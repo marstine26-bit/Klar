@@ -242,12 +242,12 @@
     </div>
     <div class="cover-meta-div"></div>
     <div class="cover-meta-item">
-      <div class="val">22mo</div>
+      <div class="val">24mo</div>
       <div class="lbl">Base Timeline</div>
     </div>
     <div class="cover-meta-div"></div>
     <div class="cover-meta-item">
-      <div class="val">13,900</div>
+      <div class="val">14,503</div>
       <div class="lbl">Paid Users (Base)</div>
     </div>
     <div class="cover-meta-div"></div>
@@ -398,8 +398,8 @@
       <div class="card" style="border-color:rgba(155,127,212,.3)">
         <div class="s-badge base">Base Case</div>
         <div style="font-size:28px;font-weight:800;letter-spacing:-.03em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">£1.0M</div>
-        <div style="font-size:13px;color:var(--t2);margin-top:4px">ARR at Month 22</div>
-        <div style="font-size:12px;color:var(--t3);margin-top:8px">13,900 paid users · £6.00 ARPU · £200K raise at M9</div>
+        <div style="font-size:13px;color:var(--t2);margin-top:4px">ARR at Month 24</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:8px">14,503 paid users · £6.00 ARPU · £200K raise at M9</div>
       </div>
       <div class="card">
         <div class="s-badge optimistic">Optimistic</div>
@@ -803,42 +803,42 @@
         <div class="milestone" style="padding-top:0">
           <div class="milestone-mo">M3</div>
           <div class="milestone-body">
-            <div class="milestone-title">22 paid users · £132 MRR</div>
+            <div class="milestone-title">12 paid users · £72 MRR</div>
             <div class="milestone-sub">Friends, LinkedIn, ProductHunt. Validate willingness to pay.</div>
           </div>
         </div>
         <div class="milestone">
           <div class="milestone-mo">M6</div>
           <div class="milestone-body">
-            <div class="milestone-title">67 paid users · £402 MRR</div>
+            <div class="milestone-title">36 paid users · £216 MRR</div>
             <div class="milestone-sub">First press mention. SEO content published. Begin Seedrs prep.</div>
           </div>
         </div>
         <div class="milestone">
           <div class="milestone-mo">M9</div>
           <div class="milestone-body">
-            <div class="milestone-title">200 paid users · £1,200 MRR · RAISE</div>
+            <div class="milestone-title">142 paid users · £852 MRR · RAISE</div>
             <div class="milestone-sub">£200K raised on Seedrs. Paid acquisition begins. SEIS advance assurance in hand.</div>
           </div>
         </div>
         <div class="milestone">
           <div class="milestone-mo">M12</div>
           <div class="milestone-body">
-            <div class="milestone-title">1,100 paid users · £6,600 MRR</div>
+            <div class="milestone-title">930 paid users · £5,580 MRR</div>
             <div class="milestone-sub">Paid CAC established at £10. Annual plan promotion launched.</div>
           </div>
         </div>
         <div class="milestone">
           <div class="milestone-mo">M18</div>
           <div class="milestone-body">
-            <div class="milestone-title">8,000 paid users · £48,000 MRR</div>
+            <div class="milestone-title">5,482 paid users · £32,892 MRR</div>
             <div class="milestone-sub">Open Banking fully live. Referral programme driving 25% of new users.</div>
           </div>
         </div>
         <div class="milestone">
-          <div class="milestone-mo">M22</div>
+          <div class="milestone-mo">M24</div>
           <div class="milestone-body">
-            <div class="milestone-title">13,900 paid users · £83,400 MRR · £1M ARR</div>
+            <div class="milestone-title">14,503 paid users · £87,018 MRR · £1.04M ARR</div>
             <div class="milestone-sub">Series A raise begins at £8–10M valuation. Team hire: Growth + Support.</div>
           </div>
         </div>
@@ -850,7 +850,7 @@
   <div class="section">
     <div class="section-title">10 — Sensitivity Analysis</div>
     <div class="card">
-      <h3>ARR at Month 22 under different ARPU + Paid User combinations</h3>
+      <h3>ARR at Month 24 under different ARPU + Paid User combinations</h3>
       <div class="tbl-wrap" style="margin-top:16px">
         <table>
           <thead>
@@ -866,7 +866,7 @@
           <tbody>
             <tr><td>5,000</td><td class="num dim">£240K</td><td class="num dim">£300K</td><td class="num">£360K</td><td class="num">£420K</td><td class="num">£480K</td></tr>
             <tr><td>8,000</td><td class="num dim">£384K</td><td class="num">£480K</td><td class="num">£576K</td><td class="num">£672K</td><td class="num">£768K</td></tr>
-            <tr class="highlight-row"><td>13,900</td><td class="num">£667K</td><td class="num">£834K</td><td class="num">£1.0M ★</td><td class="num">£1.17M</td><td class="num">£1.34M</td></tr>
+            <tr class="highlight-row"><td>14,503</td><td class="num">£696K</td><td class="num">£870K</td><td class="num">£1.04M ★</td><td class="num">£1.22M</td><td class="num">£1.39M</td></tr>
             <tr><td>18,000</td><td class="num">£864K</td><td class="num">£1.08M</td><td class="num">£1.3M</td><td class="num">£1.5M</td><td class="num">£1.73M</td></tr>
             <tr><td>25,000</td><td class="num">£1.2M</td><td class="num">£1.5M</td><td class="num">£1.8M</td><td class="num">£2.1M</td><td class="num">£2.4M</td></tr>
           </tbody>
@@ -1055,10 +1055,10 @@ function fmt(n){ return n.toLocaleString('en-GB') }
 function fmtMRR(n){ return '£'+fmt(n) }
 
 function renderTable(rows, tbodyId){
-  const MILESTONE_MONTHS = {9:'★ RAISE', 12:'', 18:'', 22:'★ £1M ARR'};
+  const MILESTONE_MONTHS = {9:'★ RAISE', 12:'', 18:'', 24:'★ £1M ARR'};
   const tb = document.getElementById(tbodyId);
   tb.innerHTML = rows.map((r,i) => {
-    const isMilestone = [9,12,18,22].includes(r.m);
+    const isMilestone = [9,12,18,24].includes(r.m);
     return `<tr class="${isMilestone?'highlight-row':''}">
       <td><strong>M${r.m}</strong> ${MILESTONE_MONTHS[r.m]||''}</td>
       <td class="num">${fmt(r.users)}</td>
