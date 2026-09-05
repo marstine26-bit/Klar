@@ -49,7 +49,12 @@
   --bg:#07070A;
   --s0:#09090E;--s1:#0B0B10;--s2:#0D0D14;--s3:#13131E;--s4:#1A1A28;
   --b1:#161622;--b2:#1E1E2E;--b3:#28283A;
-  --t1:#F0F0EE;--t2:#8A8A98;--t3:#6B6B78;--t4:#4A4A58;
+  /* t3/t4 lightened from #6B6B78/#4A4A58 — accessibility audit measured 3.7-3.8:1 and 2.3:1
+     against --bg/--s1/--s2/--s3, both failing WCAG AA. Recomputed against the lightest
+     background in that set (--s3) with the relative-luminance formula: t3 now clears 4.5:1
+     (normal-text floor), t4 clears 3:1 (large-text/UI-component floor) — while staying
+     visibly more muted than --t2 and --t3 respectively, preserving the t1>t2>t3>t4 hierarchy. */
+  --t1:#F0F0EE;--t2:#8A8A98;--t3:#808090;--t4:#646477;
 
   --accent:#9B7FD4;            /* Iris Violet */
   --accent2:#B8A0E8;
