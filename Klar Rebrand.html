@@ -512,9 +512,12 @@ body[data-density="compact"] .card{padding:18px}
   .tb-actions{min-width:0;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 16px),transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 16px),transparent 100%)}
   .tb-actions::-webkit-scrollbar{display:none}
 
-  /* Notifications: above bottom rail */
-  .notif{bottom:76px;right:10px;left:10px;max-width:unset;text-align:center}
-  .kl-fab{bottom:74px;right:16px;width:48px;height:48px;font-size:24px}
+  /* Notifications: above bottom rail — !important needed: the unconditional
+     .notif{max-width:310px} / .kl-fab{width/height:52px} rules further down
+     the file have equal specificity and later source order, so without it
+     these two overrides never actually applied at any viewport width. */
+  .notif{bottom:76px;right:10px;left:10px;max-width:unset!important;text-align:center}
+  .kl-fab{bottom:74px;right:16px;width:48px!important;height:48px!important;font-size:24px}
 
   /* Cards: tighter padding */
   .card{padding:16px}
