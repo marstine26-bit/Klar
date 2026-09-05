@@ -16,6 +16,14 @@
  *
  * Required env vars (auto-injected by Supabase runtime):
  *   SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
+ *
+ * Optional env var (set manually in Supabase Dashboard -> Edge Functions ->
+ * Secrets -- NOT auto-injected):
+ *   LEMONSQUEEZY_API_KEY  -- a Lemon Squeezy API key with permission to
+ *     cancel subscriptions (Dashboard -> Settings -> API). Without it,
+ *     account deletion still wipes all app data and the auth user as
+ *     before, but leaves any active subscription running on Lemon
+ *     Squeezy's side undisturbed -- a warning is logged, not an error.
  */
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -69,6 +77,44 @@ Deno.serve(async (req: Request) => {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 
+  // Cancel any active Lemon Squeezy subscription BEFORE wiping the row that
+  // names it — otherwise account deletion left billing running with no
+  // record of which subscription it even was. Best-effort: a failed
+  // cancellation must never block honoring the user's erasure request; it
+  // just gets surfaced in the response so it can be handled manually.
+  const lsApiKey = Deno.env.get("LEMONSQUEEZY_API_KEY");
+  let subscriptionCancelError: string | undefined;
+  if (lsApiKey) {
+    const { data: sub } = await sb
+      .from("subscriptions")
+      .select("ls_subscription_id, status")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (sub?.ls_subscription_id && sub.status !== "cancelled") {
+      try {
+        const lsRes = await fetch(
+          `https://api.lemonsqueezy.com/v1/subscriptions/${sub.ls_subscription_id}`,
+          {
+            method: "DELETE",
+            headers: {
+              Accept: "application/vnd.api+json",
+              Authorization: `Bearer ${lsApiKey}`,
+            },
+          },
+        );
+        if (!lsRes.ok) {
+          subscriptionCancelError = `Lemon Squeezy returned ${lsRes.status}`;
+          console.error("delete-account: LS cancel failed:", lsRes.status, await lsRes.text());
+        }
+      } catch (e) {
+        subscriptionCancelError = e instanceof Error ? e.message : String(e);
+        console.error("delete-account: LS cancel threw:", subscriptionCancelError);
+      }
+    }
+  } else {
+    console.warn("delete-account: LEMONSQUEEZY_API_KEY not set — skipping subscription cancellation");
+  }
+
   const tableErrors: Record<string, string> = {};
   for (const table of OWNED_TABLES) {
     const { error } = await sb.from(table).delete().eq("user_id", user.id);
@@ -82,7 +128,11 @@ Deno.serve(async (req: Request) => {
   }
 
   console.log("delete-account: completed for user", user.id, Object.keys(tableErrors).length ? { tableErrors } : "");
-  return json({ ok: true, tableErrors: Object.keys(tableErrors).length ? tableErrors : undefined }, 200);
+  return json({
+    ok: true,
+    tableErrors: Object.keys(tableErrors).length ? tableErrors : undefined,
+    subscriptionCancelError,
+  }, 200);
 });
 
 function json(body: unknown, status: number): Response {

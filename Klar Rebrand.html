@@ -15702,6 +15702,32 @@ function _sbDeviceId(){
   return id;
 }
 
+// Fire-and-forget consent audit log — writes to the dedicated consent_events
+// table (see supabase-migrations/001_consent_events.sql) via the log-consent
+// Edge Function, so there's a real, timestamped, queryable consent record
+// for every acceptance (signed-in or guest), not just a field inside the
+// klar_syncs JSON blob. Never awaited by callers and never throws — a
+// logging failure must not block or interrupt the consent UI itself.
+async function _klLogConsent(consentType, consentVersion){
+  try {
+    const headers = {'Content-Type':'application/json'};
+    if(_sb){
+      const { data:{ session } } = await _sb.auth.getSession();
+      if(session?.access_token) headers['Authorization'] = 'Bearer ' + session.access_token;
+    }
+    fetch(SB_FN + '/log-consent', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        device_id: _sbDeviceId(),
+        region: S.prefs?.region || '',
+        consent_type: consentType,
+        consent_version: consentVersion,
+      }),
+    }).catch(()=>{});
+  } catch(e) { /* never block consent UI on logging failure */ }
+}
+
 // Patch save() to also push to Supabase after every local write
 (function _patchSave(){
   const _origSave = window.save;
@@ -16380,6 +16406,7 @@ document.addEventListener('click', function(e){
     S.prefs.privacyConsentVersion = PRIVACY_VERSION;
     save();
     if(typeof _klMaybeInitPostHog==='function') _klMaybeInitPostHog();
+    if(typeof _klLogConsent==='function') _klLogConsent('privacy_policy', PRIVACY_VERSION);
     const gate = document.getElementById('kl-privacy-gate');
     if (gate) {
       gate.style.opacity = '0';
@@ -17209,6 +17236,7 @@ document.addEventListener('click', function(e){
       S.prefs.privacyConsentDate = new Date().toISOString();
       S.prefs.privacyConsentVersion = (typeof PRIVACY_VERSION !== 'undefined' ? PRIVACY_VERSION : 1);
       if(typeof _klMaybeInitPostHog==='function') _klMaybeInitPostHog();
+      if(typeof _klLogConsent==='function') _klLogConsent('region_gate', S.prefs.privacyConsentVersion);
     }
     klTrack('region_selected', {region});
     const prevRegion = S.prefs.region;
