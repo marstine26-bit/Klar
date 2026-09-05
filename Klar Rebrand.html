@@ -8360,7 +8360,7 @@ function rDashCashflow(){
   _dCfPoints=data.map((d,i)=>{
     const [py,pm]=d.key.split('-').map(Number);
     const tipLabel=isDaily
-      ? new Date(py,pm-1,d.day).toLocaleString('default',{day:'numeric',month:'short'})
+      ? new Date(py,pm-1,d.day).toLocaleString(S.prefs?.region==='uk'?'en-GB':'en-ZA',{day:'numeric',month:'short'})
       : new Date(py,pm-1,1).toLocaleString('default',{month:'long',year:'numeric'});
     return {x:incPts[i].x, incY:incYs[i], expY:expYs[i], income:d.income, expenses:d.expenses, tipLabel};
   });
