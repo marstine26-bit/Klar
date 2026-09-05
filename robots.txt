@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://klarmoney.netlify.app/sitemap.xml
+Sitemap: https://klar.marcelmoyo.workers.dev/sitemap.xml
