@@ -27,6 +27,7 @@ klar-support-readiness-and-faq.md
 klar-accessibility-audit.md
 klar-pnl-cashflow-management-accounts.md
 klar-faq-final.md
+klar-moneyhub-campaign-drafts.md
 
 # One-off dev utility, not linked from the live app
 generate-assets.html
@@ -34,6 +35,9 @@ generate-assets.html
 # Supabase Edge Function source — deployed separately via Supabase, not
 # meant to be served as static files here
 functions/
+
+# SQL migrations — applied directly to Supabase, not meant to be served
+supabase-migrations/
 
 # Config files — not meant to be served as literal downloadable files
 # (_headers/_redirects exclusion is Cloudflare's own recommended practice)

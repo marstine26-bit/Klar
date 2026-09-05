@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moneyhub Alternative — Klar</title>
+  <meta name="description" content="Moneyhub is closing. Here's what Klar does — and doesn't do yet — instead: an AI advisor that reads your real numbers, a free tier, and an honest note on bank feeds." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://klar.marcelmoyo.workers.dev/moneyhub-alternative" />
+  <meta property="og:title" content="Moneyhub Alternative — Klar" />
+  <meta property="og:description" content="Moneyhub is closing. Here's what Klar does — and doesn't do yet — instead." />
+  <meta property="og:image" content="https://klar.marcelmoyo.workers.dev/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="robots" content="index, follow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #07070A;
+      --panel:      #0B0B10;
+      --card:       #0D0D14;
+      --border:     #161622;
+      --border2:    #1E1E2E;
+      --text:       #F0F0EE;
+      --text-sec:   #8A8A98;
+      --text-muted: #52525E;
+      --accent:     #9B7FD4;
+      --accent-dim: #7B5EA7;
+      --grad:       linear-gradient(135deg, #7B5EA7, #5B7FD4);
+      --gold:       #F5A623;
+      --green:      #4CAF50;
+      --red:        #F5534F;
+      --blue:       #4F8EF7;
+      --radius:     12px;
+      --radius-sm:  8px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-1 { transition-delay: .1s; }
+    .reveal-2 { transition-delay: .2s; }
+    .reveal-3 { transition-delay: .3s; }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 24px; height: 60px;
+      display: flex; align-items: center;
+      border-bottom: 1px solid var(--border);
+      background: rgba(7,7,10,.85);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    }
+    .nav-inner { max-width: 900px; width: 100%; margin: 0 auto; display: flex; align-items: center; gap: 24px; }
+    .nav-logo {
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none; font-weight: 800; font-size: 18px; color: var(--text);
+      letter-spacing: -.02em;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 18px; border-radius: var(--radius-sm);
+      font-family: inherit; font-size: 14px; font-weight: 600;
+      cursor: pointer; text-decoration: none;
+      transition: opacity .2s, transform .15s;
+      border: none; white-space: nowrap;
+    }
+    .btn:hover { opacity: .88; transform: translateY(-1px); }
+    .btn-primary { background: var(--grad); color: #fff; }
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border2); }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── HERO ── */
+    .mh-hero { padding: 140px 0 64px; position: relative; overflow: hidden; }
+    .mh-hero::before {
+      content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 900px;
+      background: radial-gradient(ellipse at center, rgba(155,127,212,.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .mh-eyebrow {
+      display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--gold);
+      background: rgba(245,166,35,.1); border: 1px solid rgba(245,166,35,.3);
+      padding: 6px 14px; border-radius: 100px; margin-bottom: 22px;
+    }
+    .mh-headline {
+      font-size: clamp(32px, 4.6vw, 48px); font-weight: 800;
+      letter-spacing: -.03em; line-height: 1.15; margin-bottom: 20px; max-width: 760px;
+    }
+    .mh-sub { font-size: 17px; color: var(--text-sec); max-width: 620px; margin-bottom: 32px; line-height: 1.65; }
+    .mh-ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+    .mh-ctas .btn { font-size: 15px; padding: 12px 24px; }
+    .mh-fine { font-size: 12px; color: var(--text-muted); }
+
+    /* ── SHUTDOWN NOTE ── */
+    .mh-note {
+      background: var(--panel); border: 1px solid var(--border2); border-radius: var(--radius);
+      padding: 20px 24px; margin: 48px 0; font-size: 14px; color: var(--text-sec); line-height: 1.7;
+    }
+    .mh-note strong { color: var(--text); }
+
+    /* ── SECTION SHARED ── */
+    section.mh-section { padding: 56px 0; border-top: 1px solid var(--border); }
+    .mh-label { font-size: 11px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+    .mh-title { font-size: clamp(24px, 3vw, 32px); font-weight: 800; letter-spacing: -.03em; margin-bottom: 16px; }
+    .mh-sub2 { font-size: 15px; color: var(--text-sec); max-width: 620px; line-height: 1.65; margin-bottom: 28px; }
+
+    /* ── COMPARISON TABLE ── */
+    .mh-table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: var(--radius); border: 1px solid var(--border2); }
+    .mh-table th, .mh-table td { padding: 16px 20px; text-align: left; font-size: 14px; border-bottom: 1px solid var(--border); }
+    .mh-table th { background: var(--panel); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); }
+    .mh-table td:first-child, .mh-table th:first-child { color: var(--text-sec); font-weight: 600; width: 34%; }
+    .mh-table tr:last-child td { border-bottom: none; }
+    .mh-table td.klar-col { color: var(--text); font-weight: 600; }
+    .mh-table td.klar-col strong { color: var(--accent); }
+
+    @media (max-width: 640px) {
+      .mh-table { font-size: 13px; }
+      .mh-table th, .mh-table td { padding: 12px 14px; }
+    }
+
+    /* ── EXPECTATIONS BOX ── */
+    .mh-expect {
+      background: rgba(155,127,212,.07); border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius) var(--radius) 0; padding: 20px 24px;
+      font-size: 14px; color: var(--text-sec); line-height: 1.7;
+    }
+    .mh-expect strong { color: var(--text); }
+
+    /* ── AI STRIP (reused from klarmoney-landing.html) ── */
+    .ai-strip { padding: 12px 0 8px; }
+    .ai-strip-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+    .ai-chat { background: var(--card); border: 1px solid var(--border2); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+    .ai-chat-header { display: flex; align-items: center; gap: 10px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .ai-avatar { width: 32px; height: 32px; border-radius: 10px; background: var(--grad); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+    .ai-name { font-size: 13px; font-weight: 600; }
+    .ai-status { font-size: 11px; color: var(--green); }
+    .ai-bubble { padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.5; max-width: 90%; }
+    .ai-bubble.user { background: rgba(155,127,212,.15); color: var(--text); margin-left: auto; border-radius: 12px 2px 12px 12px; }
+    .ai-bubble.bot { background: var(--panel); color: var(--text-sec); border: 1px solid var(--border); border-radius: 2px 12px 12px 12px; }
+    .ai-bubble.bot strong { color: var(--text); }
+    @media (max-width: 768px) { .ai-strip-inner { grid-template-columns: 1fr; gap: 32px; } }
+
+    /* ── FAQ (reused from klarmoney-landing.html) ── */
+    .faq-item { background: var(--panel); border: 1px solid var(--border2); border-radius: 12px; overflow: hidden; }
+    .faq-q { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; font-size: 15px; font-weight: 600; color: var(--text); cursor: pointer; list-style: none; gap: 12px; }
+    .faq-q::-webkit-details-marker { display: none; }
+    .faq-q::after { content: '+'; font-size: 20px; font-weight: 400; color: var(--text-muted); flex-shrink: 0; }
+    details[open] .faq-q::after { content: '−'; }
+    .faq-a { padding: 0 22px 18px; font-size: 14px; line-height: 1.65; color: var(--text-sec); margin: 0; }
+
+    /* ── FINAL CTA ── */
+    .mh-final { text-align: center; padding: 72px 0 96px; }
+    .mh-final .btn { font-size: 16px; padding: 14px 30px; }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--border); padding: 32px 24px; }
+    .footer-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    .footer-left { font-size: 13px; color: var(--text-muted); }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { font-size: 13px; color: var(--text-muted); text-decoration: none; }
+    .footer-links a:hover { color: var(--text-sec); }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <svg width="24" height="24" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="11" height="26" rx="3" fill="#9B7FD4"/>
+        <rect x="13" y="0" width="13" height="11" rx="3" fill="#5B7FD4"/>
+        <rect x="13" y="15" width="13" height="11" rx="3" fill="#7B5EA7"/>
+      </svg>
+      Klar
+    </a>
+    <a href="/app" class="btn btn-primary" style="margin-left: auto;">Start free →</a>
+  </div>
+</nav>
+
+<section class="mh-hero">
+  <div class="container">
+    <p class="mh-eyebrow reveal">Moneyhub is closing</p>
+    <h1 class="mh-headline reveal reveal-1">Moneyhub showed you the whole picture.<br>Klar tells you what to do about it.</h1>
+    <p class="mh-sub reveal reveal-2">
+      If you left Moneyhub rather than move to the WPS-branded relaunch, here's an honest look at Klar —
+      including exactly where it falls short of what Moneyhub gave you, and where it goes further.
+    </p>
+    <div class="mh-ctas reveal reveal-2">
+      <a href="/app" class="btn btn-primary">Start free — no card needed</a>
+      <a href="#compare" class="btn btn-ghost">See the comparison ↓</a>
+    </div>
+    <p class="mh-fine reveal reveal-2">Free tier, forever. Upgrade only if you want bank feeds or the AI advisor.</p>
+
+    <div class="mh-note reveal reveal-3">
+      <strong>What actually happened:</strong> Moneyhub's consumer app closed to existing users on 14 August 2026.
+      Moneyhub struck a deal with WPS Advisory to keep running the app under new branding on the same underlying
+      platform — anyone who opted in during the migration window kept access with minimal disruption. This page
+      is for the people who didn't: if you actively exported your data and left rather than move to the WPS
+      version, you're exactly who we built this comparison for.
+    </div>
+  </div>
+</section>
+
+<section class="mh-section" id="compare">
+  <div class="container">
+    <p class="mh-label">Honest comparison</p>
+    <h2 class="mh-title">Where Klar matches Moneyhub — and where it doesn't yet</h2>
+    <p class="mh-sub2">No feature-for-feature parity claims. Here's the real trade-off, three rows, nothing hidden.</p>
+    <div style="overflow-x: auto;">
+      <table class="mh-table">
+        <thead>
+          <tr><th>&nbsp;</th><th>Moneyhub (old)</th><th>Klar</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Price</td>
+            <td>~£1.49/mo</td>
+            <td class="klar-col">Free tier forever · <strong>Essential £3.99/mo</strong> for AI advisor + bank feeds</td>
+          </tr>
+          <tr>
+            <td>AI advisor</td>
+            <td>None</td>
+            <td class="klar-col"><strong>Included from Essential</strong> — reads your real numbers, not a scripted chatbot</td>
+          </tr>
+          <tr>
+            <td>Bank connections</td>
+            <td>Broad UK aggregation, read-only dashboard</td>
+            <td class="klar-col">UK bank feeds via Salt Edge on <strong>paid plans</strong> — growing coverage, not yet Moneyhub's breadth</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="mh-section">
+  <div class="container">
+    <p class="mh-label">Before you switch</p>
+    <h2 class="mh-title">What you'll need to do differently</h2>
+    <div class="mh-expect reveal">
+      <strong>The free plan starts with manual and CSV import, not live bank sync.</strong> If you want to start
+      today, that's genuinely faster than waiting on a bank-feed setup — enter your last month of transactions
+      (or import a CSV) and the AI advisor already has enough to give you a real answer. Live UK bank feeds via
+      Salt Edge are a paid-tier feature. We're not going to pretend otherwise to get you to sign up.
+    </div>
+  </div>
+</section>
+
+<section class="mh-section">
+  <div class="container">
+    <p class="mh-label">AI Advisor</p>
+    <h2 class="mh-title">Your numbers. Real answers.</h2>
+    <p class="mh-sub2">This is the one thing Moneyhub never had. Ask it anything — it reads your actual transactions and balances before it answers.</p>
+    <div class="ai-strip">
+      <div class="ai-strip-inner">
+        <div class="reveal">
+          <a href="/app" class="btn btn-primary">Try the advisor free</a>
+        </div>
+        <div class="ai-chat reveal reveal-2">
+          <div class="ai-chat-header">
+            <div class="ai-avatar">✦</div>
+            <div>
+              <div class="ai-name">Klar AI</div>
+              <div class="ai-status">● Online</div>
+            </div>
+          </div>
+          <div class="ai-bubble user">I just left Moneyhub — am I actually saving anything by switching?</div>
+          <div class="ai-bubble bot">Based on the transactions you've imported so far, your average monthly spend is <strong>£2,140</strong> against income of <strong>£2,890</strong>. That's a <strong>26% savings rate</strong> — solid. I can flag where it's slipping each month, which Moneyhub's dashboard never did on its own.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="mh-section">
+  <div class="container">
+    <p class="mh-label">FAQ</p>
+    <h2 class="mh-title">Common questions</h2>
+    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 24px;">
+      <details class="faq-item reveal">
+        <summary class="faq-q">Which banks are supported?</summary>
+        <p class="faq-a">UK users can connect 2,000+ banks via Salt Edge open banking (Pro plan). SA users can manually import transactions. Direct bank connections for SA are on our roadmap.</p>
+      </details>
+      <details class="faq-item reveal">
+        <summary class="faq-q">What's included in the free plan?</summary>
+        <p class="faq-a">The free plan includes transaction tracking, CSV import, and spending breakdowns — no credit card required. Net worth tracker, AI advisor, savings goals, and unlimited accounts unlock with Essential (£3.99/mo).</p>
+      </details>
+      <details class="faq-item reveal">
+        <summary class="faq-q">Does the AI advisor cost extra?</summary>
+        <p class="faq-a">No. The AI advisor (powered by Groq/LLaMA) is included in the Essential plan and above at no extra charge.</p>
+      </details>
+    </div>
+    <p style="text-align: center; margin-top: 28px; font-size: 14px; color: var(--text-sec);">
+      <a href="/klar-help.html" style="color: inherit; text-decoration: underline;">See the full Help Centre →</a>
+    </p>
+  </div>
+</section>
+
+<section class="mh-final">
+  <div class="container">
+    <a href="/app" class="btn btn-primary">Start free — no card needed</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">Klar © 2026 · Available in UK and South Africa</div>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+      <a href="/">Home</a>
+      <a href="/app">Launch App</a>
+      <a href="mailto:hello@klarmoney.app">Contact</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+  document.querySelectorAll('.mh-hero .reveal').forEach(el => setTimeout(() => el.classList.add('visible'), 100));
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+  });
+</script>
+</body>
+</html>
