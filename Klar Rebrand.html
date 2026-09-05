@@ -6133,7 +6133,22 @@ const esc    = s  => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(
 const uid    = () => (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const closeModal = id => { const el=document.getElementById(id); if(el) el.classList.remove('open'); };
 const openModal  = id => { const el=document.getElementById(id); if(el) el.classList.add('open'); };
-const notify = (msg,type) => { const el=document.getElementById('notif'); if(!el)return; el.textContent=msg; el.style.borderLeftColor=type==='err'?'var(--red)':type==='ok'?'var(--green)':'var(--accent)'; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'),3400); };
+const notify = (msg,type) => {
+  const el=document.getElementById('notif'); if(!el)return;
+  const isErr = type==='err';
+  // Error toasts get an inline "Get help" action — the toast itself stays
+  // pointer-events:none (so it never blocks clicks on whatever's behind it),
+  // but this one child opts back in to pointer-events so it's clickable.
+  // This was the Support Lead's flagged gap: support only lived in Settings,
+  // with no link at the actual point of failure.
+  el.innerHTML = isErr
+    ? `${esc(msg)} <button onclick="event.stopPropagation();typeof klOpenSupport==='function'&&klOpenSupport()" style="pointer-events:auto;background:none;border:none;color:inherit;text-decoration:underline;text-underline-offset:2px;font:inherit;font-weight:700;cursor:pointer;padding:0;white-space:nowrap">Get help</button>`
+    : esc(msg);
+  el.style.borderLeftColor=isErr?'var(--red)':type==='ok'?'var(--green)':'var(--accent)';
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t=setTimeout(()=>el.classList.remove('show'),isErr?7000:3400);
+};
 
 /* ─── COUNT-UP ANIMATION ─── */
 function animateNum(el, targetValue, formatter, durationMs) {
@@ -15569,7 +15584,12 @@ async function sbSubmit(){
 function _sbShowMsg(txt, type){
   const el = document.getElementById('sb-msg');
   if(!el) return;
-  el.textContent = txt;
+  // Sign-in errors get a "Get help" link too — a broken sign-in blocks the
+  // user from ever reaching Settings, so this is the highest-stakes spot
+  // for the same point-of-failure fix applied to notify().
+  el.innerHTML = type==='err'
+    ? `${esc(txt)} <button onclick="event.stopPropagation();typeof klOpenSupport==='function'&&klOpenSupport()" style="background:none;border:none;color:inherit;text-decoration:underline;text-underline-offset:2px;font:inherit;font-weight:700;cursor:pointer;padding:0;white-space:nowrap">Get help</button>`
+    : esc(txt);
   el.className = 'sb-msg ' + type;
 }
 
@@ -17071,7 +17091,11 @@ document.addEventListener('click', function(e){
   function _klMsg(txt, type) {
     const el = document.getElementById('kl-ag-msg');
     if (!el) return;
-    el.textContent = txt;
+    // Same point-of-failure fix as notify()/_sbShowMsg: the auth gate is the
+    // very first screen, so an error here needs a way out too.
+    el.innerHTML = (type === 'err' && txt)
+      ? `${esc(txt)} <button onclick="event.stopPropagation();typeof klOpenSupport==='function'&&klOpenSupport()" style="background:none;border:none;color:inherit;text-decoration:underline;text-underline-offset:2px;font:inherit;font-weight:700;cursor:pointer;padding:0;white-space:nowrap">Get help</button>`
+      : esc(txt);
     el.className = 'kl-ag-msg' + (type ? ' ' + type : '');
   }
 
