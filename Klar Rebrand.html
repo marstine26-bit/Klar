@@ -2440,10 +2440,10 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="g2">
       <div class="card">
         <div class="ct">Scenario Builder</div>
-        <div class="fr"><label>Category to adjust</label><select id="wi-cat" onchange="rWhatIf()"><option value="">Select category...</option></select></div>
+        <div class="fr"><label for="wi-cat">Category to adjust</label><select id="wi-cat" onchange="rWhatIf()"><option value="">Select category...</option></select></div>
         <div class="fg2">
-          <div class="fr"><label>Direction</label><select id="wi-dir" onchange="rWhatIf()"><option value="cut">Cut spending</option><option value="increase">Increase spending</option></select></div>
-          <div class="fr"><label>Amount (<span class="kl-cur-sym">R</span>/month)</label><input type="number" id="wi-change" placeholder="e.g. 500" oninput="rWhatIf()"></div>
+          <div class="fr"><label for="wi-dir">Direction</label><select id="wi-dir" onchange="rWhatIf()"><option value="cut">Cut spending</option><option value="increase">Increase spending</option></select></div>
+          <div class="fr"><label for="wi-change">Amount (<span class="kl-cur-sym">R</span>/month)</label><input type="number" id="wi-change" placeholder="e.g. 500" oninput="rWhatIf()"></div>
         </div>
         <div id="whatif-result"></div>
       </div>
@@ -2527,12 +2527,12 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     </div>
     <div class="card">
       <div class="ct">Add Custom Bill / Payday</div>
-      <div class="fr"><label>Name</label><input type="text" id="bl-name" placeholder="e.g. Rent, Payday"></div>
+      <div class="fr"><label for="bl-name">Name</label><input type="text" id="bl-name" placeholder="e.g. Rent, Payday"></div>
       <div class="fg2">
-        <div class="fr"><label>Amount (<span class="kl-cur-sym">R</span>)</label><input type="number" id="bl-amt" placeholder="0.00"></div>
-        <div class="fr"><label>Day of Month</label><input type="number" id="bl-day" placeholder="1-28" min="1" max="28"></div>
-        <div class="fr"><label>Type</label><select id="bl-type"><option value="bill">Bill/Expense</option><option value="payday">Payday/Income</option></select></div>
-        <div class="fr"><label>Colour</label><select id="bl-col"><option value="blue">Blue</option><option value="red">Red</option><option value="amber">Amber</option><option value="green">Green</option><option value="purple">Purple</option></select></div>
+        <div class="fr"><label for="bl-amt">Amount (<span class="kl-cur-sym">R</span>)</label><input type="number" id="bl-amt" placeholder="0.00"></div>
+        <div class="fr"><label for="bl-day">Day of Month</label><input type="number" id="bl-day" placeholder="1-28" min="1" max="28"></div>
+        <div class="fr"><label for="bl-type">Type</label><select id="bl-type"><option value="bill">Bill/Expense</option><option value="payday">Payday/Income</option></select></div>
+        <div class="fr"><label for="bl-col">Colour</label><select id="bl-col"><option value="blue">Blue</option><option value="red">Red</option><option value="amber">Amber</option><option value="green">Green</option><option value="purple">Purple</option></select></div>
       </div>
       <button class="btn btn-gold" onclick="addCalBill()" style="width:100%">Add to Calendar</button>
       <div id="cal-bill-list" style="margin-top:14px"></div>
@@ -2549,9 +2549,9 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="card"><div class="ct">Forecast Table</div><div id="fc-table"></div></div>
     <div class="card">
       <div class="ct">Override Assumptions</div>
-      <div class="fr"><label>Monthly Income Override (<span class="kl-cur-sym">R</span>)</label><input type="number" id="fc-i-ov" placeholder="Uses average if blank" oninput="renderForecast()"></div>
-      <div class="fr"><label>Monthly Expenses Override (<span class="kl-cur-sym">R</span>)</label><input type="number" id="fc-e-ov" placeholder="Uses average if blank" oninput="renderForecast()"></div>
-      <div class="fr"><label>Current Savings Balance (<span class="kl-cur-sym">R</span>)</label><input type="number" id="fc-sav" placeholder="e.g. 10000" oninput="renderForecast()"></div>
+      <div class="fr"><label for="fc-i-ov">Monthly Income Override (<span class="kl-cur-sym">R</span>)</label><input type="number" id="fc-i-ov" placeholder="Uses average if blank" oninput="renderForecast()"></div>
+      <div class="fr"><label for="fc-e-ov">Monthly Expenses Override (<span class="kl-cur-sym">R</span>)</label><input type="number" id="fc-e-ov" placeholder="Uses average if blank" oninput="renderForecast()"></div>
+      <div class="fr"><label for="fc-sav">Current Savings Balance (<span class="kl-cur-sym">R</span>)</label><input type="number" id="fc-sav" placeholder="e.g. 10000" oninput="renderForecast()"></div>
       <div class="ic" style="margin-top:13px"><div class="it">Forecast Note</div><div class="ib" id="fc-note">Import transactions for an accurate forecast.</div></div>
     </div>
   </div>
@@ -2601,13 +2601,13 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <div class="card">
         <div class="ct">Compound Interest Calculator</div>
         <div class="fg2">
-          <div class="fr"><label>Starting Amount (<span class="kl-cur-sym">R</span>)</label><input type="number" id="ci-start" placeholder="0" oninput="rCompoundCalc()" value="0"></div>
-          <div class="fr"><label>Monthly Contribution (<span class="kl-cur-sym">R</span>)</label><input type="number" id="ci-contrib" placeholder="e.g. 1000" oninput="rCompoundCalc()" value="1000"></div>
+          <div class="fr"><label for="ci-start">Starting Amount (<span class="kl-cur-sym">R</span>)</label><input type="number" id="ci-start" placeholder="0" oninput="rCompoundCalc()" value="0"></div>
+          <div class="fr"><label for="ci-contrib">Monthly Contribution (<span class="kl-cur-sym">R</span>)</label><input type="number" id="ci-contrib" placeholder="e.g. 1000" oninput="rCompoundCalc()" value="1000"></div>
         </div>
-        <div class="fr"><label style="display:flex;align-items:center;gap:8px">Annual Return (%)<span id="ci-rate-lbl" style="font-family:var(--fm);font-weight:700;font-size:13px;color:var(--accent)">8%</span></label>
+        <div class="fr"><label style="display:flex;align-items:center;gap:8px" for="ci-rate">Annual Return (%)<span id="ci-rate-lbl" style="font-family:var(--fm);font-weight:700;font-size:13px;color:var(--accent)">8%</span></label>
           <input type="range" id="ci-rate" min="1" max="20" step="0.5" value="8" oninput="document.getElementById('ci-rate-lbl').textContent=this.value+'%';rCompoundCalc()" style="width:100%;accent-color:var(--accent)">
         </div>
-        <div class="fr"><label style="display:flex;align-items:center;gap:8px">Time Horizon (years)<span id="ci-years-lbl" style="font-family:var(--fm);font-weight:700;font-size:13px;color:var(--accent)">10 yrs</span></label>
+        <div class="fr"><label style="display:flex;align-items:center;gap:8px" for="ci-years">Time Horizon (years)<span id="ci-years-lbl" style="font-family:var(--fm);font-weight:700;font-size:13px;color:var(--accent)">10 yrs</span></label>
           <input type="range" id="ci-years" min="1" max="40" step="1" value="10" oninput="document.getElementById('ci-years-lbl').textContent=this.value+' yrs';rCompoundCalc()" style="width:100%;accent-color:var(--accent)">
         </div>
         <div id="ci-result"></div>
@@ -2617,7 +2617,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
         <div id="ci-scenarios"></div>
         <div class="ct" style="margin-top:16px">When Will I Reach My Goal?</div>
         <div class="fg2">
-          <div class="fr"><label>Target Amount (<span class="kl-cur-sym">R</span>)</label><input type="number" id="ci-target" placeholder="e.g. 1000000" oninput="rCompoundCalc()"></div>
+          <div class="fr"><label for="ci-target">Target Amount (<span class="kl-cur-sym">R</span>)</label><input type="number" id="ci-target" placeholder="e.g. 1000000" oninput="rCompoundCalc()"></div>
         </div>
         <div id="ci-goal-time"></div>
       </div>
@@ -2658,7 +2658,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
         <button class="btn btn-gold btn-sm" onclick="sbNewGroup()">+ New Split Group</button>
       </div>
       <div id="sb-group-wrap" style="display:none">
-        <div class="fr"><label>Group name</label><input type="text" id="sb-gname" placeholder="e.g. Holiday, Dinner out, Weekend trip"></div>
+        <div class="fr"><label for="sb-gname">Group name</label><input type="text" id="sb-gname" placeholder="e.g. Holiday, Dinner out, Weekend trip"></div>
         <div style="margin-bottom:10px">
           <label style="font-size:11px;font-weight:700;color:var(--t3);display:block;margin-bottom:6px">PARTICIPANTS</label>
           <div id="sb-people-list"></div>
@@ -2677,7 +2677,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
               <button class="btn btn-gold btn-xs" onclick="sbAddExpense()">Add</button>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-              <div class="fr" style="margin:0"><label style="font-size:10px">Paid by</label><select id="sb-epaidby" style="font-size:11px;padding:4px 6px"></select></div>
+              <div class="fr" style="margin:0"><label style="font-size:10px" for="sb-epaidby">Paid by</label><select id="sb-epaidby" style="font-size:11px;padding:4px 6px"></select></div>
               <div class="fr" style="margin:0"><label style="font-size:10px">Split among</label><div id="sb-efor" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px"></div></div>
             </div>
           </div>
@@ -2732,8 +2732,8 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="card" style="margin-top:18px">
     <div class="ct">Amortisation Simulator — Extra Payment Impact</div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end;margin-bottom:16px;flex-wrap:wrap">
-      <div class="fr" style="margin:0"><label>Select Debt</label><select id="amort-debt-sel" onchange="rAmort()"></select></div>
-      <div class="fr" style="margin:0"><label>Extra Monthly Payment (<span class="kl-cur-sym">R</span>)</label><input type="number" id="amort-extra" value="0" min="0" step="100" oninput="rAmort()"></div>
+      <div class="fr" style="margin:0"><label for="amort-debt-sel">Select Debt</label><select id="amort-debt-sel" onchange="rAmort()"></select></div>
+      <div class="fr" style="margin:0"><label for="amort-extra">Extra Monthly Payment (<span class="kl-cur-sym">R</span>)</label><input type="number" id="amort-extra" value="0" min="0" step="100" oninput="rAmort()"></div>
       <div class="fr" style="margin:0"><label style="display:flex;align-items:center;gap:6px"><span>Extra payment</span><input type="range" id="amort-slider" min="0" max="5000" step="100" value="0" oninput="document.getElementById('amort-extra').value=this.value;rAmort()" style="flex:1;accent-color:var(--accent)"></label></div>
       <button class="btn btn-ghost" onclick="rAmort()">↻</button>
     </div>
@@ -2870,10 +2870,10 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="card">
       <div class="ct">FX Calculator</div>
       <div class="fg2" style="margin-bottom:10px">
-        <div class="fr"><label>Amount</label><input type="number" id="fx-calc-amount" value="1000" min="0" step="0.01" oninput="runFxCalc()"></div>
-        <div class="fr"><label>From</label><select id="fx-calc-from" onchange="runFxCalc()" style="width:100%"></select></div>
+        <div class="fr"><label for="fx-calc-amount">Amount</label><input type="number" id="fx-calc-amount" value="1000" min="0" step="0.01" oninput="runFxCalc()"></div>
+        <div class="fr"><label for="fx-calc-from">From</label><select id="fx-calc-from" onchange="runFxCalc()" style="width:100%"></select></div>
       </div>
-      <div class="fr" style="margin-bottom:10px"><label>To</label><select id="fx-calc-to" onchange="runFxCalc()" style="width:100%"></select></div>
+      <div class="fr" style="margin-bottom:10px"><label for="fx-calc-to">To</label><select id="fx-calc-to" onchange="runFxCalc()" style="width:100%"></select></div>
       <div id="fx-calc-result" style="background:var(--s2);border-radius:var(--rsm);padding:14px 16px;text-align:center;font-size:22px;font-weight:700;font-family:var(--fm)">—</div>
       <div style="font-size:10px;color:var(--t3);margin-top:6px;text-align:center" id="fx-calc-rate"></div>
     </div>
@@ -3184,16 +3184,16 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="g2" style="margin-bottom:18px">
     <div class="card">
       <div class="ct">Income Tax Calculator</div>
-      <div class="fr"><label>Annual Taxable Income (R)</label>
+      <div class="fr"><label for="tax-income">Annual Taxable Income (R)</label>
         <div style="display:flex;gap:8px">
           <input type="number" id="tax-income" placeholder="e.g. 360000" oninput="calcTax()" style="flex:1">
           <button class="btn btn-ghost btn-sm" onclick="(()=>{const inc=avgInc()*12;if(inc>0){document.getElementById('tax-income').value=Math.round(inc);calcTax();}else notify('Add income transactions first','err')})()" title="Auto-fill from this year's transactions">↗ From data</button>
         </div>
       </div>
       <div class="fg2">
-        <div class="fr"><label>RA Deduction (R/yr)</label><input type="number" id="tax-ra" placeholder="0" oninput="calcTax()"></div>
-        <div class="fr"><label>Medical Aid (members)</label><input type="number" id="tax-med" placeholder="1" oninput="calcTax()"></div>
-        <div class="fr"><label>Age (for rebate)</label>
+        <div class="fr"><label for="tax-ra">RA Deduction (R/yr)</label><input type="number" id="tax-ra" placeholder="0" oninput="calcTax()"></div>
+        <div class="fr"><label for="tax-med">Medical Aid (members)</label><input type="number" id="tax-med" placeholder="1" oninput="calcTax()"></div>
+        <div class="fr"><label for="tax-age">Age (for rebate)</label>
           <select id="tax-age" onchange="calcTax()">
             <option value="under65">Under 65</option>
             <option value="65to74">65–74 (+ secondary rebate R9,765)</option>
@@ -3222,8 +3222,8 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="card">
       <div class="ct">TFSA Tracker — Annual &amp; Lifetime (Section 12T)</div>
       <div class="fg2">
-        <div class="fr"><label>Contributed This Tax Year (R)</label><input type="number" id="tfsa-contrib" placeholder="0" oninput="calcTFSA()"></div>
-        <div class="fr"><label>Total Lifetime Contributions (R)</label><input type="number" id="tfsa-lifetime" placeholder="0" oninput="calcTFSA()"></div>
+        <div class="fr"><label for="tfsa-contrib">Contributed This Tax Year (R)</label><input type="number" id="tfsa-contrib" placeholder="0" oninput="calcTFSA()"></div>
+        <div class="fr"><label for="tfsa-lifetime">Total Lifetime Contributions (R)</label><input type="number" id="tfsa-lifetime" placeholder="0" oninput="calcTFSA()"></div>
       </div>
       <div id="tfsa-result"></div>
     </div>
@@ -3243,8 +3243,8 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="card">
       <div class="ct">UIF Calculator</div>
       <div style="font-size:11px;color:var(--t3);margin-bottom:12px">Unemployment Insurance Fund — both employee and employer contribute 1% of monthly salary (capped at R17,711.58/mo)</div>
-      <div class="fr"><label>Monthly Gross Salary (R)</label><input type="number" id="tax-uif-salary" placeholder="e.g. 25000" oninput="calcUIF()"></div>
-      <div class="fr"><label>Reason for Claim</label>
+      <div class="fr"><label for="tax-uif-salary">Monthly Gross Salary (R)</label><input type="number" id="tax-uif-salary" placeholder="e.g. 25000" oninput="calcUIF()"></div>
+      <div class="fr"><label for="tax-uif-reason">Reason for Claim</label>
         <select id="tax-uif-reason" onchange="calcUIF()">
           <option value="unemployment">Unemployment / Retrenchment</option>
           <option value="illness">Illness Benefit</option>
@@ -3260,12 +3260,12 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <div class="ct">Capital Gains Tax Calculator</div>
       <div style="font-size:11px;color:var(--t3);margin-bottom:12px">40% inclusion rate for individuals. Annual exclusion R50,000. Primary residence exclusion R2M.</div>
       <div class="fg2">
-        <div class="fr"><label>Proceeds (Sale Price) (R)</label><input type="number" id="cgt-proceeds" placeholder="0" oninput="calcCGT()"></div>
-        <div class="fr"><label>Base Cost (Purchase Price + costs) (R)</label><input type="number" id="cgt-base" placeholder="0" oninput="calcCGT()"></div>
+        <div class="fr"><label for="cgt-proceeds">Proceeds (Sale Price) (R)</label><input type="number" id="cgt-proceeds" placeholder="0" oninput="calcCGT()"></div>
+        <div class="fr"><label for="cgt-base">Base Cost (Purchase Price + costs) (R)</label><input type="number" id="cgt-base" placeholder="0" oninput="calcCGT()"></div>
       </div>
       <div class="fg2">
-        <div class="fr"><label>Marginal Tax Rate (%)</label><input type="number" id="cgt-mtr" placeholder="e.g. 36" oninput="calcCGT()"></div>
-        <div class="fr"><label>Primary Residence?</label>
+        <div class="fr"><label for="cgt-mtr">Marginal Tax Rate (%)</label><input type="number" id="cgt-mtr" placeholder="e.g. 36" oninput="calcCGT()"></div>
+        <div class="fr"><label for="cgt-primary">Primary Residence?</label>
           <select id="cgt-primary" onchange="calcCGT()">
             <option value="no">No</option>
             <option value="yes">Yes (R2M exclusion applies)</option>
@@ -3279,9 +3279,9 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="card" style="margin-bottom:18px">
     <div class="ct">Retirement Annuity — 2/3 Rule &amp; Lump Sum Planner</div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:end;margin-bottom:16px;flex-wrap:wrap">
-      <div class="fr" style="margin:0"><label>Projected RA Value at Retirement (R)</label><input type="number" id="ra-value" placeholder="e.g. 2000000" oninput="calcRA()"></div>
-      <div class="fr" style="margin:0"><label>Current Age</label><input type="number" id="ra-age" placeholder="35" min="18" max="70" oninput="calcRA()"></div>
-      <div class="fr" style="margin:0"><label>Monthly RA Contribution (R)</label><input type="number" id="ra-contrib" placeholder="0" oninput="calcRA()"></div>
+      <div class="fr" style="margin:0"><label for="ra-value">Projected RA Value at Retirement (R)</label><input type="number" id="ra-value" placeholder="e.g. 2000000" oninput="calcRA()"></div>
+      <div class="fr" style="margin:0"><label for="ra-age">Current Age</label><input type="number" id="ra-age" placeholder="35" min="18" max="70" oninput="calcRA()"></div>
+      <div class="fr" style="margin:0"><label for="ra-contrib">Monthly RA Contribution (R)</label><input type="number" id="ra-contrib" placeholder="0" oninput="calcRA()"></div>
     </div>
     <div id="ra-result"></div>
   </div>
@@ -3295,9 +3295,9 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
           <div class="it">How It Works</div>
           <div class="ib">From 1 September 2024, all future retirement fund contributions are split: <strong>1/3 into a Savings Pot</strong> (accessible once per tax year) and <strong>2/3 into a Retirement Pot</strong> (locked until retirement). Existing funds stay in a <strong>Vested Pot</strong> under old rules.</div>
         </div>
-        <div class="fr"><label>Monthly Contribution (R)</label><input type="number" id="tp-contrib" placeholder="e.g. 3000" oninput="calcTwoPot()"></div>
-        <div class="fr"><label>Current Fund Value (R)</label><input type="number" id="tp-current" placeholder="e.g. 250000" oninput="calcTwoPot()"></div>
-        <div class="fr"><label>Years to Retirement</label><input type="number" id="tp-years" placeholder="e.g. 25" oninput="calcTwoPot()"></div>
+        <div class="fr"><label for="tp-contrib">Monthly Contribution (R)</label><input type="number" id="tp-contrib" placeholder="e.g. 3000" oninput="calcTwoPot()"></div>
+        <div class="fr"><label for="tp-current">Current Fund Value (R)</label><input type="number" id="tp-current" placeholder="e.g. 250000" oninput="calcTwoPot()"></div>
+        <div class="fr"><label for="tp-years">Years to Retirement</label><input type="number" id="tp-years" placeholder="e.g. 25" oninput="calcTwoPot()"></div>
         <div id="tp-result"></div>
       </div>
       <div>
@@ -3326,10 +3326,10 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="g2">
       <div>
         <div class="fg2" style="margin-bottom:12px">
-          <div class="fr"><label>Litres Filled</label><input type="number" id="pt-litres" placeholder="e.g. 45" step="0.1"></div>
-          <div class="fr"><label id="pt-price-lbl">Price per Litre</label><input type="number" id="pt-price" placeholder="e.g. 21.50" step="0.01"></div>
-          <div class="fr"><label>Odometer Reading (km)</label><input type="number" id="pt-odo" placeholder="e.g. 85420"></div>
-          <div class="fr"><label>Date</label><input type="date" id="pt-date"></div>
+          <div class="fr"><label for="pt-litres">Litres Filled</label><input type="number" id="pt-litres" placeholder="e.g. 45" step="0.1"></div>
+          <div class="fr"><label id="pt-price-lbl" for="pt-price">Price per Litre</label><input type="number" id="pt-price" placeholder="e.g. 21.50" step="0.01"></div>
+          <div class="fr"><label for="pt-odo">Odometer Reading (km)</label><input type="number" id="pt-odo" placeholder="e.g. 85420"></div>
+          <div class="fr"><label for="pt-date">Date</label><input type="date" id="pt-date"></div>
         </div>
         <button class="btn btn-gold btn-sm" onclick="addPetrolFill()" style="width:100%">+ Log Fill-Up</button>
         <div id="pt-result" style="margin-top:12px"></div>
@@ -3350,12 +3350,12 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <div>
         <div class="ic a" style="margin-bottom:12px"><div class="it">Track Your Eskom Costs</div><div class="ib">Log generator fuel, candles, UPS battery replacements and other load-shedding expenses. See the real monthly cost of load-shedding on your budget.</div></div>
         <div class="fg2">
-          <div class="fr"><label>Date</label><input type="date" id="ls-date"></div>
-          <div class="fr"><label>Stage</label><select id="ls-stage"><option value="1">Stage 1</option><option value="2">Stage 2</option><option value="3">Stage 3</option><option value="4">Stage 4</option><option value="5">Stage 5</option><option value="6">Stage 6</option></select></div>
-          <div class="fr"><label>Item</label><select id="ls-item"><option value="generator_fuel">Generator Fuel</option><option value="candles">Candles</option><option value="ups_battery">UPS / Battery</option><option value="inverter">Inverter Cost</option><option value="food_spoilage">Food Spoilage</option><option value="other">Other</option></select></div>
-          <div class="fr"><label>Cost (R)</label><input type="number" id="ls-cost" placeholder="0.00" step="0.01"></div>
+          <div class="fr"><label for="ls-date">Date</label><input type="date" id="ls-date"></div>
+          <div class="fr"><label for="ls-stage">Stage</label><select id="ls-stage"><option value="1">Stage 1</option><option value="2">Stage 2</option><option value="3">Stage 3</option><option value="4">Stage 4</option><option value="5">Stage 5</option><option value="6">Stage 6</option></select></div>
+          <div class="fr"><label for="ls-item">Item</label><select id="ls-item"><option value="generator_fuel">Generator Fuel</option><option value="candles">Candles</option><option value="ups_battery">UPS / Battery</option><option value="inverter">Inverter Cost</option><option value="food_spoilage">Food Spoilage</option><option value="other">Other</option></select></div>
+          <div class="fr"><label for="ls-cost">Cost (R)</label><input type="number" id="ls-cost" placeholder="0.00" step="0.01"></div>
         </div>
-        <div class="fr"><label>Note</label><input type="text" id="ls-note-inp" placeholder="e.g. 5L diesel for Honda generator"></div>
+        <div class="fr"><label for="ls-note-inp">Note</label><input type="text" id="ls-note-inp" placeholder="e.g. 5L diesel for Honda generator"></div>
         <button class="btn btn-gold btn-sm" onclick="addLsExpense()" style="width:100%">+ Log Expense</button>
       </div>
       <div>
@@ -3373,18 +3373,18 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="g2" style="margin-bottom:18px">
       <div class="card">
         <div class="ct">Corporate Income Tax (CIT)</div>
-        <div class="fr"><label>Annual Taxable Income (R)</label>
+        <div class="fr"><label for="cit-income">Annual Taxable Income (R)</label>
           <input type="number" id="cit-income" placeholder="e.g. 2000000" oninput="calcCIT()">
         </div>
         <div class="fg2">
-          <div class="fr"><label>Entity Type</label>
+          <div class="fr"><label for="cit-type">Entity Type</label>
             <select id="cit-type" onchange="calcCIT()">
               <option value="normal">Normal Company (27% flat)</option>
               <option value="sbc">Small Business Corp (SBC)</option>
               <option value="micro">Micro Business (Turnover Tax)</option>
             </select>
           </div>
-          <div class="fr"><label>Financial Year End</label>
+          <div class="fr"><label for="cit-fye">Financial Year End</label>
             <select id="cit-fye" onchange="calcCIT()">
               <option value="2">February</option><option value="3">March</option>
               <option value="6">June</option><option value="9">September</option>
@@ -3402,7 +3402,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="g2">
       <div class="card">
         <div class="ct">Dividends Withholding Tax</div>
-        <div class="fr"><label>Dividend Amount (R)</label><input type="number" id="dwt-amount" placeholder="e.g. 50000" oninput="calcDWT()"></div>
+        <div class="fr"><label for="dwt-amount">Dividend Amount (R)</label><input type="number" id="dwt-amount" placeholder="e.g. 50000" oninput="calcDWT()"></div>
         <div id="dwt-result" style="margin-top:12px"></div>
         <div class="ic" style="margin-top:12px"><div class="it">DWT Rate: 20%</div><div class="ib">Withheld by the company before distribution. Exempt: dividends paid to SA companies (s64F), approved pension funds, public benefit organisations.</div></div>
       </div>
@@ -3417,7 +3417,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="g2" style="margin-bottom:18px">
       <div class="card">
         <div class="ct">Trust Tax Calculator</div>
-        <div class="fr"><label>Trust Type</label>
+        <div class="fr"><label for="trust-type">Trust Type</label>
           <select id="trust-type" onchange="calcTrustTax()">
             <option value="discretionary">Discretionary Trust (45% flat)</option>
             <option value="special">Special Trust — Type A (disability, individual rates)</option>
@@ -3425,7 +3425,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
             <option value="bewind">Bewind Trust (taxed in beneficiary's hands)</option>
           </select>
         </div>
-        <div class="fr"><label>Trust Taxable Income (R)</label>
+        <div class="fr"><label for="trust-income">Trust Taxable Income (R)</label>
           <input type="number" id="trust-income" placeholder="e.g. 500000" oninput="calcTrustTax()">
         </div>
         <div id="trust-result" style="margin-top:14px"></div>
@@ -3530,7 +3530,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 
       <div class="ct">AI Advisor — Groq API Key</div>
       <div style="font-size:12px;color:var(--t3);margin-bottom:10px;line-height:1.6">Required to use the AI Advisor and AI month summaries. Get a free key from <strong style="color:var(--t2)">console.groq.com</strong> and paste it below. Your key is stored locally in your browser only and sent directly to Groq.</div>
-      <div class="fr"><label>API Key</label><input type="password" id="pref-api-key" placeholder="gsk_…" autocomplete="off" style="font-family:var(--fm);letter-spacing:.05em"></div>
+      <div class="fr"><label for="pref-api-key">API Key</label><input type="password" id="pref-api-key" placeholder="gsk_…" autocomplete="off" style="font-family:var(--fm);letter-spacing:.05em"></div>
       <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
         <button class="btn btn-ghost btn-sm" onclick="saveApiKey()">Save Key</button>
         <button class="btn btn-ghost btn-sm" onclick="clearApiKey()">Clear Key</button>
@@ -3593,7 +3593,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="card corp-show" style="display:none;margin-top:18px">
     <div class="ct" style="color:var(--gold)">Business Profile</div>
     <div class="biz-profile-grid" style="margin-bottom:14px">
-      <div class="fr" style="margin:0"><label>Entity Type</label>
+      <div class="fr" style="margin:0"><label for="corp-entity-type">Entity Type</label>
         <select id="corp-entity-type" onchange="S.prefs.corpEntityType=this.value;save()">
           <option value="pty">Private Company (Pty Ltd)</option>
           <option value="cc">Close Corporation (CC)</option>
@@ -3606,23 +3606,23 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
           <option value="pub">Public Company (Ltd)</option>
         </select>
       </div>
-      <div class="fr" style="margin:0"><label>Company / Entity Name</label><input type="text" id="corp-name" placeholder="e.g. Acme (Pty) Ltd" oninput="S.prefs.corpName=this.value;save()"></div>
+      <div class="fr" style="margin:0"><label for="corp-name">Company / Entity Name</label><input type="text" id="corp-name" placeholder="e.g. Acme (Pty) Ltd" oninput="S.prefs.corpName=this.value;save()"></div>
     </div>
     <div class="biz-3col" style="margin-bottom:14px">
-      <div class="fr" style="margin:0"><label>CIPC Reg Number</label><input type="text" id="corp-reg-no" placeholder="e.g. 2019/123456/07" oninput="S.prefs.corpRegNo=this.value;save()"></div>
-      <div class="fr" style="margin:0"><label>VAT Number</label><input type="text" id="corp-vat-num" placeholder="4xxxxxxxxxx" oninput="S.prefs.corpVatNum=this.value;save()"></div>
-      <div class="fr" style="margin:0"><label>VAT Rate (%)</label><input type="number" id="corp-vat-rate" placeholder="15" value="15" step="1" oninput="S.prefs.corpVatRate=+this.value;save()"></div>
+      <div class="fr" style="margin:0"><label for="corp-reg-no">CIPC Reg Number</label><input type="text" id="corp-reg-no" placeholder="e.g. 2019/123456/07" oninput="S.prefs.corpRegNo=this.value;save()"></div>
+      <div class="fr" style="margin:0"><label for="corp-vat-num">VAT Number</label><input type="text" id="corp-vat-num" placeholder="4xxxxxxxxxx" oninput="S.prefs.corpVatNum=this.value;save()"></div>
+      <div class="fr" style="margin:0"><label for="corp-vat-rate">VAT Rate (%)</label><input type="number" id="corp-vat-rate" placeholder="15" value="15" step="1" oninput="S.prefs.corpVatRate=+this.value;save()"></div>
     </div>
     <div class="biz-2col" style="margin-bottom:14px">
-      <div class="fr" style="margin:0"><label>Financial Year End</label>
+      <div class="fr" style="margin:0"><label for="corp-fye">Financial Year End</label>
         <select id="corp-fye" onchange="S.prefs.corpFYE=this.value;save()">
           <option value="2">February</option><option value="3">March</option><option value="6">June</option>
           <option value="9">September</option><option value="12" selected>December</option>
         </select>
       </div>
-      <div class="fr" style="margin:0"><label>Income Tax Reference Number</label><input type="text" id="corp-tax-ref" placeholder="e.g. 9xxxxxxxxx" oninput="S.prefs.corpTaxRef=this.value;save()"></div>
+      <div class="fr" style="margin:0"><label for="corp-tax-ref">Income Tax Reference Number</label><input type="text" id="corp-tax-ref" placeholder="e.g. 9xxxxxxxxx" oninput="S.prefs.corpTaxRef=this.value;save()"></div>
     </div>
-    <div class="fr" style="margin-bottom:14px"><label>Registered Address (optional)</label><input type="text" id="corp-address" placeholder="e.g. 10 Main Rd, Cape Town, 8001" oninput="S.prefs.corpAddress=this.value;save()"></div>
+    <div class="fr" style="margin-bottom:14px"><label for="corp-address">Registered Address (optional)</label><input type="text" id="corp-address" placeholder="e.g. 10 Main Rd, Cape Town, 8001" oninput="S.prefs.corpAddress=this.value;save()"></div>
     <div class="ic b"><div class="it">Business categories active</div><div class="ib">Income: Revenue, Consulting, Grants, Other Income. Expenses: Salaries, Rent, IT &amp; Software, Marketing, Professional Services, Travel, Utilities, Cost of Sales, Bank Charges, Insurance.</div></div>
   </div>
   <div class="card" style="margin-top:18px">
@@ -3774,12 +3774,12 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="g2">
     <div class="card">
       <div class="ct">Log Medical Expense</div>
-      <div class="fr"><label>Date</label><input type="date" id="mg-date"></div>
-      <div class="fr"><label>Provider / Doctor</label><input type="text" id="mg-provider" placeholder="e.g. Dr Patel, Netcare"></div>
-      <div class="fr"><label>Description</label><input type="text" id="mg-desc" placeholder="e.g. Specialist consultation"></div>
+      <div class="fr"><label for="mg-date">Date</label><input type="date" id="mg-date"></div>
+      <div class="fr"><label for="mg-provider">Provider / Doctor</label><input type="text" id="mg-provider" placeholder="e.g. Dr Patel, Netcare"></div>
+      <div class="fr"><label for="mg-desc">Description</label><input type="text" id="mg-desc" placeholder="e.g. Specialist consultation"></div>
       <div class="fg2">
-        <div class="fr"><label>Amount Paid (Out-of-Pocket)</label><input type="number" id="mg-oop" placeholder="0.00" step="0.01" min="0.01"></div>
-        <div class="fr"><label>Insurance / Scheme Claimed Back</label><input type="number" id="mg-claimed" placeholder="0.00" step="0.01" min="0"></div>
+        <div class="fr"><label for="mg-oop">Amount Paid (Out-of-Pocket)</label><input type="number" id="mg-oop" placeholder="0.00" step="0.01" min="0.01"></div>
+        <div class="fr"><label for="mg-claimed">Insurance / Scheme Claimed Back</label><input type="number" id="mg-claimed" placeholder="0.00" step="0.01" min="0"></div>
       </div>
       <button class="btn btn-gold" onclick="addMedGapExpense()" style="width:100%">+ Log Expense</button>
     </div>
@@ -3837,12 +3837,12 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <div class="card">
         <div class="ct">Your Retirement Number</div>
         <div class="fg2">
-          <div class="fr"><label>Current RA / Pension Value (R)</label><input type="number" id="rr-ra-val" placeholder="e.g. 250000" oninput="rRetirementReadiness()"></div>
-          <div class="fr"><label>Your Current Age</label><input type="number" id="rr-age" placeholder="35" oninput="rRetirementReadiness()"></div>
-          <div class="fr"><label>Target Retirement Age</label><input type="number" id="rr-ret-age" placeholder="65" oninput="rRetirementReadiness()"></div>
-          <div class="fr"><label>Monthly Contribution (R)</label><input type="number" id="rr-contrib" placeholder="Auto from Investment Hub" oninput="rRetirementReadiness()"></div>
+          <div class="fr"><label for="rr-ra-val">Current RA / Pension Value (R)</label><input type="number" id="rr-ra-val" placeholder="e.g. 250000" oninput="rRetirementReadiness()"></div>
+          <div class="fr"><label for="rr-age">Your Current Age</label><input type="number" id="rr-age" placeholder="35" oninput="rRetirementReadiness()"></div>
+          <div class="fr"><label for="rr-ret-age">Target Retirement Age</label><input type="number" id="rr-ret-age" placeholder="65" oninput="rRetirementReadiness()"></div>
+          <div class="fr"><label for="rr-contrib">Monthly Contribution (R)</label><input type="number" id="rr-contrib" placeholder="Auto from Investment Hub" oninput="rRetirementReadiness()"></div>
         </div>
-        <div class="fr"><label style="display:flex;align-items:center;gap:8px">Expected Return (% p.a.)<span style="font-size:9.5px;color:var(--t4)"><span>&nbsp;JSE avg ~11%</span></span></label><input type="range" id="rr-rate" min="4" max="18" step="0.5" value="10" oninput="document.getElementById('rr-rate-lbl').textContent=this.value+'%';rRetirementReadiness()" style="flex:1;accent-color:var(--accent)"><span id="rr-rate-lbl" style="font-family:var(--fm);font-weight:700;min-width:36px">10%</span></div>
+        <div class="fr"><label style="display:flex;align-items:center;gap:8px" for="rr-rate">Expected Return (% p.a.)<span style="font-size:9.5px;color:var(--t4)"><span>&nbsp;JSE avg ~11%</span></span></label><input type="range" id="rr-rate" min="4" max="18" step="0.5" value="10" oninput="document.getElementById('rr-rate-lbl').textContent=this.value+'%';rRetirementReadiness()" style="flex:1;accent-color:var(--accent)"><span id="rr-rate-lbl" style="font-family:var(--fm);font-weight:700;min-width:36px">10%</span></div>
         <div style="margin:6px 0 2px 0"><label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--t2);cursor:pointer"><input type="checkbox" id="rr-real-toggle" onchange="rRetirementReadiness()" style="accent-color:var(--accent)"> Show inflation-adjusted (real) values</label></div>
         <div id="ret-readiness-wrap"></div>
       </div>
@@ -3861,7 +3861,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <div class="ct">What-If: Extra Contributions</div>
       <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap">
         <div style="flex:1;min-width:200px">
-          <label style="font-size:11px;color:var(--t3);display:block;margin-bottom:5px">Extra monthly contribution (R)</label>
+          <label style="font-size:11px;color:var(--t3);display:block;margin-bottom:5px" for="ret-extra">Extra monthly contribution (R)</label>
           <input type="range" id="ret-extra" min="0" max="10000" step="100" value="0" oninput="document.getElementById('ret-extra-lbl').textContent=fmt(+this.value)+'/mo';rRetireScenarios()" style="width:100%;accent-color:var(--accent)">
         </div>
         <div style="font-family:var(--fm);font-size:16px;font-weight:700;min-width:90px" id="ret-extra-lbl">R 0/mo</div>
@@ -3874,7 +3874,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="g2">
       <div class="card">
         <div class="ct">ZAR/USD Rate for USD Holdings</div>
-        <div class="fr"><label>Current ZAR/USD Rate</label><input type="number" id="fx-rate-inp" placeholder="e.g. 18.50" step="0.01" oninput="rFxRate()" value="18.50"></div>
+        <div class="fr"><label for="fx-rate-inp">Current ZAR/USD Rate</label><input type="number" id="fx-rate-inp" placeholder="e.g. 18.50" step="0.01" oninput="rFxRate()" value="18.50"></div>
         <div id="fx-rate-display"></div>
       </div>
       <div class="card">
@@ -3903,20 +3903,20 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="g2" style="margin-bottom:18px">
     <div class="card">
       <div class="ct">Income Sources</div>
-      <div class="fr"><label>Employment income (gross, R/yr)</label><input type="number" id="itr-salary" placeholder="e.g. 420000" oninput="calcItr12()"></div>
-      <div class="fr"><label>Commission / freelance income (R/yr)</label><input type="number" id="itr-comm" placeholder="0" oninput="calcItr12()"></div>
-      <div class="fr"><label>Rental income (R/yr)</label><input type="number" id="itr-rental" placeholder="0" oninput="calcItr12()"></div>
-      <div class="fr"><label>Interest received (R/yr)</label><input type="number" id="itr-interest" placeholder="0" oninput="calcItr12()"></div>
+      <div class="fr"><label for="itr-salary">Employment income (gross, R/yr)</label><input type="number" id="itr-salary" placeholder="e.g. 420000" oninput="calcItr12()"></div>
+      <div class="fr"><label for="itr-comm">Commission / freelance income (R/yr)</label><input type="number" id="itr-comm" placeholder="0" oninput="calcItr12()"></div>
+      <div class="fr"><label for="itr-rental">Rental income (R/yr)</label><input type="number" id="itr-rental" placeholder="0" oninput="calcItr12()"></div>
+      <div class="fr"><label for="itr-interest">Interest received (R/yr)</label><input type="number" id="itr-interest" placeholder="0" oninput="calcItr12()"></div>
       <div class="ct" style="margin-top:14px">Deductions & Credits</div>
       <div class="fg2">
-        <div class="fr"><label>RA contributions (R/yr)</label><input type="number" id="itr-ra" placeholder="0" oninput="calcItr12()"></div>
-        <div class="fr"><label>Medical aid members</label><input type="number" id="itr-med" value="1" oninput="calcItr12()"></div>
-        <div class="fr"><label>Out-of-pocket medical (R/yr)</label><input type="number" id="itr-medoop" placeholder="0" oninput="calcItr12()"></div>
-        <div class="fr"><label>Travel allowance (R/yr)</label><input type="number" id="itr-trav" placeholder="0" oninput="calcItr12()"></div>
-        <div class="fr"><label>Business km (full year)</label><input type="number" id="itr-bkm" placeholder="0" oninput="calcItr12()"></div>
-        <div class="fr"><label>Total km (full year)</label><input type="number" id="itr-tkm" placeholder="0" oninput="calcItr12()"></div>
-        <div class="fr"><label>Tax already paid (PAYE, R/yr)</label><input type="number" id="itr-paye" placeholder="0" oninput="calcItr12()"></div>
-        <div class="fr"><label>Age</label>
+        <div class="fr"><label for="itr-ra">RA contributions (R/yr)</label><input type="number" id="itr-ra" placeholder="0" oninput="calcItr12()"></div>
+        <div class="fr"><label for="itr-med">Medical aid members</label><input type="number" id="itr-med" value="1" oninput="calcItr12()"></div>
+        <div class="fr"><label for="itr-medoop">Out-of-pocket medical (R/yr)</label><input type="number" id="itr-medoop" placeholder="0" oninput="calcItr12()"></div>
+        <div class="fr"><label for="itr-trav">Travel allowance (R/yr)</label><input type="number" id="itr-trav" placeholder="0" oninput="calcItr12()"></div>
+        <div class="fr"><label for="itr-bkm">Business km (full year)</label><input type="number" id="itr-bkm" placeholder="0" oninput="calcItr12()"></div>
+        <div class="fr"><label for="itr-tkm">Total km (full year)</label><input type="number" id="itr-tkm" placeholder="0" oninput="calcItr12()"></div>
+        <div class="fr"><label for="itr-paye">Tax already paid (PAYE, R/yr)</label><input type="number" id="itr-paye" placeholder="0" oninput="calcItr12()"></div>
+        <div class="fr"><label for="itr-age">Age</label>
           <select id="itr-age" onchange="calcItr12()">
             <option value="u65">Under 65</option>
             <option value="65to74">65–74</option>
@@ -3941,7 +3941,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 <div id="pg-cashflow" class="page">
   <div class="ph"><div><div class="pt">Cashflow <em>Forecast</em></div><div class="psub">Projected balance based on your recurring patterns</div></div>
     <div style="display:flex;gap:8px;align-items:center">
-      <label style="font-size:11px;color:var(--t3)">Months:</label>
+      <label style="font-size:11px;color:var(--t3)" for="cf-months">Months:</label>
       <select id="cf-months" onchange="rCashflow()" style="font-size:12px;padding:4px 8px">
         <option value="3">3 months</option><option value="6" selected>6 months</option><option value="12">12 months</option>
       </select>
@@ -3979,8 +3979,8 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
         <div id="tfsa-yr-lbl" style="font-size:11px;color:var(--t3)">R 36,000 remaining</div>
       </div>
       <div style="border-top:1px solid var(--b1);padding-top:12px;margin-top:4px">
-        <div class="fr"><label>Annual contributions (R)</label><input type="number" id="tfsa-yr-inp" placeholder="e.g. 3800/mo = 46000/yr" oninput="saveTfsa()"></div>
-        <div class="fr"><label>Lifetime total contributed (R)</label><input type="number" id="tfsa-life-inp" placeholder="e.g. 150000" oninput="saveTfsa()"></div>
+        <div class="fr"><label for="tfsa-yr-inp">Annual contributions (R)</label><input type="number" id="tfsa-yr-inp" placeholder="e.g. 3800/mo = 46000/yr" oninput="saveTfsa()"></div>
+        <div class="fr"><label for="tfsa-life-inp">Lifetime total contributed (R)</label><input type="number" id="tfsa-life-inp" placeholder="e.g. 150000" oninput="saveTfsa()"></div>
       </div>
     </div>
   </div>
@@ -3996,9 +3996,9 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="g2" style="margin-bottom:20px">
     <div class="card">
       <div class="ct" style="margin-bottom:14px">Your Details</div>
-      <div class="fr"><label>Annual Gross Salary (£)</label><input type="number" id="ukt-income" placeholder="e.g. 45000" oninput="calcUKTax()" min="0"></div>
-      <div class="fr"><label>Pension Contribution (£/yr)</label><input type="number" id="ukt-pension" placeholder="e.g. 2400 · reduces taxable income" oninput="calcUKTax()" min="0"></div>
-      <div class="fr"><label>Tax Code</label>
+      <div class="fr"><label for="ukt-income">Annual Gross Salary (£)</label><input type="number" id="ukt-income" placeholder="e.g. 45000" oninput="calcUKTax()" min="0"></div>
+      <div class="fr"><label for="ukt-pension">Pension Contribution (£/yr)</label><input type="number" id="ukt-pension" placeholder="e.g. 2400 · reduces taxable income" oninput="calcUKTax()" min="0"></div>
+      <div class="fr"><label for="ukt-taxcode">Tax Code</label>
         <select id="ukt-taxcode" onchange="calcUKTax()">
           <option value="1257L">1257L — Standard (£12,570 allowance)</option>
           <option value="BR">BR — Basic Rate (0% allowance)</option>
@@ -4006,13 +4006,13 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
           <option value="NT">NT — No Tax</option>
         </select>
       </div>
-      <div class="fr"><label>Employment Type</label>
+      <div class="fr"><label for="ukt-emptype">Employment Type</label>
         <select id="ukt-emptype" onchange="calcUKTax()">
           <option value="employee">Employee (Class 1 NI)</option>
           <option value="self">Self-Employed (Class 2 &amp; 4 NI)</option>
         </select>
       </div>
-      <div class="fr"><label>Student Loan Plan</label>
+      <div class="fr"><label for="ukt-sl">Student Loan Plan</label>
         <select id="ukt-sl" onchange="calcUKTax()">
           <option value="none">None</option>
           <option value="1">Plan 1 (pre-2012 · threshold £26,900)</option>
@@ -4122,10 +4122,10 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="g2" style="margin-bottom:18px">
     <div class="card">
       <div class="ct">Your Details</div>
-      <div class="fr"><label>Monthly gross salary (R)</label><input type="number" id="uif-salary" placeholder="e.g. 25000" oninput="calcUif()">
+      <div class="fr"><label for="uif-salary">Monthly gross salary (R)</label><input type="number" id="uif-salary" placeholder="e.g. 25000" oninput="calcUif()">
       </div>
-      <div class="fr"><label>Months contributing to UIF</label><input type="number" id="uif-months" placeholder="e.g. 24" min="1" max="48" oninput="calcUif()"></div>
-      <div class="fr"><label>Reason for claim</label>
+      <div class="fr"><label for="uif-months">Months contributing to UIF</label><input type="number" id="uif-months" placeholder="e.g. 24" min="1" max="48" oninput="calcUif()"></div>
+      <div class="fr"><label for="uif-reason">Reason for claim</label>
         <select id="uif-reason" onchange="calcUif()">
           <option value="retrench">Retrenchment</option>
           <option value="dismissed">Dismissal</option>
@@ -4256,15 +4256,15 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="sb-modal-body" id="sb-auth-form">
       <div class="sb-msg" id="sb-msg"></div>
       <div class="sb-field">
-        <label>Email</label>
+        <label for="sb-email">Email</label>
         <input type="email" id="sb-email" placeholder="you@example.com" autocomplete="email">
       </div>
       <div class="sb-field" id="sb-pass-field">
-        <label>Password</label>
+        <label for="sb-pass">Password</label>
         <input type="password" id="sb-pass" placeholder="••••••••" autocomplete="current-password">
       </div>
       <div class="sb-field" style="display:none" id="sb-name-field">
-        <label>Your Name <span style="color:var(--t4);font-weight:400">optional</span></label>
+        <label for="sb-name">Your Name <span style="color:var(--t4);font-weight:400">optional</span></label>
         <input type="text" id="sb-name" placeholder="e.g. Marcel">
       </div>
       <button class="sb-btn" id="sb-submit-btn" onclick="sbSubmit()">Sign in</button>
@@ -4301,12 +4301,12 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     </div>
     <div class="bp-modal-body">
       <div class="bp-field">
-        <label>Account / Reference Number</label>
+        <label for="bp-m-ref">Account / Reference Number</label>
         <input type="text" id="bp-m-ref" placeholder="Enter your account or meter number" autocomplete="off">
         <div style="font-size:10px;color:var(--t4);margin-top:4px">Saved automatically for next time</div>
       </div>
       <div class="bp-field">
-        <label>Amount paid (log for your records)</label>
+        <label for="bp-m-amount">Amount paid (log for your records)</label>
         <div class="bp-amount-row">
           <span class="bp-currency" id="bp-currency-sym">R</span>
           <input type="number" id="bp-m-amount" placeholder="0.00" min="0.01" max="1000000" step="0.01">
@@ -4447,15 +4447,15 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="kl-ag-form-sub">Free forever. No credit card required.</div>
     <div id="kl-ag-msg" class="kl-ag-msg"></div>
     <div class="kl-ag-field">
-      <label>Email address</label>
+      <label for="kl-ag-email">Email address</label>
       <input type="email" id="kl-ag-email" placeholder="you@example.com" autocomplete="email" spellcheck="false">
     </div>
     <div class="kl-ag-field">
-      <label>Password</label>
+      <label for="kl-ag-pass">Password</label>
       <input type="password" id="kl-ag-pass" placeholder="At least 6 characters" autocomplete="new-password">
     </div>
     <div class="kl-ag-field" id="kl-ag-name-field">
-      <label>Your name <span>(optional)</span></label>
+      <label for="kl-ag-name">Your name <span>(optional)</span></label>
       <input type="text" id="kl-ag-name" placeholder="e.g. Marcel" autocomplete="given-name">
     </div>
     <button class="kl-ag-btn" id="kl-ag-submit" onclick="klAgSubmit()">Create account</button>
@@ -4688,22 +4688,22 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="mt" id="trip-modal-title">Plan a Trip</div>
     <input type="hidden" id="trip-edit-id">
     <div class="fg2">
-      <div class="fr"><label>Trip Name</label><input type="text" id="trip-name" placeholder="e.g. Europe Summer 2026"></div>
-      <div class="fr"><label>Destination</label><input type="text" id="trip-dest" placeholder="e.g. Paris, Rome, Barcelona"></div>
+      <div class="fr"><label for="trip-name">Trip Name</label><input type="text" id="trip-name" placeholder="e.g. Europe Summer 2026"></div>
+      <div class="fr"><label for="trip-dest">Destination</label><input type="text" id="trip-dest" placeholder="e.g. Paris, Rome, Barcelona"></div>
     </div>
     <div class="fg2">
-      <div class="fr"><label>Departure Date</label><input type="date" id="trip-depart"></div>
-      <div class="fr"><label>Return Date</label><input type="date" id="trip-return"></div>
+      <div class="fr"><label for="trip-depart">Departure Date</label><input type="date" id="trip-depart"></div>
+      <div class="fr"><label for="trip-return">Return Date</label><input type="date" id="trip-return"></div>
     </div>
     <div class="fg2">
-      <div class="fr"><label>Budget Currency</label>
+      <div class="fr"><label for="trip-currency">Budget Currency</label>
         <select id="trip-currency" onchange="refreshTripTotals()">
           <option value="ZAR">ZAR</option><option value="USD">USD</option><option value="EUR">EUR</option>
           <option value="GBP">GBP</option><option value="AUD">AUD</option><option value="CHF">CHF</option>
           <option value="AED">AED</option><option value="JPY">JPY</option>
         </select>
       </div>
-      <div class="fr"><label>Linked Savings Account <span style="color:var(--t3);font-weight:400;font-size:10px">optional</span></label>
+      <div class="fr"><label for="trip-acc">Linked Savings Account <span style="color:var(--t3);font-weight:400;font-size:10px">optional</span></label>
         <select id="trip-acc"></select>
       </div>
     </div>
@@ -4714,7 +4714,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div id="trip-items-list" style="margin-bottom:12px"></div>
     <div style="background:var(--s2);border-radius:var(--rsm);padding:12px 14px;font-size:13px" id="trip-totals"></div>
     <div class="fg2" style="margin-top:14px">
-      <div class="fr"><label>Status</label>
+      <div class="fr"><label for="trip-status">Status</label>
         <select id="trip-status">
           <option value="planning">Planning</option>
           <option value="saving">Actively Saving</option>
@@ -4722,7 +4722,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
           <option value="completed">Completed</option>
         </select>
       </div>
-      <div class="fr"><label>Notes</label><input type="text" id="trip-notes" placeholder="Visa needed, travel insurance, etc."></div>
+      <div class="fr"><label for="trip-notes">Notes</label><input type="text" id="trip-notes" placeholder="Visa needed, travel insurance, etc."></div>
     </div>
     <div class="mf">
       <button class="btn btn-ghost" onclick="closeModal('m-add-trip')">Cancel</button>
@@ -4736,10 +4736,10 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="modal" style="max-width:420px">
     <div class="mt" id="sarb-entry-title">Log Forex Transfer</div>
     <input type="hidden" id="sarb-entry-type">
-    <div class="fr"><label>Date</label><input type="date" id="sarb-entry-date"></div>
+    <div class="fr"><label for="sarb-entry-date">Date</label><input type="date" id="sarb-entry-date"></div>
     <div class="fg2">
-      <div class="fr"><label>Amount (ZAR)</label><input type="number" id="sarb-entry-zar" placeholder="e.g. 150000" min="0" step="0.01"></div>
-      <div class="fr"><label>Currency / Bank</label><input type="text" id="sarb-entry-desc" placeholder="e.g. Wise USD, FNB Global"></div>
+      <div class="fr"><label for="sarb-entry-zar">Amount (ZAR)</label><input type="number" id="sarb-entry-zar" placeholder="e.g. 150000" min="0" step="0.01"></div>
+      <div class="fr"><label for="sarb-entry-desc">Currency / Bank</label><input type="text" id="sarb-entry-desc" placeholder="e.g. Wise USD, FNB Global"></div>
     </div>
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
       <button class="btn btn-ghost" onclick="closeModal('m-sarb-entry')">Cancel</button>
@@ -4793,8 +4793,8 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 <div class="modal-bg" id="m-add-cat-rule" role="dialog" aria-modal="true" aria-labelledby="m-add-cat-rule-title">
   <div class="modal" style="max-width:420px">
     <div class="mt" id="m-add-cat-rule-title">Add Category Rule</div>
-    <div class="fr"><label>Keyword / phrase</label><input type="text" id="catr-keyword" placeholder="e.g. spotify, shoprite, petrol"></div>
-    <div class="fr"><label>Category</label><select id="catr-cat"></select></div>
+    <div class="fr"><label for="catr-keyword">Keyword / phrase</label><input type="text" id="catr-keyword" placeholder="e.g. spotify, shoprite, petrol"></div>
+    <div class="fr"><label for="catr-cat">Category</label><select id="catr-cat"></select></div>
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
       <button class="btn btn-ghost" onclick="closeModal('m-add-cat-rule')">Cancel</button>
       <button class="btn btn-primary" onclick="saveCatRule()">Save rule</button>
@@ -4806,7 +4806,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 <div class="modal-bg" id="m-add-account" role="dialog" aria-modal="true" aria-labelledby="m-add-account-title">
   <div class="modal">
     <div class="mt" id="m-add-account-title">Add Account</div>
-    <div class="fr"><label>Account Name</label><input type="text" id="acc-name-inp" placeholder="e.g. FNB Cheque, Capitec Savings"></div>
+    <div class="fr"><label for="acc-name-inp">Account Name</label><input type="text" id="acc-name-inp" placeholder="e.g. FNB Cheque, Capitec Savings"></div>
     <div class="fg2">
       <div class="fr" id="acc-bank-group" data-region-group="acc-bank-group">
         <label>Bank</label>
@@ -4829,7 +4829,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
           <option value="Other">Other</option>
         </select>
       </div>
-      <div class="fr"><label>Account Type</label>
+      <div class="fr"><label for="acc-type">Account Type</label>
         <select id="acc-type">
           <option value="cheque">Cheque / Current</option>
           <option value="savings">Savings</option>
@@ -4843,12 +4843,12 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       </div>
     </div>
     <div class="fg2">
-      <div class="fr"><label>Colour</label><input type="color" id="acc-color" value="#5090e8"></div>
-      <div class="fr"><label>Credit Limit — credit cards only</label><input type="number" id="acc-limit" placeholder="0 if not applicable" min="0"></div>
+      <div class="fr"><label for="acc-color">Colour</label><input type="color" id="acc-color" value="#5090e8"></div>
+      <div class="fr"><label for="acc-limit">Credit Limit — credit cards only</label><input type="number" id="acc-limit" placeholder="0 if not applicable" min="0"></div>
     </div>
     <div class="fg2">
-      <div class="fr"><label>Opening Balance — optional</label><input type="number" id="acc-opening" placeholder="0.00" step="0.01"></div>
-      <div class="fr"><label>Currency</label>
+      <div class="fr"><label for="acc-opening">Opening Balance — optional</label><input type="number" id="acc-opening" placeholder="0.00" step="0.01"></div>
+      <div class="fr"><label for="acc-currency">Currency</label>
         <select id="acc-currency" onchange="onAccCurrencyChange(this.value)">
           <option value="ZAR">ZAR — South African Rand</option>
           <optgroup label="── Major ──">
@@ -4887,7 +4887,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       </div>
     </div>
     <div class="fr" id="acc-fx-rate-wrap" style="display:none">
-      <label>Exchange Rate to ZAR <span style="color:var(--t3);font-size:10px;font-weight:400">1 foreign unit = ? ZAR</span></label>
+      <label for="acc-zarrate">Exchange Rate to ZAR <span style="color:var(--t3);font-size:10px;font-weight:400">1 foreign unit = ? ZAR</span></label>
       <input type="number" id="acc-zarrate" placeholder="e.g. 18.50" step="0.0001" min="0.0001">
     </div>
     <div class="mf"><button class="btn btn-ghost" onclick="closeModal('m-add-account')">Cancel</button><button class="btn btn-gold" onclick="saveAccount()">Save Account</button></div>
@@ -4898,9 +4898,9 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 <div class="modal-bg" id="m-recon" role="dialog" aria-modal="true" aria-labelledby="m-recon-title">
   <div class="modal" style="max-width:560px">
     <div class="mt" id="m-recon-title">Reconcile Account</div>
-    <div class="fr"><label>Select Account</label><select id="recon-acc-sel" onchange="updateReconPreview()"></select></div>
+    <div class="fr"><label for="recon-acc-sel">Select Account</label><select id="recon-acc-sel" onchange="updateReconPreview()"></select></div>
     <div id="recon-preview" style="margin:16px 0"></div>
-    <div class="fr"><label id="recon-stmt-lbl">Statement Closing Balance (R)</label><input type="number" id="recon-stmt-bal" placeholder="Enter the balance shown on your statement" step="0.01" oninput="updateReconPreview()"></div>
+    <div class="fr"><label id="recon-stmt-lbl" for="recon-stmt-bal">Statement Closing Balance (R)</label><input type="number" id="recon-stmt-bal" placeholder="Enter the balance shown on your statement" step="0.01" oninput="updateReconPreview()"></div>
     <div id="recon-result" style="margin-top:12px"></div>
     <div id="recon-cc-note" style="margin-top:16px;padding:12px;background:var(--blue-d);border-radius:var(--rsm);font-size:11px;color:var(--t2);border-left:3px solid var(--blue);display:none">
       <strong style="color:var(--blue)">Credit Card:</strong> Enter the <strong>closing balance shown on your statement</strong> — this is the total amount you owe. Klar will compare it against its calculated balance and show the difference. Your available credit = Limit minus Balance.
@@ -4926,7 +4926,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <!-- Step 1: Account -->
     <div id="imp-step1">
       <div class="fr">
-        <label>Which account is this CSV from?</label>
+        <label for="imp-acc-sel">Which account is this CSV from?</label>
         <select id="imp-acc-sel" onchange="impAccSelChange()">
           <option value="">— Select account —</option>
           <option value="__new__">+ New account…</option>
@@ -4938,7 +4938,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <div id="imp-new-acc-wrap" style="display:none">
         <div style="padding:14px;background:var(--s2);border-radius:var(--rsm);margin-bottom:14px">
           <div class="fg2">
-            <div class="fr"><label>Account Name</label><input type="text" id="imp-new-name" placeholder="e.g. FNB Cheque"></div>
+            <div class="fr"><label for="imp-new-name">Account Name</label><input type="text" id="imp-new-name" placeholder="e.g. FNB Cheque"></div>
             <div class="fr" id="imp-bank-group" data-region-group="imp-bank-group">
               <label>Bank</label>
               <div class="acc-region-toggle">
@@ -4953,13 +4953,13 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
                 <option value="Other">Other</option>
               </select>
             </div>
-            <div class="fr"><label>Type</label>
+            <div class="fr"><label for="imp-new-type">Type</label>
               <select id="imp-new-type">
                 <option value="cheque">Cheque / Current</option><option value="savings">Savings</option>
                 <option value="credit">Credit Card</option><option value="investment">Investment</option><option value="cash">Cash</option>
               </select>
             </div>
-            <div class="fr"><label>Colour</label><input type="color" id="imp-new-color" value="#5090e8"></div>
+            <div class="fr"><label for="imp-new-color">Colour</label><input type="color" id="imp-new-color" value="#5090e8"></div>
           </div>
         </div>
       </div>
@@ -5009,8 +5009,8 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <!-- Column selectors — hidden for OFX/QIF -->
       <div id="imp-col-wrap">
         <div class="fg2">
-          <div class="fr"><label>Date Column</label><select id="col-dt" onchange="impUpdateColPreview()"></select></div>
-          <div class="fr"><label>Description Column</label><select id="col-ds" onchange="impUpdateColPreview()"></select></div>
+          <div class="fr"><label for="col-dt">Date Column</label><select id="col-dt" onchange="impUpdateColPreview()"></select></div>
+          <div class="fr"><label for="col-ds">Description Column</label><select id="col-ds" onchange="impUpdateColPreview()"></select></div>
         </div>
         <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
           <label class="toggle" style="margin:0"><input type="checkbox" id="col-split-mode" onchange="toggleSplitMode(this.checked);impUpdateColPreview()"><span class="tsl"></span></label>
@@ -5018,12 +5018,12 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
           <span id="imp-split-hint" style="font-size:10px;color:var(--t3)">(FNB, Nedbank, some ABSA exports)</span>
         </div>
         <div id="col-single-wrap" class="fg2">
-          <div class="fr"><label>Amount Column <span style="color:var(--t3);font-size:9px;font-weight:400">signed: negative=debit, positive=credit</span></label><select id="col-am" onchange="impUpdateColPreview()"></select></div>
-          <div class="fr"><label>Type Column (optional)</label><select id="col-ty"></select></div>
+          <div class="fr"><label for="col-am">Amount Column <span style="color:var(--t3);font-size:9px;font-weight:400">signed: negative=debit, positive=credit</span></label><select id="col-am" onchange="impUpdateColPreview()"></select></div>
+          <div class="fr"><label for="col-ty">Type Column (optional)</label><select id="col-ty"></select></div>
         </div>
         <div id="col-split-wrap" style="display:none" class="fg2">
-          <div class="fr"><label>Debit Column <span style="color:var(--red);font-size:9px">money out</span></label><select id="col-debit" onchange="impUpdateColPreview()"></select></div>
-          <div class="fr"><label>Credit Column <span style="color:var(--green);font-size:9px">money in</span></label><select id="col-credit" onchange="impUpdateColPreview()"></select></div>
+          <div class="fr"><label for="col-debit">Debit Column <span style="color:var(--red);font-size:9px">money out</span></label><select id="col-debit" onchange="impUpdateColPreview()"></select></div>
+          <div class="fr"><label for="col-credit">Credit Column <span style="color:var(--green);font-size:9px">money in</span></label><select id="col-credit" onchange="impUpdateColPreview()"></select></div>
         </div>
       </div>
       <!-- Live preview of first mapped row -->
@@ -5114,12 +5114,12 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 <div class="modal-bg" id="m-add-sub" role="dialog" aria-modal="true" aria-labelledby="m-add-sub-title">
   <div class="modal">
     <div class="mt" id="m-add-sub-title">Add Subscription</div>
-    <div class="fr"><label>Service Name</label><input type="text" id="s-name" placeholder="e.g. Netflix, Spotify, DSTV" required></div>
+    <div class="fr"><label for="s-name">Service Name</label><input type="text" id="s-name" placeholder="e.g. Netflix, Spotify, DSTV" required></div>
     <div class="fg2">
-      <div class="fr"><label>Amount (<span class="kl-cur-sym">R</span>)</label><input type="number" id="s-amt" placeholder="0.00" min="0" step="0.01" required></div>
-      <div class="fr"><label>Billing Cycle</label><select id="s-cyc"><option value="monthly">Monthly</option><option value="annual">Annual</option><option value="weekly">Weekly</option><option value="quarterly">Quarterly</option></select></div>
-      <div class="fr"><label>Next Billing Date</label><input type="date" id="s-dt"></div>
-      <div class="fr"><label>Icon</label><input type="text" id="s-ic" placeholder="📱" style="width:70px"></div>
+      <div class="fr"><label for="s-amt">Amount (<span class="kl-cur-sym">R</span>)</label><input type="number" id="s-amt" placeholder="0.00" min="0" step="0.01" required></div>
+      <div class="fr"><label for="s-cyc">Billing Cycle</label><select id="s-cyc"><option value="monthly">Monthly</option><option value="annual">Annual</option><option value="weekly">Weekly</option><option value="quarterly">Quarterly</option></select></div>
+      <div class="fr"><label for="s-dt">Next Billing Date</label><input type="date" id="s-dt"></div>
+      <div class="fr"><label for="s-ic">Icon</label><input type="text" id="s-ic" placeholder="📱" style="width:70px"></div>
     </div>
     <div class="mf"><button class="btn btn-ghost" onclick="closeModal('m-add-sub')">Cancel</button><button class="btn btn-gold" onclick="saveSub()">Save</button></div>
   </div>
@@ -5127,34 +5127,34 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 <div class="modal-bg" id="m-add-bud" role="dialog" aria-modal="true" aria-labelledby="m-add-bud-title">
   <div class="modal">
     <div class="mt" id="m-add-bud-title">Set Budget Limit</div>
-    <div class="fr"><label>Category</label><select id="bud-cat"></select></div>
-    <div class="fr"><label>Monthly Limit (<span class="kl-cur-sym">R</span>)</label><input type="number" id="bud-lim" placeholder="0.00" min="0" step="0.01" required></div>
+    <div class="fr"><label for="bud-cat">Category</label><select id="bud-cat"></select></div>
+    <div class="fr"><label for="bud-lim">Monthly Limit (<span class="kl-cur-sym">R</span>)</label><input type="number" id="bud-lim" placeholder="0.00" min="0" step="0.01" required></div>
     <div class="mf"><button class="btn btn-ghost" onclick="closeModal('m-add-bud')">Cancel</button><button class="btn btn-gold" onclick="saveBudget()">Save Limit</button></div>
   </div>
 </div>
 <div class="modal-bg" id="m-add-goal" role="dialog" aria-modal="true" aria-labelledby="m-add-goal-title">
   <div class="modal">
     <div class="mt" id="m-add-goal-title">New Savings Goal</div>
-    <div class="fr"><label>Goal Name</label><input type="text" id="g-name" placeholder="e.g. Emergency Fund, Holiday" required></div>
+    <div class="fr"><label for="g-name">Goal Name</label><input type="text" id="g-name" placeholder="e.g. Emergency Fund, Holiday" required></div>
     <div class="fg2">
-      <div class="fr"><label>Target Amount (<span class="kl-cur-sym">R</span>)</label><input type="number" id="g-tgt" placeholder="0.00" min="0" step="0.01" required></div>
-      <div class="fr"><label>Already Saved (<span class="kl-cur-sym">R</span>)</label><input type="number" id="g-sav" placeholder="0.00" min="0" step="0.01"></div>
-      <div class="fr"><label>Monthly Contribution (<span class="kl-cur-sym">R</span>)</label><input type="number" id="g-mo" placeholder="0.00" min="0" step="0.01"></div>
-      <div class="fr"><label>Target Date (optional)</label><input type="date" id="g-dt"></div>
+      <div class="fr"><label for="g-tgt">Target Amount (<span class="kl-cur-sym">R</span>)</label><input type="number" id="g-tgt" placeholder="0.00" min="0" step="0.01" required></div>
+      <div class="fr"><label for="g-sav">Already Saved (<span class="kl-cur-sym">R</span>)</label><input type="number" id="g-sav" placeholder="0.00" min="0" step="0.01"></div>
+      <div class="fr"><label for="g-mo">Monthly Contribution (<span class="kl-cur-sym">R</span>)</label><input type="number" id="g-mo" placeholder="0.00" min="0" step="0.01"></div>
+      <div class="fr"><label for="g-dt">Target Date (optional)</label><input type="date" id="g-dt"></div>
     </div>
-    <div class="fr"><label>Icon</label><input type="text" id="g-ic" placeholder="🎯" style="width:70px"></div>
+    <div class="fr"><label for="g-ic">Icon</label><input type="text" id="g-ic" placeholder="🎯" style="width:70px"></div>
     <div class="mf"><button class="btn btn-ghost" onclick="closeModal('m-add-goal')">Cancel</button><button class="btn btn-gold" onclick="saveGoal()">Save Goal</button></div>
   </div>
 </div>
 <div class="modal-bg" id="m-add-debt" role="dialog" aria-modal="true" aria-labelledby="m-add-debt-title">
   <div class="modal">
     <div class="mt" id="m-add-debt-title">Add Debt</div>
-    <div class="fr"><label>Debt Name</label><input type="text" id="dbt-name" placeholder="e.g. FNB Credit Card, Home Loan" required></div>
+    <div class="fr"><label for="dbt-name">Debt Name</label><input type="text" id="dbt-name" placeholder="e.g. FNB Credit Card, Home Loan" required></div>
     <div class="fg2">
-      <div class="fr"><label>Balance Owed (<span class="kl-cur-sym">R</span>)</label><input type="number" id="dbt-bal" placeholder="0.00" required></div>
-      <div class="fr"><label>Interest Rate (% p.a.)</label><input type="number" id="dbt-rt" placeholder="e.g. 21.5" step="0.1"></div>
-      <div class="fr"><label>Min Monthly Payment (<span class="kl-cur-sym">R</span>)</label><input type="number" id="dbt-mp" placeholder="0.00"></div>
-      <div class="fr"><label>Type</label><select id="dbt-ty"><option value="credit_card">Credit Card</option><option value="personal_loan">Personal Loan</option><option value="home_loan">Home Loan</option><option value="car_loan">Car Loan</option><option value="student_loan">Student Loan</option><option value="other">Other</option></select></div>
+      <div class="fr"><label for="dbt-bal">Balance Owed (<span class="kl-cur-sym">R</span>)</label><input type="number" id="dbt-bal" placeholder="0.00" required></div>
+      <div class="fr"><label for="dbt-rt">Interest Rate (% p.a.)</label><input type="number" id="dbt-rt" placeholder="e.g. 21.5" step="0.1"></div>
+      <div class="fr"><label for="dbt-mp">Min Monthly Payment (<span class="kl-cur-sym">R</span>)</label><input type="number" id="dbt-mp" placeholder="0.00"></div>
+      <div class="fr"><label for="dbt-ty">Type</label><select id="dbt-ty"><option value="credit_card">Credit Card</option><option value="personal_loan">Personal Loan</option><option value="home_loan">Home Loan</option><option value="car_loan">Car Loan</option><option value="student_loan">Student Loan</option><option value="other">Other</option></select></div>
     </div>
     <div class="mf"><button class="btn btn-ghost" onclick="closeModal('m-add-debt')">Cancel</button><button class="btn btn-gold" onclick="saveDebt()">Save Debt</button></div>
   </div>
@@ -5162,11 +5162,11 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 <div class="modal-bg" id="m-add-asset" role="dialog" aria-modal="true" aria-labelledby="m-add-asset-title">
   <div class="modal">
     <div class="mt" id="m-add-asset-title">Add Asset / Liability</div>
-    <div class="fr"><label>Type</label><select id="ast-kind"><option value="asset">Asset (I own this)</option><option value="liability">Liability (I owe this)</option></select></div>
-    <div class="fr"><label>Name</label><input type="text" id="ast-name" placeholder="e.g. Savings Account, Property" required></div>
+    <div class="fr"><label for="ast-kind">Type</label><select id="ast-kind"><option value="asset">Asset (I own this)</option><option value="liability">Liability (I owe this)</option></select></div>
+    <div class="fr"><label for="ast-name">Name</label><input type="text" id="ast-name" placeholder="e.g. Savings Account, Property" required></div>
     <div class="fg2">
-      <div class="fr"><label>Value / Balance (<span class="kl-cur-sym">R</span>)</label><input type="number" id="ast-val" placeholder="0.00" required></div>
-      <div class="fr"><label>Category</label><select id="ast-cat"><option value="cash">Cash / Bank</option><option value="investment">Investments</option><option value="property">Property</option><option value="vehicle">Vehicle</option><option value="retirement">Retirement / RA</option><option value="other">Other</option></select></div>
+      <div class="fr"><label for="ast-val">Value / Balance (<span class="kl-cur-sym">R</span>)</label><input type="number" id="ast-val" placeholder="0.00" required></div>
+      <div class="fr"><label for="ast-cat">Category</label><select id="ast-cat"><option value="cash">Cash / Bank</option><option value="investment">Investments</option><option value="property">Property</option><option value="vehicle">Vehicle</option><option value="retirement">Retirement / RA</option><option value="other">Other</option></select></div>
     </div>
     <div class="mf"><button class="btn btn-ghost" onclick="closeModal('m-add-asset')">Cancel</button><button class="btn btn-gold" onclick="saveAsset()">Save</button></div>
   </div>
@@ -5174,12 +5174,12 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 <div class="modal-bg" id="m-add-holding" role="dialog" aria-modal="true" aria-labelledby="m-add-holding-title">
   <div class="modal">
     <div class="mt" id="m-add-holding-title">Add Holding</div>
-    <div class="fr"><label>Name</label><input type="text" id="h-name" placeholder="e.g. Satrix 40, Allan Gray Equity" required></div>
+    <div class="fr"><label for="h-name">Name</label><input type="text" id="h-name" placeholder="e.g. Satrix 40, Allan Gray Equity" required></div>
     <div class="fg2">
-      <div class="fr"><label>Type</label><select id="h-type"><option value="etf">ETF</option><option value="unit_trust">Unit Trust</option><option value="share">JSE Share</option><option value="tfsa">TFSA</option><option value="ra">Retirement Annuity</option><option value="crypto">Crypto</option><option value="property">Property</option><option value="other">Other</option></select></div>
-      <div class="fr"><label>Cost (<span class="kl-cur-sym">R</span>)</label><input type="number" id="h-cost" placeholder="0.00"></div>
-      <div class="fr"><label>Current Value (<span class="kl-cur-sym">R</span>)</label><input type="number" id="h-val" placeholder="0.00"></div>
-      <div class="fr"><label>Provider</label><input type="text" id="h-prov" placeholder="e.g. Easy Equities, Allan Gray"></div>
+      <div class="fr"><label for="h-type">Type</label><select id="h-type"><option value="etf">ETF</option><option value="unit_trust">Unit Trust</option><option value="share">JSE Share</option><option value="tfsa">TFSA</option><option value="ra">Retirement Annuity</option><option value="crypto">Crypto</option><option value="property">Property</option><option value="other">Other</option></select></div>
+      <div class="fr"><label for="h-cost">Cost (<span class="kl-cur-sym">R</span>)</label><input type="number" id="h-cost" placeholder="0.00"></div>
+      <div class="fr"><label for="h-val">Current Value (<span class="kl-cur-sym">R</span>)</label><input type="number" id="h-val" placeholder="0.00"></div>
+      <div class="fr"><label for="h-prov">Provider</label><input type="text" id="h-prov" placeholder="e.g. Easy Equities, Allan Gray"></div>
     </div>
     <div class="mf"><button class="btn btn-ghost" onclick="closeModal('m-add-holding')">Cancel</button><button class="btn btn-gold" onclick="saveHolding()">Save Holding</button></div>
   </div>
@@ -5208,27 +5208,27 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 <div class="modal-bg" id="m-add-stokvel" role="dialog" aria-modal="true" aria-labelledby="m-add-stokvel-title">
   <div class="modal">
     <div class="mt" id="m-add-stokvel-title">Add Stokvel</div>
-    <div class="fr"><label>Stokvel Name</label><input type="text" id="stk-name" placeholder="e.g. Family Grocery Stokvel"></div>
+    <div class="fr"><label for="stk-name">Stokvel Name</label><input type="text" id="stk-name" placeholder="e.g. Family Grocery Stokvel"></div>
     <div class="fg2">
-      <div class="fr"><label>Type</label><select id="stk-type"><option value="grocery">Grocery</option><option value="burial">Burial Society</option><option value="investment">Investment</option><option value="holiday">Holiday</option><option value="education">Education</option></select></div>
-      <div class="fr"><label>Members</label><input type="number" id="stk-members" placeholder="e.g. 12"></div>
-      <div class="fr"><label>Monthly Contribution (R)</label><input type="number" id="stk-contrib" placeholder="0.00"></div>
-      <div class="fr"><label>Payout Month</label><input type="month" id="stk-payout"></div>
+      <div class="fr"><label for="stk-type">Type</label><select id="stk-type"><option value="grocery">Grocery</option><option value="burial">Burial Society</option><option value="investment">Investment</option><option value="holiday">Holiday</option><option value="education">Education</option></select></div>
+      <div class="fr"><label for="stk-members">Members</label><input type="number" id="stk-members" placeholder="e.g. 12"></div>
+      <div class="fr"><label for="stk-contrib">Monthly Contribution (R)</label><input type="number" id="stk-contrib" placeholder="0.00"></div>
+      <div class="fr"><label for="stk-payout">Payout Month</label><input type="month" id="stk-payout"></div>
     </div>
-    <div class="fr"><label>Your Rotation Position</label><input type="number" id="stk-pos" placeholder="e.g. 3rd to receive payout"></div>
-    <div class="fr"><label>Linked Bank Account</label><select id="stk-account"></select></div>
+    <div class="fr"><label for="stk-pos">Your Rotation Position</label><input type="number" id="stk-pos" placeholder="e.g. 3rd to receive payout"></div>
+    <div class="fr"><label for="stk-account">Linked Bank Account</label><select id="stk-account"></select></div>
     <div class="mf"><button class="btn btn-ghost" onclick="closeModal('m-add-stokvel')">Cancel</button><button class="btn btn-gold" onclick="saveStokvel()">Save Stokvel</button></div>
   </div>
 </div>
 <div class="modal-bg" id="m-add-routine" role="dialog" aria-modal="true" aria-labelledby="m-add-routine-title">
   <div class="modal">
     <div class="mt" id="m-add-routine-title">Add Custom Routine</div>
-    <div class="fr"><label>Routine Name</label><input type="text" id="rt-name" placeholder="e.g. Weekly Check-In"></div>
+    <div class="fr"><label for="rt-name">Routine Name</label><input type="text" id="rt-name" placeholder="e.g. Weekly Check-In"></div>
     <div class="fg2">
-      <div class="fr"><label>Frequency</label><select id="rt-freq"><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="payday">On Payday</option></select></div>
-      <div class="fr"><label>Duration (minutes)</label><input type="number" id="rt-dur" placeholder="15"></div>
+      <div class="fr"><label for="rt-freq">Frequency</label><select id="rt-freq"><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="payday">On Payday</option></select></div>
+      <div class="fr"><label for="rt-dur">Duration (minutes)</label><input type="number" id="rt-dur" placeholder="15"></div>
     </div>
-    <div class="fr"><label>Steps (one per line)</label><textarea id="rt-steps" placeholder="Check bank balance&#10;Review budget&#10;Update goals" style="height:90px"></textarea></div>
+    <div class="fr"><label for="rt-steps">Steps (one per line)</label><textarea id="rt-steps" placeholder="Check bank balance&#10;Review budget&#10;Update goals" style="height:90px"></textarea></div>
     <div class="mf"><button class="btn btn-ghost" onclick="closeModal('m-add-routine')">Cancel</button><button class="btn btn-gold" onclick="saveRoutine()">Save Routine</button></div>
   </div>
 </div>
@@ -5237,14 +5237,14 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 <div class="modal-bg" id="m-add-property" role="dialog" aria-modal="true" aria-labelledby="prop-modal-title">
   <div class="modal">
     <div class="mt" id="prop-modal-title">Add Property</div>
-    <div class="fr"><label>Property Name / Address</label><input type="text" id="prop-name" placeholder="e.g. 12 Oak Ave, Sandton"></div>
+    <div class="fr"><label for="prop-name">Property Name / Address</label><input type="text" id="prop-name" placeholder="e.g. 12 Oak Ave, Sandton"></div>
     <div class="fg2">
-      <div class="fr"><label>Current Market Value (R)</label><input type="number" id="prop-val" placeholder="e.g. 1500000" oninput="calcPropEquity()"></div>
-      <div class="fr"><label>Outstanding Bond (R)</label><input type="number" id="prop-bond" placeholder="e.g. 950000" oninput="calcPropEquity()"></div>
-      <div class="fr"><label>Monthly Bond Repayment (R)</label><input type="number" id="prop-repay" placeholder="e.g. 9800"></div>
-      <div class="fr"><label>Interest Rate (%)</label><input type="number" id="prop-rate" placeholder="e.g. 11.75" step="0.25" oninput="calcPropEquity()"></div>
-      <div class="fr"><label>Monthly Rental Income (R)</label><input type="number" id="prop-rent" placeholder="0 if primary residence"></div>
-      <div class="fr"><label>Purchase Year</label><input type="number" id="prop-yr" placeholder="e.g. 2019"></div>
+      <div class="fr"><label for="prop-val">Current Market Value (R)</label><input type="number" id="prop-val" placeholder="e.g. 1500000" oninput="calcPropEquity()"></div>
+      <div class="fr"><label for="prop-bond">Outstanding Bond (R)</label><input type="number" id="prop-bond" placeholder="e.g. 950000" oninput="calcPropEquity()"></div>
+      <div class="fr"><label for="prop-repay">Monthly Bond Repayment (R)</label><input type="number" id="prop-repay" placeholder="e.g. 9800"></div>
+      <div class="fr"><label for="prop-rate">Interest Rate (%)</label><input type="number" id="prop-rate" placeholder="e.g. 11.75" step="0.25" oninput="calcPropEquity()"></div>
+      <div class="fr"><label for="prop-rent">Monthly Rental Income (R)</label><input type="number" id="prop-rent" placeholder="0 if primary residence"></div>
+      <div class="fr"><label for="prop-yr">Purchase Year</label><input type="number" id="prop-yr" placeholder="e.g. 2019"></div>
     </div>
     <div id="prop-equity-preview" style="background:var(--s2);border-radius:var(--rsm);padding:10px;margin:8px 0;font-size:12px"></div>
     <div class="mf"><button class="btn btn-ghost" onclick="closeModal('m-add-property')">Cancel</button><button class="btn btn-gold" onclick="saveProperty()">Save Property</button></div>
@@ -5256,7 +5256,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="modal">
     <div class="mt" id="m-add-insurance-title">Add Insurance Policy</div>
     <div class="fg2">
-      <div class="fr"><label>Policy Type</label>
+      <div class="fr"><label for="ins-type">Policy Type</label>
         <select id="ins-type">
           <option value="life">Life Insurance</option>
           <option value="disability">Disability / Income Protection</option>
@@ -5274,15 +5274,15 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
           <option value="other">Other</option>
         </select>
       </div>
-      <div class="fr"><label>Insurer</label><input type="text" id="ins-insurer" placeholder="e.g. Discovery, Outsurance"></div>
+      <div class="fr"><label for="ins-insurer">Insurer</label><input type="text" id="ins-insurer" placeholder="e.g. Discovery, Outsurance"></div>
     </div>
     <div class="fg2">
-      <div class="fr"><label>Monthly Premium</label><input type="number" id="ins-premium" placeholder="e.g. 1200"></div>
-      <div class="fr"><label>Cover Amount</label><input type="number" id="ins-cover" placeholder="e.g. 2000000"></div>
-      <div class="fr"><label>Renewal Date</label><input type="date" id="ins-renewal"></div>
-      <div class="fr"><label>Policy Number</label><input type="text" id="ins-polno" placeholder="Optional"></div>
+      <div class="fr"><label for="ins-premium">Monthly Premium</label><input type="number" id="ins-premium" placeholder="e.g. 1200"></div>
+      <div class="fr"><label for="ins-cover">Cover Amount</label><input type="number" id="ins-cover" placeholder="e.g. 2000000"></div>
+      <div class="fr"><label for="ins-renewal">Renewal Date</label><input type="date" id="ins-renewal"></div>
+      <div class="fr"><label for="ins-polno">Policy Number</label><input type="text" id="ins-polno" placeholder="Optional"></div>
     </div>
-    <div class="fr"><label>Notes</label><input type="text" id="ins-notes" placeholder="e.g. Covers spouse and 2 kids"></div>
+    <div class="fr"><label for="ins-notes">Notes</label><input type="text" id="ins-notes" placeholder="e.g. Covers spouse and 2 kids"></div>
     <div class="mf"><button class="btn btn-ghost" onclick="closeModal('m-add-insurance')">Cancel</button><button class="btn btn-gold" onclick="saveInsurance()">Save Policy</button></div>
   </div>
 </div>
@@ -5292,10 +5292,10 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="modal">
     <div class="mt" id="m-add-reminder-title">Add Reminder</div>
     <div class="fg2">
-      <div class="fr"><label>Description</label><input type="text" id="rem-desc" placeholder="e.g. Car insurance renewal"></div>
-      <div class="fr"><label>Amount (<span class="kl-cur-sym">R</span>, optional)</label><input type="number" id="rem-amt" placeholder="0"></div>
-      <div class="fr"><label>Due Date</label><input type="date" id="rem-date"></div>
-      <div class="fr"><label>Repeat</label>
+      <div class="fr"><label for="rem-desc">Description</label><input type="text" id="rem-desc" placeholder="e.g. Car insurance renewal"></div>
+      <div class="fr"><label for="rem-amt">Amount (<span class="kl-cur-sym">R</span>, optional)</label><input type="number" id="rem-amt" placeholder="0"></div>
+      <div class="fr"><label for="rem-date">Due Date</label><input type="date" id="rem-date"></div>
+      <div class="fr"><label for="rem-repeat">Repeat</label>
         <select id="rem-repeat">
           <option value="none">One-time</option>
           <option value="monthly">Monthly</option>
@@ -7290,20 +7290,20 @@ function editAccount(id) {
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <div>
-          <label style="font-size:10px;color:var(--t3);display:block;margin-bottom:3px">Opening Balance</label>
+          <label style="font-size:10px;color:var(--t3);display:block;margin-bottom:3px" for="ea-ob-${id}">Opening Balance</label>
           <input id="ea-ob-${id}" type="number" value="${acc.openingBalance||0}" step="0.01" style="background:var(--s3);border:var(--bw) solid var(--b2);border-radius:6px;padding:7px 8px;color:var(--t1);font-size:12px;width:100%;box-sizing:border-box">
         </div>
         <div>
-          <label style="font-size:10px;color:var(--t3);display:block;margin-bottom:3px">Credit Limit</label>
+          <label style="font-size:10px;color:var(--t3);display:block;margin-bottom:3px" for="ea-lim-${id}">Credit Limit</label>
           <input id="ea-lim-${id}" type="number" value="${acc.creditLimit||0}" step="100" style="background:var(--s3);border:var(--bw) solid var(--b2);border-radius:6px;padding:7px 8px;color:var(--t1);font-size:12px;width:100%;box-sizing:border-box">
         </div>
       </div>
       <div>
-        <label style="font-size:10px;color:var(--t3);display:block;margin-bottom:3px">Exchange Rate to ZAR (if foreign currency)</label>
+        <label style="font-size:10px;color:var(--t3);display:block;margin-bottom:3px" for="ea-rate-${id}">Exchange Rate to ZAR (if foreign currency)</label>
         <input id="ea-rate-${id}" type="number" value="${acc.zarRate||1}" step="0.0001" style="background:var(--s3);border:var(--bw) solid var(--b2);border-radius:6px;padding:7px 8px;color:var(--t1);font-size:12px;width:100%;box-sizing:border-box">
       </div>
       <div>
-        <label style="font-size:10px;color:var(--t3);display:block;margin-bottom:5px">Colour</label>
+        <label style="font-size:10px;color:var(--t3);display:block;margin-bottom:5px" for="ea-col-${id}">Colour</label>
         <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
           ${swatches.map(c=>`<div onclick="document.getElementById('ea-col-${id}').value='${c}';this.parentElement.querySelectorAll('.cc-sw').forEach(x=>x.style.outline='none');this.style.outline='3px solid white'" class="cc-sw" style="width:22px;height:22px;border-radius:50%;background:${c};cursor:pointer;flex-shrink:0;outline:${(acc.color||'#4f8ef7')===c?'3px solid white':'none'}"></div>`).join('')}
           <input id="ea-col-${id}" type="color" value="${acc.color||'#4f8ef7'}" style="width:22px;height:22px;border-radius:50%;border:none;cursor:pointer;background:none;flex-shrink:0">
@@ -8926,12 +8926,12 @@ function openInlineEdit(id){
   editRow.style.cssText='background:var(--accent-d);';
   editRow.innerHTML=`<td colspan="9" style="padding:10px 14px">
     <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
-      <div><label style="font-size:9px;color:var(--t3);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:1px">Date</label><input type="date" id="ie-date" value="${t.date||''}" style="width:130px;padding:5px 8px;font-size:12px"></div>
-      <div style="flex:2;min-width:150px"><label style="font-size:9px;color:var(--t3);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:1px">Description</label><input type="text" id="ie-desc" value="${esc(t.description||'')}" style="width:100%;padding:5px 8px;font-size:12px"></div>
-      <div><label style="font-size:9px;color:var(--t3);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:1px">Amount</label><input type="number" id="ie-amt" value="${t.amount}" step="0.01" style="width:110px;padding:5px 8px;font-size:12px"></div>
-      <div><label style="font-size:9px;color:var(--t3);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:1px">Category</label><select id="ie-cat" style="padding:5px 8px;font-size:12px">${catOpts}</select></div>
-      <div><label style="font-size:9px;color:var(--t3);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:1px">Account</label><select id="ie-acc" style="padding:5px 8px;font-size:12px">${accOpts}</select></div>
-      <div style="flex:2;min-width:120px"><label style="font-size:9px;color:var(--t3);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:1px">Note</label><input type="text" id="ie-note" value="${esc(t.note||'')}" placeholder="Optional note" style="width:100%;padding:5px 8px;font-size:12px"></div>
+      <div><label style="font-size:9px;color:var(--t3);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:1px" for="ie-date">Date</label><input type="date" id="ie-date" value="${t.date||''}" style="width:130px;padding:5px 8px;font-size:12px"></div>
+      <div style="flex:2;min-width:150px"><label style="font-size:9px;color:var(--t3);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:1px" for="ie-desc">Description</label><input type="text" id="ie-desc" value="${esc(t.description||'')}" style="width:100%;padding:5px 8px;font-size:12px"></div>
+      <div><label style="font-size:9px;color:var(--t3);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:1px" for="ie-amt">Amount</label><input type="number" id="ie-amt" value="${t.amount}" step="0.01" style="width:110px;padding:5px 8px;font-size:12px"></div>
+      <div><label style="font-size:9px;color:var(--t3);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:1px" for="ie-cat">Category</label><select id="ie-cat" style="padding:5px 8px;font-size:12px">${catOpts}</select></div>
+      <div><label style="font-size:9px;color:var(--t3);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:1px" for="ie-acc">Account</label><select id="ie-acc" style="padding:5px 8px;font-size:12px">${accOpts}</select></div>
+      <div style="flex:2;min-width:120px"><label style="font-size:9px;color:var(--t3);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:1px" for="ie-note">Note</label><input type="text" id="ie-note" value="${esc(t.note||'')}" placeholder="Optional note" style="width:100%;padding:5px 8px;font-size:12px"></div>
       <button onclick="saveInlineEdit('${id}')" class="btn btn-gold btn-sm">Save</button>
       <button onclick="document.getElementById('inline-edit-row')?.remove()" class="btn btn-ghost btn-sm">Cancel</button>
     </div>
@@ -15706,7 +15706,7 @@ function rISA(){
   const inputsEl = document.getElementById('isa-inputs');
   if(inputsEl) inputsEl.innerHTML = types.map(t=>`
     <div class="fr">
-      <label>${t.label} <span style="color:var(--t4);font-weight:400;font-size:10px">${t.hint}</span></label>
+      <label for="isa-inp-${t.key}">${t.label} <span style="color:var(--t4);font-weight:400;font-size:10px">${t.hint}</span></label>
       <div style="position:relative">
         <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--t3);font-size:14px">£</span>
         <input type="number" style="padding-left:28px" id="isa-inp-${t.key}" value="${isa[t.key]||''}" placeholder="0" min="0" step="1"
@@ -15737,7 +15737,7 @@ function rISA(){
   if(jisaEl) jisaEl.innerHTML = `
     <div style="margin-top:10px">
       <div class="fr">
-        <label>Junior ISA contributions this year (£)</label>
+        <label for="isa-jisa-inp">Junior ISA contributions this year (£)</label>
         <div style="position:relative">
           <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--t3);font-size:14px">£</span>
           <input type="number" style="padding-left:28px" id="isa-jisa-inp" value="${isa.juniorISA||''}" placeholder="0" min="0" max="${JISA_MAX}" step="1" oninput="isaUpdate()">
@@ -15797,18 +15797,18 @@ function rUkLoans(){
   const inputsEl = document.getElementById('ukloans-inputs');
   if(inputsEl) inputsEl.innerHTML = `
     <div class="fr" style="margin-top:14px">
-      <label>Repayment plan</label>
+      <label for="uksl-plan">Repayment plan</label>
       <select id="uksl-plan" onchange="ukSlUpdate()">
         ${Object.entries(UK_LOAN_PLANS).map(([k,v])=>`<option value="${k}"${sl.plan===k?' selected':''}>${v.name}</option>`).join('')}
       </select>
     </div>
     <div class="fr">
-      <label>Outstanding balance (£)</label>
+      <label for="uksl-balance">Outstanding balance (£)</label>
       <div style="position:relative"><span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--t3);font-size:14px">£</span>
         <input type="number" style="padding-left:28px" id="uksl-balance" value="${sl.balance||''}" placeholder="e.g. 45000" min="0" oninput="ukSlUpdate()"></div>
     </div>
     <div class="fr">
-      <label>Annual salary before tax (£)</label>
+      <label for="uksl-salary">Annual salary before tax (£)</label>
       <div style="position:relative"><span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--t3);font-size:14px">£</span>
         <input type="number" style="padding-left:28px" id="uksl-salary" value="${sl.salary||''}" placeholder="e.g. 32000" min="0" oninput="ukSlUpdate()"></div>
     </div>
@@ -16817,9 +16817,9 @@ document.addEventListener('click', function(e){
 <div class="modal-bg" id="m-grocery-list" role="dialog" aria-modal="true" aria-labelledby="m-grocery-list-title">
   <div class="modal">
     <div class="mt" id="m-grocery-list-title">New Shopping List</div>
-    <div class="fr"><label>List Name</label><input type="text" id="gl-name" placeholder="e.g. Weekly shop"></div>
-    <div class="fr"><label>Store</label><select id="gl-store" style="width:100%"></select></div>
-    <div class="fr"><label>Date</label><input type="date" id="gl-date"></div>
+    <div class="fr"><label for="gl-name">List Name</label><input type="text" id="gl-name" placeholder="e.g. Weekly shop"></div>
+    <div class="fr"><label for="gl-store">Store</label><select id="gl-store" style="width:100%"></select></div>
+    <div class="fr"><label for="gl-date">Date</label><input type="date" id="gl-date"></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('m-grocery-list')">Cancel</button>
       <button class="btn btn-gold" onclick="saveGroceryList()">Create List</button>
@@ -16832,12 +16832,12 @@ document.addEventListener('click', function(e){
     <div class="mt" id="m-grocery-item-title">Add Item</div>
     <input type="hidden" id="gi-list-id">
     <input type="hidden" id="gi-item-id">
-    <div class="fr"><label>Item Name</label><input type="text" id="gi-name" placeholder="e.g. Bread, Milk, Chicken breasts"></div>
+    <div class="fr"><label for="gi-name">Item Name</label><input type="text" id="gi-name" placeholder="e.g. Bread, Milk, Chicken breasts"></div>
     <div class="fg2">
-      <div class="fr"><label>Qty</label><input type="number" id="gi-qty" value="1" min="1" step="1"></div>
-      <div class="fr"><label>Unit</label><input type="text" id="gi-unit" placeholder="e.g. kg, L, pack"></div>
+      <div class="fr"><label for="gi-qty">Qty</label><input type="number" id="gi-qty" value="1" min="1" step="1"></div>
+      <div class="fr"><label for="gi-unit">Unit</label><input type="text" id="gi-unit" placeholder="e.g. kg, L, pack"></div>
     </div>
-    <div class="fr"><label>Price per unit (optional — AI will estimate)</label><input type="number" id="gi-price" placeholder="Leave blank for AI estimate" min="0" step="0.01"></div>
+    <div class="fr"><label for="gi-price">Price per unit (optional — AI will estimate)</label><input type="number" id="gi-price" placeholder="Leave blank for AI estimate" min="0" step="0.01"></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('m-grocery-item')">Cancel</button>
       <button class="btn btn-gold" onclick="saveGroceryItem()">Add Item</button>
@@ -16849,9 +16849,9 @@ document.addEventListener('click', function(e){
 <div class="modal-bg" id="m-add-bizloan" role="dialog" aria-modal="true" aria-labelledby="m-add-bizloan-title">
   <div class="modal" style="max-width:500px">
     <div class="mt" id="m-add-bizloan-title">Add Business Facility</div>
-    <div class="fr"><label>Facility Name / Lender</label><input type="text" id="bizloan-name" placeholder="e.g. FNB Business Loan, NEF Funding"></div>
+    <div class="fr"><label for="bizloan-name">Facility Name / Lender</label><input type="text" id="bizloan-name" placeholder="e.g. FNB Business Loan, NEF Funding"></div>
     <div class="fg2">
-      <div class="fr"><label>Facility Type</label>
+      <div class="fr"><label for="bizloan-type">Facility Type</label>
         <select id="bizloan-type">
           <option value="term">Term Loan</option>
           <option value="overdraft">Overdraft / Credit Line</option>
@@ -16862,17 +16862,17 @@ document.addEventListener('click', function(e){
           <option value="other">Other</option>
         </select>
       </div>
-      <div class="fr"><label>Interest Rate (% p.a.)</label><input type="number" id="bl-rate" placeholder="e.g. 12.75" step="0.01" min="0"></div>
+      <div class="fr"><label for="bl-rate">Interest Rate (% p.a.)</label><input type="number" id="bl-rate" placeholder="e.g. 12.75" step="0.01" min="0"></div>
     </div>
     <div class="fg2">
-      <div class="fr"><label>Outstanding Balance (R)</label><input type="number" id="bl-balance" placeholder="0.00" step="0.01" min="0"></div>
-      <div class="fr"><label>Monthly Repayment (R)</label><input type="number" id="bl-pmt" placeholder="0.00" step="0.01" min="0"></div>
+      <div class="fr"><label for="bl-balance">Outstanding Balance (R)</label><input type="number" id="bl-balance" placeholder="0.00" step="0.01" min="0"></div>
+      <div class="fr"><label for="bl-pmt">Monthly Repayment (R)</label><input type="number" id="bl-pmt" placeholder="0.00" step="0.01" min="0"></div>
     </div>
     <div class="fg2">
-      <div class="fr"><label>Start Date</label><input type="date" id="bl-start"></div>
-      <div class="fr"><label>Term (months)</label><input type="number" id="bl-term" placeholder="e.g. 60" min="1"></div>
+      <div class="fr"><label for="bl-start">Start Date</label><input type="date" id="bl-start"></div>
+      <div class="fr"><label for="bl-term">Term (months)</label><input type="number" id="bl-term" placeholder="e.g. 60" min="1"></div>
     </div>
-    <div class="fr"><label>Purpose / Notes</label><input type="text" id="bl-notes" placeholder="e.g. Capital equipment, working capital, expansion"></div>
+    <div class="fr"><label for="bl-notes">Purpose / Notes</label><input type="text" id="bl-notes" placeholder="e.g. Capital equipment, working capital, expansion"></div>
     <div class="mf"><button class="btn btn-ghost" onclick="closeModal('m-add-bizloan')">Cancel</button><button class="btn btn-gold" onclick="saveBizLoan()">Add Facility</button></div>
   </div>
 </div>
@@ -16881,9 +16881,9 @@ document.addEventListener('click', function(e){
 <div class="modal-bg" id="m-add-far" role="dialog" aria-modal="true" aria-labelledby="m-add-far-title">
   <div class="modal" style="max-width:520px">
     <div class="mt" id="m-add-far-title">Add Fixed Asset</div>
-    <div class="fr"><label>Asset Name</label><input type="text" id="far-name" placeholder="e.g. Company Vehicle, MacBook Pro, Office Equipment"></div>
+    <div class="fr"><label for="far-name">Asset Name</label><input type="text" id="far-name" placeholder="e.g. Company Vehicle, MacBook Pro, Office Equipment"></div>
     <div class="fg2">
-      <div class="fr"><label>Asset Type</label>
+      <div class="fr"><label for="far-type">Asset Type</label>
         <select id="far-type">
           <option value="vehicle">Motor Vehicle</option>
           <option value="plant">Plant &amp; Machinery</option>
@@ -16894,7 +16894,7 @@ document.addEventListener('click', function(e){
           <option value="other">Other</option>
         </select>
       </div>
-      <div class="fr"><label>Depreciation Method</label>
+      <div class="fr"><label for="far-method">Depreciation Method</label>
         <select id="far-method">
           <option value="sl">Straight-Line</option>
           <option value="rb">Reducing Balance</option>
@@ -16903,14 +16903,14 @@ document.addEventListener('click', function(e){
       </div>
     </div>
     <div class="fg2">
-      <div class="fr"><label>Cost / Purchase Price (R)</label><input type="number" id="far-cost" placeholder="0.00" step="0.01" min="0"></div>
-      <div class="fr"><label>Useful Life (years)</label><input type="number" id="far-life" placeholder="e.g. 5" min="1" max="50"></div>
+      <div class="fr"><label for="far-cost">Cost / Purchase Price (R)</label><input type="number" id="far-cost" placeholder="0.00" step="0.01" min="0"></div>
+      <div class="fr"><label for="far-life">Useful Life (years)</label><input type="number" id="far-life" placeholder="e.g. 5" min="1" max="50"></div>
     </div>
     <div class="fg2">
-      <div class="fr"><label>Purchase Date</label><input type="date" id="far-date"></div>
-      <div class="fr"><label>Residual / Scrap Value (R)</label><input type="number" id="far-residual" placeholder="0" min="0"></div>
+      <div class="fr"><label for="far-date">Purchase Date</label><input type="date" id="far-date"></div>
+      <div class="fr"><label for="far-residual">Residual / Scrap Value (R)</label><input type="number" id="far-residual" placeholder="0" min="0"></div>
     </div>
-    <div class="fr"><label>Serial / VIN / Reg Number (optional)</label><input type="text" id="far-serial" placeholder="e.g. ABC123GP"></div>
+    <div class="fr"><label for="far-serial">Serial / VIN / Reg Number (optional)</label><input type="text" id="far-serial" placeholder="e.g. ABC123GP"></div>
     <div class="mf"><button class="btn btn-ghost" onclick="closeModal('m-add-far')">Cancel</button><button class="btn btn-gold" onclick="saveAssetFAR()">Add Asset</button></div>
   </div>
 </div>
@@ -16920,12 +16920,12 @@ document.addEventListener('click', function(e){
   <div class="modal" style="max-width:420px">
     <div class="mt" id="m-custom-cat-title">New Category</div>
     <div class="fr">
-      <label>Choose an icon</label>
+      <label for="cc-icon">Choose an icon</label>
       <div id="cc-icon-presets" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px"></div>
       <input type="text" id="cc-icon" placeholder="Or type any emoji" maxlength="4" style="text-align:center;font-size:22px;letter-spacing:4px" oninput="document.querySelectorAll('.cat-icon-preset').forEach(e=>e.classList.remove('selected'))">
     </div>
     <div class="fr">
-      <label>Category name</label>
+      <label for="cc-name">Category name</label>
       <input type="text" id="cc-name" placeholder="e.g. Hobby Spending" onkeydown="if(event.key==='Enter')saveCustomCat()">
     </div>
     <div class="fr">
