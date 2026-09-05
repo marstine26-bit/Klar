@@ -483,8 +483,11 @@ body[data-density="compact"] .card{padding:18px}
   .cg{grid-template-columns:repeat(7,1fr);gap:1px}
   .cd{min-height:40px;padding:3px}
 
-  /* Money tabs scroll */
-  .money-tabs{width:100%;overflow-x:auto}
+  /* Money tabs scroll — !important needed: the unconditional .money-tabs{width:fit-content}
+     rule further down the file has equal specificity and later source order, so without it
+     this override loses the cascade at every viewport width, not just >760px. */
+  .money-tabs{width:100%!important;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 16px),transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 16px),transparent 100%)}
+  .money-tabs::-webkit-scrollbar{display:none}
   .money-tab{font-size:11px;padding:6px 12px}
 
   /* Transaction table: hide less-critical columns on mobile */
