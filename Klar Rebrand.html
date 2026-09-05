@@ -3688,8 +3688,8 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="ct">Help &amp; Support</div>
     <div style="font-size:12px;color:var(--t3);margin-bottom:14px;line-height:1.7">Have a question, found a bug, or need help with a feature? Our support team usually responds within a few hours.</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-      <button class="btn btn-gold btn-sm" onclick="klOpenSupport()" style="display:inline-flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-chat"/></svg>Chat with support</button>
-      <button class="btn btn-ghost btn-sm" onclick="window.open('mailto:hello@klarmoney.app','_blank')">✉ Email us</button>
+      <button class="btn btn-gold btn-sm" onclick="klOpenSupport()" style="display:inline-flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-chat"/></svg>Contact support</button>
+      <button class="btn btn-ghost btn-sm" onclick="window.open('/klar-help.html','_blank')">❓ Help Centre / FAQ</button>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-ghost btn-xs" onclick="window.open('/terms.html','_blank')">Terms of Service</button>
@@ -16378,8 +16378,15 @@ document.addEventListener('click', function(e){
     document.getElementById('kl-policy-modal')?.classList.remove('open');
   };
 
+  // Set to true once a real person is actually monitoring the Crisp inbox —
+  // being correctly *configured* (a valid CRISP_WEBSITE_ID) says nothing
+  // about whether anyone will see the chat. Confirmed unstaffed 27 Aug 2026;
+  // until this flips, "Chat with support" falls through to email instead of
+  // opening a chat window nobody will answer.
+  window.CRISP_STAFFED = false;
+
   window.klOpenSupport = function() {
-    if (typeof window.$crisp !== 'undefined' && window.CRISP_WEBSITE_ID !== 'YOUR_CRISP_WEBSITE_ID') {
+    if (window.CRISP_STAFFED && typeof window.$crisp !== 'undefined' && window.CRISP_WEBSITE_ID !== 'YOUR_CRISP_WEBSITE_ID') {
       if (typeof window._klLoadCrisp === 'function') window._klLoadCrisp();
       window.$crisp.push(['do', 'chat:show']);
       window.$crisp.push(['do', 'chat:open']);

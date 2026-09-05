@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Help Centre — Klar</title>
+<meta name="description" content="Answers to what people ask most about Klar — data privacy, billing, the AI advisor, and regional support.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #07070A;
+    --bg1: #0D0D14;
+    --b1: #161622;
+    --b2: #1E1E2E;
+    --t1: #F0F0EE;
+    --t2: #B8B8C0;
+    --t3: #8A8A98;
+    --t4: #52525E;
+    --accent: #9B7FD4;
+    --accent2: #5070BC;
+    --ff: 'Geist', system-ui, sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--t2);
+    font-family: var(--ff);
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  a:hover { opacity: .8; }
+
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(7,7,10,.92); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--b1);
+    display: flex; align-items: center; gap: 20px;
+    padding: 14px 40px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .nav-logo-text { font-size: 17px; font-weight: 800; letter-spacing: -.04em; color: var(--t1); }
+  .nav-links { margin-left: auto; display: flex; gap: 20px; }
+  .nav-links a { font-size: 13px; color: var(--t3); text-decoration: none; }
+  .nav-links a:hover { color: var(--t1); }
+  .nav-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 8px; border: 1px solid var(--b2);
+    font-size: 13px; color: var(--t2); text-decoration: none; transition: all .15s;
+  }
+  .nav-back:hover { background: var(--b1); color: var(--t1); }
+
+  .page-wrap { max-width: 720px; margin: 0 auto; padding: 56px 24px 100px; }
+  .hd { text-align: center; margin-bottom: 40px; }
+  .page-eyebrow {
+    font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 14px;
+  }
+  h1 { font-size: 34px; font-weight: 800; letter-spacing: -.04em; color: var(--t1); margin-bottom: 10px; line-height: 1.15; }
+  .hd-sub { font-size: 14.5px; color: var(--t3); max-width: 440px; margin: 0 auto; }
+
+  .search {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--bg1); border: 1px solid var(--b1); border-radius: 12px;
+    padding: 12px 16px; margin-bottom: 40px;
+  }
+  .search svg { flex-shrink: 0; color: var(--t4); }
+  .search input { border: none; background: none; outline: none; font-family: var(--ff); font-size: 14px; color: var(--t1); width: 100%; }
+  .search input::placeholder { color: var(--t4); }
+
+  .group { margin-bottom: 32px; }
+  .group-title {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 12px; padding: 0 4px;
+  }
+  .qlist { background: var(--bg1); border: 1px solid var(--b1); border-radius: 14px; overflow: hidden; }
+  .q { border-bottom: 1px solid var(--b1); }
+  .q:last-child { border-bottom: none; }
+  .q[hidden] { display: none; }
+  .q-btn {
+    width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 16px 20px; background: none; border: none; text-align: left;
+    font-family: var(--ff); font-size: 14.5px; font-weight: 600; color: var(--t1); cursor: pointer;
+  }
+  .q-btn:hover { background: var(--b1); }
+  .q-chev { flex-shrink: 0; width: 16px; height: 16px; color: var(--t4); transition: transform .18s; }
+  .q[data-open="true"] .q-chev { transform: rotate(180deg); }
+  .q-body { max-height: 0; overflow: hidden; transition: max-height .22s ease; }
+  .q[data-open="true"] .q-body { max-height: 420px; }
+  .q-body-inner { padding: 0 20px 18px; font-size: 13.5px; color: var(--t3); line-height: 1.7; }
+  .q-body-inner strong { color: var(--t1); font-weight: 600; }
+
+  .no-results { display: none; text-align: center; padding: 40px 20px; color: var(--t4); font-size: 13.5px; }
+  .no-results.show { display: block; }
+
+  .contact-box {
+    background: var(--bg1); border: 1px solid var(--b1); border-radius: 14px;
+    padding: 26px 28px; margin-top: 44px; text-align: center;
+  }
+  .contact-box h3 { font-size: 16px; font-weight: 700; color: var(--t1); margin-bottom: 6px; }
+  .contact-box p { font-size: 13.5px; color: var(--t3); margin-bottom: 16px; }
+  .contact-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg,#7B5EA7,#5070BC); color: #fff; font-weight: 700; font-size: 13.5px;
+    padding: 11px 22px; border-radius: 10px; text-decoration: none;
+  }
+
+  footer {
+    border-top: 1px solid var(--b1); padding: 28px 40px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    font-size: 12px; color: var(--t4);
+  }
+  footer a { color: var(--t4); text-decoration: none; }
+  footer a:hover { color: var(--t2); }
+  .footer-links { display: flex; gap: 20px; }
+
+  @media (max-width: 600px) {
+    nav { padding: 14px 20px; }
+    .page-wrap { padding: 36px 20px 80px; }
+    h1 { font-size: 26px; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/app" class="nav-logo">
+    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="26" height="26" rx="6" fill="#0D0D14"/>
+      <g transform="translate(13,13) rotate(-9) translate(-13,-13)">
+        <rect x="5" y="4" width="5.5" height="14.5" rx="2.75" fill="#9B7FD4"/>
+        <rect x="15" y="6.5" width="5.5" height="12" rx="2.75" fill="#5B7FD4"/>
+      </g>
+    </svg>
+    <span class="nav-logo-text">Klar</span>
+  </a>
+  <div class="nav-links">
+    <a href="/terms.html">Terms</a>
+    <a href="/privacy.html">Privacy</a>
+    <a href="/app">Open App</a>
+  </div>
+  <a href="/app" class="nav-back">← Back to app</a>
+</nav>
+
+<div class="page-wrap">
+  <div class="hd">
+    <div class="page-eyebrow">Help Centre</div>
+    <h1>How can we help?</h1>
+    <div class="hd-sub">Answers to what people ask most about data, billing, and how Klar works.</div>
+  </div>
+
+  <div class="search">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.2" stroke="currentColor" stroke-width="1.4"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    <input id="faq-search" type="text" placeholder="Search for an answer…">
+  </div>
+
+  <div id="groups"></div>
+  <div class="no-results" id="no-results">No matching questions — try a different search, or email us directly below.</div>
+
+  <div class="contact-box">
+    <h3>Still need help?</h3>
+    <p>Email us directly — we aim to respond within one business day.</p>
+    <a class="contact-btn" href="mailto:hello@klarmoney.app?subject=Klar Support">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="10" rx="1.3" stroke="currentColor" stroke-width="1.3"/><path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      hello@klarmoney.app
+    </a>
+  </div>
+</div>
+
+<footer>
+  <span>© 2026 Klar Money · <a href="mailto:hello@klarmoney.app">hello@klarmoney.app</a></span>
+  <div class="footer-links">
+    <a href="/privacy.html">Privacy Policy</a>
+    <a href="/terms.html">Terms of Service</a>
+    <a href="/app">Open App</a>
+  </div>
+</footer>
+
+<script>
+const FAQ = [
+  {group:"Data & Privacy", items:[
+    {q:"Is my financial data safe?",
+     a:"Yes. Your data is encrypted in transit (TLS) and stored with row-level access security on Supabase. Klar is local-first by default — your data stays on your device unless you turn on cloud sync. We never sell your data. Third-party services (Supabase for cloud backup, Groq for the AI advisor, Lemon Squeezy for payments, Crisp for support chat) only ever see data relevant to the specific feature you're using, and only when you use it."},
+    {q:"What's the difference between local and cloud data?",
+     a:"By default, everything you enter stays only in your browser on this device. If you turn on cloud sync (Settings), an encrypted backup is also stored on Supabase so you can access your data from another device. You can turn cloud sync off at any time and delete just the cloud copy without touching what's on your device."},
+    {q:"Who can see my data — do you sell it?",
+     a:"No, Klar never sells your data. Data only goes to the specific service tied to a feature you actively use: Supabase (cloud backup, opt-in), Groq (AI advisor, opt-in), Lemon Squeezy (only when you subscribe), and Crisp (only when you open a support chat). Full details are in Settings → Privacy &amp; Data Rights → Third-Party Processors."},
+    {q:"How do I delete my data or my account?",
+     a:"In Settings → Privacy &amp; Data Rights you can: export everything as JSON, edit any record directly, delete only your local on-device data, or delete your cloud backup. “Delete account permanently” removes your cloud data <strong>and</strong> your login itself — this is immediate and cannot be undone. Your local, on-device data is not affected by cloud or account deletion."}
+  ]},
+  {group:"Billing", items:[
+    {q:"If I delete my account, does that cancel my subscription too?",
+     a:"No — deleting your account does <strong>not</strong> automatically cancel an active subscription. Please cancel it first via Settings → Subscription &amp; Billing → “Manage Subscription &amp; Billing,” or your card will keep being charged even after your account and login are gone. The app will warn you about this if you have an active paid plan when you try to delete your account, but cancelling first is the safest order of operations."},
+    {q:"How do I cancel my subscription?",
+     a:"From Settings → Subscription &amp; Billing, tap “Manage Subscription &amp; Billing” to open your Lemon Squeezy customer portal, where you can cancel or change plans at any time. You keep access until the end of your current billing period."},
+    {q:"What's included free vs. paid?",
+     a:"The free plan covers transaction tracking, CSV import, and spending breakdowns — no card required. Paid plans add net worth tracking, the AI advisor, savings goals, bank feeds (UK), and unlimited accounts. See the pricing page for current tiers and prices in your local currency."}
+  ]},
+  {group:"AI Advisor", items:[
+    {q:"Does the AI advisor give financial advice?",
+     a:"No. Klar's AI advisor (powered by Groq) gives informational summaries and suggestions based on your data — it is not a regulated financial adviser, and its responses don't constitute personalised financial advice under FCA (UK) or FSCA (South Africa) rules. For advice specific to your circumstances, consult an authorised financial adviser."},
+    {q:"What does the AI advisor actually see about my finances?",
+     a:"For general chat, it sees a financial summary only (average income/expenses, account count, region) — never raw transaction data. Two specific features work differently: “Explain transaction” sends that one transaction's description and amount, and the month-end checklist sends your upcoming bill names and amounts. Both only fire when you actively use those features. Your account numbers are never sent to the AI under any feature."}
+  ]},
+  {group:"Regions & Banks", items:[
+    {q:"Which banks/regions does Klar support?",
+     a:"UK users can connect banks directly via Salt Edge open banking (available on paid plans). South African users currently import transactions manually via CSV — direct SA bank connections are on the roadmap. Everyone, in any region, can use manual entry and CSV import."},
+    {q:"I'm outside the UK or South Africa — can I still use Klar?",
+     a:"Klar is built and priced around the UK and South Africa specifically (currency, tax tools, bank connections). You can still use manual tracking, budgeting, and the AI advisor from anywhere, but region-specific features like bank feeds and local tax calculators won't apply outside those two markets."}
+  ]},
+  {group:"Getting Help", items:[
+    {q:"Something looks wrong / a number doesn't match — what do I do?",
+     a:"First, check Settings → Privacy &amp; Data Rights → “Export JSON” to see exactly what data Klar has stored. If something still looks off, contact us at hello@klarmoney.app with what you were doing when you noticed it — the more detail, the faster we can help."},
+    {q:"How do I report a bug?",
+     a:"Email hello@klarmoney.app with a description of what happened and, if possible, a screenshot."},
+    {q:"How do I contact support?",
+     a:"Email <strong>hello@klarmoney.app</strong> — this is the fastest, most reliable way to reach us right now. We aim to respond within one business day."}
+  ]}
+];
+
+const groupsEl = document.getElementById('groups');
+FAQ.forEach(g=>{
+  const gEl = document.createElement('div');
+  gEl.className = 'group';
+  const list = g.items.map(item=>{
+    return `<div class="q" data-open="false" data-search="${(item.q+' '+item.a).toLowerCase().replace(/"/g,'&quot;')}">
+      <button class="q-btn" onclick="this.closest('.q').dataset.open = this.closest('.q').dataset.open==='true'?'false':'true'">
+        <span>${item.q}</span>
+        <svg class="q-chev" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="q-body"><div class="q-body-inner">${item.a}</div></div>
+    </div>`;
+  }).join('');
+  gEl.innerHTML = `<div class="group-title">${g.group}</div><div class="qlist">${list}</div>`;
+  groupsEl.appendChild(gEl);
+});
+
+const searchInput = document.getElementById('faq-search');
+const noResults = document.getElementById('no-results');
+searchInput.addEventListener('input', ()=>{
+  const term = searchInput.value.trim().toLowerCase();
+  let anyVisible = false;
+  document.querySelectorAll('.group').forEach(g=>{
+    let groupHasVisible = false;
+    g.querySelectorAll('.q').forEach(q=>{
+      const match = !term || q.dataset.search.includes(term);
+      q.hidden = !match;
+      if(match) groupHasVisible = true;
+    });
+    g.style.display = groupHasVisible ? '' : 'none';
+    if(groupHasVisible) anyVisible = true;
+  });
+  noResults.classList.toggle('show', !anyVisible);
+});
+</script>
+
+</body>
+</html>
