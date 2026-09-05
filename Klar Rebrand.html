@@ -957,6 +957,13 @@ body[data-density="compact"] .card{padding:18px}
 .btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.6;flex-shrink:0}
 .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .btn:disabled{opacity:.4;cursor:not-allowed}
+/* Accessibility audit: these primary nav/toolbar interactive classes had hover/active
+   states but no dedicated focus-visible style, leaving keyboard focus ambiguous on the
+   dark, low-contrast surfaces they sit on. Same outline treatment as .btn above. */
+.rail-btn:focus-visible,.nav-item:focus-visible,.tb-tab:focus-visible,.tb-icon-btn:focus-visible,
+.money-tab:focus-visible,.stbtn:focus-visible,.d-menu-dots:focus-visible,.d-pp:focus-visible{
+  outline:2px solid var(--accent);outline-offset:2px;
+}
 .btn-gold,.btn-accent{background:linear-gradient(135deg,#7B5EA7 0%,#5B7FD4 100%);color:#fff;box-shadow:0 4px 16px rgba(123,94,167,.30)}
 .btn-gold:hover:not(:disabled),.btn-accent:hover:not(:disabled){background:linear-gradient(135deg,#8B6EB7 0%,#6B8FE4 100%);box-shadow:0 6px 24px rgba(123,94,167,.45);transform:translateY(-1px)}
 .btn-iris{background:linear-gradient(135deg,#7B5EA7 0%,#5B7FD4 100%);color:#fff;border-color:transparent}
@@ -1772,22 +1779,22 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     </svg>
   </div>
   <button class="rail-btn active" data-hub="home" onclick="goHub('home')" aria-label="Home">
-    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-home"/></svg><span class="rb-tip">Home</span>
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-home"/></svg><span class="rb-tip">Home</span>
   </button>
   <button class="rail-btn" data-hub="money" onclick="goHub('money')" aria-label="Money">
-    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-arrows-ud"/></svg><span class="rb-tip">Money</span>
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-arrows-ud"/></svg><span class="rb-tip">Money</span>
   </button>
   <button class="rail-btn" data-hub="plan" onclick="goHub('plan')" aria-label="Plan">
-    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-grid"/></svg><span class="rb-tip">Plan</span>
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-grid"/></svg><span class="rb-tip">Plan</span>
   </button>
   <button class="rail-btn" data-hub="wealth" onclick="goHub('wealth')" aria-label="Wealth">
-    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-trending-up"/></svg><span class="rb-tip">Wealth</span>
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-trending-up"/></svg><span class="rb-tip">Wealth</span>
   </button>
   <button class="rail-btn rail-desktop-only" data-hub="invest" onclick="goHub('invest')" aria-label="Invest" id="rail-invest-btn">
-    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-bar-chart"/></svg><span class="rb-tip">Invest</span>
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-bar-chart"/></svg><span class="rb-tip">Invest</span>
   </button>
   <button class="rail-btn rail-desktop-only" data-hub="insights" onclick="goHub('insights')" aria-label="Insights" id="rail-insights-btn">
-    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-sparkles"/></svg><span class="rb-tip">Insights</span>
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-sparkles"/></svg><span class="rb-tip">Insights</span>
   </button>
   <button class="rail-btn" id="rail-more-btn" onclick="toggleRailMore(event)" aria-label="More" aria-haspopup="true" aria-expanded="false">
     <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="3" cy="8" r="1.1" fill="currentColor" stroke="none"/><circle cx="8" cy="8" r="1.1" fill="currentColor" stroke="none"/><circle cx="13" cy="8" r="1.1" fill="currentColor" stroke="none"/></svg><span class="rb-tip">More</span>
@@ -1798,7 +1805,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   </button>
   <div id="rail-last-saved" style="font-size:9px;color:var(--t4);text-align:center;padding:4px 2px 8px;line-height:1.3;display:none"></div>
   <button class="rail-btn rail-desktop-only" data-hub="settings" onclick="goHub('settings')" aria-label="Settings" id="rail-settings-btn">
-    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-settings"/></svg><span class="rb-tip">Settings</span>
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-settings"/></svg><span class="rb-tip">Settings</span>
   </button>
 </nav>
 
@@ -1808,10 +1815,10 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
      dropdown-on-desktop vs bottom-sheet-on-mobile split. ═══ -->
 <div class="rail-more-panel" id="rail-more-panel">
   <button class="rail-more-item" data-hub="sa" onclick="goHub('sa');closeRailMore()" data-region-hide="uk" aria-label="SA Tools">
-    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-landmark"/></svg><span>SA Tools</span>
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-landmark"/></svg><span>SA Tools</span>
   </button>
   <button class="rail-more-item" data-hub="uk" onclick="goHub('uk');closeRailMore()" data-region-only="uk" aria-label="UK Tools">
-    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-landmark"/></svg><span>UK Tools</span>
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-landmark"/></svg><span>UK Tools</span>
   </button>
   <button class="rail-more-item" data-hub="pay" onclick="goHub('pay');closeRailMore()" aria-label="Pay Bills">
     <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="3.5" width="13" height="10" rx="1.5"/><path d="M1.5 6.5h13M5 10h2"/></svg><span>Pay Bills</span>
@@ -1821,13 +1828,13 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   </button>
   <div class="rail-more-divider rail-mobile-only"></div>
   <button class="rail-more-item rail-mobile-only" data-hub="invest" onclick="goHub('invest');closeRailMore()" aria-label="Invest">
-    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-bar-chart"/></svg><span>Invest</span>
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-bar-chart"/></svg><span>Invest</span>
   </button>
   <button class="rail-more-item rail-mobile-only" data-hub="insights" onclick="goHub('insights');closeRailMore()" aria-label="Insights">
-    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-sparkles"/></svg><span>Insights</span>
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-sparkles"/></svg><span>Insights</span>
   </button>
   <button class="rail-more-item rail-mobile-only" data-hub="settings" onclick="goHub('settings');closeRailMore()" aria-label="Settings">
-    <svg width="18" height="18" viewBox="0 0 16 16" fill="none"><use href="#ki-settings"/></svg><span>Settings</span>
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-settings"/></svg><span>Settings</span>
   </button>
   <button class="rail-more-item rail-mobile-only" onclick="klShowShortcuts();closeRailMore()" aria-label="Keyboard shortcuts">
     <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="14" height="10" rx="2"/><path d="M4 7h1M7.5 7h1M11 7h1M4 10h1M6 10h4M11 10h1"/></svg><span>Shortcuts</span>
@@ -1858,85 +1865,85 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 
   <!-- Mode switcher -->
   <div class="mode-switcher">
-    <button class="mode-btn mode-personal active" data-mode="personal" onclick="if(isCorp())toggleCorpMode()" title="Personal finances"><svg viewBox="0 0 16 16"><use href="#ki-user"/></svg>Personal</button>
-    <button class="mode-btn mode-business" data-mode="business" onclick="if(!isCorp())toggleCorpMode()" title="Business finances"><svg viewBox="0 0 16 16"><use href="#ki-briefcase"/></svg>Business</button>
+    <button class="mode-btn mode-personal active" data-mode="personal" onclick="if(isCorp())toggleCorpMode()" title="Personal finances"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-user"/></svg>Personal</button>
+    <button class="mode-btn mode-business" data-mode="business" onclick="if(!isCorp())toggleCorpMode()" title="Business finances"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-briefcase"/></svg>Business</button>
   </div>
 
   <div class="ssl" data-section="Overview">Overview<span class="ssl-chev">›</span></div>
-  <div class="nav-item active" onclick="goPg('dashboard')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-home"/></svg></span><span class="nl">Dashboard</span></div>
-  <div class="nav-item" onclick="goPg('accounts')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-bank"/></svg></span><span class="nl">Accounts</span></div>
-  <div class="nav-item" onclick="goPg('transactions')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-arrows-ud"/></svg></span><span class="nl">Transactions</span></div>
-  <div class="nav-item" onclick="goPg('trends')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-activity"/></svg></span><span class="nl">Trends</span></div>
+  <div class="nav-item active" onclick="goPg('dashboard')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-home"/></svg></span><span class="nl">Dashboard</span></div>
+  <div class="nav-item" onclick="goPg('accounts')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-bank"/></svg></span><span class="nl">Accounts</span></div>
+  <div class="nav-item" onclick="goPg('transactions')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-arrows-ud"/></svg></span><span class="nl">Transactions</span></div>
+  <div class="nav-item" onclick="goPg('trends')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-activity"/></svg></span><span class="nl">Trends</span></div>
 
   <div class="ssl" data-section="Planning">Planning<span class="ssl-chev">›</span></div>
-  <div class="nav-item" onclick="goPg('budget')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-pie"/></svg></span><span class="nl">Budget</span></div>
-  <div class="nav-item" onclick="goPg('subs')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-refresh"/></svg></span><span class="nl">Subscriptions</span></div>
-  <div class="nav-item" onclick="goPg('cal')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-calendar"/></svg></span><span class="nl">Bill Calendar</span></div>
-  <div class="nav-item" onclick="goPg('billpay')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-credit-card"/></svg></span><span class="nl">Bill Hub</span></div>
-  <div class="nav-item" onclick="goPg('forecast')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-trending-up"/></svg></span><span class="nl">Forecast</span></div>
-  <div class="nav-item corp-hide" onclick="goPg('grocery')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-cart"/></svg></span><span class="nl">Grocery Lists</span></div>
+  <div class="nav-item" onclick="goPg('budget')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-pie"/></svg></span><span class="nl">Budget</span></div>
+  <div class="nav-item" onclick="goPg('subs')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-refresh"/></svg></span><span class="nl">Subscriptions</span></div>
+  <div class="nav-item" onclick="goPg('cal')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-calendar"/></svg></span><span class="nl">Bill Calendar</span></div>
+  <div class="nav-item" onclick="goPg('billpay')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-credit-card"/></svg></span><span class="nl">Bill Hub</span></div>
+  <div class="nav-item" onclick="goPg('forecast')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-trending-up"/></svg></span><span class="nl">Forecast</span></div>
+  <div class="nav-item corp-hide" onclick="goPg('grocery')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-cart"/></svg></span><span class="nl">Grocery Lists</span></div>
 
   <div class="ssl corp-show" style="display:none">Business Tools</div>
   <div class="nav-item corp-show" style="display:none" onclick="goPg('far')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2h12v12H2zM5 2v12M11 2v12M2 7h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="nl">Asset Register</span></div>
   <div class="nav-item corp-show" style="display:none" onclick="goPg('bizloans')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="4.5" width="13" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M5 4.5V3a2 2 0 0 1 4 0v1.5M8 9v-2M7 8h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span><span class="nl">Business Loans</span></div>
 
   <div class="ssl" data-section="Wealth">Wealth<span class="ssl-chev">›</span></div>
-  <div class="nav-item" onclick="goPg('savings')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-target"/></svg></span><span class="nl">Savings Goals</span></div>
-  <div class="nav-item" onclick="goPg('debt')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-credit-card"/></svg></span><span class="nl">Debt Payoff</span></div>
-  <div class="nav-item" onclick="goPg('networth')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-bar-chart-2"/></svg></span><span class="nl">Net Worth</span></div>
-  <div class="nav-item" onclick="goPg('travel')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-plane"/></svg></span><span class="nl">Travel Planner</span></div>
-  <div class="nav-item" onclick="goPg('forex')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-globe"/></svg></span><span class="nl">Forex &amp; Offshore</span></div>
+  <div class="nav-item" onclick="goPg('savings')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-target"/></svg></span><span class="nl">Savings Goals</span></div>
+  <div class="nav-item" onclick="goPg('debt')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-credit-card"/></svg></span><span class="nl">Debt Payoff</span></div>
+  <div class="nav-item" onclick="goPg('networth')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-bar-chart-2"/></svg></span><span class="nl">Net Worth</span></div>
+  <div class="nav-item" onclick="goPg('travel')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-plane"/></svg></span><span class="nl">Travel Planner</span></div>
+  <div class="nav-item" onclick="goPg('forex')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-globe"/></svg></span><span class="nl">Forex &amp; Offshore</span></div>
 
   <div class="ssl" data-section="Invest">Invest<span class="ssl-chev">›</span></div>
-  <div class="nav-item" onclick="goPg('invest')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-chart-up"/></svg></span><span class="nl">Investment Hub</span></div>
-  <div class="nav-item" onclick="goPg('portfolio')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-briefcase"/></svg></span><span class="nl">My Portfolio</span></div>
+  <div class="nav-item" onclick="goPg('invest')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-chart-up"/></svg></span><span class="nl">Investment Hub</span></div>
+  <div class="nav-item" onclick="goPg('portfolio')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-briefcase"/></svg></span><span class="nl">My Portfolio</span></div>
 
   <div class="ssl" data-section="Intelligence">Intelligence<span class="ssl-chev">›</span></div>
-  <div class="nav-item" data-region-only="za,uk" onclick="goPg('class')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-award"/></svg></span><span class="nl">Class &amp; Banking</span></div>
-  <div class="nav-item" onclick="goPg('health')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-heart-pulse"/></svg></span><span class="nl">Health Score</span></div>
-  <div class="nav-item" onclick="goPg('insights')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-lightbulb"/></svg></span><span class="nl">Insights</span></div>
-  <div class="nav-item" onclick="goPg('ai')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-bot"/></svg></span><span class="nl">AI Advisor</span></div>
+  <div class="nav-item" data-region-only="za,uk" onclick="goPg('class')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-award"/></svg></span><span class="nl">Class &amp; Banking</span></div>
+  <div class="nav-item" onclick="goPg('health')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-heart-pulse"/></svg></span><span class="nl">Health Score</span></div>
+  <div class="nav-item" onclick="goPg('insights')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-lightbulb"/></svg></span><span class="nl">Insights</span></div>
+  <div class="nav-item" onclick="goPg('ai')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-bot"/></svg></span><span class="nl">AI Advisor</span></div>
 
   <div class="ssl" data-section="Wellbeing">Wellbeing<span class="ssl-chev">›</span></div>
-  <div class="nav-item" onclick="goPg('focus')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-focus"/></svg></span><span class="nl">Focus Mode</span></div>
-  <div class="nav-item" onclick="goPg('routines')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-refresh"/></svg></span><span class="nl">Money Routines</span></div>
-  <div class="nav-item corp-hide" onclick="goPg('visual')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-layers"/></svg></span><span class="nl">Visual Budget</span></div>
+  <div class="nav-item" onclick="goPg('focus')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-focus"/></svg></span><span class="nl">Focus Mode</span></div>
+  <div class="nav-item" onclick="goPg('routines')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-refresh"/></svg></span><span class="nl">Money Routines</span></div>
+  <div class="nav-item corp-hide" onclick="goPg('visual')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-layers"/></svg></span><span class="nl">Visual Budget</span></div>
 
   <div class="ssl" data-section="SA Tools" data-region-only="za">SA Tools<span class="ssl-chev">›</span></div>
-  <div class="nav-item corp-hide" data-region-only="za" onclick="goPg('stokvel')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-users"/></svg></span><span class="nl">Stokvels</span></div>
-  <div class="nav-item" data-region-only="za" onclick="goPg('tax')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-landmark"/></svg></span><span class="nl">SARS &amp; Tax</span></div>
-  <div class="nav-item corp-hide" data-region-only="za" onclick="goPg('itr12')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-file-text"/></svg></span><span class="nl">ITR12 Estimator</span></div>
-  <div class="nav-item corp-hide" data-region-only="za" onclick="goPg('uif')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-shield"/></svg></span><span class="nl">UIF Calculator</span></div>
-  <div class="nav-item corp-hide" data-region-only="za" onclick="goPg('tfsa')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-bank"/></svg></span><span class="nl">TFSA Tracker</span></div>
-  <div class="nav-item corp-hide" data-region-only="za" onclick="goPg('grants')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-hand-heart"/></svg></span><span class="nl">Grants &amp; Relief</span></div>
+  <div class="nav-item corp-hide" data-region-only="za" onclick="goPg('stokvel')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-users"/></svg></span><span class="nl">Stokvels</span></div>
+  <div class="nav-item" data-region-only="za" onclick="goPg('tax')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-landmark"/></svg></span><span class="nl">SARS &amp; Tax</span></div>
+  <div class="nav-item corp-hide" data-region-only="za" onclick="goPg('itr12')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-file-text"/></svg></span><span class="nl">ITR12 Estimator</span></div>
+  <div class="nav-item corp-hide" data-region-only="za" onclick="goPg('uif')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-shield"/></svg></span><span class="nl">UIF Calculator</span></div>
+  <div class="nav-item corp-hide" data-region-only="za" onclick="goPg('tfsa')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-bank"/></svg></span><span class="nl">TFSA Tracker</span></div>
+  <div class="nav-item corp-hide" data-region-only="za" onclick="goPg('grants')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-hand-heart"/></svg></span><span class="nl">Grants &amp; Relief</span></div>
 
   <div class="ssl" data-section="UK Tools" data-region-only="uk">UK Tools<span class="ssl-chev">›</span></div>
-  <div class="nav-item corp-hide" data-region-only="uk" onclick="goPg('uktax')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-landmark"/></svg></span><span class="nl">Income Tax &amp; NI</span></div>
-  <div class="nav-item corp-hide" data-region-only="uk" onclick="goPg('isa')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-bank"/></svg></span><span class="nl">ISA Tracker</span></div>
-  <div class="nav-item corp-hide" data-region-only="uk" onclick="goPg('ukloans')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-file-text"/></svg></span><span class="nl">Student Loan</span></div>
+  <div class="nav-item corp-hide" data-region-only="uk" onclick="goPg('uktax')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-landmark"/></svg></span><span class="nl">Income Tax &amp; NI</span></div>
+  <div class="nav-item corp-hide" data-region-only="uk" onclick="goPg('isa')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-bank"/></svg></span><span class="nl">ISA Tracker</span></div>
+  <div class="nav-item corp-hide" data-region-only="uk" onclick="goPg('ukloans')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-file-text"/></svg></span><span class="nl">Student Loan</span></div>
 
   <div class="ssl" data-section="My Assets">My Assets<span class="ssl-chev">›</span></div>
-  <div class="nav-item" onclick="goPg('property')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-home2"/></svg></span><span class="nl">Property</span></div>
-  <div class="nav-item" onclick="goPg('insurance')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-lock"/></svg></span><span class="nl">Insurance</span></div>
+  <div class="nav-item" onclick="goPg('property')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-home2"/></svg></span><span class="nl">Property</span></div>
+  <div class="nav-item" onclick="goPg('insurance')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-lock"/></svg></span><span class="nl">Insurance</span></div>
 
   <div class="ssl" data-section="Cash &amp; Rate">Cash &amp; Rate<span class="ssl-chev">›</span></div>
-  <div class="nav-item" onclick="goPg('cashflow')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-activity"/></svg></span><span class="nl">Cashflow Forecast</span></div>
-  <div class="nav-item" onclick="goPg('savings-rate')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-percent"/></svg></span><span class="nl">Savings Rate</span></div>
-  <div class="nav-item" onclick="goPg('reminders')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-bell"/></svg></span><span class="nl">Reminders</span></div>
+  <div class="nav-item" onclick="goPg('cashflow')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-activity"/></svg></span><span class="nl">Cashflow Forecast</span></div>
+  <div class="nav-item" onclick="goPg('savings-rate')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-percent"/></svg></span><span class="nl">Savings Rate</span></div>
+  <div class="nav-item" onclick="goPg('reminders')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-bell"/></svg></span><span class="nl">Reminders</span></div>
 
   <div class="ssl" data-section="Tools">Tools<span class="ssl-chev">›</span></div>
-  <div class="nav-item" onclick="goPg('whatif')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-flask"/></svg></span><span class="nl">What-If Tool</span></div>
-  <div class="nav-item corp-hide" onclick="goPg('medgap')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-medical"/></svg></span><span class="nl">Medical Expenses</span></div>
-  <div class="nav-item" onclick="goPg('vehicle')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-car"/></svg></span><span class="nl">Vehicle Costs</span></div>
-  <div class="nav-item" onclick="goPg('checklist')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-check-list"/></svg></span><span class="nl">Month Checklist</span></div>
-  <div class="nav-item" onclick="goPg('recurring')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-repeat"/></svg></span><span class="nl">Recurring</span></div>
-  <div class="nav-item" onclick="goPg('tags')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-tag"/></svg></span><span class="nl">Tags</span></div>
-  <div class="nav-item corp-hide" onclick="goPg('retire')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-target"/></svg></span><span class="nl">Retirement</span></div>
+  <div class="nav-item" onclick="goPg('whatif')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-flask"/></svg></span><span class="nl">What-If Tool</span></div>
+  <div class="nav-item corp-hide" onclick="goPg('medgap')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-medical"/></svg></span><span class="nl">Medical Expenses</span></div>
+  <div class="nav-item" onclick="goPg('vehicle')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-car"/></svg></span><span class="nl">Vehicle Costs</span></div>
+  <div class="nav-item" onclick="goPg('checklist')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-check-list"/></svg></span><span class="nl">Month Checklist</span></div>
+  <div class="nav-item" onclick="goPg('recurring')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-repeat"/></svg></span><span class="nl">Recurring</span></div>
+  <div class="nav-item" onclick="goPg('tags')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-tag"/></svg></span><span class="nl">Tags</span></div>
+  <div class="nav-item corp-hide" onclick="goPg('retire')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-target"/></svg></span><span class="nl">Retirement</span></div>
 
   <div class="ssl" data-section="Preferences">Preferences<span class="ssl-chev">›</span></div>
-  <div class="nav-item" onclick="goPg('settings')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-settings"/></svg></span><span class="nl">Customise</span></div>
+  <div class="nav-item" onclick="goPg('settings')"><span class="ni"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-settings"/></svg></span><span class="nl">Customise</span></div>
 
-  <div class="sf"><div class="sft"><svg viewBox="0 0 16 16"><use href="#ki-lock"/></svg>Local only · No tracking</div></div>
+  <div class="sf"><div class="sft"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-lock"/></svg>Local only · No tracking</div></div>
 </aside>
 
 <!-- ═══ MAIN ═══ -->
@@ -1952,10 +1959,10 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     </div>
     <button class="tb-icon-btn tb-search-mobile-btn" onclick="openCmdK()" title="Search &amp; go to anywhere in Klar">⌕</button>
     <button class="tb-icon-btn" onclick="goPg('insights')" title="Insights">○</button>
-    <button class="tb-icon-btn" onclick="openSplitBills()" title="Split bills with friends"><svg viewBox="0 0 16 16"><use href="#ki-users"/></svg></button>
+    <button class="tb-icon-btn" onclick="openSplitBills()" title="Split bills with friends"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-users"/></svg></button>
     <button class="tb-icon-btn" onclick="document.getElementById('m-export').classList.add('open')" title="Export data">⬇</button>
     <button class="tb-icon-btn" id="tb-theme" onclick="cycleTheme()" title="Theme">◐</button>
-    <button class="tb-icon-btn" onclick="goPg('reminders')" title="Reminders" id="tb-reminders"><svg viewBox="0 0 16 16"><use href="#ki-bell"/></svg></button>
+    <button class="tb-icon-btn" onclick="goPg('reminders')" title="Reminders" id="tb-reminders"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-bell"/></svg></button>
     <button id="sb-auth-btn" onclick="sbOpenAuth()" title="Cloud sync">
       <span class="sync-dot idle" id="sb-sync-dot"></span>
       <span id="sb-auth-label">Sign in</span>
@@ -2008,8 +2015,8 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
         </div>
         <div class="d-hero-actions">
           <button class="d-hact" onclick="openAddTxn()"><span class="d-hact-ico"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span class="d-hact-lbl">Add</span></button>
-          <button class="d-hact" onclick="openAddTxnTransfer()" title="Record a transfer between accounts"><span class="d-hact-ico"><svg viewBox="0 0 16 16" style="width:16px;height:16px"><use href="#ki-arrows-ud"/></svg></span><span class="d-hact-lbl">Transfer</span></button>
-          <button class="d-hact" onclick="goPg('cal')"><span class="d-hact-ico"><svg viewBox="0 0 16 16" style="width:16px;height:16px"><use href="#ki-calendar"/></svg></span><span class="d-hact-lbl">Bills</span></button>
+          <button class="d-hact" onclick="openAddTxnTransfer()" title="Record a transfer between accounts"><span class="d-hact-ico"><svg viewBox="0 0 16 16" style="width:16px;height:16px" aria-hidden="true"><use href="#ki-arrows-ud"/></svg></span><span class="d-hact-lbl">Transfer</span></button>
+          <button class="d-hact" onclick="goPg('cal')"><span class="d-hact-ico"><svg viewBox="0 0 16 16" style="width:16px;height:16px" aria-hidden="true"><use href="#ki-calendar"/></svg></span><span class="d-hact-lbl">Bills</span></button>
           <button class="d-hact" onclick="openImport()"><span class="d-hact-ico"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/><path d="M5 19h14"/></svg></span><span class="d-hact-lbl">Import CSV</span></button>
         </div>
       </div>
@@ -2085,7 +2092,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
         <div id="d-acctstack"></div>
       </div>
       <div class="d-promo" onclick="goPg('ai')">
-        <div class="d-promo-ico"><svg viewBox="0 0 16 16"><use href="#ki-bot"/></svg></div>
+        <div class="d-promo-ico"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-bot"/></svg></div>
         <div>
           <div class="d-promo-title">Ask Klar's AI Advisor</div>
           <div class="d-promo-sub">Get a straight answer on your spending</div>
@@ -2221,7 +2228,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
         <option value="expense">Expense</option>
       </select>
       <button class="btn btn-ghost btn-sm" onclick="bulkChangeType()">Apply Type</button>
-      <button class="btn btn-sm" onclick="bulkDelete()" style="background:var(--red-d);color:var(--red);border:1px solid var(--red)40"><svg viewBox="0 0 16 16"><use href="#ki-trash"/></svg>Delete Selected</button>
+      <button class="btn btn-sm" onclick="bulkDelete()" style="background:var(--red-d);color:var(--red);border:1px solid var(--red)40"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-trash"/></svg>Delete Selected</button>
       <button class="btn btn-ghost btn-sm" onclick="clearBulkSel()">✕ Clear</button>
     </div>
     <div class="tw" id="txn-table"><div class="empty"><div class="empty-i">↕</div><div class="empty-t">No transactions</div><div class="empty-s">Import a CSV or add manually</div></div></div>
@@ -2384,7 +2391,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div id="budget-suggest-wrap" style="display:none;margin-bottom:18px">
     <div class="card" style="border:1px solid var(--blue);border-opacity:0.25;background:color-mix(in srgb,var(--blue) 6%,transparent)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-lightbulb"/></svg>Suggested Budgets <span id="budget-suggest-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
+        <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-lightbulb"/></svg>Suggested Budgets <span id="budget-suggest-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
         <div style="display:flex;gap:8px">
           <button class="btn btn-ok btn-xs" onclick="applyAllBudgetSuggestions()">Apply All</button>
           <button class="btn btn-ghost btn-xs" onclick="dismissAllBudgetSuggestions()">Dismiss All</button>
@@ -2492,7 +2499,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div id="bill-detected-wrap" style="display:none;margin-bottom:18px">
     <div class="card" style="border:1px solid var(--amber);border-opacity:0.25;background:color-mix(in srgb,var(--amber) 6%,transparent)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-search"/></svg>Detected Recurring Bills <span id="bill-detected-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
+        <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-search"/></svg>Detected Recurring Bills <span id="bill-detected-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
         <button class="btn btn-ghost btn-xs" onclick="dismissAllDetectedBills()">Dismiss All</button>
       </div>
       <div id="bill-detected-list"></div>
@@ -2580,7 +2587,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div id="goal-detect-wrap" style="display:none;margin-bottom:16px">
       <div class="card" style="border:1px solid var(--green);border-opacity:0.25;background:color-mix(in srgb,var(--green) 6%,transparent)">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-chart-up"/></svg>Detected Savings Contributions <span id="goal-detect-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
+          <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-chart-up"/></svg>Detected Savings Contributions <span id="goal-detect-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
           <button class="btn btn-ghost btn-xs" onclick="dismissAllDetectedSavings()">Dismiss All</button>
         </div>
         <div id="goal-detect-list"></div>
@@ -2678,7 +2685,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
         <div id="sb-settlement" style="background:var(--s2);border-radius:var(--rsm);padding:12px;margin-bottom:12px"></div>
         <div class="mf" style="flex-wrap:wrap;gap:6px">
           <button class="btn btn-ghost" onclick="sbBack()">← Back</button>
-          <button class="btn btn-ghost" onclick="sbCopySettlement()" id="sb-copy-btn"><svg viewBox="0 0 16 16"><use href="#ki-clipboard"/></svg>Copy for WhatsApp</button>
+          <button class="btn btn-ghost" onclick="sbCopySettlement()" id="sb-copy-btn"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-clipboard"/></svg>Copy for WhatsApp</button>
           <button class="btn btn-ghost btn-danger" onclick="sbDeleteGroup()" id="sb-del-btn">Delete</button>
           <button class="btn btn-gold" onclick="sbSave()">Save</button>
         </div>
@@ -2707,7 +2714,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div id="debt-detected-wrap" style="display:none;margin-bottom:18px">
     <div class="card" style="border:1px solid var(--red);border-opacity:0.25;background:color-mix(in srgb,var(--red) 6%,transparent)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-search"/></svg>Detected Debt Repayments <span id="debt-detected-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
+        <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-search"/></svg>Detected Debt Repayments <span id="debt-detected-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
         <button class="btn btn-ghost btn-xs" onclick="dismissAllDetectedDebts()">Dismiss All</button>
       </div>
       <div id="debt-detected-list"></div>
@@ -2771,7 +2778,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div class="card" style="margin-top:16px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
       <div class="ct" style="margin-bottom:0">Net Worth History</div>
-      <button class="btn btn-ghost btn-sm" onclick="takeNwSnapshot()" style="font-size:11px"><svg viewBox="0 0 16 16"><use href="#ki-camera"/></svg>Snapshot Now</button>
+      <button class="btn btn-ghost btn-sm" onclick="takeNwSnapshot()" style="font-size:11px"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-camera"/></svg>Snapshot Now</button>
     </div>
     <div id="nw-history-chart" style="min-height:160px"></div>
     <div id="nw-history-table" style="margin-top:14px"></div>
@@ -2800,7 +2807,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div id="forex-detected-wrap" style="display:none;margin-bottom:18px">
     <div class="card" style="border:1px solid var(--purple);border-opacity:0.3;background:color-mix(in srgb,var(--purple) 6%,transparent)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-globe"/></svg>Detected International Transactions <span id="forex-detected-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
+        <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-globe"/></svg>Detected International Transactions <span id="forex-detected-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
         <button class="btn btn-ghost btn-xs" onclick="dismissAllDetectedForex()">Dismiss All</button>
       </div>
       <div style="font-size:11px;color:var(--t3);margin-bottom:10px">These transactions may count against your SARB allowances. Log them to track your annual limit.</div>
@@ -2944,7 +2951,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 <div id="pg-class" class="page">
   <div class="ph">
     <div><div class="pt">Class &amp; <em>Banking</em></div><div class="psub">Where you stand · goals to upgrade</div></div>
-    <button class="btn btn-gold" onclick="printReport()" data-region-only="za"><svg viewBox="0 0 16 16"><use href="#ki-printer"/></svg>Print Report</button>
+    <button class="btn btn-gold" onclick="printReport()" data-region-only="za"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-printer"/></svg>Print Report</button>
   </div>
   <!-- SA content -->
   <div data-region-only="za">
@@ -3061,13 +3068,13 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <div class="card">
         <div class="ct">Quick Questions</div>
         <div style="display:flex;flex-direction:column;gap:6px">
-          <button class="btn btn-ghost btn-sm" onclick="qChat('Analyse my spending and tell me where I can save money')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16"><use href="#ki-lightbulb"/></svg>Analyse my spending</button>
-          <button class="btn btn-ghost btn-sm" onclick="qChat('What is the best strategy to pay off my debts quickly?')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16"><use href="#ki-credit-card"/></svg>Best debt strategy</button>
-          <button class="btn btn-ghost btn-sm" onclick="qChat('How much should I save each month to reach my goals?')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16"><use href="#ki-target"/></svg>Savings planning</button>
-          <button class="btn btn-ghost btn-sm" onclick="qChat('Audit my subscriptions - which should I cancel?')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16"><use href="#ki-cat-phone"/></svg>Subscription audit</button>
-          <button class="btn btn-ghost btn-sm" onclick="qChat('Create a realistic monthly budget plan for me')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16"><use href="#ki-pie"/></svg>Build me a budget</button>
-          <button id="ai-q-invest" class="btn btn-ghost btn-sm" onclick="qChat('What investment vehicles are available for my income level? (TFSA, ETF, RA, ISA — informational only)')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16"><use href="#ki-chart-up"/></svg>Investment options</button>
-          <button id="ai-q-banking" class="btn btn-ghost btn-sm" onclick="qChat('What banking package should I upgrade to based on my income?')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16"><use href="#ki-bank"/></svg>Banking upgrade</button>
+          <button class="btn btn-ghost btn-sm" onclick="qChat('Analyse my spending and tell me where I can save money')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-lightbulb"/></svg>Analyse my spending</button>
+          <button class="btn btn-ghost btn-sm" onclick="qChat('What is the best strategy to pay off my debts quickly?')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-credit-card"/></svg>Best debt strategy</button>
+          <button class="btn btn-ghost btn-sm" onclick="qChat('How much should I save each month to reach my goals?')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-target"/></svg>Savings planning</button>
+          <button class="btn btn-ghost btn-sm" onclick="qChat('Audit my subscriptions - which should I cancel?')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-cat-phone"/></svg>Subscription audit</button>
+          <button class="btn btn-ghost btn-sm" onclick="qChat('Create a realistic monthly budget plan for me')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-pie"/></svg>Build me a budget</button>
+          <button id="ai-q-invest" class="btn btn-ghost btn-sm" onclick="qChat('What investment vehicles are available for my income level? (TFSA, ETF, RA, ISA — informational only)')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-chart-up"/></svg>Investment options</button>
+          <button id="ai-q-banking" class="btn btn-ghost btn-sm" onclick="qChat('What banking package should I upgrade to based on my income?')" style="text-align:left;justify-content:flex-start;font-size:11px"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-bank"/></svg>Banking upgrade</button>
         </div>
       </div>
       <div class="card"><div class="ct">Your Financial Snapshot</div><div id="chat-snap" style="font-size:11px;color:var(--t2);line-height:2.2;font-weight:500"></div></div>
@@ -3308,14 +3315,14 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <div id="petrol-detected-wrap" style="display:none;margin-bottom:16px">
     <div class="card" style="border:1px solid var(--amber);border-opacity:0.3;background:color-mix(in srgb,var(--amber) 6%,transparent)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><use href="#ki-cat-fuel"/></svg>Detected Petrol Purchases <span id="petrol-detected-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
+        <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-cat-fuel"/></svg>Detected Petrol Purchases <span id="petrol-detected-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
         <button class="btn btn-ghost btn-xs" onclick="dismissAllDetectedPetrol()">Dismiss All</button>
       </div>
       <div id="petrol-detected-list"></div>
     </div>
   </div>
   <div class="card">
-    <div class="ct" style="display:flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><use href="#ki-cat-fuel"/></svg>Petrol Cost Tracker</div>
+    <div class="ct" style="display:flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-cat-fuel"/></svg>Petrol Cost Tracker</div>
     <div class="g2">
       <div>
         <div class="fg2" style="margin-bottom:12px">
@@ -3338,7 +3345,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 <!-- ══ LOAD-SHEDDING TRACKER ══ -->
 <div style="padding:0 0 18px">
   <div class="card">
-    <div class="ct" style="display:flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><use href="#ki-cat-bolt"/></svg>Load-Shedding Cost Tracker</div>
+    <div class="ct" style="display:flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-cat-bolt"/></svg>Load-Shedding Cost Tracker</div>
     <div class="g2">
       <div>
         <div class="ic a" style="margin-bottom:12px"><div class="it">Track Your Eskom Costs</div><div class="ib">Log generator fuel, candles, UPS battery replacements and other load-shedding expenses. See the real monthly cost of load-shedding on your budget.</div></div>
@@ -3475,10 +3482,10 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="card">
       <div class="ct">Theme</div>
       <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:18px">
-        <div onclick="setTheme('dark')" class="tsw" data-t="dark" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#9e9890"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><use href="#ki-moon"/></svg><br>Dark</div>
+        <div onclick="setTheme('dark')" class="tsw" data-t="dark" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#9e9890"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-moon"/></svg><br>Dark</div>
         <div onclick="setTheme('light')" class="tsw" data-t="light" style="background:#f5f0e8;border:1px solid #ddd8d0;color:#5a5550">☀<br>Light</div>
         <div onclick="setTheme('highcontrast')" class="tsw" data-t="highcontrast" style="background:#000;border:1px solid #2a2a2a;color:#fff">⬤<br>Hi-Con</div>
-        <div onclick="setTheme('warm')" class="tsw" data-t="warm" style="background:#1c1610;border:1px solid #4a3e30;color:#b89870"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><use href="#ki-flame"/></svg><br>Warm</div>
+        <div onclick="setTheme('warm')" class="tsw" data-t="warm" style="background:#1c1610;border:1px solid #4a3e30;color:#b89870"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-flame"/></svg><br>Warm</div>
         <div onclick="setTheme('amoled')" class="tsw" data-t="amoled" style="background:#000;border:1px solid #1e1e1e;color:#ff5535">⚫<br>AMOLED</div>
       </div>
       <div class="ct">Font Size</div>
@@ -3496,7 +3503,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     </div>
     <div class="card">
       <div class="ct">Display Preferences</div>
-      <div class="cr"><div><div class="cl">Region</div><div class="cs">Changes currency, tax tools, and bill providers</div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button id="pref-region-za" class="btn btn-xs" onclick="klSelectRegion('za');applyPrefsUI();renderAll()" style="padding:5px 12px">🇿🇦 South Africa</button><button id="pref-region-uk" class="btn btn-xs" onclick="klSelectRegion('uk');applyPrefsUI();renderAll()" style="padding:5px 12px">🇬🇧 United Kingdom</button><button id="pref-region-other" class="btn btn-xs" onclick="klSelectRegion('other');applyPrefsUI();renderAll()" style="padding:5px 12px;display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><use href="#ki-globe"/></svg>Other</button></div></div>
+      <div class="cr"><div><div class="cl">Region</div><div class="cs">Changes currency, tax tools, and bill providers</div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button id="pref-region-za" class="btn btn-xs" onclick="klSelectRegion('za');applyPrefsUI();renderAll()" style="padding:5px 12px">🇿🇦 South Africa</button><button id="pref-region-uk" class="btn btn-xs" onclick="klSelectRegion('uk');applyPrefsUI();renderAll()" style="padding:5px 12px">🇬🇧 United Kingdom</button><button id="pref-region-other" class="btn btn-xs" onclick="klSelectRegion('other');applyPrefsUI();renderAll()" style="padding:5px 12px;display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-globe"/></svg>Other</button></div></div>
       <div class="cr"><div><div class="cl">Amounts look wrong after switching region?</div><div class="cs">Resets the currency conversion baseline to match your current region — use this if your numbers look multiplied or divided by an exchange rate incorrectly</div></div><button class="btn btn-ghost btn-xs" onclick="klFixCurrencyBaseline()">Fix currency conversion</button></div>
       <div class="cr"><div><div class="cl">Compact sidebar</div></div><label class="toggle"><input type="checkbox" id="pref-compact" onchange="applyCompact(this.checked)"><span class="tsl"></span></label></div>
       <div class="cr"><div><div class="cl">Currency symbol</div></div><select id="pref-cur" onchange="savePref()" style="width:110px"><option value="R">R (ZAR)</option><option value="$">$ (USD)</option><option value="€">€ (EUR)</option><option value="£">£ (GBP)</option><option value="₦">₦ (NGN)</option><option value="A$">A$ (AUD)</option><option value="C$">C$ (CAD)</option><option value="₹">₹ (INR)</option><option value="¥">¥ (JPY)</option><option value="CHF">CHF (CHF)</option><option value="kr">kr (SEK/NOK/DKK)</option><option value="NZ$">NZ$ (NZD)</option><option value="S$">S$ (SGD)</option><option value="HK$">HK$ (HKD)</option><option value="AED">AED (AED)</option><option value="CN¥">CN¥ (CNY)</option><option value="KSh">KSh (KES)</option><option value="GH₵">GH₵ (GHS)</option><option value="Mex$">Mex$ (MXN)</option><option value="R$">R$ (BRL)</option></select></div>
@@ -3548,7 +3555,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <div id="kl-notif-perm-row" style="margin-bottom:12px">
         <div style="font-size:12px;color:var(--t3);margin-bottom:10px;line-height:1.6">Get alerted for upcoming bills, budget overruns, savings milestones &amp; more — even when the tab is in the background.</div>
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-          <button class="btn btn-gold btn-sm" id="kl-notif-enable-btn" onclick="klNotifyPerm()" style="display:inline-flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><use href="#ki-bell"/></svg>Enable Notifications</button>
+          <button class="btn btn-gold btn-sm" id="kl-notif-enable-btn" onclick="klNotifyPerm()" style="display:inline-flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-bell"/></svg>Enable Notifications</button>
           <span id="kl-notif-perm-status" style="font-size:11px;color:var(--t3)"></span>
         </div>
       </div>
@@ -3565,20 +3572,20 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="card">
       <div class="ct">Data Management</div>
       <div style="display:flex;flex-direction:column;gap:9px">
-        <button class="btn btn-ghost" onclick="exportCsv('transactions')" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-file-text"/></svg>Export transactions (CSV)</button>
-        <button class="btn btn-ghost" onclick="exportXls()" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-bar-chart-2"/></svg>Export transactions (Excel)</button>
-        <button class="btn btn-ghost" onclick="exportCsv('budget')" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-bar-chart-2"/></svg>Export budget summary (CSV)</button>
-        <button class="btn btn-ghost" onclick="exportCsv('networth')" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-chart-up"/></svg>Export net worth history (CSV)</button>
-        <button class="btn btn-ghost" onclick="printStatement()" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-printer"/></svg>Print monthly statement (PDF)</button>
-        <button class="btn btn-ghost" onclick="exportJson()" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-save"/></svg>Full data backup (JSON)</button>
+        <button class="btn btn-ghost" onclick="exportCsv('transactions')" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-file-text"/></svg>Export transactions (CSV)</button>
+        <button class="btn btn-ghost" onclick="exportXls()" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-bar-chart-2"/></svg>Export transactions (Excel)</button>
+        <button class="btn btn-ghost" onclick="exportCsv('budget')" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-bar-chart-2"/></svg>Export budget summary (CSV)</button>
+        <button class="btn btn-ghost" onclick="exportCsv('networth')" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-chart-up"/></svg>Export net worth history (CSV)</button>
+        <button class="btn btn-ghost" onclick="printStatement()" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-printer"/></svg>Print monthly statement (PDF)</button>
+        <button class="btn btn-ghost" onclick="exportJson()" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-save"/></svg>Full data backup (JSON)</button>
         <button class="btn btn-ghost" onclick="document.getElementById('restore-inp').click()" style="justify-content:flex-start">↑ Restore from backup</button>
-        <button class="btn btn-ghost" onclick="openImportHistory()" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-clipboard"/></svg>Import history</button>
+        <button class="btn btn-ghost" onclick="openImportHistory()" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-clipboard"/></svg>Import history</button>
         <p style="font-size:12px;color:var(--t3);margin-top:8px">
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-lightbulb"/></svg> To import bank transactions via CSV, go to <a href="#" onclick="goHub('accounts');return false;" style="color:var(--accent)">Accounts</a> and tap "Import" on any account.
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-lightbulb"/></svg> To import bank transactions via CSV, go to <a href="#" onclick="goHub('accounts');return false;" style="color:var(--accent)">Accounts</a> and tap "Import" on any account.
         </p>
         <input type="file" id="restore-inp" accept=".json" style="display:none" onchange="restoreBackup(event)">
         <hr class="dv">
-        <button class="btn btn-ghost" onclick="S.prefs.onboardingComplete=false;save();showOnboarding()" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-compass"/></svg>Restart setup wizard</button>
+        <button class="btn btn-ghost" onclick="S.prefs.onboardingComplete=false;save();showOnboarding()" style="justify-content:flex-start;gap:8px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-compass"/></svg>Restart setup wizard</button>
         <button class="btn btn-danger" onclick="confirmReset()">⚠ Reset all data</button>
       </div>
     </div>
@@ -3625,7 +3632,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     </div>
     <div style="font-size:12px;color:var(--t3);margin-bottom:10px">Klar learns a rule each time you re-categorise a transaction. You can also add rules manually.</div>
     <div id="cat-rule-suggest-wrap" style="display:none;margin-bottom:12px">
-      <div style="font-size:11.5px;font-weight:600;color:var(--amber);margin-bottom:8px;display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-sparkles"/></svg>Uncategorized merchants — suggest rules:</div>
+      <div style="font-size:11.5px;font-weight:600;color:var(--amber);margin-bottom:8px;display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-sparkles"/></svg>Uncategorized merchants — suggest rules:</div>
       <div id="cat-rule-suggest-list"></div>
     </div>
     <div id="cat-rules-list"></div>
@@ -3660,7 +3667,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <button class="btn btn-gold btn-sm" onclick="klCopyReferral()">Copy link</button>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-ghost btn-sm" onclick="klShareReferral('whatsapp')" style="display:inline-flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-chat"/></svg>WhatsApp</button>
+      <button class="btn btn-ghost btn-sm" onclick="klShareReferral('whatsapp')" style="display:inline-flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-chat"/></svg>WhatsApp</button>
       <button class="btn btn-ghost btn-sm" onclick="klShareReferral('email')">✉ Email</button>
       <button class="btn btn-ghost btn-sm" onclick="klShareReferral('twitter')">𝕏 Twitter/X</button>
       <button class="btn btn-ghost btn-sm" onclick="klShareReferral('native')">↑ Share</button>
@@ -3673,7 +3680,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="ct">Help &amp; Support</div>
     <div style="font-size:12px;color:var(--t3);margin-bottom:14px;line-height:1.7">Have a question, found a bug, or need help with a feature? Our support team usually responds within a few hours.</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-      <button class="btn btn-gold btn-sm" onclick="klOpenSupport()" style="display:inline-flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-chat"/></svg>Chat with support</button>
+      <button class="btn btn-gold btn-sm" onclick="klOpenSupport()" style="display:inline-flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-chat"/></svg>Chat with support</button>
       <button class="btn btn-ghost btn-sm" onclick="window.open('mailto:hello@klarmoney.app','_blank')">✉ Email us</button>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -3690,7 +3697,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px">
       <div style="background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:13px 14px">
         <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--t4);margin-bottom:4px">Data location</div>
-        <div style="font-size:13px;font-weight:700;color:var(--green);display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-cat-phone"/></svg>Local device</div>
+        <div style="font-size:13px;font-weight:700;color:var(--green);display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-cat-phone"/></svg>Local device</div>
         <div style="font-size:11px;color:var(--t3);margin-top:2px">Stored in your browser only</div>
       </div>
       <div style="background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:13px 14px">
@@ -3739,7 +3746,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
         <span style="font-size:10px;color:var(--t4)">opt-in</span>
       </div>
       <div style="display:flex;align-items:center;gap:12px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:10px 14px">
-        <div style="display:flex"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-bot"/></svg></div>
+        <div style="display:flex"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-bot"/></svg></div>
         <div style="flex:1">
           <div style="font-size:12px;font-weight:700;color:var(--t1)">Groq <span style="font-size:10px;color:var(--t4);font-weight:500">(AI Advisor — optional)</span></div>
           <div style="font-size:11px;color:var(--t3)">Financial summary only, no raw data · USA servers</div>
@@ -3749,7 +3756,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     </div>
 
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-gold btn-sm" onclick="klShowPolicy()" style="display:inline-flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-file-text"/></svg>Read full Privacy Policy</button>
+      <button class="btn btn-gold btn-sm" onclick="klShowPolicy()" style="display:inline-flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-file-text"/></svg>Read full Privacy Policy</button>
       <button class="btn btn-ghost btn-sm" onclick="klShowPrivacyGate()">Review consent notice</button>
     </div>
   </div>
@@ -3795,7 +3802,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 
 <!-- ══ MONTHLY CHECKLIST ══ -->
 <div id="pg-checklist" class="page">
-  <div class="ph"><div><div class="pt">Month-End <em>Checklist</em></div><div class="psub" id="checklist-hdr">Auto-generated from your data</div></div><button class="btn btn-gold" onclick="generateMonthChecklist()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><use href="#ki-sparkles"/></svg> AI Generate</button></div>
+  <div class="ph"><div><div class="pt">Month-End <em>Checklist</em></div><div class="psub" id="checklist-hdr">Auto-generated from your data</div></div><button class="btn btn-gold" onclick="generateMonthChecklist()"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-sparkles"/></svg> AI Generate</button></div>
   <div class="card"><div id="checklist-wrap"></div></div>
 </div>
 
@@ -5085,7 +5092,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
         </label>
         <div id="txn-receipt-preview" style="display:none;position:relative">
           <img id="txn-receipt-img" alt="Receipt photo" style="height:48px;width:auto;border-radius:6px;border:1px solid var(--b2);object-fit:cover;cursor:pointer" onclick="klReceiptZoom()" title="Click to enlarge">
-          <button onclick="klReceiptClear()" style="position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:var(--red);color:#fff;border:none;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1">×</button>
+          <button onclick="klReceiptClear()" aria-label="Remove receipt photo" style="position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:var(--red);color:#fff;border:none;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1"><span aria-hidden="true">×</span></button>
         </div>
         <span id="txn-receipt-name" style="font-size:10px;color:var(--t3);display:none"></span>
       </div>
@@ -5574,7 +5581,7 @@ function klCloseSelect(){
   if(!_klSelectOpen)return;
   _klSelectOpen.classList.remove('open');
   const trig=_klSelectOpen._klTrigger;
-  if(trig)trig.classList.remove('open');
+  if(trig){trig.classList.remove('open');trig.setAttribute('aria-expanded','false');}
   _klSelectOpen=null;
 }
 
@@ -5597,7 +5604,7 @@ function _klSelectPosition(list,trigger){
 
 function _klSelectRenderList(selectEl,list,iconFn){
   const opts=[...selectEl.options];
-  list.innerHTML=opts.map((o,i)=>`<button type="button" class="kl-select-opt${o.selected?' sel':''}" data-i="${i}"><span class="kl-select-ic">${_klSelectOptIcon(o.value,iconFn)}</span><span>${esc(o.textContent)}</span></button>`).join('');
+  list.innerHTML=opts.map((o,i)=>`<button type="button" class="kl-select-opt${o.selected?' sel':''}" role="option" aria-selected="${o.selected?'true':'false'}" data-i="${i}"><span class="kl-select-ic">${_klSelectOptIcon(o.value,iconFn)}</span><span>${esc(o.textContent)}</span></button>`).join('');
 }
 
 function _klSelectUpdateTrigger(selectEl,trigger,iconFn){
@@ -5624,7 +5631,7 @@ function klEnhanceCatSelect(selectOrId,iconFn){
     if(inlineWidth)wrap.style.width=inlineWidth;
     if(inlineFontSize)wrap.style.fontSize=inlineFontSize;
     if(inlineFlex)wrap.style.flex=inlineFlex;
-    wrap.innerHTML=`<button type="button" class="kl-select-trigger" aria-haspopup="listbox"><span class="kl-select-ic"></span><span class="kl-select-lbl"></span><span class="kl-select-chev"><svg viewBox="0 0 16 16" fill="none"><use href="#ki-chevron-down"/></svg></span></button><div class="kl-select-list" role="listbox"></div>`;
+    wrap.innerHTML=`<button type="button" class="kl-select-trigger" aria-haspopup="listbox" aria-expanded="false"><span class="kl-select-ic"></span><span class="kl-select-lbl"></span><span class="kl-select-chev"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-chevron-down"/></svg></span></button><div class="kl-select-list" role="listbox"></div>`;
     selectEl.insertAdjacentElement('afterend',wrap);
     const trigger=wrap.querySelector('.kl-select-trigger');
     const list=wrap.querySelector('.kl-select-list');
@@ -5634,7 +5641,7 @@ function klEnhanceCatSelect(selectOrId,iconFn){
       klCloseSelect();
       _klSelectRenderList(selectEl,list,iconFn);
       _klSelectPosition(list,trigger);
-      list.classList.add('open');trigger.classList.add('open');
+      list.classList.add('open');trigger.classList.add('open');trigger.setAttribute('aria-expanded','true');
       _klSelectOpen=list;
       hlIdx=selectEl.selectedIndex;
       _klSelectSetHl(list,hlIdx);
@@ -8616,7 +8623,7 @@ function liHTML(t){
   const sign=t.type==='income'?'+':t.type==='transfer'?'↔':'−';
   const cls=t.type==='income'?'pos':t.type==='transfer'?'':' ';
   const typeStyle=t.type==='transfer'?`background:var(--blue-d);color:var(--blue)`:t.type==='income'?'background:var(--green-d);color:var(--green)':'background:var(--red-d);color:var(--red)';
-  return`<div class="li"><div class="lic" style="background:${clr}18;color:${clr}">${t.type==='transfer'?'↔':catIconSvg(t.category)}</div><div class="lii"><div class="lin">${esc(t.description)}${t.receipt?` <span onclick="klViewReceipt('${t.id}')" title="View receipt" style="cursor:pointer;color:var(--accent)"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" style="vertical-align:-1px"><use href="#ki-paperclip"/></svg></span>`:''}</div><div class="lis">${esc(t.date||'—')} · <span class="acc-dot" style="background:${acc.color}"></span> ${esc(acc.name)}</div></div><div style="text-align:right"><div class="lia ${cls}">${sign}${fmt(t.amount)}</div>${t.type==='transfer'?`<span class="badge" style="${typeStyle}">Transfer</span>`:''}</div><button onclick="delTxn('${t.id}')" aria-label="Delete transaction: ${esc(t.description)}, ${sign}${fmt(t.amount)}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:16px;padding:4px;line-height:1">&times;</button></div>`;
+  return`<div class="li"><div class="lic" style="background:${clr}18;color:${clr}">${t.type==='transfer'?'↔':catIconSvg(t.category)}</div><div class="lii"><div class="lin">${esc(t.description)}${t.receipt?` <span onclick="klViewReceipt('${t.id}')" title="View receipt" style="cursor:pointer;color:var(--accent)"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" style="vertical-align:-1px" aria-hidden="true"><use href="#ki-paperclip"/></svg></span>`:''}</div><div class="lis">${esc(t.date||'—')} · <span class="acc-dot" style="background:${acc.color}"></span> ${esc(acc.name)}</div></div><div style="text-align:right"><div class="lia ${cls}">${sign}${fmt(t.amount)}</div>${t.type==='transfer'?`<span class="badge" style="${typeStyle}">Transfer</span>`:''}</div><button onclick="delTxn('${t.id}')" aria-label="Delete transaction: ${esc(t.description)}, ${sign}${fmt(t.amount)}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:16px;padding:4px;line-height:1">&times;</button></div>`;
 }
 
 /* ═══════════════════════════════════════════════════
@@ -8746,7 +8753,7 @@ function renderTxns(){
   const cnt=document.getElementById('t-cnt');if(cnt)cnt.textContent=total+' transaction'+(total!==1?'s':'');
   if(!total){
     const hasAny=(S.transactions||[]).length>0;
-    wrap.innerHTML=`<div class="empty" style="padding:48px;text-align:center"><div class="empty-i">${hasAny?'<svg viewBox="0 0 16 16"><use href="#ki-search"/></svg>':'↕'}</div><div class="empty-t">${hasAny?'No transactions match your filters':'No transactions yet'}</div><div class="empty-s">${hasAny?'Try clearing the search or adjusting filters':'Add your first transaction to get started'}</div>${hasAny?'':'<button class="btn btn-gold" onclick="openAddTxn()" style="margin-top:14px">+ Add Transaction</button>'}</div>`;
+    wrap.innerHTML=`<div class="empty" style="padding:48px;text-align:center"><div class="empty-i">${hasAny?'<svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-search"/></svg>':'↕'}</div><div class="empty-t">${hasAny?'No transactions match your filters':'No transactions yet'}</div><div class="empty-s">${hasAny?'Try clearing the search or adjusting filters':'Add your first transaction to get started'}</div>${hasAny?'':'<button class="btn btn-gold" onclick="openAddTxn()" style="margin-top:14px">+ Add Transaction</button>'}</div>`;
     return;
   }
 
@@ -9527,7 +9534,7 @@ function rSubs(){
   // Active subscriptions list — sorted by nextDt soonest first
   const el=document.getElementById('sub-list');if(!el)return;
   if(!S.subscriptions.length){
-    el.innerHTML=`<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;display:flex;justify-content:center;opacity:.6"><svg width="36" height="36" viewBox="0 0 16 16" fill="none"><use href="#ki-cat-phone"/></svg></div><div class="empty-t">No subscriptions yet</div><div class="empty-s" style="margin-bottom:14px">Klar auto-detects recurring charges from your transactions — or add one manually.</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn btn-gold" onclick="openAddSub&&openAddSub()">+ Add Manually</button><button class="btn btn-ghost" onclick="openImport&&openImport()">↑ Import Transactions</button></div></div>`;
+    el.innerHTML=`<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;display:flex;justify-content:center;opacity:.6"><svg width="36" height="36" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-cat-phone"/></svg></div><div class="empty-t">No subscriptions yet</div><div class="empty-s" style="margin-bottom:14px">Klar auto-detects recurring charges from your transactions — or add one manually.</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn btn-gold" onclick="openAddSub&&openAddSub()">+ Add Manually</button><button class="btn btn-ghost" onclick="openImport&&openImport()">↑ Import Transactions</button></div></div>`;
     return;
   }
   const todayStr=localDateStr();
@@ -9643,7 +9650,7 @@ function rBudget(){
   const txns=moTxns(); const keys=Object.keys(S.budgets||{});
   const el=document.getElementById('bud-limits');
   if(el){
-    if(!keys.length) el.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;opacity:.5"><svg width="36" height="36" viewBox="0 0 16 16" fill="none"><use href="#ki-target"/></svg></div><div class="empty-t">No budget limits yet</div><div class="empty-s">Set spending limits per category to track where your money goes and get alerts when you\'re close to the edge</div><button class="btn btn-gold" onclick="openAddBudget()" style="margin-top:14px">+ Set First Limit</button></div>';
+    if(!keys.length) el.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;opacity:.5"><svg width="36" height="36" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-target"/></svg></div><div class="empty-t">No budget limits yet</div><div class="empty-s">Set spending limits per category to track where your money goes and get alerts when you\'re close to the edge</div><button class="btn btn-gold" onclick="openAddBudget()" style="margin-top:14px">+ Set First Limit</button></div>';
     else el.innerHTML=keys.map(catId=>{
       const baseLim=S.budgets[catId];
       const rollover=getRolloverBonus(catId);
@@ -9929,7 +9936,7 @@ function rTravel() {
   if(!trips.length){
     if(sumEl) sumEl.innerHTML='';
     tripsEl.innerHTML=`<div class="empty" style="padding:60px 20px">
-      <div class="empty-i"><svg viewBox="0 0 16 16" fill="none"><use href="#ki-plane"/></svg></div>
+      <div class="empty-i"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-plane"/></svg></div>
       <div class="empty-t">No trips planned yet</div>
       <div class="empty-s">Click <strong>+ New Trip</strong> to start planning your next adventure</div>
     </div>`;
@@ -9964,7 +9971,7 @@ function rTravel() {
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:10px;flex-wrap:wrap">
         <div>
           <div style="display:flex;align-items:center;gap:10px">
-            <span style="font-size:20px"><svg width="20" height="20" viewBox="0 0 16 16" fill="none"><use href="#ki-plane"/></svg></span>
+            <span style="font-size:20px"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-plane"/></svg></span>
             <div>
               <div style="font-weight:700;font-size:16px">${esc(trip.name)}</div>
               ${trip.destination?`<div style="font-size:12px;color:var(--t3)">${esc(trip.destination)}</div>`:''}
@@ -10088,7 +10095,7 @@ function rForex() {
     :'International transactions detected. Log them to track your offshore holdings and foreign currency accounts.';
   if(fxCnt)fxCnt.textContent=detFx.length?`(${detFx.length} found)`:'';
   if(fxList)fxList.innerHTML=detFx.map(t=>`<div class="li" style="margin-bottom:8px">
-    <div class="lic" style="background:var(--purple)18;color:var(--purple)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-globe"/></svg></div>
+    <div class="lic" style="background:var(--purple)18;color:var(--purple)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-globe"/></svg></div>
     <div class="lii"><div class="lin">${esc(t.description||'').slice(0,40)}</div><div class="lis">${t.date} · ${fmt(t.amount)}</div></div>
     <div style="display:flex;gap:6px;align-items:center">
       <button class="btn btn-ok btn-xs" onclick="logForexTx('${t.id}')">${showSarb?'Log vs DA':'Log Offshore'}</button>
@@ -10315,7 +10322,7 @@ function rSavings(){
   window._klDetectSavs=detSav;
   if(gdList)gdList.innerHTML=detSav.map((s,i)=>{
     return`<div class="li" style="margin-bottom:8px">
-      <div class="lic" style="background:var(--green)18;color:var(--green)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-chart-up"/></svg></div>
+      <div class="lic" style="background:var(--green)18;color:var(--green)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-chart-up"/></svg></div>
       <div class="lii"><div class="lin">${esc(s.name)}${s.lumpSum?' <span style="font-size:9px;font-weight:700;color:var(--amber)">LUMP-SUM</span>':''}</div><div class="lis">${s.occurrences} contributions · ${fmt(s.monthlyAmt)}/mo · ${fmt(s.totalSaved)} total</div></div>
       <div style="display:flex;gap:6px;align-items:center">
         <button class="btn btn-ok btn-xs" onclick="confirmDetectedSavings(window._klDetectSavs[${i}])">+ Goal</button>
@@ -10330,7 +10337,7 @@ function rSavings(){
   const scEl=document.getElementById('sav-strat');if(scEl&&!scEl.dataset.set){scEl.innerHTML=inc>0?`<div style="font-size:12.5px;color:var(--t2);line-height:2"><strong style="color:var(--t1)">50% Needs</strong> — ${fmt(inc*0.5)}<br><strong style="color:var(--t1)">30% Wants</strong> — ${fmt(inc*0.3)}<br><strong style="color:var(--t1)">20% Savings</strong> — ${fmt(inc*0.2)}</div>`:'<div style="font-size:12px;color:var(--t3)">Add income transactions to see allocation.</div>';}
   if(!Array.isArray(S.goals))S.goals=[];
   const gEl=document.getElementById('goals-list');if(!gEl)return;
-  if(!S.goals.length){gEl.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;opacity:.5"><svg width="36" height="36" viewBox="0 0 16 16" fill="none"><use href="#ki-target"/></svg></div><div class="empty-t">No savings goals yet</div><div class="empty-s">Goals give your savings purpose — add an emergency fund, holiday, or house deposit target to get started</div><button class="btn btn-gold" onclick="openAddGoal&&openAddGoal()" style="margin-top:14px">+ Add Goal</button></div>';return;}
+  if(!S.goals.length){gEl.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;opacity:.5"><svg width="36" height="36" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-target"/></svg></div><div class="empty-t">No savings goals yet</div><div class="empty-s">Goals give your savings purpose — add an emergency fund, holiday, or house deposit target to get started</div><button class="btn btn-gold" onclick="openAddGoal&&openAddGoal()" style="margin-top:14px">+ Add Goal</button></div>';return;}
   const surplus=Math.max(avgInc()-avgExp(),0);
   const activeGoals=S.goals.filter(g=>g.saved<g.target);
   gEl.innerHTML=S.goals.map(g=>{
@@ -10417,7 +10424,7 @@ function rDebt(){
   window._klDetectDebts=detDebts;
   if(ddList)ddList.innerHTML=detDebts.map((d,i)=>{
     return`<div class="li" style="margin-bottom:8px">
-      <div class="lic" style="background:var(--red)18;color:var(--red)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#ki-file-text"/></svg></div>
+      <div class="lic" style="background:var(--red)18;color:var(--red)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-file-text"/></svg></div>
       <div class="lii"><div class="lin">${esc(d.name)}</div><div class="lis">${d.occurrences} payments · avg ${fmt(d.minPmt)}/mo · est. balance added at 20% rate</div></div>
       <div style="display:flex;gap:6px;align-items:center">
         <button class="btn btn-ok btn-xs" onclick="confirmDetectedDebt(window._klDetectDebts[${i}])">+ Add</button>
@@ -10444,7 +10451,7 @@ function rDebt(){
   const freeBanner=document.getElementById('debt-free-banner');
   if(freeBanner)freeBanner.style.display=(S.debts.length>0&&tot===0)?'':'none';
   const el=document.getElementById('debt-list');if(!el)return;
-  if(!S.debts.length){el.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;opacity:.5"><svg width="36" height="36" viewBox="0 0 16 16" fill="none"><use href="#ki-credit-card"/></svg></div><div class="empty-t">No debts logged</div><div class="empty-s" style="margin-bottom:14px">Track credit cards, loans, and other debts to calculate payoff strategies</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn btn-gold" onclick="openAddDebt&&openAddDebt()">+ Add Debt</button><button class="btn btn-ghost" onclick="openImport()">↑ Import Transactions</button></div></div>';return;}
+  if(!S.debts.length){el.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;opacity:.5"><svg width="36" height="36" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-credit-card"/></svg></div><div class="empty-t">No debts logged</div><div class="empty-s" style="margin-bottom:14px">Track credit cards, loans, and other debts to calculate payoff strategies</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn btn-gold" onclick="openAddDebt&&openAddDebt()">+ Add Debt</button><button class="btn btn-ghost" onclick="openImport()">↑ Import Transactions</button></div></div>';return;}
   const icons={credit_card:'ki-credit-card',personal_loan:'ki-file-text',home_loan:'ki-home2',car_loan:'ki-car',student_loan:'ki-cat-book',other:'ki-grid'};
   el.innerHTML=S.debts.map(d=>{
     const linkedPmts=(S.transactions||[]).filter(t=>t.debtId===d.id&&t.type==='expense');
@@ -10757,7 +10764,7 @@ function rFuelPricesCard(){
   // UK guard: replace SA fuel price card with UK benchmark info
   if((S.prefs?.region||'za')==='uk'){
     el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-      <div class="ct" style="margin:0;display:flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><use href="#ki-cat-fuel"/></svg>UK Fuel Price Benchmark</div>
+      <div class="ct" style="margin:0;display:flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-cat-fuel"/></svg>UK Fuel Price Benchmark</div>
     </div>
     <div class="g4" style="margin-bottom:10px">
       <div class="stat-tile"><div class="sl">Petrol (E10)</div><div class="sv" style="color:var(--blue);font-size:18px">~153p/L</div></div>
@@ -10770,7 +10777,7 @@ function rFuelPricesCard(){
   const loc=(S.prefs?.fuelLoc==='coastal')?'coastal':'inland';
   const p=prices[loc];
   el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-    <div class="ct" style="margin:0;display:flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><use href="#ki-cat-fuel"/></svg>Current SA Fuel Prices <span style="font-size:10px;font-weight:400;color:var(--t3)">${loc==='coastal'?'Coastal':'Inland'}</span></div>
+    <div class="ct" style="margin:0;display:flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-cat-fuel"/></svg>Current SA Fuel Prices <span style="font-size:10px;font-weight:400;color:var(--t3)">${loc==='coastal'?'Coastal':'Inland'}</span></div>
     <div style="display:flex;gap:8px;align-items:center">
       <span style="font-size:10px;color:var(--t3)">Updated ${prices.updated}</span>
       <button class="btn btn-ghost btn-xs" onclick="refreshFuelPrices()">↻</button>
@@ -11788,10 +11795,10 @@ function rProperty(){
   });
   const listEl=document.getElementById('prop-list');
   if(listEl){
-    if(!props.length)listEl.innerHTML=`<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;display:flex;justify-content:center;opacity:.6"><svg width="36" height="36" viewBox="0 0 16 16" fill="none"><use href="#ki-home2"/></svg></div><div class="empty-t">No properties yet</div><div class="empty-s">Track your home, investment property or buy-to-let — see equity, ${_isSAprop?'bond balance':'mortgage balance'} and estimated appreciation</div><button class="btn btn-gold" onclick="openAddProperty&&openAddProperty()" style="margin-top:14px">+ Add Property</button></div>`;
+    if(!props.length)listEl.innerHTML=`<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;display:flex;justify-content:center;opacity:.6"><svg width="36" height="36" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-home2"/></svg></div><div class="empty-t">No properties yet</div><div class="empty-s">Track your home, investment property or buy-to-let — see equity, ${_isSAprop?'bond balance':'mortgage balance'} and estimated appreciation</div><button class="btn btn-gold" onclick="openAddProperty&&openAddProperty()" style="margin-top:14px">+ Add Property</button></div>`;
     else listEl.innerHTML=`<div class="g2">${props.map(p=>{const equity=p.marketValue-p.bondBalance;const yrAgo=p.purchaseYear?(new Date().getFullYear()-p.purchaseYear):0;const ltv=p.marketValue>0&&p.bondBalance>0?Math.round(p.bondBalance/p.marketValue*100):0;const ltvColor=ltv===0?'var(--t3)':ltv<80?'var(--green)':ltv<90?'var(--amber)':'var(--red)';const equityColor=equity>=0?'var(--green)':'var(--red)';const isBondLabel=_isSAprop?'Bond':'Mortgage';return`<div class="card">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
-        <div><div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><use href="#ki-home2"/></svg>${esc(p.name)}</div>${p.purchaseYear?`<div style="font-size:10.5px;color:var(--t3)">Purchased ${p.purchaseYear} · ${yrAgo}yr ago</div>`:''}</div>
+        <div><div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-home2"/></svg>${esc(p.name)}</div>${p.purchaseYear?`<div style="font-size:10.5px;color:var(--t3)">Purchased ${p.purchaseYear} · ${yrAgo}yr ago</div>`:''}</div>
         <button onclick="openAddProperty('${p.id}')" class="btn btn-ghost btn-xs">Edit</button>
       </div>
       <div class="g2" style="gap:8px">
@@ -11866,7 +11873,7 @@ function rInsurance(){
   const policies=S.insurancePolicies;
   const listEl=document.getElementById('ins-list');
   if(listEl){
-    if(!policies.length)listEl.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;display:flex;justify-content:center;opacity:.6"><svg width="36" height="36" viewBox="0 0 16 16" fill="none"><use href="#ki-shield"/></svg></div><div class="empty-t">No policies yet</div><div class="empty-s">Track your car, home, life and income protection policies — see total premiums and upcoming renewals</div><button class="btn btn-gold" onclick="openAddInsurance&&openAddInsurance()" style="margin-top:14px">+ Add Policy</button></div>';
+    if(!policies.length)listEl.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;display:flex;justify-content:center;opacity:.6"><svg width="36" height="36" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-shield"/></svg></div><div class="empty-t">No policies yet</div><div class="empty-s">Track your car, home, life and income protection policies — see total premiums and upcoming renewals</div><button class="btn btn-gold" onclick="openAddInsurance&&openAddInsurance()" style="margin-top:14px">+ Add Policy</button></div>';
     else{const sorted=[...policies].sort((a,b)=>{if(!a.renewal&&!b.renewal)return 0;if(!a.renewal)return 1;if(!b.renewal)return -1;return a.renewal.localeCompare(b.renewal);});listEl.innerHTML=`<div class="g2">${sorted.map(p=>{const days=_daysUntil(p.renewal);const expired=p.renewal&&days<0;const renewalColor=expired?'var(--red)':days<30?'var(--amber)':'var(--t2)';const _pIcon=p.icon&&p.icon.startsWith('ki-')?`<svg width="20" height="20" viewBox="0 0 16 16" fill="none"><use href="#${p.icon}"/></svg>`:esc(p.icon||'');return`<div class="card" style="position:relative${expired?';border-left:3px solid var(--red)':''}">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
         <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--accent)">${_pIcon}</span><div><div style="font-weight:700;font-size:13px">${esc(p.insurer)}</div><div style="font-size:10.5px;color:var(--t3);text-transform:capitalize">${p.type.replace('_',' ')}</div></div></div>
@@ -11954,7 +11961,7 @@ function rSavingsRate(){
     if(noDataEl){noDataEl.textContent='—';noDataEl.style.color='var(--t3)';}
     const vEl=document.getElementById('sr-verdict');if(vEl){vEl.textContent='Add transactions to calculate your savings rate';vEl.style.color='var(--t3)';}
     const bEl=document.getElementById('sr-breakdown');
-    if(bEl)bEl.innerHTML=`<div class="empty" style="padding:20px;text-align:center"><div style="margin-bottom:10px;display:flex;justify-content:center;opacity:.6"><svg width="28" height="28" viewBox="0 0 16 16" fill="none"><use href="#ki-bar-chart-2"/></svg></div><div class="empty-t" style="font-size:13px">No transaction data yet</div><div class="empty-s" style="margin-bottom:14px">Import a bank statement or add transactions to see your savings rate</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn btn-gold btn-sm" onclick="goPg('transactions');setTimeout(openAddTxn,300)">+ Add Transaction</button><button class="btn btn-ghost btn-sm" onclick="openImport()">↑ Import CSV</button></div></div>`;
+    if(bEl)bEl.innerHTML=`<div class="empty" style="padding:20px;text-align:center"><div style="margin-bottom:10px;display:flex;justify-content:center;opacity:.6"><svg width="28" height="28" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-bar-chart-2"/></svg></div><div class="empty-t" style="font-size:13px">No transaction data yet</div><div class="empty-s" style="margin-bottom:14px">Import a bank statement or add transactions to see your savings rate</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn btn-gold btn-sm" onclick="goPg('transactions');setTimeout(openAddTxn,300)">+ Add Transaction</button><button class="btn btn-ghost btn-sm" onclick="openImport()">↑ Import CSV</button></div></div>`;
     return;
   }
   const savings=income-expenses;
@@ -12203,7 +12210,7 @@ function rPortfolio(){if(!S.holdings)S.holdings=[];
       detectWrap.style.display='none';
     }
   }
-  const cost=S.holdings.reduce((s,h)=>s+h.cost,0);const val=S.holdings.reduce((s,h)=>s+h.currentVal,0);const gl=val-cost;const ret=cost>0?((gl/cost)*100):0;const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};set('pf-cost',fmt(cost));set('pf-val',fmt(val));set('pf-gl',fmt(gl));set('pf-ret',ret.toFixed(1)+'%');const glEl=document.getElementById('pf-gl');if(glEl)glEl.className='sv '+(gl>=0?'pos':'neg');const retEl=document.getElementById('pf-ret');if(retEl)retEl.style.color=ret>=0?'var(--green)':'var(--red)';const lEl=document.getElementById('pf-list');if(lEl){const _pfRegion=S.prefs?.region||'za';const _isUKpf=_pfRegion==='uk';const _isOtherPf=_pfRegion==='other';const _pfCorpEmpty='Track your money market funds, fixed deposits, unit trusts and other business investments to see your total portfolio performance';if(!S.holdings.length)lEl.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;opacity:.5"><svg width="36" height="36" viewBox="0 0 16 16" fill="none"><use href="#ki-chart-up"/></svg></div><div class="empty-t">No holdings yet</div><div class="empty-s">'+(isCorp()?_pfCorpEmpty:_isUKpf?'Track your ISAs, SIPPs, GIAs and other investments to see your total portfolio performance':_isOtherPf?'Track your ETFs, index funds, retirement accounts and other investments to see your total portfolio performance':'Track your ETFs, TFSAs, RAs, crypto and other investments to see your total portfolio performance')+'</div><button class="btn btn-gold" onclick="openAddHolding&&openAddHolding()" style="margin-top:14px">+ Add Holding</button></div>';else lEl.innerHTML=`<div class="tw"><table><thead><tr><th>Name</th><th>Type</th><th>Cost</th><th>Value</th><th>Return</th><th></th></tr></thead><tbody>${S.holdings.map(h=>{const r=h.cost>0?(((h.currentVal-h.cost)/h.cost)*100):0;return`<tr><td>${esc(h.name)}${h.provider?`<div style="font-size:9.5px;color:var(--t3)">${esc(h.provider)}</div>`:''}</td><td class="mono" style="font-size:11px">${h.type.replace('_',' ')}</td><td class="mono">${fmt(h.cost)}</td><td class="mono ${h.currentVal>=h.cost?'pos':'neg'}">${fmt(h.currentVal)}</td><td class="mono" style="color:${r>=0?'var(--green)':'var(--red)'}">${r.toFixed(1)}%</td><td><button onclick="delHolding('${h.id}')" aria-label="Delete holding: ${esc(h.name)}" class="btn btn-danger btn-xs">&times;</button></td></tr>`;}).join('')}</tbody></table></div>`;}
+  const cost=S.holdings.reduce((s,h)=>s+h.cost,0);const val=S.holdings.reduce((s,h)=>s+h.currentVal,0);const gl=val-cost;const ret=cost>0?((gl/cost)*100):0;const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};set('pf-cost',fmt(cost));set('pf-val',fmt(val));set('pf-gl',fmt(gl));set('pf-ret',ret.toFixed(1)+'%');const glEl=document.getElementById('pf-gl');if(glEl)glEl.className='sv '+(gl>=0?'pos':'neg');const retEl=document.getElementById('pf-ret');if(retEl)retEl.style.color=ret>=0?'var(--green)':'var(--red)';const lEl=document.getElementById('pf-list');if(lEl){const _pfRegion=S.prefs?.region||'za';const _isUKpf=_pfRegion==='uk';const _isOtherPf=_pfRegion==='other';const _pfCorpEmpty='Track your money market funds, fixed deposits, unit trusts and other business investments to see your total portfolio performance';if(!S.holdings.length)lEl.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;opacity:.5"><svg width="36" height="36" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-chart-up"/></svg></div><div class="empty-t">No holdings yet</div><div class="empty-s">'+(isCorp()?_pfCorpEmpty:_isUKpf?'Track your ISAs, SIPPs, GIAs and other investments to see your total portfolio performance':_isOtherPf?'Track your ETFs, index funds, retirement accounts and other investments to see your total portfolio performance':'Track your ETFs, TFSAs, RAs, crypto and other investments to see your total portfolio performance')+'</div><button class="btn btn-gold" onclick="openAddHolding&&openAddHolding()" style="margin-top:14px">+ Add Holding</button></div>';else lEl.innerHTML=`<div class="tw"><table><thead><tr><th>Name</th><th>Type</th><th>Cost</th><th>Value</th><th>Return</th><th></th></tr></thead><tbody>${S.holdings.map(h=>{const r=h.cost>0?(((h.currentVal-h.cost)/h.cost)*100):0;return`<tr><td>${esc(h.name)}${h.provider?`<div style="font-size:9.5px;color:var(--t3)">${esc(h.provider)}</div>`:''}</td><td class="mono" style="font-size:11px">${h.type.replace('_',' ')}</td><td class="mono">${fmt(h.cost)}</td><td class="mono ${h.currentVal>=h.cost?'pos':'neg'}">${fmt(h.currentVal)}</td><td class="mono" style="color:${r>=0?'var(--green)':'var(--red)'}">${r.toFixed(1)}%</td><td><button onclick="delHolding('${h.id}')" aria-label="Delete holding: ${esc(h.name)}" class="btn btn-danger btn-xs">&times;</button></td></tr>`;}).join('')}</tbody></table></div>`;}
   const aEl=document.getElementById('pf-alloc');
   if(aEl){const byType={};S.holdings.forEach(h=>{byType[h.type]=(byType[h.type]||0)+h.currentVal;});const sorted=Object.entries(byType).sort((a,b)=>b[1]-a[1]);if(!sorted.length){aEl.innerHTML='<div class="empty" style="padding:12px"><div class="empty-s">No holdings</div></div>';}else{const total=sorted.reduce((s,[,v])=>s+v,0);aEl.innerHTML=sorted.map(([type,val])=>{const pct=Math.round((val/total)*100);const clr=type==='etf'?'var(--green)':type==='tfsa'?'var(--blue)':type==='ra'?'var(--purple)':type==='crypto'?'var(--amber)':type==='isa'?'var(--accent)':type==='sipp'?'var(--blue)':type==='gia'?'var(--green)':type==='premium_bonds'?'var(--gold)':'var(--teal)';return`<div class="pr"><div class="prh"><span style="font-size:12px">${type.replace('_',' ')}</span><span style="font-family:var(--fm);font-size:11px">${fmt(val)} (${pct}%)</span></div><div class="prt"><div class="prf" style="width:${pct}%;background:${clr}"></div></div></div>`;}).join('');}}
   // JSE Top 40 12-month return as of 2025 Q4; FTSE 100 12-month return as of 2025 Q4; S&P 500 12-month return as of 2025 Q4 — update annually
@@ -12600,7 +12607,7 @@ function rHealth(){
   const inc=avgInc(),exp=avgExp();
   if(!inc){
     if(wrap) wrap.innerHTML=`<div class="card" style="text-align:center;padding:48px 24px">
-      <div style="margin-bottom:12px;display:flex;justify-content:center;opacity:.5"><svg width="36" height="36" viewBox="0 0 16 16" fill="none"><use href="#ki-bar-chart-2"/></svg></div>
+      <div style="margin-bottom:12px;display:flex;justify-content:center;opacity:.5"><svg width="36" height="36" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-bar-chart-2"/></svg></div>
       <div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:8px">No transaction data yet</div>
       <div style="font-size:13px;color:var(--t3);max-width:320px;margin:0 auto 20px;line-height:1.7">Add at least one month of transactions to generate your Financial Health Score.</div>
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
@@ -12819,7 +12826,7 @@ function rInsightsAnomalies() {
           <div>
             <div class="ih">${catLbl(a.catId)} — ${a.m} spike (+${a.pct}%)</div>
             <div class="ib">${fmt(a.cAmt)} spent vs ${fmt(a.pAmt)} the prior month — that's ${a.pct}% higher than usual.</div>
-            <div class="ib" style="margin-top:4px;color:var(--t2);display:flex;align-items:flex-start;gap:5px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;margin-top:1px"><use href="#ki-lightbulb"/></svg>Check for duplicate charges, billing errors, or a one-off expense in this category.</div>
+            <div class="ib" style="margin-top:4px;color:var(--t2);display:flex;align-items:flex-start;gap:5px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;margin-top:1px" aria-hidden="true"><use href="#ki-lightbulb"/></svg>Check for duplicate charges, billing errors, or a one-off expense in this category.</div>
           </div>
         </div></div>`).join('')
     : '<div class="ic g"><div class="ih">No anomalies detected</div><div class="ib">Spending patterns look consistent across the last 6 months.</div></div>';
@@ -13069,7 +13076,7 @@ function rRoutines(){
     return `<div style="background:var(--s1);border:var(--bw) solid var(--b1);border-radius:var(--r);padding:20px;border-top:3px solid ${r.color}"><div style="margin-bottom:8px;color:${r.color}">${r.icon.startsWith('ki-')?`<svg width="24" height="24" viewBox="0 0 16 16" fill="none"><use href="#${r.icon}"/></svg>`:`<span style="font-size:28px">${r.icon}</span>`}</div><div style="font-weight:700;font-size:14px;margin-bottom:3px">${r.name}</div><div style="font-size:10px;color:var(--t3);font-family:var(--fm);margin-bottom:12px;letter-spacing:0.5px">${r.freq.toUpperCase()} · ${r.dur} MIN</div><div style="height:4px;background:var(--b2);border-radius:2px;margin-bottom:10px"><div style="height:100%;width:${pct}%;background:var(--green);border-radius:2px;transition:width .3s"></div></div><div style="font-size:10px;color:var(--t3);margin-bottom:8px">${done.length}/${steps.length} steps &middot; ${pct}%</div><div style="font-size:12px;color:var(--t2)">${stepsHtml}</div>${resetBtn}</div>`;
   }).join('');}
   const cEl=document.getElementById('custom-routines');
-  if(cEl){if(!(S.routines||[]).length){cEl.innerHTML='<div class="empty" style="padding:24px;text-align:center"><div style="margin-bottom:10px;display:flex;justify-content:center;opacity:.6"><svg width="32" height="32" viewBox="0 0 16 16" fill="none"><use href="#ki-cat-bolt"/></svg></div><div class="empty-t">No custom routines yet</div><div class="empty-s">Build your own money habits — create a routine with steps you follow weekly or monthly</div><button class="btn btn-gold" onclick="openAddRoutine&&openAddRoutine()" style="margin-top:14px">+ Create Routine</button></div>';return;}cEl.innerHTML=(S.routines||[]).map(r=>{
+  if(cEl){if(!(S.routines||[]).length){cEl.innerHTML='<div class="empty" style="padding:24px;text-align:center"><div style="margin-bottom:10px;display:flex;justify-content:center;opacity:.6"><svg width="32" height="32" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-cat-bolt"/></svg></div><div class="empty-t">No custom routines yet</div><div class="empty-s">Build your own money habits — create a routine with steps you follow weekly or monthly</div><button class="btn btn-gold" onclick="openAddRoutine&&openAddRoutine()" style="margin-top:14px">+ Create Routine</button></div>';return;}cEl.innerHTML=(S.routines||[]).map(r=>{
     const steps=r.steps||[];
     const done=prog[r.id]||[];
     const pct=steps.length?Math.round(done.length/steps.length*100):0;
@@ -13120,7 +13127,7 @@ function rVisualBudget(){
   const jEl=document.getElementById('jar-grid');
   if(jEl){jEl.innerHTML=JARS.map(j=>{const target=inc*j.pct/100;const pct=target>0?Math.min((j.actual/target)*100,100):0;const over=j.actual>target;return`<div style="text-align:center;background:var(--s2);border-radius:var(--r);padding:18px;border:var(--bw) solid var(--b1)"><div style="margin-bottom:8px;display:flex;justify-content:center;color:${j.color}"><svg width="28" height="28" viewBox="0 0 16 16" fill="none"><use href="#${j.icon}"/></svg></div><div style="font-weight:700;font-size:13px;margin-bottom:4px">${j.lbl}</div><div style="font-size:10px;color:var(--t3);font-family:var(--fm);margin-bottom:12px">${j.pct}% of income</div><div style="position:relative;height:80px;background:var(--s3);border-radius:8px;overflow:hidden"><div style="position:absolute;bottom:0;left:0;right:0;height:${pct}%;background:${over?'var(--red)':j.color};opacity:0.8;transition:height .6s ease;border-radius:0 0 8px 8px"></div></div><div style="font-size:12px;margin-top:8px;color:${over?'var(--red)':'var(--t2)'}">${fmt(j.actual)} / ${fmt(target)}</div></div>`;}).join('');}
   const fEl=document.getElementById('flow-chart');
-  if(fEl){if(inc>0){const bars=[{lbl:'Income',val:inc,color:'var(--green)'},{lbl:'Needs',val:needs,color:'var(--blue)'},{lbl:'Wants',val:wants,color:'var(--purple)'},{lbl:'Savings',val:savings,color:'var(--green)'},{lbl:'Other',val:Math.max(exp-needs-wants-savings,0),color:'var(--t3)'}];const max=inc;fEl.innerHTML=`<div style="display:flex;flex-direction:column;gap:8px">`+bars.map(b=>`<div style="display:flex;align-items:center;gap:10px"><div style="width:80px;font-size:11px;color:var(--t2);text-align:right">${b.lbl}</div><div style="flex:1;height:24px;background:var(--s3);border-radius:4px;overflow:hidden"><div style="height:100%;width:${Math.min((b.val/max)*100,100)}%;background:${b.color};border-radius:4px;transition:width .6s"></div></div><div style="width:70px;font-size:11px;font-family:var(--fm)">${fmt(b.val)}</div></div>`).join('')+'</div>';}else{fEl.innerHTML='<div class="empty" style="padding:24px;text-align:center"><div class="empty-i" style="margin-bottom:8px;display:flex;justify-content:center"><svg width="28" height="28" viewBox="0 0 16 16" fill="none"><use href="#ki-bar-chart-2"/></svg></div><div class="empty-t" style="font-size:13px">No income recorded</div><div class="empty-s">Add an income transaction to see your money flow chart.</div></div>';}}
+  if(fEl){if(inc>0){const bars=[{lbl:'Income',val:inc,color:'var(--green)'},{lbl:'Needs',val:needs,color:'var(--blue)'},{lbl:'Wants',val:wants,color:'var(--purple)'},{lbl:'Savings',val:savings,color:'var(--green)'},{lbl:'Other',val:Math.max(exp-needs-wants-savings,0),color:'var(--t3)'}];const max=inc;fEl.innerHTML=`<div style="display:flex;flex-direction:column;gap:8px">`+bars.map(b=>`<div style="display:flex;align-items:center;gap:10px"><div style="width:80px;font-size:11px;color:var(--t2);text-align:right">${b.lbl}</div><div style="flex:1;height:24px;background:var(--s3);border-radius:4px;overflow:hidden"><div style="height:100%;width:${Math.min((b.val/max)*100,100)}%;background:${b.color};border-radius:4px;transition:width .6s"></div></div><div style="width:70px;font-size:11px;font-family:var(--fm)">${fmt(b.val)}</div></div>`).join('')+'</div>';}else{fEl.innerHTML='<div class="empty" style="padding:24px;text-align:center"><div class="empty-i" style="margin-bottom:8px;display:flex;justify-content:center"><svg width="28" height="28" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-bar-chart-2"/></svg></div><div class="empty-t" style="font-size:13px">No income recorded</div><div class="empty-s">Add an income transaction to see your money flow chart.</div></div>';}}
 }
 
 /* ═══ STOKVELS ═══ */
@@ -13188,7 +13195,7 @@ function rStokvels(){
   const nxt=(S.stokvels||[]).filter(s=>s.payoutMonth).sort((a,b)=>a.payoutMonth.localeCompare(b.payoutMonth))[0];
   set('stok-nxt',nxt?nxt.name+' · '+nxt.payoutMonth:'—');
   const el=document.getElementById('stok-list');if(!el)return;
-  if(!(S.stokvels||[]).length){el.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;display:flex;justify-content:center;opacity:.6"><svg width="36" height="36" viewBox="0 0 16 16" fill="none"><use href="#ki-users"/></svg></div><div class="empty-t">No stokvels yet</div><div class="empty-s">Track your stokvel group contributions, payouts and member balances in one place</div><button class="btn btn-gold" onclick="openAddStokvel&&openAddStokvel()" style="margin-top:14px">+ Add Stokvel</button></div>';return;}
+  if(!(S.stokvels||[]).length){el.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;display:flex;justify-content:center;opacity:.6"><svg width="36" height="36" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-users"/></svg></div><div class="empty-t">No stokvels yet</div><div class="empty-s">Track your stokvel group contributions, payouts and member balances in one place</div><button class="btn btn-gold" onclick="openAddStokvel&&openAddStokvel()" style="margin-top:14px">+ Add Stokvel</button></div>';return;}
   const icons={grocery:'ki-cart',burial:'ki-tombstone',investment:'ki-chart-up',holiday:'ki-plane',education:'ki-cat-book'};
   const _skIcon=ic=>ic?`<svg width="14" height="14" viewBox="0 0 16 16" fill="none" style="vertical-align:-2px;margin-right:4px"><use href="#${ic}"/></svg>`:'';
   el.innerHTML=(S.stokvels||[]).map(stk=>`<div class="dc"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><div><div style="font-weight:700;font-size:13px">${_skIcon(icons[stk.type]||'ki-users')}${esc(stk.name)}</div><div style="font-size:10px;color:var(--t3);font-family:var(--fm)">${esc(stk.type||'')} · ${stk.members||'?'} members</div></div><div style="text-align:right"><div style="font-family:var(--fs);font-size:15px;font-style:italic;color:var(--t1)">${fmt(stk.contribution)}/mo</div><button onclick="delStokvel('${stk.id}')" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:11px">Remove</button></div></div>${stk.payoutMonth?`<div style="font-size:10px;color:var(--green);font-family:var(--fm)">Payout: ${stk.payoutMonth} · Position #${stk.position||'?'}</div>`:''}<div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px"><div><div style="font-size:10px;color:var(--t3);margin-bottom:1px">Pot balance</div><div style="font-family:var(--fs);font-size:13px;font-weight:700;color:var(--green)">${fmt(stk.pot||0)}</div>${stk.contribution>0?`<div style="font-size:10px;color:var(--t3);margin-top:2px">Annual: ${fmt(stk.contribution*12)}</div>`:''}</div><div style="display:flex;gap:6px"><button class="btn btn-ghost btn-sm" onclick="stokvelContrib('${stk.id}')">Contribute</button><button class="btn btn-ghost btn-sm" onclick="stokvelPayout('${stk.id}')" ${!(stk.pot>0)?'disabled style="opacity:0.4"':''}>Payout</button></div></div>
@@ -13265,7 +13272,7 @@ function rGrants(){
   const sEl=document.getElementById('sassa-list');
   if(sEl){sEl.innerHTML=SASSA_GRANTS.map(g=>`<div class="li"><div class="lic" style="background:var(--green-d);color:var(--green);font-weight:700;font-size:11px">R</div><div class="lii"><div class="lin">${g.name}</div><div class="lis">${g.desc}</div></div><div class="lia">${fmt(g.amount)}</div></div>`).join('');}
   const hEl=document.getElementById('housing-list');
-  if(hEl){hEl.innerHTML=HOUSING.map(h=>`<div class="li"><div class="lic" style="background:var(--blue-d);color:var(--blue)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><use href="#ki-home2"/></svg></div><div class="lii"><div class="lin">${h.name}</div><div class="lis">${h.desc}</div></div><div style="font-size:10px;color:var(--green);font-family:var(--fm);text-align:right;white-space:nowrap">${h.amount}</div></div>`).join('');}
+  if(hEl){hEl.innerHTML=HOUSING.map(h=>`<div class="li"><div class="lic" style="background:var(--blue-d);color:var(--blue)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-home2"/></svg></div><div class="lii"><div class="lin">${h.name}</div><div class="lis">${h.desc}</div></div><div style="font-size:10px;color:var(--green);font-family:var(--fm);text-align:right;white-space:nowrap">${h.amount}</div></div>`).join('');}
   const smEl=document.getElementById('smme-list');
   if(smEl){smEl.innerHTML=SMME.map(s=>`<div class="li"><div class="lic" style="background:var(--purple)18;color:var(--purple)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><use href="#${s.icon}"/></svg></div><div class="lii"><div class="lin">${s.name}</div><div class="lis">${s.desc}</div></div></div>`).join('');}
 }
@@ -13768,7 +13775,7 @@ function rPetrolTracker(){
   if(pfWrap)pfWrap.style.display=detFills.length?'block':'none';
   if(pfCnt)pfCnt.textContent=detFills.length?`(${detFills.length} found)`:'';
   if(pfList)pfList.innerHTML=detFills.map(f=>`<div class="li" style="margin-bottom:8px">
-    <div class="lic" style="background:var(--amber)18;color:var(--amber)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><use href="#ki-cat-fuel"/></svg></div>
+    <div class="lic" style="background:var(--amber)18;color:var(--amber)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-cat-fuel"/></svg></div>
     <div class="lii"><div class="lin">${esc(f.description).slice(0,40)}</div><div class="lis">${f.date} · ${fmt(f.amount)} · est. ${f.estLitres}L @ ${fmt(f.estPrice)}/L</div></div>
     <div style="display:flex;gap:6px;align-items:center">
       <button class="btn btn-ok btn-xs" onclick="importDetectedPetrolFill('${f.txnId}')">+ Log</button>
@@ -14460,7 +14467,7 @@ function rRetirementReadiness(){
   const el=document.getElementById('ret-readiness-wrap');if(!el)return;
   if(el&&_rrDefaultHTML===null&&document.getElementById('rr-ra-val'))_rrDefaultHTML=el.innerHTML;
   if(isCorp()){
-    el.innerHTML='<div class="card" style="text-align:center;padding:40px 24px"><div style="margin-bottom:16px;display:flex;justify-content:center;opacity:.6"><svg width="36" height="36" viewBox="0 0 16 16" fill="none"><use href="#ki-user"/></svg></div><div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:8px">Personal Feature</div><div style="font-size:13px;color:var(--t3);max-width:340px;margin:0 auto;line-height:1.7">Retirement readiness planning is for personal finances — switch to Personal mode to use this calculator.</div><button class="btn btn-gold" style="margin-top:16px" onclick="toggleCorpMode()">Switch to Personal</button></div>';
+    el.innerHTML='<div class="card" style="text-align:center;padding:40px 24px"><div style="margin-bottom:16px;display:flex;justify-content:center;opacity:.6"><svg width="36" height="36" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-user"/></svg></div><div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:8px">Personal Feature</div><div style="font-size:13px;color:var(--t3);max-width:340px;margin:0 auto;line-height:1.7">Retirement readiness planning is for personal finances — switch to Personal mode to use this calculator.</div><button class="btn btn-gold" style="margin-top:16px" onclick="toggleCorpMode()">Switch to Personal</button></div>';
     return;
   }
   // Restore the real structure if a prior business-mode render left the personal-feature banner in place
@@ -14608,13 +14615,13 @@ function rFxRate(){
     const rate=parseFloat(rateInp?.value)||gbpUsdRate;
     const usdHoldings=(S.holdings||[]).filter(h=>h.currency==='USD');
     if(!usdHoldings.length){
-      const isaNote=`<div style="font-size:12px;color:var(--t3);margin-top:8px;display:flex;gap:6px;align-items:flex-start"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;margin-top:1px"><use href="#ki-lightbulb"/></svg>UK tip: Foreign holdings inside a Stocks &amp; Shares ISA grow free of Capital Gains Tax and dividend tax.</div>`;
+      const isaNote=`<div style="font-size:12px;color:var(--t3);margin-top:8px;display:flex;gap:6px;align-items:flex-start"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;margin-top:1px" aria-hidden="true"><use href="#ki-lightbulb"/></svg>UK tip: Foreign holdings inside a Stocks &amp; Shares ISA grow free of Capital Gains Tax and dividend tax.</div>`;
       el.innerHTML='<div style="font-size:12px;color:var(--t3)">Add USD holdings in your portfolio to see GBP conversion.</div>'+isaNote;
       return;
     }
     el.innerHTML=usdHoldings.map(h=>`<div class="sr"><span class="lbl">${esc(h.name)}</span><span class="val">USD ${h.currentVal.toFixed(2)} = ${fmt(h.currentVal*rate)}</span></div>`).join('')
       +`<div class="sr" style="border-top:1px solid var(--b1);margin-top:8px"><span class="lbl" style="font-weight:700">Total USD (GBP)</span><span class="val pos">${fmt(usdHoldings.reduce((s,h)=>s+h.currentVal*rate,0))}</span></div>`
-      +`<div style="font-size:11px;color:var(--t3);margin-top:8px;display:flex;gap:6px;align-items:flex-start"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;margin-top:1px"><use href="#ki-lightbulb"/></svg>Foreign holdings in a Stocks &amp; Shares ISA are sheltered from CGT and dividend tax.</div>`;
+      +`<div style="font-size:11px;color:var(--t3);margin-top:8px;display:flex;gap:6px;align-items:flex-start"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;margin-top:1px" aria-hidden="true"><use href="#ki-lightbulb"/></svg>Foreign holdings in a Stocks &amp; Shares ISA are sheltered from CGT and dividend tax.</div>`;
     return;
   }
   const rate=parseFloat(document.getElementById('fx-rate-inp')?.value)||S.prefs.zarUsd||18.5;
@@ -14639,7 +14646,7 @@ function rSarsReminder(){
                    mo<=7?`31 July ${yr} — Second payment on account due`:
                    mo<=9?`5 October ${yr} — Register for Self Assessment if needed`:
                          `31 January ${yr+1} — Online Self Assessment return &amp; tax payment due`;
-    el.innerHTML=`<div class="ic b" style="margin-bottom:16px"><div class="it" style="display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><use href="#ki-clipboard"/></svg>HMRC Self Assessment</div><div class="ih">Next deadline: ${upcoming}</div><div class="ib">Key dates: ✓ 5 Oct — register for SA ✓ 31 Jan — online return &amp; payment ✓ 31 Jul — second payment on account. <a href="https://www.gov.uk/self-assessment-tax-returns" target="_blank" style="color:var(--accent)">GOV.UK Self Assessment →</a></div></div>`;
+    el.innerHTML=`<div class="ic b" style="margin-bottom:16px"><div class="it" style="display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-clipboard"/></svg>HMRC Self Assessment</div><div class="ih">Next deadline: ${upcoming}</div><div class="ib">Key dates: ✓ 5 Oct — register for SA ✓ 31 Jan — online return &amp; payment ✓ 31 Jul — second payment on account. <a href="https://www.gov.uk/self-assessment-tax-returns" target="_blank" style="color:var(--accent)">GOV.UK Self Assessment →</a></div></div>`;
     return;
   }
   const now=new Date();const mo=now.getMonth()+1;
@@ -14655,7 +14662,7 @@ function rSarsReminder(){
     _set('dl-prov2',_febLast());    // 2nd provisional (IRP6): last day of Feb
   }
   if(mo>=8&&mo<=10){
-    el.innerHTML=`<div class="ic a" style="margin-bottom:16px"><div class="it" style="display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><use href="#ki-clipboard"/></svg>SARS eFiling Season Open</div><div class="ih">Individual tax returns (ITR12) are due 31 October ${now.getFullYear()}</div><div class="ib">Checklist: ✓ IRP5 from employer ✓ Medical aid tax certificate ✓ RA certificate ✓ Travel logbook ✓ Home office records. <a href="https://www.sarsefiling.co.za" target="_blank" style="color:var(--accent)">Open eFiling →</a></div></div>`;
+    el.innerHTML=`<div class="ic a" style="margin-bottom:16px"><div class="it" style="display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-clipboard"/></svg>SARS eFiling Season Open</div><div class="ih">Individual tax returns (ITR12) are due 31 October ${now.getFullYear()}</div><div class="ib">Checklist: ✓ IRP5 from employer ✓ Medical aid tax certificate ✓ RA certificate ✓ Travel logbook ✓ Home office records. <a href="https://www.sarsefiling.co.za" target="_blank" style="color:var(--accent)">Open eFiling →</a></div></div>`;
   } else el.innerHTML='';
 }
 
@@ -15602,7 +15609,7 @@ function klGate(required, featureName){
 function klLockedBanner(featureName, requiredTier){
   const tier = requiredTier.charAt(0).toUpperCase()+requiredTier.slice(1);
   return `<div style="text-align:center;padding:48px 24px">
-    <div style="margin-bottom:12px;display:flex;justify-content:center;opacity:.5"><svg width="32" height="32" viewBox="0 0 16 16" fill="none"><use href="#ki-lock"/></svg></div>
+    <div style="margin-bottom:12px;display:flex;justify-content:center;opacity:.5"><svg width="32" height="32" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-lock"/></svg></div>
     <div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:6px">${featureName}</div>
     <div style="font-size:13px;color:var(--t3);margin-bottom:20px">Requires <strong>${tier}</strong> plan or higher</div>
     <button class="btn btn-gold" onclick="klShowPricing()">View Plans &amp; Pricing</button>
@@ -17787,7 +17794,7 @@ function rGrocery(){
           <div><div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">${afterShopping>=0?'Remaining':'Over by'}</div><div style="font-weight:700;font-family:var(--fm);color:${afterShopping>=0?'var(--green)':'var(--red)'}">${fmt(Math.abs(afterShopping))}</div></div>
         </div>
         <div style="height:6px;background:var(--b2);border-radius:3px"><div style="height:100%;border-radius:3px;background:${color};width:${pct}%;transition:width .3s"></div></div>
-        ${budgetAmt===0?`<div style="font-size:11px;color:var(--t3);margin-top:8px;display:flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><use href="#ki-lightbulb"/></svg>Set a food budget in <a href="#" onclick="goPg('budget');return false" style="color:var(--accent)">Budget</a> to track your grocery spend.</div>`:''}
+        ${budgetAmt===0?`<div style="font-size:11px;color:var(--t3);margin-top:8px;display:flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-lightbulb"/></svg>Set a food budget in <a href="#" onclick="goPg('budget');return false" style="color:var(--accent)">Budget</a> to track your grocery spend.</div>`:''}
       </div>`;
     } else {
       budgetEl.innerHTML='';
@@ -17798,7 +17805,7 @@ function rGrocery(){
   if(!wrap)return;
   if(!lists.length){
     wrap.innerHTML=`<div class="card" style="text-align:center;padding:40px 20px">
-      <div style="margin-bottom:12px;display:flex;justify-content:center;opacity:.5"><svg width="36" height="36" viewBox="0 0 16 16" fill="none"><use href="#ki-cart"/></svg></div>
+      <div style="margin-bottom:12px;display:flex;justify-content:center;opacity:.5"><svg width="36" height="36" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-cart"/></svg></div>
       <div style="font-weight:700;margin-bottom:6px">No shopping lists yet</div>
       <div style="font-size:12px;color:var(--t3);margin-bottom:18px">Create a list and Klar will estimate prices using AI</div>
       <button class="btn btn-gold btn-sm" onclick="openAddGroceryList()">+ Create your first list</button>
@@ -17822,10 +17829,10 @@ function rGrocery(){
         <div style="display:flex;align-items:center;gap:8px">
           <div style="font-weight:700;font-family:var(--fm);font-size:17px">${fmt(total)}</div>
           ${!isDone?`<button class="btn btn-ok btn-xs" onclick="completeGroceryList('${l.id}')">✓ Done</button>`:'<span style="font-size:10px;color:var(--green);font-weight:700">DONE</span>'}
-          <button class="btn btn-ghost btn-xs" onclick="deleteGroceryList('${l.id}')" aria-label="Delete list"><svg viewBox="0 0 16 16"><use href="#ki-trash"/></svg></button>
+          <button class="btn btn-ghost btn-xs" onclick="deleteGroceryList('${l.id}')" aria-label="Delete list"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-trash"/></svg></button>
         </div>
       </div>
-      ${!isDone?`<div style="margin-bottom:10px"><button class="btn btn-ghost btn-xs" onclick="openAddGroceryItem('${l.id}')">+ Add item</button>${(l.items||[]).some(i=>i.estimatedPrice==null&&i.manualPrice==null)?`<button class="btn btn-ghost btn-xs" style="margin-left:6px" onclick="_groceryFetchMissingPrices('${l.id}')"><svg viewBox="0 0 16 16"><use href="#ki-sparkles"/></svg>Estimate prices</button>`:''}</div>`:''}
+      ${!isDone?`<div style="margin-bottom:10px"><button class="btn btn-ghost btn-xs" onclick="openAddGroceryItem('${l.id}')">+ Add item</button>${(l.items||[]).some(i=>i.estimatedPrice==null&&i.manualPrice==null)?`<button class="btn btn-ghost btn-xs" style="margin-left:6px" onclick="_groceryFetchMissingPrices('${l.id}')"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#ki-sparkles"/></svg>Estimate prices</button>`:''}</div>`:''}
       ${(l.items||[]).length?`<div style="border-top:1px solid var(--b2);padding-top:10px">${(l.items||[]).map(item=>{
         const price=item.manualPrice!=null?item.manualPrice:item.estimatedPrice;
         const lineTotal=price!=null?price*(item.qty||1):null;
