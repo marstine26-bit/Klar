@@ -761,6 +761,14 @@ body[data-density="compact"] .card{padding:18px}
 .d-chart-legend{display:flex;gap:16px;margin-top:6px;flex-wrap:wrap}
 .d-cl-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t3);font-weight:600}
 .d-cl-line{width:12px;height:3px;border-radius:2px;display:inline-block}
+#d-cashflow-chart{position:relative}
+.d-cf-hitlayer{cursor:crosshair}
+.d-cf-tip{position:absolute;top:0;left:0;transform:translate(-9999px,-9999px);pointer-events:none;background:var(--s3);border:var(--bw) solid var(--b2);border-radius:10px;padding:9px 12px;box-shadow:var(--shadow);z-index:5;white-space:nowrap;opacity:0;transition:opacity .1s}
+.d-cf-tip.show{opacity:1}
+.d-cf-tip-date{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:5px}
+.d-cf-tip-row{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--t1);font-family:var(--fm);font-variant-numeric:tabular-nums}
+.d-cf-tip-row+.d-cf-tip-row{margin-top:3px}
+.d-cf-tip-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .d-periodpills{display:flex;background:rgba(255,255,255,.04);border:1px solid var(--glass-border);border-radius:999px;padding:3px;gap:2px}
 .d-pp{padding:5px 11px;border-radius:999px;font-size:11px;font-weight:700;color:var(--t3);cursor:pointer;transition:background .15s,color .15s}
 .d-pp:hover{color:var(--t1)}
@@ -8282,24 +8290,45 @@ function rDashSetCfPeriod(n){
   document.querySelectorAll('#d-periodpills .d-pp').forEach(p=>p.classList.toggle('active',+p.dataset.n===n));
   rDashCashflow();
 }
+let _dCfPoints=null, _dCfW=1160;
 function rDashCashflow(){
   const el=document.getElementById('d-cashflow-chart'); if(!el) return;
-  const months=lastN(_dCfPeriod);
-  const data=months.map(m=>{
-    const txns=moTxns(m);
-    const income=txns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-    const expenses=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
-    return {m,income,expenses};
-  });
+  const isDaily=_dCfPeriod===1;
+  let data;
+  if(isDaily){
+    // Day-by-day breakdown of the currently-selected month (S.curMo) — the 1M pill
+    // used to hand the monthly pipeline a single-month array (one point, no line).
+    const mo=S.curMo||new Date().toISOString().slice(0,7);
+    const [cy,cm]=mo.split('-').map(Number);
+    const daysInMonth=new Date(cy,cm,0).getDate();
+    const isCurMonth=mo===new Date().toISOString().slice(0,7);
+    const lastDay=isCurMonth?new Date().getDate():daysInMonth;
+    data=[];
+    for(let d=1; d<=lastDay; d++){
+      const dateStr=mo+'-'+String(d).padStart(2,'0');
+      const txns=S.transactions.filter(t=>t.date===dateStr&&t.type!=='transfer');
+      const income=txns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+      const expenses=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+      data.push({key:mo,day:d,income,expenses});
+    }
+  } else {
+    const months=lastN(_dCfPeriod);
+    data=months.map(m=>{
+      const txns=moTxns(m);
+      const income=txns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+      const expenses=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+      return {key:m,income,expenses};
+    });
+  }
   const curNet=data[data.length-1]?data[data.length-1].income-data[data.length-1].expenses:0;
-  const prevMoData=data.length>1?data[data.length-2]:null;
-  const prevNet=prevMoData?prevMoData.income-prevMoData.expenses:0;
+  const prevData=data.length>1?data[data.length-2]:null;
+  const prevNet=prevData?prevData.income-prevData.expenses:0;
   const numEl=document.getElementById('d-chart-num');
   const avgLblEl=document.getElementById('d-chart-avg-lbl');
-  if(avgLblEl)avgLblEl.textContent=_dCfPeriod+'-mo average';
+  if(avgLblEl)avgLblEl.textContent=isDaily?'Daily average':_dCfPeriod+'-mo average';
   if(numEl){
     let pillHtml='';
-    if(prevMoData&&prevNet!==0){
+    if(prevData&&prevNet!==0){
       const dPct=((curNet-prevNet)/Math.abs(prevNet))*100;
       const cls=dPct>=0?'pos':'neg';
       pillHtml=` <span class="pill ${cls}" style="font-size:10.5px">${dPct>=0?'+':''}${dPct.toFixed(0)}% vs prior</span>`;
@@ -8308,21 +8337,54 @@ function rDashCashflow(){
   }
   if(!data.some(d=>d.income>0||d.expenses>0)){
     el.innerHTML='<div class="empty" style="padding:20px"><div class="empty-t" style="font-size:13px">No cash flow data yet</div><div class="empty-s">Add a few months of transactions to see the trend</div></div>';
+    _dCfPoints=null;
     return;
   }
   const W=1160,H=170,pad={t:12,b:22};
   const cH=H-pad.t-pad.b;
   const maxV=Math.max(...data.map(d=>Math.max(d.income,d.expenses)),1);
   const stepX=W/(data.length-1||1);
-  const incPts=data.map((d,i)=>({x:i*stepX,y:pad.t+cH-(d.income/maxV)*cH}));
-  const expPts=data.map((d,i)=>({x:i*stepX,y:pad.t+cH-(d.expenses/maxV)*cH}));
+  const incYs=data.map(d=>pad.t+cH-(d.income/maxV)*cH);
+  const expYs=data.map(d=>pad.t+cH-(d.expenses/maxV)*cH);
+  const incPts=data.map((d,i)=>({x:i*stepX,y:incYs[i]}));
+  const expPts=data.map((d,i)=>({x:i*stepX,y:expYs[i]}));
   const incPath=_smoothPath(incPts);
   const expPath=_smoothPath(expPts);
   const last=incPts.length-1;
   const areaPath=`${incPath} L${incPts[last].x},${pad.t+cH} L${incPts[0].x},${pad.t+cH} Z`;
   const avgIncome=data.reduce((s,d)=>s+d.income,0)/data.length;
   const avgYClamped=Math.max(pad.t,Math.min(pad.t+cH,pad.t+cH-(avgIncome/maxV)*cH));
-  const labels=data.map(d=>{const[y,m]=d.m.split('-');return new Date(+y,+m-1,1).toLocaleString('default',{month:'short'});});
+
+  // Per-point data the hover handler reads — svg-space coords plus a formatted tooltip date.
+  _dCfW=W;
+  _dCfPoints=data.map((d,i)=>{
+    const [py,pm]=d.key.split('-').map(Number);
+    const tipLabel=isDaily
+      ? new Date(py,pm-1,d.day).toLocaleString('default',{day:'numeric',month:'short'})
+      : new Date(py,pm-1,1).toLocaleString('default',{month:'long',year:'numeric'});
+    return {x:incPts[i].x, incY:incYs[i], expY:expYs[i], income:d.income, expenses:d.expenses, tipLabel};
+  });
+
+  // Axis labels: monthly keeps one label per point (max 12); daily thins them out
+  // (up to 31 points) so the day numbers don't collide.
+  let axisHtml;
+  if(isDaily){
+    const n=data.length;
+    const showEvery=Math.max(1,Math.ceil(n/6));
+    axisHtml=data.map((d,i)=>{
+      if(i!==0 && i!==n-1 && i%showEvery!==0) return '';
+      const pct=(i/(n-1||1))*100;
+      return `<span style="position:absolute;left:${pct.toFixed(2)}%;transform:translateX(-50%);font-size:10px;color:var(--t4)">${d.day}</span>`;
+    }).join('');
+  } else {
+    axisHtml=data.map((d,i)=>{
+      const [py,pm]=d.key.split('-').map(Number);
+      const lbl=new Date(py,pm-1,1).toLocaleString('default',{month:'short'});
+      const pct=(i/(data.length-1||1))*100;
+      return `<span style="position:absolute;left:${pct.toFixed(2)}%;transform:translateX(-50%);font-size:10px;color:var(--t4)">${lbl}</span>`;
+    }).join('');
+  }
+
   el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="overflow:visible">
       <defs><linearGradient id="dcfGrad" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.28"/>
@@ -8334,10 +8396,62 @@ function rDashCashflow(){
       <path d="${incPath}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
       <circle cx="${incPts[last].x}" cy="${incPts[last].y}" r="4.5" fill="var(--bg)" stroke="var(--accent)" stroke-width="2.5"/>
       <circle cx="${expPts[last].x}" cy="${expPts[last].y}" r="4" fill="var(--bg)" stroke="var(--red)" stroke-width="2"/>
+      <line id="d-cf-hov-line" x1="0" y1="${pad.t}" x2="0" y2="${pad.t+cH}" stroke="var(--t3)" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>
+      <circle id="d-cf-hov-inc" cx="0" cy="0" r="4.5" fill="var(--accent)" stroke="var(--bg)" stroke-width="2" opacity="0"/>
+      <circle id="d-cf-hov-exp" cx="0" cy="0" r="4" fill="var(--red)" stroke="var(--bg)" stroke-width="2" opacity="0"/>
+      <rect class="d-cf-hitlayer" x="0" y="0" width="${W}" height="${H}" fill="transparent" onpointermove="_dCfHover(event)" onpointerdown="_dCfHover(event)" onpointerleave="_dCfHoverEnd()"/>
     </svg>
-    <div style="display:flex;justify-content:space-between;margin-top:4px">
-      ${labels.map(l=>`<span style="font-size:10px;color:var(--t4)">${l}</span>`).join('')}
+    <div style="position:relative;height:14px;margin-top:4px">${axisHtml}</div>
+    <div class="d-cf-tip" id="d-cf-tip">
+      <div class="d-cf-tip-date" id="d-cf-tip-date"></div>
+      <div class="d-cf-tip-row"><span class="d-cf-tip-dot" style="background:var(--accent)"></span>Income&nbsp;<span id="d-cf-tip-inc"></span></div>
+      <div class="d-cf-tip-row"><span class="d-cf-tip-dot" style="background:var(--red)"></span>Expenses&nbsp;<span id="d-cf-tip-exp"></span></div>
     </div>`;
+}
+function _dCfHover(evt){
+  if(!_dCfPoints||!_dCfPoints.length) return;
+  const svg=evt.currentTarget.ownerSVGElement;
+  const container=document.getElementById('d-cashflow-chart');
+  if(!svg||!container) return;
+  const clientX=evt.clientX;
+  if(clientX===undefined) return;
+  const svgRect=svg.getBoundingClientRect();
+  const containerRect=container.getBoundingClientRect();
+  let fracX=svgRect.width?(clientX-svgRect.left)/svgRect.width:0;
+  fracX=Math.max(0,Math.min(1,fracX));
+  const idx=Math.max(0,Math.min(_dCfPoints.length-1,Math.round(fracX*(_dCfPoints.length-1))));
+  const p=_dCfPoints[idx];
+
+  const line=document.getElementById('d-cf-hov-line');
+  const hInc=document.getElementById('d-cf-hov-inc');
+  const hExp=document.getElementById('d-cf-hov-exp');
+  if(line){line.setAttribute('x1',p.x);line.setAttribute('x2',p.x);line.setAttribute('opacity','0.6');}
+  if(hInc){hInc.setAttribute('cx',p.x);hInc.setAttribute('cy',p.incY);hInc.setAttribute('opacity','1');}
+  if(hExp){hExp.setAttribute('cx',p.x);hExp.setAttribute('cy',p.expY);hExp.setAttribute('opacity','1');}
+
+  const tip=document.getElementById('d-cf-tip');
+  if(tip){
+    document.getElementById('d-cf-tip-date').textContent=p.tipLabel;
+    document.getElementById('d-cf-tip-inc').textContent=fmt(p.income);
+    document.getElementById('d-cf-tip-exp').textContent=fmt(p.expenses);
+    const svgFracX=_dCfW?p.x/_dCfW:0;
+    let leftPx=(svgRect.left-containerRect.left)+svgFracX*svgRect.width;
+    leftPx=Math.max(60,Math.min(containerRect.width-60,leftPx));
+    tip.style.left=leftPx+'px';
+    tip.style.top='6px';
+    tip.style.transform='translateX(-50%)';
+    tip.classList.add('show');
+  }
+}
+function _dCfHoverEnd(){
+  const line=document.getElementById('d-cf-hov-line');
+  const hInc=document.getElementById('d-cf-hov-inc');
+  const hExp=document.getElementById('d-cf-hov-exp');
+  const tip=document.getElementById('d-cf-tip');
+  if(line)line.setAttribute('opacity','0');
+  if(hInc)hInc.setAttribute('opacity','0');
+  if(hExp)hExp.setAttribute('opacity','0');
+  if(tip)tip.classList.remove('show');
 }
 
 /* ── Dashboard account stack — click to shuffle through top accounts. ── */
