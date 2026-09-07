@@ -13376,7 +13376,17 @@ function stokvelPayout(stokvelId, amount, accountId) {
     }, {title: 'Receive Payout', placeholder: '0.00'});
   }
 }
+let _stokvelDefaultHTML=null;
 function rStokvels(){
+  const pgStokvel=document.getElementById('pg-stokvel');
+  if(pgStokvel&&_stokvelDefaultHTML===null&&document.getElementById('stok-list')) _stokvelDefaultHTML=pgStokvel.innerHTML;
+  // UK guard: Stokvels are SA-specific rotating savings groups; not applicable to UK users
+  if((S.prefs&&S.prefs.region)==='uk'){
+    if(pgStokvel)pgStokvel.innerHTML='<div class="ph"><div><div class="pt">Stokvels</div></div></div><div class="card" style="padding:24px;text-align:center;color:var(--t3)"><div style="font-size:28px;margin-bottom:12px">🇿🇦</div><div style="font-size:14px;font-weight:600;color:var(--t2);margin-bottom:8px">South Africa only</div><div style="font-size:13px;max-width:440px;margin:0 auto">Stokvels are South African rotating savings and credit groups and are not applicable to UK users.</div></div>';
+    return;
+  }
+  // Restore the real structure if a prior UK-region render left the blocked banner in place
+  if(pgStokvel&&!document.getElementById('stok-list')&&_stokvelDefaultHTML) pgStokvel.innerHTML=_stokvelDefaultHTML;
   const mo=((S.stokvels||[]).reduce((s,stk)=>s+stk.contribution,0));
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
   set('stok-ct',(S.stokvels||[]).length);set('stok-mo',fmt(mo));
