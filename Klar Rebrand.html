@@ -11488,6 +11488,19 @@ function sbRenderList(){
     </div>`;
   }).join('');
 }
+// Split Bills reuses one persistently-open modal-bg (#m-split-bill) for both its
+// list and group-detail views, toggling internal wraps via style.display instead
+// of the modal's 'open' class — so the global focus-trap init (which only
+// re-focuses on an 'open' class mutation) never re-fires on these transitions.
+// Without this, the element that triggered the switch is hidden mid-click and
+// focus drops to <body>, letting Tab/Shift+Tab escape the still-open modal into
+// the background page. Re-focus the first focusable element of the newly
+// visible view after every list<->detail transition below.
+function _sbFocusFirst(){
+  const FOCUSABLE='button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  const f=[...document.getElementById('m-split-bill').querySelectorAll(FOCUSABLE)].find(el=>el.offsetParent!==null);
+  if(f) f.focus();
+}
 function sbNewGroup(){
   _sbIdx = null;
   _sbPeople = ['Me'];
@@ -11501,6 +11514,7 @@ function sbNewGroup(){
   document.getElementById('sb-main-footer').style.display = 'none';
   document.getElementById('sb-title').textContent = 'New Split Group';
   _sbRenderPeople(); _sbRenderExpenses(); sbRenderSettlement();
+  requestAnimationFrame(_sbFocusFirst);
 }
 function sbOpenGroup(i){
   const sp = (S.splitBills||[])[i]; if(!sp) return;
@@ -11514,6 +11528,7 @@ function sbOpenGroup(i){
   document.getElementById('sb-main-footer').style.display = 'none';
   document.getElementById('sb-title').textContent = esc(sp.name||'Split Group');
   _sbRenderPeople(); _sbRenderExpenses(); sbRenderSettlement();
+  requestAnimationFrame(_sbFocusFirst);
 }
 function sbBack(){
   sbRenderList();
@@ -11521,6 +11536,7 @@ function sbBack(){
   document.getElementById('sb-group-wrap').style.display = 'none';
   document.getElementById('sb-main-footer').style.display = '';
   document.getElementById('sb-title').textContent = 'Split Bills';
+  requestAnimationFrame(_sbFocusFirst);
 }
 function _sbRenderPeople(){
   const el = document.getElementById('sb-people-list'); if(!el) return;
@@ -14315,7 +14331,23 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(_sb) {
     _sb.auth.getSession().then(({data:{session}}) => {
       if(!session?.user && localStorage.getItem('kl_guest') !== '1') {
-        document.getElementById('kl-auth-gate').classList.add('open');
+        const gate = document.getElementById('kl-auth-gate');
+        gate.classList.add('open');
+        // kl-auth-gate is a mandatory, non-dismissible dialog rendered outside the
+        // shared .modal-bg system (no backdrop-click-to-close), so it never picked up
+        // the MutationObserver-driven focus trap those get — Tab could walk straight
+        // past it into the app behind. Same trap technique as that shared mechanism,
+        // just inlined here since it can't be watched by that one-time querySelectorAll.
+        const FOCUSABLE='button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+        gate.addEventListener('keydown', function(e){
+          if(e.key!=='Tab')return;
+          const els=[].slice.call(gate.querySelectorAll(FOCUSABLE)).filter(function(f){return f.offsetParent!==null;});
+          if(!els.length)return;
+          const first=els[0],last=els[els.length-1];
+          if(e.shiftKey){if(document.activeElement===first){e.preventDefault();last.focus();}}
+          else{if(document.activeElement===last){e.preventDefault();first.focus();}}
+        });
+        requestAnimationFrame(function(){const f=gate.querySelector(FOCUSABLE);if(f)f.focus();});
       } else {
         klCheckRegion();
       }
