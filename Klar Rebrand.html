@@ -6928,7 +6928,16 @@ try{
 const PAGE_RENDERERS = {
   dashboard:   () => [updMoLbl, rDash, ()=>{ if(S.prefs?.fxConversion) setTimeout(klShowFxBanner,100); }],
   accounts:    () => [rAccounts, rFxRatesPanel],
-  transactions:() => [renderTxns, renderLedgerHero],
+  // renderTxns skips its own work when a non-'txns' sub-tab is active (see its early-return),
+  // and setMoneyView only re-renders a sub-tab when *switching* to it — so a data change made
+  // while already sitting on Recurring/Tags/Today/Merchants (e.g. adding a recurring txn from
+  // the modal) needs this explicit dispatch or the visible sub-tab goes stale until you tab away and back.
+  transactions:() => [renderTxns, renderLedgerHero, () => {
+    if (currentMoneyView === 'recur') { if (typeof rRecurringTemplates === 'function') rRecurringTemplates(); if (typeof checkRecurringDue === 'function') checkRecurringDue(); }
+    else if (currentMoneyView === 'tags' && typeof rTaggedView === 'function') rTaggedView();
+    else if (currentMoneyView === 'today' && typeof rTodayView === 'function') rTodayView();
+    else if (currentMoneyView === 'merchants' && typeof rMerchants === 'function') rMerchants();
+  }],
   trends:      () => [rTrends],
   budget:      () => [rBudget, rWhatIf, rBudgetHistory],
   subs:        () => [rSubs],
@@ -15371,7 +15380,17 @@ function calcAccumDepr(a){
   return Math.min(accum,a.cost-a.residual);
 }
 
+let _farDefaultHTML=null;
 function rFAR(){
+  const pgFar=document.getElementById('pg-far');
+  if(pgFar&&_farDefaultHTML===null&&document.getElementById('far-kpis'))_farDefaultHTML=pgFar.innerHTML;
+  // Business mode guard: FAR (Fixed Asset Register) is a Business-mode-only page
+  if(!isCorp()){
+    if(pgFar)pgFar.innerHTML='<div class="card" style="text-align:center;padding:40px 24px"><div style="margin-bottom:16px;display:flex;justify-content:center;opacity:.6"><svg width="36" height="36" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-briefcase"/></svg></div><div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:8px">Business Feature</div><div style="font-size:13px;color:var(--t3);max-width:340px;margin:0 auto;line-height:1.7">The Fixed Asset Register is for business finances — switch to Business mode to use this feature.</div><button class="btn btn-gold" style="margin-top:16px" onclick="toggleCorpMode()">Switch to Business</button></div>';
+    return;
+  }
+  // Restore the real structure if a prior personal-mode render left the guard banner in place
+  if(pgFar&&!document.getElementById('far-kpis')&&_farDefaultHTML)pgFar.innerHTML=_farDefaultHTML;
   const _farRegion=S.prefs?.region||'za';
   const isUK=_farRegion==='uk';
   const isOtherFar=_farRegion==='other';
@@ -15441,7 +15460,17 @@ function saveBizLoan(){
 
 function delBizLoan(id){const l=(S.bizLoans||[]).find(x=>x.id===id);klConfirm('Delete facility'+(l?' "'+l.name+'"':'')+' permanently?',()=>{S.bizLoans=(S.bizLoans||[]).filter(x=>x.id!==id);save();rBizLoans();},{title:'Delete Facility',danger:true});}
 
+let _bizLoanDefaultHTML=null;
 function rBizLoans(){
+  const pgBizLoans=document.getElementById('pg-bizloans');
+  if(pgBizLoans&&_bizLoanDefaultHTML===null&&document.getElementById('bizloan-kpis'))_bizLoanDefaultHTML=pgBizLoans.innerHTML;
+  // Business mode guard: Business Loans is a Business-mode-only page
+  if(!isCorp()){
+    if(pgBizLoans)pgBizLoans.innerHTML='<div class="card" style="text-align:center;padding:40px 24px"><div style="margin-bottom:16px;display:flex;justify-content:center;opacity:.6"><svg width="36" height="36" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-briefcase"/></svg></div><div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:8px">Business Feature</div><div style="font-size:13px;color:var(--t3);max-width:340px;margin:0 auto;line-height:1.7">Business Loans is for business finances — switch to Business mode to use this feature.</div><button class="btn btn-gold" style="margin-top:16px" onclick="toggleCorpMode()">Switch to Business</button></div>';
+    return;
+  }
+  // Restore the real structure if a prior personal-mode render left the guard banner in place
+  if(pgBizLoans&&!document.getElementById('bizloan-kpis')&&_bizLoanDefaultHTML)pgBizLoans.innerHTML=_bizLoanDefaultHTML;
   const loans=S.bizLoans||[];
   const totalBalance=loans.reduce((s,l)=>s+l.balance,0);
   const totalPmt=loans.reduce((s,l)=>s+l.payment,0);
