@@ -5072,7 +5072,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     </div>
     <div class="fr"><label for="txn-acc">From Account</label><select id="txn-acc"></select></div>
     <div class="fr" id="txn-to-acc-wrap" style="display:none"><label for="txn-to-acc">To Account <span style="color:var(--blue);font-size:9px">TRANSFER DESTINATION</span></label><select id="txn-to-acc"></select></div>
-    <div class="fr"><label for="txn-ds">Description</label><input type="text" id="txn-ds" placeholder="e.g. Woolworths groceries"></div>
+    <div class="fr"><label for="txn-ds">Description</label><input type="text" id="txn-ds" placeholder="e.g. Woolworths groceries" list="txn-ds-list" oninput="onTxnDescInput()" autocomplete="off"><datalist id="txn-ds-list"></datalist></div>
     <div class="fg2">
       <div class="fr"><label for="txn-am">Amount (<span class="kl-cur-sym">R</span>)</label><input type="number" id="txn-am" placeholder="0.00" min="0" step="0.01"></div>
       <div class="fr" id="txn-cat-wrap"><label for="txn-ca">Category</label><select id="txn-ca"></select></div>
@@ -8761,6 +8761,53 @@ function liHTML(t){
 let txnSort={col:'date',dir:-1};
 let _undoStack=[];
 let _undoTimer=null;
+// Smart-default state for the Add Transaction description field: tracks whether the
+// user has manually touched the category dropdown this time round, so autoCat()
+// suggestions never clobber a deliberate choice.
+let _txnCatUserTouched=false;
+document.addEventListener('focusin',e=>{
+  const trig=e.target.closest&&e.target.closest('.kl-select-trigger');
+  if(!trig)return;
+  const wrap=trig.closest('.kl-select');
+  if(wrap&&wrap._klSelectEl&&wrap._klSelectEl.id==='txn-ca')_txnCatUserTouched=true;
+});
+// As the user types a description in Add Transaction, suggest a category from the same
+// autoCat() rules CSV import uses, and prefill the amount if this exact description has
+// been logged before (recurring merchants like rent/subscriptions are usually a fixed amount).
+// Never runs while editing an existing transaction — only on fresh adds.
+function onTxnDescInput(){
+  if(_editingTxnId)return;
+  const descEl=document.getElementById('txn-ds');
+  const desc=(descEl&&descEl.value||'').trim();
+  if(desc.length<3)return;
+  const amtEl=document.getElementById('txn-am');
+  if(amtEl&&!amtEl.value){
+    const match=(S.transactions||[]).slice().reverse().find(t=>t.description&&t.description.trim().toLowerCase()===desc.toLowerCase());
+    if(match)amtEl.value=match.amount;
+  }
+  if(_txnCatUserTouched)return;
+  const catEl=document.getElementById('txn-ca');
+  const tyEl=document.getElementById('txn-ty');
+  if(!catEl||(tyEl&&tyEl.value==='transfer'))return;
+  const guess=autoCat(desc);
+  if(!guess||guess==='other'||catEl.value===guess)return;
+  catEl.value=guess;
+  klEnhanceCatSelect('txn-ca');
+}
+// Populate the description datalist with the user's most frequent past merchants,
+// so the browser's native autocomplete surfaces them while typing.
+function populateTxnDescDatalist(){
+  const dl=document.getElementById('txn-ds-list');
+  if(!dl)return;
+  const freq={};
+  (S.transactions||[]).forEach(t=>{
+    const key=(t.description||'').trim();
+    if(!key)return;
+    freq[key]=(freq[key]||0)+1;
+  });
+  const top=Object.keys(freq).sort((a,b)=>freq[b]-freq[a]).slice(0,40);
+  dl.innerHTML=top.map(d=>`<option value="${esc(d)}"></option>`).join('');
+}
 let _editingTxnId=null;
 function sortTxns(col){if(txnSort.col===col){txnSort.dir*=-1;}else{txnSort.col=col;txnSort.dir=col==='amount'?-1:1;}_txnOffset=0;renderTxns();}
 
@@ -8981,6 +9028,12 @@ const undoLast=()=>{
   if(!_undoStack.length)return;
   const item=_undoStack.pop();
   if(item.type==='txn'){S.transactions.splice(item.idx,0,item.data);}
+  else if(item.type==='txns'){
+    // Re-insert each deleted transaction at its original index, restoring original order
+    // even though later removals shift earlier indices — sort ascending so each splice
+    // lands before the next one needs to shift.
+    item.entries.slice().sort((a,b)=>a.idx-b.idx).forEach(e=>S.transactions.splice(e.idx,0,e.data));
+  }
   save();renderAll();
   const ut=document.getElementById('undo-toast');if(ut)ut.classList.remove('show');
   notify('Undo successful','ok');
@@ -9089,10 +9142,15 @@ function clearBulkSel(){
 function bulkDelete(){
   const ids=getCheckedIds();
   if(!ids.length)return;
-  klConfirm(`Delete ${ids.length} transaction${ids.length>1?'s':''}? This cannot be undone.`,function(){
-    S.transactions=S.transactions.filter(t=>!ids.includes(t.id));
-    save(); renderAll(); notify(`${ids.length} transaction${ids.length>1?'s':''} deleted`,'ok');
-  },{okLabel:'Delete'});
+  // Matches the single-delete UX (delTxn): no confirm dialog, immediate delete backed by
+  // a real 5s undo window — safer than the old "cannot be undone" modal since a mis-click
+  // is now actually recoverable instead of only warned-about.
+  const entries=ids.map(id=>{const t=S.transactions.find(x=>x.id===id);return t?{data:t,idx:S.transactions.indexOf(t)}:null;}).filter(Boolean);
+  if(!entries.length)return;
+  _undoStack.push({type:'txns',entries});
+  S.transactions=S.transactions.filter(t=>!ids.includes(t.id));
+  save(); renderAll();
+  showUndoToast(`${entries.length} transaction${entries.length>1?'s':''} deleted`);
 }
 function bulkRecategorise(){
   const ids=getCheckedIds();
@@ -9213,9 +9271,10 @@ function klViewReceipt(txnId) {
 
 function openAddTxn(){
   _editingTxnId=null;
+  _txnCatUserTouched=false;
   const titleEl=document.getElementById('m-add-txn-title');if(titleEl)titleEl.textContent='Add Transaction';
   const saveBtn=document.querySelector('#m-add-txn .btn-gold');if(saveBtn)saveBtn.textContent='Save Transaction';
-  popCatDDs(); popAccDDs();
+  popCatDDs(); popAccDDs(); populateTxnDescDatalist();
   const descInp=document.getElementById('txn-ds');
   if(descInp)descInp.placeholder=(S.prefs?.region||'za')==='uk'?'e.g. Tesco groceries':'e.g. Woolworths groceries';
   // Populate To Account dropdown
