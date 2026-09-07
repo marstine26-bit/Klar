@@ -2818,7 +2818,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
         <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0" aria-hidden="true"><use href="#ki-globe"/></svg>Detected International Transactions <span id="forex-detected-count" style="font-size:11px;color:var(--t3);font-weight:400"></span></div>
         <button class="btn btn-ghost btn-xs" onclick="dismissAllDetectedForex()">Dismiss All</button>
       </div>
-      <div style="font-size:11px;color:var(--t3);margin-bottom:10px">These transactions may count against your SARB allowances. Log them to track your annual limit.</div>
+      <div id="forex-detected-banner-text" style="font-size:11px;color:var(--t3);margin-bottom:10px">These transactions may count against your SARB allowances. Log them to track your annual limit.</div>
       <div id="forex-detected-list"></div>
     </div>
   </div>
@@ -9377,6 +9377,15 @@ function saveTxn(){
           linked.note=tx.note; linked.tags=tx.tags;
         }
       }
+      // "Make recurring" toggle is visible on the edit form too, but was silently ignored here —
+      // only the add-new-transaction path (below) ever wrote to S.recurringTemplates.
+      const editIsRecurring=document.getElementById('txn-recurring')?.checked||false;
+      if(editIsRecurring && !tx.isRecurring){
+        const editRecurFreq=document.getElementById('txn-recur-freq')?.value||'monthly';
+        if(!S.recurringTemplates)S.recurringTemplates=[];
+        S.recurringTemplates.push({id:uid(),description:tx.description,amount:tx.amount,type:tx.type,category:tx.category,accountId:tx.accountId,freq:editRecurFreq,lastDate:tx.date,note:tx.note,tags:tx.tags,goalId:tx.goalId,debtId:tx.debtId,active:true});
+        tx.isRecurring=true;
+      }
       save(); closeModal('m-add-txn'); renderAll(); notify('Transaction updated','ok');
     }
     _editingTxnId=null;
@@ -10277,7 +10286,9 @@ function rForex() {
   const fxCnt=document.getElementById('forex-detected-count');
   if(fxWrap)fxWrap.style.display=detFx.length?'block':'none';
   // Region-aware banner text
-  const detBannerText=fxWrap?.querySelector('[style*="font-size:11px"][style*="color:var(--t3)"]');
+  // (id-based lookup — the old attribute-selector matched forex-detected-count first since both
+  // spans share the same inline font-size/color styling, so the SARB sentence never actually updated for UK users)
+  const detBannerText=document.getElementById('forex-detected-banner-text');
   if(detBannerText) detBannerText.textContent=showSarb
     ?'These transactions may count against your SARB allowances. Log them to track your annual limit.'
     :'International transactions detected. Log them to track your offshore holdings and foreign currency accounts.';
@@ -15933,7 +15944,10 @@ function rISA(){
   ];
   const over20k = total > ISA_ALLOWANCE;
   const inputsEl = document.getElementById('isa-inputs');
-  if(inputsEl) inputsEl.innerHTML = types.map(t=>`
+  // Skip rebuilding the inputs while the user is actively typing in one of them — a full
+  // innerHTML replace on every keystroke (via isaUpdate() -> save() -> rISA()) destroys and
+  // recreates the focused <input>, dropping every keystroke after the first character.
+  if(inputsEl && !inputsEl.contains(document.activeElement)) inputsEl.innerHTML = types.map(t=>`
     <div class="fr">
       <label for="isa-inp-${t.key}">${t.label} <span style="color:var(--t4);font-weight:400;font-size:10px">${t.hint}</span></label>
       <div style="position:relative">
@@ -16024,7 +16038,9 @@ function rUkLoans(){
   const plan = UK_LOAN_PLANS[sl.plan||'2'];
 
   const inputsEl = document.getElementById('ukloans-inputs');
-  if(inputsEl) inputsEl.innerHTML = `
+  // Skip rebuilding the inputs while the user is actively typing in one of them — same
+  // focus-destroying full-innerHTML-replace issue fixed in rISA() above.
+  if(inputsEl && !inputsEl.contains(document.activeElement)) inputsEl.innerHTML = `
     <div class="fr" style="margin-top:14px">
       <label for="uksl-plan">Repayment plan</label>
       <select id="uksl-plan" onchange="ukSlUpdate()">
