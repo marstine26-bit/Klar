@@ -6908,6 +6908,13 @@ document.addEventListener('DOMContentLoaded', function(){
 document.addEventListener('keydown', function(e){
   if ((e.key==='Enter'||e.key===' ') && e.target.classList.contains('tb-more-item')) { e.preventDefault(); e.target.click(); }
 });
+// .sb-group-card (Split Bills group list) and .sb-remove-person (participant chip remove)
+// are both rebuilt via innerHTML on every render (sbRenderList / _sbRenderPeople), so a
+// one-time querySelectorAll retrofit can't keep up — delegate to the document instead,
+// same Enter/Space-activates-click pattern used for the other div/span-based controls.
+document.addEventListener('keydown', function(e){
+  if ((e.key==='Enter'||e.key===' ') && (e.target.classList.contains('sb-group-card')||e.target.classList.contains('sb-remove-person'))) { e.preventDefault(); e.target.click(); }
+});
 
 function cycleTheme(){
   const order = ['light','dark','warm','amoled','highcontrast'];
@@ -11472,7 +11479,7 @@ function sbRenderList(){
   el.innerHTML = splits.map((sp, i) => {
     const total = (sp.expenses||[]).reduce((s,e)=>s+e.amount, 0);
     const txns = calcSplitSettlement(sp);
-    return `<div style="background:var(--s2);border-radius:var(--rsm);padding:11px 13px;margin-bottom:8px;cursor:pointer" onclick="sbOpenGroup(${i})">
+    return `<div class="sb-group-card" style="background:var(--s2);border-radius:var(--rsm);padding:11px 13px;margin-bottom:8px;cursor:pointer" onclick="sbOpenGroup(${i})" role="button" tabindex="0">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
         <div style="font-weight:700;font-size:13px">${esc(sp.name||'Unnamed Group')}</div>
         <div style="font-size:11px;font-family:var(--fm);color:var(--t2)">${fmt(total)}</div>
@@ -11518,7 +11525,7 @@ function sbBack(){
 function _sbRenderPeople(){
   const el = document.getElementById('sb-people-list'); if(!el) return;
   el.innerHTML = _sbPeople.map((p,i) => `<div style="display:inline-flex;align-items:center;gap:4px;background:var(--s3);border-radius:20px;padding:3px 10px;margin:2px 2px 2px 0;font-size:12px">
-    ${esc(p)}<span onclick="_sbRemovePerson(${i})" style="cursor:pointer;color:var(--t3);margin-left:2px">&times;</span>
+    ${esc(p)}<span class="sb-remove-person" onclick="_sbRemovePerson(${i})" role="button" tabindex="0" aria-label="Remove ${esc(p)}" style="cursor:pointer;color:var(--t3);margin-left:2px">&times;</span>
   </div>`).join('');
   const pb = document.getElementById('sb-epaidby');
   if(pb) pb.innerHTML = _sbPeople.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join('');
