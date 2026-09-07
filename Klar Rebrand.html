@@ -14278,6 +14278,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Accessibility: focus management for all modal-bg elements
   (function(){
     var FOCUSABLE='button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+    // .sb-modal-bg (#sb-auth-modal) and .bp-modal-bg (#bp-modal) are their own
+    // parallel modal systems, not .modal-bg — included here so they share the
+    // same focus trap instead of needing a second observer stood up for them.
+    var MODAL_SEL='.modal-bg,.sb-modal-bg,.bp-modal-bg';
     var prevFocus=null;
     function trapFocus(e){
       var modal=e.currentTarget;
@@ -14288,7 +14292,9 @@ document.addEventListener('DOMContentLoaded',()=>{
       if(e.shiftKey){if(document.activeElement===first){e.preventDefault();last.focus();}}
       else{if(document.activeElement===last){e.preventDefault();first.focus();}}
     }
-    document.querySelectorAll('.modal-bg').forEach(function(el){
+    function watchModal(el){
+      if(el._klFocusWatched)return;
+      el._klFocusWatched=true;
       new MutationObserver(function(mutations){
         mutations.forEach(function(m){
           if(m.attributeName==='class'){
@@ -14306,7 +14312,23 @@ document.addEventListener('DOMContentLoaded',()=>{
           }
         });
       }).observe(el,{attributes:true});
-    });
+    }
+    document.querySelectorAll(MODAL_SEL).forEach(watchModal);
+    // Structural gap fix: the querySelectorAll above only catches modal
+    // elements that exist in the DOM at this one-time init moment. Any modal
+    // built at runtime via createElement (e.g. #kl-shortcuts-overlay) is
+    // appended to the DOM later and would otherwise never get a focus trap.
+    // Watch document.body for new modal nodes being added, and wire them
+    // into the same trapFocus mechanism as the static ones.
+    new MutationObserver(function(mutations){
+      mutations.forEach(function(m){
+        m.addedNodes.forEach(function(node){
+          if(node.nodeType!==1)return;
+          if(node.matches&&node.matches(MODAL_SEL))watchModal(node);
+          if(node.querySelectorAll)node.querySelectorAll(MODAL_SEL).forEach(watchModal);
+        });
+      });
+    }).observe(document.body,{childList:true,subtree:true});
   })();
   // Accessibility: make sidebar nav-item divs, and other div-based clickable
   // controls that were never given real button semantics, keyboard-navigable.
