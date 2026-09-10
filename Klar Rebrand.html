@@ -15804,6 +15804,11 @@ async function sbSignOut(){
 
 async function sbPushSync(){
   if(!_sb || !_sbUser || _sbSyncing) return;
+  // Cloud sync is an Essential+ feature (see KL_PLANS / landing page) — a signed-in
+  // free-tier user must not be able to push their data to the cloud just by being
+  // authenticated. klHasTier() is server-hardened (klar-tier-enforcement.js), so this
+  // can't be bypassed by a stale/tampered local tier value while genuinely signed in.
+  if(!klHasTier('essential')) return;
   _sbSyncing = true;
   _sbSetDot('syncing');
   const _rls=document.getElementById('rail-last-saved');
@@ -15845,6 +15850,9 @@ async function sbPushSync(){
 
 async function sbPullAndMerge(){
   if(!_sb || !_sbUser) return;
+  // Same Essential+ gate as sbPushSync() — a free-tier signed-in user shouldn't be
+  // able to pull previously-synced cloud data either (e.g. after downgrading).
+  if(!klHasTier('essential')) return;
   _sbSetDot('syncing');
   try {
     const { data, error } = await _sb.from('klar_syncs').select('data,version,updated_at').eq('user_id', _sbUser.id).single();
@@ -15889,6 +15897,7 @@ async function sbPullAndMerge(){
 }
 
 async function sbSyncNow(){
+  if(!klHasTier('essential')){ notify('Cloud sync requires the Essential plan — upgrade in Settings → Plan','ok'); return; }
   notify('Syncing…', 'ok');
   await sbPushSync();
   _sbUpdateSyncTxt();
