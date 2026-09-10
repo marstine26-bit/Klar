@@ -25,10 +25,16 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- supabase-js and pdf.js are deferred: both are only needed once (_initSupabase()
+     runs on DOMContentLoaded; pdfjsLib is only touched inside parsePDF(), a
+     user-triggered import flow) — neither has to block HTML parsing/first paint.
+     `defer` still guarantees both finish executing before DOMContentLoaded fires,
+     so _initSupabase()'s `typeof supabase` check and the workerSrc setup below
+     stay correct. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 <script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script>if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+<script>document.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
 <!-- Klar favicon — The Slash mark, ink + iris -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2307070A'/%3E%3Cg transform='translate(16,16) rotate(-9) translate(-16,-16)'%3E%3Crect x='7.5' y='6' width='6.5' height='18' rx='3.25' fill='%239B7FD4'/%3E%3Crect x='18' y='8.5' width='6.5' height='15' rx='3.25' fill='%235B7FD4'/%3E%3C/g%3E%3C/svg%3E">
 <style>
