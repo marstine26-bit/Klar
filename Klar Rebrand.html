@@ -16989,7 +16989,6 @@ document.addEventListener('click', function(e){
 
   // Budget over-limit check — called from rBudget, deduplicated per session
   window.klCheckBudgetNotif = function() {
-    if (!('Notification' in window) || Notification.permission !== 'granted') return;
     if (S.prefs.notif === false || S.prefs.notifBudget === false) return;
     const txns = moTxns();
     Object.keys(S.budgets || {}).forEach(catId => {
@@ -16998,7 +16997,14 @@ document.addEventListener('click', function(e){
       if (act > lim && lim > 0 && !_klBudgetAlerted.has(catId)) {
         _klBudgetAlerted.add(catId);
         const cat = catBy(catId);
-        klNotify(`⚠ Budget limit hit: ${catLbl(catId)}`, `Spent ${fmt(act)} of ${fmt(lim)} this month`, {tag:'kl-budget-'+catId});
+        const title = `⚠ Budget limit hit: ${catLbl(catId)}`;
+        const body = `Spent ${fmt(act)} of ${fmt(lim)} this month`;
+        if (('Notification' in window) && Notification.permission === 'granted') {
+          klNotify(title, body, {tag:'kl-budget-'+catId});
+        } else {
+          // Graceful fallback: in-app toast for users who haven't granted browser permission (same pattern as klUpcomingAlert)
+          notify(`${title} — ${body}`, 'info');
+        }
       }
     });
   };
