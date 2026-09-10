@@ -61,7 +61,17 @@ Worth knowing before making any claim about traction: **4 total auth users, 0 su
 
 ## 🔵 In progress right now
 
-- Mobile/responsive layout audit (real 375px-viewport testing) — background review pass, results not in yet.
+- Payment processor: applied to Startbutton Africa and Dodo Payments (both pending), applying to a 3rd now.
+- New third-party tool being set up: OpenDesign (open-source Claude Design alternative) — mid-install (`pnpm install` running), unrelated to Klar itself.
+
+## ✅ Also shipped since last update
+
+- **Mobile/responsive layout audit** — 3 real bugs found and fixed: Money Ledger stat numbers clipped at ≤400px width, the floating "+" button rendering on top of (and blocking taps on) modal Save buttons, and undersized delete-button touch targets on 2 Business-mode pages (~11px, now ~40px).
+- **Financial calculation correctness audit** — verified by hand-calculation against real app output: debt payoff (Avalanche/Snowball), net worth, budget rollover, and currency conversion all check out mathematically correct. **Clean bill of health, no bugs found.** (One labeled "Est." combined-debt approximation is 2-5% off a true cascade in edge cases — inherent to being an estimate, not treated as a bug.)
+- **Real user count check**: only 4 total auth users, 0 subscriptions ever recorded — no evidence of real paying customers yet. This is why "Beta Testing" (not "Live with customers") was submitted on payment applications.
+- **Correction**: `klarmoney.app` is confirmed NOT the founder's domain (was a false assumption, corrected before it caused any real damage — a code change pointing at it was made and fully reverted, never reached production).
+
+**Running bug tally this review cycle (2026-09-05 → present): 16 real bugs found and fixed** across 15 specialist passes.
 
 ---
 
