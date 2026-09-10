@@ -73,6 +73,8 @@ Worth knowing before making any claim about traction: **4 total auth users, 0 su
 
 **Running bug tally this review cycle (2026-09-05 → present): 16 real bugs found and fixed** across 15 specialist passes.
 
+- **XSS/injection audit — clean.** Every user-text field (transactions, accounts, debts, goals, split bills, stokvels, AI chat replies, business settings) live-tested with real payloads (`<img onerror=alert()>`, `<svg onload=>`) — all correctly escaped, nothing executed. One minor consistency note (not a bug): custom category names use a character-strip approach instead of the standard `esc()` helper used everywhere else — currently safe, just inconsistent style, low priority.
+
 ---
 
 *This file is excluded from public serving via `.assetsignore`, same as other internal docs.*
