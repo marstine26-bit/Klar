@@ -6873,7 +6873,9 @@ function _cmdKActivate(el){
 }
 window.openCmdK = function(){
   let modal = document.getElementById('kl-cmdk-modal');
+  let justCreated = false;
   if (!modal) {
+    justCreated = true;
     modal = document.createElement('div');
     modal.id = 'kl-cmdk-modal';
     modal.setAttribute('role','dialog'); modal.setAttribute('aria-modal','true'); modal.setAttribute('aria-label','Search and navigate');
@@ -6893,7 +6895,13 @@ window.openCmdK = function(){
     });
     modal.querySelector('#kl-cmdk-results').addEventListener('click', e => { _cmdKActivate(e.target.closest('[role="option"]')); });
   }
-  modal.classList.add('open');
+  // On first creation, defer adding 'open' to the next frame (same pattern
+  // klShowShortcuts uses) so the focus-trap system's body-level MutationObserver
+  // has a chance to attach its own per-modal observer before the class change
+  // fires — added synchronously right after appendChild, the mutation would
+  // race and be missed, leaving the very first Ctrl+K open untrapped.
+  if (justCreated) requestAnimationFrame(() => modal.classList.add('open'));
+  else modal.classList.add('open');
   const input = document.getElementById('kl-cmdk-input');
   input.value = ''; _cmdKRender();
   setTimeout(() => input.focus(), 30);
@@ -14287,7 +14295,10 @@ document.addEventListener('DOMContentLoaded',()=>{
     // .sb-modal-bg (#sb-auth-modal) and .bp-modal-bg (#bp-modal) are their own
     // parallel modal systems, not .modal-bg — included here so they share the
     // same focus trap instead of needing a second observer stood up for them.
-    var MODAL_SEL='.modal-bg,.sb-modal-bg,.bp-modal-bg';
+    // #kl-cmdk-modal (command palette, built by openCmdK()) uses its own
+    // id-based CSS with no shared class — included by id rather than giving
+    // it a class, to avoid colliding with .modal-bg's own CSS rules.
+    var MODAL_SEL='.modal-bg,.sb-modal-bg,.bp-modal-bg,#kl-cmdk-modal';
     var prevFocus=null;
     function trapFocus(e){
       var modal=e.currentTarget;
