@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://klar.marcelmoyo.workers.dev/sitemap.xml
+Sitemap: https://klarmoney.app/sitemap.xml
