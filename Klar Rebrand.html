@@ -11635,8 +11635,18 @@ function sbAddPerson(){
 }
 function _sbRemovePerson(i){
   const removed = _sbPeople[i];
+  // Block removal while the person is still linked to an expense (as payer or as
+  // one of the people it's split among). Silently stripping them used to corrupt
+  // the settlement: an expense they PAID kept its cost on the books with nobody
+  // credited for paying it (net[e.paidBy] became undefined and was dropped by
+  // calcSplitSettlement), which both erased money owed to them AND, once the
+  // greedy settlement's creditor/debtor totals stopped balancing, produced
+  // phantom transfers between two people who never shared an expense while
+  // silently dropping someone else's real debt. Require expenses to be
+  // reassigned/deleted first so the settlement math always stays balanced.
+  const linked = _sbExpenses.some(e => e.paidBy === removed || e.for.includes(removed));
+  if(linked){ notify(`Can't remove ${removed} — still linked to an expense. Delete or reassign it first.`, 'err'); return; }
   _sbPeople.splice(i, 1);
-  _sbExpenses = _sbExpenses.map(e=>({...e, for:e.for.filter(p=>p!==removed)}));
   _sbRenderPeople(); _sbRenderExpenses(); sbRenderSettlement();
 }
 function _sbRenderExpenses(){

@@ -27,16 +27,13 @@
  * Webhooks spec: https://www.standardwebhooks.com)
  *
  * ── SETUP NOTE FOR WHOEVER WIRES THIS UP ──────────────────────────────────
- * DODO_PRODUCT_TO_PLAN below is EMPTY. Before this can actually activate a
- * tier for anyone, you must:
- *   1. Create products in Dodo Dashboard for every plan/region/cycle
- *      combo Klar sells (mirrors the old KL_LS_VARIANTS in Klar Rebrand.html
- *      — Essential/Pro/Family x Monthly/Annual x GBP/ZAR = up to 12).
- *   2. Copy each product's id into DODO_PRODUCT_TO_PLAN below, mapped to
- *      the plan_id string Klar expects ('essential'|'pro'|'family').
- *   3. Register this function's URL as a webhook endpoint in Dodo's
+ * DODO_PRODUCT_TO_PLAN below is now filled in (8 real GBP/ZAR Essential/Pro
+ * products created 2026-09-24 — Family is comingSoon:true, not sold yet).
+ * Still outstanding before this actually activates a tier for anyone:
+ *   1. Register this function's URL as a webhook endpoint in Dodo's
  *      dashboard, generate the signing secret, set DODO_WEBHOOK_SECRET.
- *   4. Fire a real test event from Dodo's dashboard and check this
+ *   2. Add DODO_API_KEY (used by dodo-create-checkout and delete-account).
+ *   3. Fire a real test event from Dodo's dashboard and check this
  *      function's logs — the exact field names inside `data` (e.g.
  *      subscription id, customer id) are read defensively below with a
  *      few likely name variants, since they weren't confirmed against a
@@ -47,13 +44,18 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-// Dodo product id → Klar plan id. EMPTY until real products exist — see
+// Dodo product id → Klar plan id. Filled in 2026-09-24 — see
 // setup note above. Until filled in, every event is logged and skipped
 // (never silently mis-entitles someone to the wrong plan).
 const DODO_PRODUCT_TO_PLAN: Record<string, string> = {
-  // "prod_xxxxxxxx": "essential",
-  // "prod_xxxxxxxx": "pro",
-  // "prod_xxxxxxxx": "family",
+  "pdt_0NoJDtd4UIDCgzYaptMvc": "essential", // Essential — Monthly (GBP)
+  "pdt_0NoJEEMSLOCo6C8sqztxY": "essential", // Essential — Annual (GBP)
+  "pdt_0NoJEVP7EHKn8c4mCircV": "pro",       // Pro — Monthly (GBP)
+  "pdt_0NoJFEKVrHFJqOAdEPyFJ": "pro",       // Pro — Annual (GBP)
+  "pdt_0NoJFRhpBtlzppOv1pfRz": "essential", // Essential — Monthly (ZAR)
+  "pdt_0NoJFirrvgRlUTdI9dEFf": "essential", // Essential — Annual (ZAR)
+  "pdt_0NoKAMoDsgJb9uY3nWYy8": "pro",       // Pro — Monthly (ZAR)
+  "pdt_0NoKAdYYZ3pUHv3TZRwjI": "pro",       // Pro — Annual (ZAR)
 };
 
 // Dodo subscription status → Klar's internal status vocabulary.

@@ -29,12 +29,11 @@
  *   SUPABASE_URL, SUPABASE_ANON_KEY  — auto-injected by Supabase runtime
  *
  * ── SETUP NOTE ─────────────────────────────────────────────────────────────
- * DODO_PRODUCTS below is EMPTY, same as dodo-webhook's DODO_PRODUCT_TO_PLAN
- * (fill in the SAME product ids on both sides — this maps plan+billing+
- * currency to a Dodo product id to sell; the webhook maps that same id back
- * to a plan when the subscription activates). Until filled in, every
- * checkout attempt returns a clear "not yet configured" error instead of a
- * broken/empty checkout_url.
+ * DODO_PRODUCTS below is now filled in (8 real GBP/ZAR Essential/Pro
+ * products created 2026-09-24), same ids mirrored into dodo-webhook's
+ * DODO_PRODUCT_TO_PLAN. Family is comingSoon:true and intentionally not
+ * sold — a checkout attempt for it still correctly falls through to the
+ * "not yet configured" error below rather than a broken checkout_url.
  * ───────────────────────────────────────────────────────────────────────
  */
 
@@ -44,18 +43,15 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 // shape in Klar Rebrand.html. Fill in once products exist in Dodo's
 // dashboard — same product ids as DODO_PRODUCT_TO_PLAN in dodo-webhook.
 const DODO_PRODUCTS: Record<string, string> = {
-  // "essential_monthly_gbp": "prod_xxxxxxxx",
-  // "essential_annual_gbp":  "prod_xxxxxxxx",
-  // "pro_monthly_gbp":       "prod_xxxxxxxx",
-  // "pro_annual_gbp":        "prod_xxxxxxxx",
-  // "family_monthly_gbp":    "prod_xxxxxxxx",
-  // "family_annual_gbp":     "prod_xxxxxxxx",
-  // "essential_monthly_zar": "prod_xxxxxxxx",
-  // "essential_annual_zar":  "prod_xxxxxxxx",
-  // "pro_monthly_zar":       "prod_xxxxxxxx",
-  // "pro_annual_zar":        "prod_xxxxxxxx",
-  // "family_monthly_zar":    "prod_xxxxxxxx",
-  // "family_annual_zar":     "prod_xxxxxxxx",
+  "essential_monthly_gbp": "pdt_0NoJDtd4UIDCgzYaptMvc",
+  "essential_annual_gbp":  "pdt_0NoJEEMSLOCo6C8sqztxY",
+  "pro_monthly_gbp":       "pdt_0NoJEVP7EHKn8c4mCircV",
+  "pro_annual_gbp":        "pdt_0NoJFEKVrHFJqOAdEPyFJ",
+  // family_* intentionally omitted — Family plan is comingSoon:true, not sold yet.
+  "essential_monthly_zar": "pdt_0NoJFRhpBtlzppOv1pfRz",
+  "essential_annual_zar":  "pdt_0NoJFirrvgRlUTdI9dEFf",
+  "pro_monthly_zar":       "pdt_0NoKAMoDsgJb9uY3nWYy8",
+  "pro_annual_zar":        "pdt_0NoKAdYYZ3pUHv3TZRwjI",
 };
 
 Deno.serve(async (req: Request) => {
