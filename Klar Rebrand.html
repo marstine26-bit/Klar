@@ -9249,6 +9249,7 @@ function addSplitRow(){
 window._klReceiptData = null;
 
 function klReceiptSelected(input) {
+  if(!klHasTier('essential')){ notify('Receipt photo attachments require the Essential plan — upgrade in Settings → Plan','ok'); input.value=''; return; }
   const file = input.files?.[0]; if (!file) return;
   if (file.size > 5 * 1024 * 1024) { notify('Receipt image must be under 5 MB', 'err'); return; }
   const reader = new FileReader();
@@ -11906,8 +11907,12 @@ function rTfsa(){
     if(pgTfsa)pgTfsa.innerHTML='<div class="ph"><div><div class="pt">TFSA Tracker</div></div></div><div class="card" style="padding:24px;text-align:center;color:var(--t3)"><div style="font-size:28px;margin-bottom:12px">🇿🇦</div><div style="font-size:14px;font-weight:600;color:var(--t2);margin-bottom:8px">South Africa only</div><div style="font-size:13px;max-width:440px;margin:0 auto">The Tax-Free Savings Account (TFSA) is a South African investment vehicle and is not applicable to UK users. UK users have a similar product called the <strong>ISA (Individual Savings Account)</strong> — see the ISA Tracker in UK Tools.</div></div>';
     return;
   }
-  // Restore the real structure if a prior UK-region render left the blocked banner in place
+  // Restore the real structure if a prior UK-region or tier-locked render left a banner in place
   if(pgTfsa&&!document.getElementById('tfsa-used-num')&&_tfsaDefaultHTML) pgTfsa.innerHTML=_tfsaDefaultHTML;
+  if(!klHasTier('essential')){
+    if(pgTfsa) pgTfsa.innerHTML=klLockedBanner('TFSA Tracker','essential');
+    return;
+  }
   if(!S.tfsa)S.tfsa={yearContrib:0,lifeContrib:0};
   // Auto-calculate contributions from investment/savings transactions (SA tax year: 1 Mar – 28 Feb)
   const now=new Date();
@@ -12433,7 +12438,18 @@ const INVEST_PLATFORM_DEFS=[
   {kw:['charles stanley'],name:'Charles Stanley',type:'isa'},
   {kw:['premium bonds','ns&i','ns and i'],name:'Premium Bonds (NS&I)',type:'premium_bonds'},
 ];
-function rPortfolio(){if(!S.holdings)S.holdings=[];
+function rPortfolio(){
+  const pfLockEl = document.getElementById('portfolio-locked');
+  if(!klHasTier('pro')){
+    const g = document.getElementById('pg-portfolio'); if(!g) return;
+    if(!pfLockEl){ const d=document.createElement('div');d.id='portfolio-locked';d.innerHTML=klLockedBanner('Multi-Currency Portfolio Tracker','pro');g.appendChild(d); }
+    ['portfolio-detect-wrap','pf-list','pf-alloc','pf-bench'].forEach(id=>{const e=document.getElementById(id);if(e)e.innerHTML='';});
+    ['pf-cost','pf-val','pf-gl'].forEach(id=>{const e=document.getElementById(id);if(e)e.innerHTML='<span class="kl-cur-sym">R</span> 0';});
+    const retEl=document.getElementById('pf-ret'); if(retEl) retEl.textContent='0%';
+    return;
+  }
+  if(pfLockEl) pfLockEl.remove();
+  if(!S.holdings)S.holdings=[];
   // Auto-detect investment platform transactions not yet in holdings
   const detectWrap=document.getElementById('portfolio-detect-wrap');
   if(detectWrap){
@@ -13062,6 +13078,7 @@ function rInsightsReport() {
 }
 function rInsightsAnomalies() {
   const el = document.getElementById('ins-anomaly-wrap'); if (!el) return;
+  if(!klHasTier('pro')){ el.innerHTML=klLockedBanner('Spending Anomaly Detection','pro'); return; }
   const months = last6();
   const anomalies = [];
   months.forEach((m,i) => {
@@ -16057,6 +16074,14 @@ const JISA_MAX = 9000;
 
 function rISA(){
   if(S.prefs.region !== 'uk') return;
+  const isaLockEl = document.getElementById('isa-locked');
+  if(!klHasTier('essential')){
+    const g = document.getElementById('pg-isa'); if(!g) return;
+    if(!isaLockEl){ const d=document.createElement('div');d.id='isa-locked';d.innerHTML=klLockedBanner('ISA Tracker','essential');g.appendChild(d); }
+    ['isa-inputs','isa-lisa-content','isa-rules','isa-jisa'].forEach(id=>{const e=document.getElementById(id);if(e)e.innerHTML='';});
+    return;
+  }
+  if(isaLockEl) isaLockEl.remove();
   if(!S.isaTracker) S.isaTracker = {cashISA:0,stocksISA:0,lifeISA:0,financeISA:0,juniorISA:0,providers:{}};
   const isa = S.isaTracker;
   const total = (isa.cashISA||0)+(isa.stocksISA||0)+(isa.lifeISA||0)+(isa.financeISA||0);
@@ -16403,15 +16428,15 @@ const KL_PLANS = [
   { id:'essential', name:'Essential',
     gbpMonthly:3.99, gbpAnnual:34.99, zarMonthly:49,  zarAnnual:499,
     monthlyKey:'essential_monthly', annualKey:'essential_annual',
-    features:['Everything in Free','Cloud sync across all devices','AI Financial Advisor (Groq/LLaMA)','Net Worth & Health Score','Cash Flow Forecast','Bank Feeds (UK, via Salt Edge)','Bill Hub & payment tracking','ISA / TFSA tracker','Unlimited history','Receipt photo attachments'] },
+    features:['Everything in Free','Cloud sync across all devices','AI Financial Advisor (Groq/LLaMA)','Net Worth & Health Score','Cash Flow Forecast','Bank Feeds (UK, via Salt Edge)','One-tap bill payment portal links','ISA / TFSA tracker','Unlimited history','Receipt photo attachments'] },
   { id:'pro',       name:'Pro',
     gbpMonthly:7.99, gbpAnnual:64.99, zarMonthly:89,  zarAnnual:899,
     monthlyKey:'pro_monthly', annualKey:'pro_annual', recommended:true,
-    features:['Everything in Essential','UK Student Loan tracker (Plans 1/2/4/5)','Annual tax summary export','Spending anomaly detection','Salary & investment forecasting','Multi-currency portfolio tracker','Priority support (24h response)'] },
-  { id:'family',    name:'Family',
+    features:['Everything in Essential','UK Student Loan tracker (Plans 1/2/4/5)','Spending anomaly detection','Multi-currency portfolio tracker','Priority support (24h response)'] },
+  { id:'family',    name:'Family', comingSoon:true,
     gbpMonthly:11.99,gbpAnnual:99.00, zarMonthly:129, zarAnnual:1299,
     monthlyKey:'family_monthly', annualKey:'family_annual',
-    features:['Everything in Pro','Up to 5 family members','Shared household budget','Per-member spending reports','Family financial goals'] },
+    features:['Everything in Pro','Multi-member support — in development'] },
 ];
 
 let _bpActive = null;
@@ -17853,11 +17878,12 @@ document.addEventListener('click', function(e){
         ? `${sym}${(annual/12).toFixed(2)}/mo — save ${sym}${((monthly*12)-annual).toFixed(0)}`
         : (monthly > 0 && !isAnnual ? `or ${sym}${annual}/yr (save ${Math.round(((monthly*12-annual)/(monthly*12))*100)}%)` : '');
       const isFree = p.id === 'free';
-      const btnClass = isFree ? 'kl-pm-btn kl-pm-btn-free' : (p.recommended ? 'kl-pm-btn kl-pm-btn-paid kl-pm-btn-recommended' : 'kl-pm-btn kl-pm-btn-paid');
-      const btnLabel = isFree ? 'Current plan' : `Get ${p.name}`;
-      const btnAction = isFree ? '' : `onclick="klSubscribe('${p.id}','${isAnnual?'annual':'monthly'}')"`;
-      return `<div class="kl-pm-card${p.recommended?' recommended':''}">
-        ${p.recommended ? '<div class="kl-pm-card-badge">Most Popular</div>' : ''}
+      const isCS = p.comingSoon;
+      const btnClass = isCS ? 'kl-pm-btn kl-pm-btn-free' : isFree ? 'kl-pm-btn kl-pm-btn-free' : (p.recommended ? 'kl-pm-btn kl-pm-btn-paid kl-pm-btn-recommended' : 'kl-pm-btn kl-pm-btn-paid');
+      const btnLabel = isCS ? 'Coming Soon' : isFree ? 'Current plan' : `Get ${p.name}`;
+      const btnAction = (isFree||isCS) ? '' : `onclick="klSubscribe('${p.id}','${isAnnual?'annual':'monthly'}')"`;
+      return `<div class="kl-pm-card${p.recommended?' recommended':''}${isCS?' kl-pm-card-cs':''}">
+        ${isCS?'<div class="kl-pm-card-badge" style="background:var(--t3)">Coming Soon</div>':p.recommended ? '<div class="kl-pm-card-badge">Most Popular</div>' : ''}
         <div class="kl-pm-plan">${p.name}</div>
         <div class="kl-pm-price">
           <span class="kl-pm-price-sym">${isFree?'':sym}</span><span class="kl-pm-price-num">${isFree?'Free':price}</span>
@@ -17865,7 +17891,7 @@ document.addEventListener('click', function(e){
         <div class="kl-pm-price-per">${isFree?'Always free':perLabel}</div>
         <div class="kl-pm-price-annual">${annualNote}</div>
         <ul class="kl-pm-feats">${p.features.map(f=>`<li>${f}</li>`).join('')}</ul>
-        <button class="${btnClass}" ${btnAction}>${btnLabel}</button>
+        <button class="${btnClass}" ${btnAction} ${isCS?'disabled style="opacity:.5;cursor:not-allowed"':''}>${btnLabel}</button>
       </div>`;
     }).join('');
   }
