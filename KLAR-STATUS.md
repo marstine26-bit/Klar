@@ -78,7 +78,9 @@ Worth knowing before making any claim about traction: **4 total auth users, 0 su
 
 - **Error-handling/resilience audit (2026-09-24) — 2 real bugs found and fixed.** AI chat showed raw HTTP status codes / browser error strings instead of actionable messages (invalid Groq key now says exactly that and where to fix it). Cloud sync's "Sync now" button showed a false "Synced ✓" toast even when the sync had actually failed or hit a version conflict — the honest "Sync failed" toast was getting silently overwritten a moment later. Exchange-rate fallback already handled correctly, no fix needed there.
 
-**Running bug tally this review cycle (2026-09-05 → 09-25): 37 real bugs found and fixed** across 28 specialist passes.
+**Running bug tally this review cycle (2026-09-05 → 09-25): 40 real bugs found and fixed** across 29 specialist passes.
+
+**29th specialist — Vehicle Costs / Medical Gap tracker bugs (2026-09-25, commit `09e0a11`, live on `main`):** 3 real bugs found and fixed. Vehicle Costs double-counted any petrol transaction imported via the auto-detected-fill-up banner (R500 fill-up showed as R1,000 total). MedGap's "Unclaimed" stat tile lied when a claim exceeded out-of-pocket cost, still showing "Unclaimed" with a positive number instead of flipping to "Overclaimed". `delMedGap`'s confirmation dialog checked a non-existent field name (`e.desc` vs the real `e.description`), so it always showed the generic fallback message.
 
 **28th specialist — dead USD-holdings feature + 2 FX math bugs (2026-09-25, commit `26e87e8`, live on `main`):** the Retirement → FX tab's "USD Holdings" tracker was permanently dead for every user — it filtered holdings by a `currency` field the Add Holding modal had no way to ever set. Making it reachable (added a Currency field) surfaced 2 more real bugs: the UK branch computed the reciprocal of the GBP/USD rate (would have overstated USD holdings by ~60%), and a first-fix attempt double-converted currency before `fmt()`'s own conversion ran. Also fixed: the FX widget's card title stayed stuck on "GBP/USD" after switching region UK→SA.
 
