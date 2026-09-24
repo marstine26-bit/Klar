@@ -14252,7 +14252,15 @@ async function sendChat(){
     const _ac=new AbortController();const _acTimer=setTimeout(()=>_ac.abort(),30000);
     const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{signal:_ac.signal,method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:1000,messages:[{role:'system',content:systemContent},...histMsgs,{role:'user',content:msg}]})});
     clearTimeout(_acTimer);
-    if(!res.ok){throw new Error('AI service error '+res.status);}
+    if(!res.ok){
+      // 401/403 from Groq almost always means a missing/expired/revoked API key — tell the
+      // user exactly where to fix it instead of surfacing a bare HTTP status code, which
+      // previously left "AI service error 401" with no indication of what to do next.
+      if(res.status===401||res.status===403) throw new Error('Your Groq API key was rejected (invalid or expired). Update it in Settings → AI Advisor.');
+      if(res.status===429) throw new Error('Groq API rate limit reached — please wait a moment and try again.');
+      if(res.status>=500) throw new Error('Groq\'s AI service is temporarily unavailable (error '+res.status+'). Please try again shortly.');
+      throw new Error('AI service error '+res.status);
+    }
     const data=await res.json();
     const reply=data.choices?.[0]?.message?.content||(data.error?.message||'No response — check your API key in Settings.');
     document.getElementById(loadingId)?.remove();
@@ -14263,7 +14271,11 @@ async function sendChat(){
     save();
   }catch(e){
     document.getElementById(loadingId)?.remove();
-    msgs.innerHTML+=`<div class="chat-ai" style="color:var(--red)">Connection error: ${esc(e.message)}</div>`;
+    // AbortController firing after 30s throws a DOMException whose .message is a vague
+    // browser-specific string ("The user aborted a request.") — replace it with something
+    // the user can act on instead of a stuck "Thinking…" bubble with no explanation.
+    const friendly = (e.name==='AbortError') ? 'Request timed out after 30s — Groq may be slow or unreachable. Please try again.' : e.message;
+    msgs.innerHTML+=`<div class="chat-ai" style="color:var(--red)">Connection error: ${esc(friendly)}</div>`;
   }finally{
     if(btn){btn.disabled=false;btn.textContent='Send';}
     msgs.scrollTop=msgs.scrollHeight;
@@ -15831,7 +15843,7 @@ async function sbPushSync(){
       notify('Your data changed on another device — pulling the latest before saving again', 'warn');
       _sbSyncing = false;
       await sbPullAndMerge();
-      return;
+      return false;
     }
     S._syncVersion = rpcResult.version;
     S._lastSyncedAt = new Date().toISOString();
@@ -15840,11 +15852,13 @@ async function sbPushSync(){
     _sbUpdateSyncTxt();
     const _t=new Date();if(_rls){_rls.textContent='Synced '+_t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
     if(S.prefs.notifSync===true) klNotify('☁ Klar synced','Your data is backed up to the cloud',{tag:'klar-sync',silent:true});
+    return true;
   } catch(e){
     _sbSetDot('err');
     if(_rls){_rls.textContent='Sync failed';}
     console.warn('Klar sync push failed:', e.message);
     notify('Cloud sync failed — data saved locally only','err');
+    return false;
   } finally { _sbSyncing = false; }
 }
 
@@ -15899,9 +15913,14 @@ async function sbPullAndMerge(){
 async function sbSyncNow(){
   if(!klHasTier('essential')){ notify('Cloud sync requires the Essential plan — upgrade in Settings → Plan','ok'); return; }
   notify('Syncing…', 'ok');
-  await sbPushSync();
+  // sbPushSync() now reports whether the push actually succeeded (true/false/undefined).
+  // Previously this unconditionally showed "Synced ✓" right after awaiting it, which
+  // silently overwrote any "Cloud sync failed" / "Sync conflict" toast sbPushSync had just
+  // shown (notify() drives a single toast element, so whichever call runs last wins) —
+  // the user would see a green "Synced ✓" even though the push failed or was rejected.
+  const ok = await sbPushSync();
   _sbUpdateSyncTxt();
-  notify('Synced ✓', 'ok');
+  if(ok) notify('Synced ✓', 'ok');
 }
 
 function _sbDeviceId(){
