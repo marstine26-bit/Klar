@@ -5223,6 +5223,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <div class="fr"><label for="h-val">Current Value (<span class="kl-cur-sym">R</span>)</label><input type="number" id="h-val" placeholder="0.00"></div>
       <div class="fr"><label for="h-prov">Provider</label><input type="text" id="h-prov" placeholder="e.g. Easy Equities, Allan Gray"></div>
     </div>
+    <div class="fr" id="h-cur-wrap" style="display:none"><label for="h-cur">Currency</label><select id="h-cur"><option value="">Local currency</option><option value="USD">USD (offshore/foreign holding — cost &amp; value entered in USD)</option></select></div>
     <div class="mf"><button class="btn btn-ghost" onclick="closeModal('m-add-holding')">Cancel</button><button class="btn btn-gold" onclick="saveHolding()">Save Holding</button></div>
   </div>
 </div>
@@ -9631,7 +9632,7 @@ function rNetWorth(){
   const liveNegTotal=liveAccBals.filter(b=>b<0).reduce((s,b)=>s+Math.abs(b),0);
   const ccBals=(S.accounts||[]).filter(a=>a.type==='credit').map(a=>Math.abs(_toLocal(a)));
   const ccTotal=ccBals.reduce((s,b)=>s+b,0);
-  const holdingsVal=(S.holdings||[]).reduce((s,h)=>s+h.currentVal,0);
+  const holdingsVal=(S.holdings||[]).reduce((s,h)=>s+holdLocal(h,'currentVal'),0);
   const debtTotal=(S.debts||[]).reduce((s,d)=>s+d.balance,0);
   const propVal=(S.properties||[]).reduce((s,p)=>s+p.marketValue,0);
   const propBond=(S.properties||[]).reduce((s,p)=>s+p.bondBalance,0);
@@ -11512,6 +11513,26 @@ function renderForecast(){
   const base=getFcBase();const iOv=parseFloat(document.getElementById('fc-i-ov')?.value);const eOv=parseFloat(document.getElementById('fc-e-ov')?.value);const curS=parseFloat(document.getElementById('fc-sav')?.value)||0;let avgI=isNaN(iOv)?base.avgI:iOv;let avgE=isNaN(eOv)?base.avgE:eOv;const now=new Date();let bal=curS;const m6=[];for(let i=1;i<=12;i++){const d=new Date(now.getFullYear(),now.getMonth()+i,1);const lbl=d.toLocaleString('default',{month:'short',year:'2-digit'});const net=avgI-avgE;bal+=net;m6.push({lbl,income:avgI,expenses:avgE,net,balance:bal});}const tEl=document.getElementById('fc-table');if(tEl)tEl.innerHTML=`<div class="tw"><table><thead><tr><th>Month</th><th>Income</th><th>Expenses</th><th>Net</th><th>Balance</th></tr></thead><tbody>${m6.map(x=>`<tr><td class="mono">${x.lbl}</td><td class="mono pos">${fmt(x.income)}</td><td class="mono neg">${fmt(x.expenses)}</td><td class="mono ${x.net>=0?'pos':'neg'}">${fmt(x.net)}</td><td class="mono" style="color:${x.balance>=0?'var(--green)':'var(--red)'}">${fmt(x.balance)}</td></tr>`).join('')}</tbody></table></div>`;const tot6=m6.reduce((s,x)=>s+x.net,0); /* 12-mo total */const nEl=document.getElementById('fc-note');if(nEl){if(!base.mos)nEl.textContent='Import transaction history for an accurate forecast.';else if(tot6<0)nEl.textContent='Projected shortfall of '+fmt(Math.abs(tot6))+' over 12 months.';else{const _fcRegion=S.prefs&&S.prefs.region;const _fcTip=_fcRegion==='uk'?'a Stocks & Shares ISA or SIPP.':_fcRegion==='other'?'a tax-advantaged retirement account or low-cost index fund.':'a TFSA or RA.';nEl.textContent='Projected to save '+fmt(tot6)+' over 12 months. Consider investing surplus in '+_fcTip;}}}
 
 /* ── Net Worth Snapshots ── */
+// Holdings can be tagged currency:'USD' (e.g. an EasyEquities USD account, or US shares held inside
+// a UK Stocks & Shares ISA) via the Add Holding modal's Currency field — cost/currentVal are then
+// entered in raw USD. Every other raw number in S (transactions, account balances, etc.) is recorded
+// in whatever S.prefs.dataCurrency currently is (usually 'ZAR' for za, 'GBP' for a genuine UK-native
+// signup, or the chosen currency for 'other') — fmt()'s _fxAmt only converts when the display
+// region's currency differs from dataCurrency, and otherwise passes numbers through unchanged. So a
+// USD holding must convert to dataCurrency here, NOT to a hardcoded ZAR or to the display currency —
+// either of those would leave fmt() either double-converting or not converting at all, depending on
+// the user's dataCurrency, and silently mis-scale the holding by the FX rate.
+function holdUsdRate(){
+  const usdZar=(S.fxRates&&S.fxRates.USD)||S.prefs.zarUsd||18.5; // ZAR per 1 USD
+  const dc=S.prefs?.dataCurrency||(S.prefs?.region==='uk'?'GBP':'ZAR');
+  if(dc==='ZAR') return usdZar;
+  const dcZar=(S.fxRates&&S.fxRates[dc])||(dc==='GBP'?23.4:1); // ZAR per 1 unit of dataCurrency
+  return dcZar>0?usdZar/dcZar:usdZar;
+}
+function holdLocal(h,field){
+  const v=h[field]||0;
+  return h.currency==='USD'?v*holdUsdRate():v;
+}
 function calcCurrentNW() {
   const accs = S.accounts||[];
   const toZar = a => { const b=calcAccBalance(a.id); return (a.currency||'ZAR')==='ZAR'?b:b*(a.zarRate||1); };
@@ -11520,7 +11541,7 @@ function calcCurrentNW() {
   const assets = (S.assets||[]).filter(a=>a.kind==='asset').reduce((s,a)=>s+a.value,0);
   const liabs  = (S.assets||[]).filter(a=>a.kind==='liability').reduce((s,a)=>s+a.value,0);
   const debts  = (S.debts||[]).reduce((s,d)=>s+d.balance,0);
-  const holdings=(S.holdings||[]).reduce((s,h)=>s+h.currentVal,0);
+  const holdings=(S.holdings||[]).reduce((s,h)=>s+holdLocal(h,'currentVal'),0);
   const propVal=(S.properties||[]).reduce((s,p)=>s+(p.marketValue||0),0);
   const propBond=(S.properties||[]).reduce((s,p)=>s+(p.bondBalance||p.mortgage||0),0);
   const farVal=(S.farAssets||[]).reduce((s,a)=>s+Math.max(a.cost-calcAccumDepr(a),a.residual||0),0);
@@ -12622,9 +12643,9 @@ function rPortfolio(){
       detectWrap.style.display='none';
     }
   }
-  const cost=S.holdings.reduce((s,h)=>s+h.cost,0);const val=S.holdings.reduce((s,h)=>s+h.currentVal,0);const gl=val-cost;const ret=cost>0?((gl/cost)*100):0;const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};set('pf-cost',fmt(cost));set('pf-val',fmt(val));set('pf-gl',fmt(gl));set('pf-ret',ret.toFixed(1)+'%');const glEl=document.getElementById('pf-gl');if(glEl)glEl.className='sv '+(gl>=0?'pos':'neg');const retEl=document.getElementById('pf-ret');if(retEl)retEl.style.color=ret>=0?'var(--green)':'var(--red)';const lEl=document.getElementById('pf-list');if(lEl){const _pfRegion=S.prefs?.region||'za';const _isUKpf=_pfRegion==='uk';const _isOtherPf=_pfRegion==='other';const _pfCorpEmpty='Track your money market funds, fixed deposits, unit trusts and other business investments to see your total portfolio performance';if(!S.holdings.length)lEl.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;opacity:.5"><svg width="36" height="36" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-chart-up"/></svg></div><div class="empty-t">No holdings yet</div><div class="empty-s">'+(isCorp()?_pfCorpEmpty:_isUKpf?'Track your ISAs, SIPPs, GIAs and other investments to see your total portfolio performance':_isOtherPf?'Track your ETFs, index funds, retirement accounts and other investments to see your total portfolio performance':'Track your ETFs, TFSAs, RAs, crypto and other investments to see your total portfolio performance')+'</div><button class="btn btn-gold" onclick="openAddHolding&&openAddHolding()" style="margin-top:14px">+ Add Holding</button></div>';else lEl.innerHTML=`<div class="tw"><table><thead><tr><th>Name</th><th>Type</th><th>Cost</th><th>Value</th><th>Return</th><th></th></tr></thead><tbody>${S.holdings.map(h=>{const r=h.cost>0?(((h.currentVal-h.cost)/h.cost)*100):0;return`<tr><td>${esc(h.name)}${h.provider?`<div style="font-size:9.5px;color:var(--t3)">${esc(h.provider)}</div>`:''}</td><td class="mono" style="font-size:11px">${h.type.replace('_',' ')}</td><td class="mono">${fmt(h.cost)}</td><td class="mono ${h.currentVal>=h.cost?'pos':'neg'}">${fmt(h.currentVal)}</td><td class="mono" style="color:${r>=0?'var(--green)':'var(--red)'}">${r.toFixed(1)}%</td><td><button onclick="delHolding('${h.id}')" aria-label="Delete holding: ${esc(h.name)}" class="btn btn-danger btn-xs">&times;</button></td></tr>`;}).join('')}</tbody></table></div>`;}
+  const cost=S.holdings.reduce((s,h)=>s+holdLocal(h,'cost'),0);const val=S.holdings.reduce((s,h)=>s+holdLocal(h,'currentVal'),0);const gl=val-cost;const ret=cost>0?((gl/cost)*100):0;const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};set('pf-cost',fmt(cost));set('pf-val',fmt(val));set('pf-gl',fmt(gl));set('pf-ret',ret.toFixed(1)+'%');const glEl=document.getElementById('pf-gl');if(glEl)glEl.className='sv '+(gl>=0?'pos':'neg');const retEl=document.getElementById('pf-ret');if(retEl)retEl.style.color=ret>=0?'var(--green)':'var(--red)';const lEl=document.getElementById('pf-list');if(lEl){const _pfRegion=S.prefs?.region||'za';const _isUKpf=_pfRegion==='uk';const _isOtherPf=_pfRegion==='other';const _pfCorpEmpty='Track your money market funds, fixed deposits, unit trusts and other business investments to see your total portfolio performance';if(!S.holdings.length)lEl.innerHTML='<div class="empty" style="padding:32px;text-align:center"><div style="margin-bottom:10px;opacity:.5"><svg width="36" height="36" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-chart-up"/></svg></div><div class="empty-t">No holdings yet</div><div class="empty-s">'+(isCorp()?_pfCorpEmpty:_isUKpf?'Track your ISAs, SIPPs, GIAs and other investments to see your total portfolio performance':_isOtherPf?'Track your ETFs, index funds, retirement accounts and other investments to see your total portfolio performance':'Track your ETFs, TFSAs, RAs, crypto and other investments to see your total portfolio performance')+'</div><button class="btn btn-gold" onclick="openAddHolding&&openAddHolding()" style="margin-top:14px">+ Add Holding</button></div>';else lEl.innerHTML=`<div class="tw"><table><thead><tr><th>Name</th><th>Type</th><th>Cost</th><th>Value</th><th>Return</th><th></th></tr></thead><tbody>${S.holdings.map(h=>{const r=h.cost>0?(((h.currentVal-h.cost)/h.cost)*100):0;const _hCostLoc=holdLocal(h,'cost'),_hValLoc=holdLocal(h,'currentVal');return`<tr><td>${esc(h.name)}${h.provider?`<div style="font-size:9.5px;color:var(--t3)">${esc(h.provider)}</div>`:''}${h.currency==='USD'?'<div style="font-size:9.5px;color:var(--t3)">USD $'+h.cost.toFixed(2)+' cost / $'+h.currentVal.toFixed(2)+' value</div>':''}</td><td class="mono" style="font-size:11px">${h.type.replace('_',' ')}</td><td class="mono">${fmt(_hCostLoc)}</td><td class="mono ${h.currentVal>=h.cost?'pos':'neg'}">${fmt(_hValLoc)}</td><td class="mono" style="color:${r>=0?'var(--green)':'var(--red)'}">${r.toFixed(1)}%</td><td><button onclick="delHolding('${h.id}')" aria-label="Delete holding: ${esc(h.name)}" class="btn btn-danger btn-xs">&times;</button></td></tr>`;}).join('')}</tbody></table></div>`;}
   const aEl=document.getElementById('pf-alloc');
-  if(aEl){const byType={};S.holdings.forEach(h=>{byType[h.type]=(byType[h.type]||0)+h.currentVal;});const sorted=Object.entries(byType).sort((a,b)=>b[1]-a[1]);if(!sorted.length){aEl.innerHTML='<div class="empty" style="padding:12px"><div class="empty-s">No holdings</div></div>';}else{const total=sorted.reduce((s,[,v])=>s+v,0);aEl.innerHTML=sorted.map(([type,val])=>{const pct=Math.round((val/total)*100);const clr=type==='etf'?'var(--green)':type==='tfsa'?'var(--blue)':type==='ra'?'var(--purple)':type==='crypto'?'var(--amber)':type==='isa'?'var(--accent)':type==='sipp'?'var(--blue)':type==='gia'?'var(--green)':type==='premium_bonds'?'var(--gold)':'var(--teal)';return`<div class="pr"><div class="prh"><span style="font-size:12px">${type.replace('_',' ')}</span><span style="font-family:var(--fm);font-size:11px">${fmt(val)} (${pct}%)</span></div><div class="prt"><div class="prf" style="width:${pct}%;background:${clr}"></div></div></div>`;}).join('');}}
+  if(aEl){const byType={};S.holdings.forEach(h=>{byType[h.type]=(byType[h.type]||0)+holdLocal(h,'currentVal');});const sorted=Object.entries(byType).sort((a,b)=>b[1]-a[1]);if(!sorted.length){aEl.innerHTML='<div class="empty" style="padding:12px"><div class="empty-s">No holdings</div></div>';}else{const total=sorted.reduce((s,[,v])=>s+v,0);aEl.innerHTML=sorted.map(([type,val])=>{const pct=Math.round((val/total)*100);const clr=type==='etf'?'var(--green)':type==='tfsa'?'var(--blue)':type==='ra'?'var(--purple)':type==='crypto'?'var(--amber)':type==='isa'?'var(--accent)':type==='sipp'?'var(--blue)':type==='gia'?'var(--green)':type==='premium_bonds'?'var(--gold)':'var(--teal)';return`<div class="pr"><div class="prh"><span style="font-size:12px">${type.replace('_',' ')}</span><span style="font-family:var(--fm);font-size:11px">${fmt(val)} (${pct}%)</span></div><div class="prt"><div class="prf" style="width:${pct}%;background:${clr}"></div></div></div>`;}).join('');}}
   // JSE Top 40 12-month return as of 2025 Q4; FTSE 100 12-month return as of 2025 Q4; S&P 500 12-month return as of 2025 Q4 — update annually
   const bEl=document.getElementById('pf-bench');if(bEl){const ret=cost>0?((gl/cost)*100):0;const _pfBenchRegion=S.prefs?.region||'za';const isUK=_pfBenchRegion==='uk';const isOther=_pfBenchRegion==='other';const sp500=24.1;const yourReturnTile=`<div class="stat-tile"><div class="sl">Your Return</div><div class="sv ${ret>=0?'pos':'neg'}">${ret.toFixed(1)}%</div></div>`;const sp500Tile=`<div class="stat-tile"><div class="sl">S&P 500 (2025)</div><div class="sv pos">${sp500}%</div><div class="svsub">Benchmark</div></div>`;if(isOther){bEl.innerHTML=`<div class="g2">${yourReturnTile}${sp500Tile}</div>`;}else{const localBenchLbl=isUK?'FTSE 100 (2025)':'JSE Top 40 (2025)';const localBenchVal=isUK?6.1:12.4;bEl.innerHTML=`<div class="g3">${yourReturnTile}<div class="stat-tile"><div class="sl">${localBenchLbl}</div><div class="sv pos">${localBenchVal}%</div><div class="svsub">Benchmark</div></div>${sp500Tile}</div>`;}}
 }
@@ -12636,6 +12657,13 @@ function openAddHolding(){
   const _hRegion=S.prefs?.region||'za';
   const isUKh=_hRegion==='uk';
   const isOtherH=_hRegion==='other';
+  // Currency tagging only makes sense where the FX Rate Tracker (Retirement → FX & SARS tab)
+  // actually consumes it — that widget is ZAR/USD or GBP/USD specific, so hide it for 'other'
+  // region rather than let a holding get silently mistagged with a currency nothing converts.
+  const curWrap=document.getElementById('h-cur-wrap');
+  if(curWrap){curWrap.style.display=isOtherH?'none':'';}
+  const curEl=document.getElementById('h-cur');
+  if(curEl)curEl.value='';
   const isCorpH=isCorp();
   const typeEl=document.getElementById('h-type');
   if(typeEl){
@@ -12656,7 +12684,7 @@ function openAddHolding(){
   if(provEl)provEl.placeholder=isUKh?'e.g. Hargreaves Lansdown, Vanguard':isOtherH?'e.g. Vanguard, Interactive Brokers':'e.g. Easy Equities, Allan Gray';
   document.getElementById('m-add-holding').classList.add('open');
 }
-function saveHolding(){const name=document.getElementById('h-name').value.trim();const type=document.getElementById('h-type').value;const cost=parseFloat(document.getElementById('h-cost').value);const currentVal=parseFloat(document.getElementById('h-val').value);const provider=document.getElementById('h-prov').value.trim();if(!name||isNaN(cost)||isNaN(currentVal)){notify('Fill all fields','err');return;}if(!S.holdings)S.holdings=[];S.holdings.push({id:uid(),name,type,cost,currentVal,provider});save();closeModal('m-add-holding');renderAll();notify('Holding added','ok');}
+function saveHolding(){const name=document.getElementById('h-name').value.trim();const type=document.getElementById('h-type').value;const cost=parseFloat(document.getElementById('h-cost').value);const currentVal=parseFloat(document.getElementById('h-val').value);const provider=document.getElementById('h-prov').value.trim();const currency=document.getElementById('h-cur')?.value||'';if(!name||isNaN(cost)||isNaN(currentVal)){notify('Fill all fields','err');return;}if(!S.holdings)S.holdings=[];const h={id:uid(),name,type,cost,currentVal,provider};if(currency)h.currency=currency;S.holdings.push(h);save();closeModal('m-add-holding');renderAll();notify('Holding added','ok');}
 const delHolding=id=>{const h=(S.holdings||[]).find(x=>x.id===id);klConfirm('Remove holding'+(h?' "'+h.name+'"':'')+' permanently?',()=>{S.holdings=(S.holdings||[]).filter(x=>x.id!==id);save();renderAll();},{title:'Remove Holding',danger:true});};
 function addHoldingFromTx(txId,accId,encodedName,type){
   const name=decodeURIComponent(encodedName);
@@ -14398,7 +14426,7 @@ async function sendChat(){
     : 'Reference TFSA (R46,000/yr limit), SARS, RA contributions (27.5% of income tax-deductible, max R430,000/yr), and stokvel savings where relevant. Use ZAR (R).';
   const activeSubs=(S.subscriptions||[]).filter(x=>x.active!==false);
   const subTotal=_fxAmt(activeSubs.reduce((s,sub)=>s+toMo(sub.amount,sub.cycle),0));
-  const totalPortfolio=(S.holdings||[]).reduce((s,h)=>s+h.currentVal,0);
+  const totalPortfolio=(S.holdings||[]).reduce((s,h)=>s+holdLocal(h,'currentVal'),0);
   const aiInc=Math.round(_fxAmt(avgInc()||0));const aiExp=Math.round(_fxAmt(avgExp()||0));
   const systemContent = `You are a concise ${isUK?'UK':isOther?'global':'South African'} personal finance advisor. ${regionalInstructions} Responses are informational only — not regulated financial advice. Always recommend consulting a qualified financial adviser for major decisions. Give specific, numbered, actionable steps. Reference the user's actual amounts. Do not give generic advice. Keep responses under 250 words unless the user asks for detail.\n\nUser financial context:\n- Monthly income: ${cur}${aiInc}, expenses: ${cur}${aiExp}, net: ${cur}${aiInc-aiExp}\n- Monthly budget total: ${cur}${Math.round(budgetTotal)}\n- Top spending this month: ${topCats||'no data yet'}\n- Accounts: ${(S.accounts||[]).length} account${(S.accounts||[]).length===1?'':'s'}\n- Debts: ${debtSummary}\n- Savings goals: ${goalSummary}\n- Subscriptions: ${activeSubs.length} active, ${cur}${Math.round(subTotal)}/mo\n- Portfolio: ${fmt(totalPortfolio)} across ${(S.holdings||[]).length} holdings\n- Net worth: ${fmt(calcCurrentNW())}`;
   // Keep last 10 exchanges (20 messages) as rolling history
@@ -15084,8 +15112,16 @@ function rFxRate(){
   const el=document.getElementById('fx-rate-display');if(!el)return;
   const isUK=(S.prefs.region||'za')==='uk';
   if(isUK){
-    // UK context: show GBP/USD rate and GBP value of USD holdings
-    const gbpUsdRate=(S.fxRates&&S.fxRates.USD)?(1/((S.fxRates.USD||18.5)/((S.fxRates&&S.fxRates.GBP)||23.4))):0.79;
+    // UK context: show GBP/USD rate and GBP value of USD holdings.
+    // GBP per 1 USD = (ZAR per USD) / (ZAR per GBP) — previously this line computed the reciprocal
+    // of that, which would have overstated USD holdings' GBP value by ~60%.
+    // This widget lets the user directly override the GBP/USD rate it shows, so the resulting GBP
+    // amounts are formatted manually (fmtGbp) rather than via fmt() — fmt() assumes its input is
+    // already ZAR (the app's universal internal unit) and would apply a second, wrong conversion
+    // on top of a value that's already in GBP.
+    const usdZar=(S.fxRates&&S.fxRates.USD)||S.prefs.zarUsd||18.5;
+    const gbpZar=(S.fxRates&&S.fxRates.GBP)||23.4;
+    const gbpUsdRate=gbpZar>0?usdZar/gbpZar:0.79;
     const rateInp=document.getElementById('fx-rate-inp');
     // Repurpose the input label context for UK users
     const fxCard=rateInp?.closest('.card');
@@ -15099,11 +15135,16 @@ function rFxRate(){
       el.innerHTML='<div style="font-size:12px;color:var(--t3)">Add USD holdings in your portfolio to see GBP conversion.</div>'+isaNote;
       return;
     }
-    el.innerHTML=usdHoldings.map(h=>`<div class="sr"><span class="lbl">${esc(h.name)}</span><span class="val">USD ${h.currentVal.toFixed(2)} = ${fmt(h.currentVal*rate)}</span></div>`).join('')
-      +`<div class="sr" style="border-top:1px solid var(--b1);margin-top:8px"><span class="lbl" style="font-weight:700">Total USD (GBP)</span><span class="val pos">${fmt(usdHoldings.reduce((s,h)=>s+h.currentVal*rate,0))}</span></div>`
+    const fmtGbp=v=>'£'+Math.abs(v).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
+    el.innerHTML=usdHoldings.map(h=>`<div class="sr"><span class="lbl">${esc(h.name)}</span><span class="val">USD ${h.currentVal.toFixed(2)} = ${fmtGbp(h.currentVal*rate)}</span></div>`).join('')
+      +`<div class="sr" style="border-top:1px solid var(--b1);margin-top:8px"><span class="lbl" style="font-weight:700">Total USD (GBP)</span><span class="val pos">${fmtGbp(usdHoldings.reduce((s,h)=>s+h.currentVal*rate,0))}</span></div>`
       +`<div style="font-size:11px;color:var(--t3);margin-top:8px;display:flex;gap:6px;align-items:flex-start"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;margin-top:1px" aria-hidden="true"><use href="#ki-lightbulb"/></svg>Foreign holdings in a Stocks &amp; Shares ISA are sheltered from CGT and dividend tax.</div>`;
     return;
   }
+  // Reset the card title the UK branch above may have left in place — otherwise a user who
+  // switches region UK→SA mid-session sees "GBP/USD Rate for USD Holdings" permanently stuck here.
+  const _ctElSa=document.getElementById('fx-rate-inp')?.closest('.card')?.querySelector('.ct');
+  if(_ctElSa)_ctElSa.textContent='ZAR/USD Rate for USD Holdings';
   const rate=parseFloat(document.getElementById('fx-rate-inp')?.value)||S.prefs.zarUsd||18.5;
   S.prefs.zarUsd=rate;
   const usdHoldings=(S.holdings||[]).filter(h=>h.currency==='USD');
