@@ -81,6 +81,14 @@ async function verifyDodoSignature(
 ): Promise<boolean> {
   if (!webhookId || !webhookTimestamp || !webhookSignature) return false;
 
+  // Standard Webhooks replay protection: reject timestamps too far from now
+  // (either direction) so a captured request+signature can't be replayed
+  // indefinitely. 5-minute tolerance matches the spec's recommended window.
+  const timestampSeconds = Number(webhookTimestamp);
+  if (!Number.isFinite(timestampSeconds)) return false;
+  const toleranceSeconds = 5 * 60;
+  if (Math.abs(Date.now() / 1000 - timestampSeconds) > toleranceSeconds) return false;
+
   const secretBytes = base64Decode(secret.startsWith("whsec_") ? secret.slice(6) : secret);
   const signedContent = `${webhookId}.${webhookTimestamp}.${rawBody}`;
 

@@ -16732,13 +16732,18 @@ document.addEventListener('click', function(e){
             headers: { 'Authorization': 'Bearer ' + session.access_token, 'Content-Type': 'application/json' },
           });
           if (!res.ok) { const body = await res.json().catch(()=>({})); throw new Error(body.error || ('HTTP '+res.status)); }
+          const _delBody = await res.json().catch(()=>({}));
           await _sb.auth.signOut();
           _sbUser = null;
           S._syncVersion = 0;
           S._lastSyncedAt = null;
           save();
           if (typeof applyPrefsUI === 'function') applyPrefsUI();
-          notify('Account permanently deleted', 'ok');
+          if (_delBody.subscriptionCancelError) {
+            notify('Account deleted, but your Dodo Payments subscription could not be cancelled automatically (' + _delBody.subscriptionCancelError + '). Please cancel it manually at customer.dodopayments.com to avoid further charges.', 'warn');
+          } else {
+            notify('Account permanently deleted', 'ok');
+          }
         } catch(e) {
           notify('Error deleting account: ' + e.message, 'err');
         }
@@ -17832,7 +17837,7 @@ document.addEventListener('click', function(e){
       return;
     }
 
-    window.open(checkoutUrl, '_blank');
+    window.open(checkoutUrl, '_blank', 'noopener,noreferrer');
     notify('Checkout opened — return here after payment to activate your plan', 'ok');
 
     // Poll get-tier when user returns to this tab (webhook may take a few
