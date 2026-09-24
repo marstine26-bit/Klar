@@ -78,7 +78,9 @@ Worth knowing before making any claim about traction: **4 total auth users, 0 su
 
 - **Error-handling/resilience audit (2026-09-24) — 2 real bugs found and fixed.** AI chat showed raw HTTP status codes / browser error strings instead of actionable messages (invalid Groq key now says exactly that and where to fix it). Cloud sync's "Sync now" button showed a false "Synced ✓" toast even when the sync had actually failed or hit a version conflict — the honest "Sync failed" toast was getting silently overwritten a moment later. Exchange-rate fallback already handled correctly, no fix needed there.
 
-**Running bug tally this review cycle (2026-09-05 → 09-25): 32 real bugs found and fixed** across 26 specialist passes.
+**Running bug tally this review cycle (2026-09-05 → 09-25): 34 real bugs found and fixed** across 27 specialist passes.
+
+**27th specialist — transfer type-change left money double-counted or vanished (2026-09-25, commit `16294bd`, live on `main`):** follow-up to the 26th pass's deletion fix, checking the same bug class in editing. Changing a transaction's type to/from 'transfer' never touched the paired leg: converting a transfer leg to expense/income double-counted the money (new expense on one side, untouched transfer-in still standing on the other); converting an expense/income to transfer created no paired leg at all, silently vanishing the amount from the source account. Fixed both directions to cascade the paired leg correctly, matching the deletion fix's convention.
 
 **26th specialist — transfer deletion left orphaned/phantom balances (2026-09-25, commit `feae9e7`, live on `main`):** 3 real bugs found and fixed, all in how the app deletes a transfer's two paired transaction rows (linked via `linkedId`). `delTxn` and `bulkDelete` could each delete just one leg, leaving the other account with a phantom balance and no matching entry. `delAccount` was worse — deleting an account with a transfer to/from a surviving account left that account permanently stuck with money that traces to nothing. Fixed all three to always cascade to both legs together.
 
