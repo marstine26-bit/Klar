@@ -7492,14 +7492,22 @@ function moveAccount(id, dir) {
 }
 function delAccount(id) {
   const acc = accBy(id);
-  const txnCount = S.transactions.filter(t=>t.accountId===id).length;
-  const msg = txnCount>0 ? `Delete "${acc.name}"? This will also delete ${txnCount} transactions tagged to it. This cannot be undone.` : `Delete "${acc.name}"?`;
+  const ownTxns = S.transactions.filter(t=>t.accountId===id);
+  // Transfers are stored as two paired rows, one per account (linked via linkedId).
+  // If this account's leg of a transfer is being deleted, the OTHER leg — sitting in
+  // a surviving account — must go too, otherwise that account keeps a phantom
+  // inflow/outflow with no source once this account (and its half of the pair)
+  // is gone for good. Same invariant as delTxn/bulkDelete.
+  const linkedIds = ownTxns.map(t=>t.linkedId).filter(Boolean);
+  const otherLegIds = new Set(S.transactions.filter(t=>t.accountId!==id && linkedIds.includes(t.id)).map(t=>t.id));
+  const txnCount = ownTxns.length + otherLegIds.size;
+  const msg = txnCount>0 ? `Delete "${acc.name}"? This will also delete ${txnCount} transaction${txnCount>1?'s':''} tagged to it (including the other side of any linked transfers). This cannot be undone.` : `Delete "${acc.name}"?`;
   klConfirm(msg,function(){
     S.accounts = (S.accounts||[]).filter(a=>a.id!==id);
     // Clear debt/goal links on orphaned transactions before removing them so
     // debt balances and goal progress don't drift from stale references
-    S.transactions.filter(t=>t.accountId===id).forEach(t=>{delete t.debtId;delete t.goalId;});
-    S.transactions = S.transactions.filter(t=>t.accountId!==id);
+    S.transactions.filter(t=>t.accountId===id||otherLegIds.has(t.id)).forEach(t=>{delete t.debtId;delete t.goalId;});
+    S.transactions = S.transactions.filter(t=>t.accountId!==id&&!otherLegIds.has(t.id));
     delete (S.reconciliations||{})[id];
     save(); renderAll(); notify('Account deleted');
   },{okLabel:'Delete Account'});
@@ -9113,6 +9121,21 @@ const reCat=(id,cat)=>{const t=S.transactions.find(t=>t.id===id);if(t){learnCatR
 const delTxn=(id)=>{
   const t=S.transactions.find(x=>x.id===id);
   if(!t)return;
+  // Transfers are stored as two separate paired rows (one per account, linked via
+  // linkedId). Deleting only one leg used to leave the other leg's amount stranded —
+  // the account it belonged to still recorded money arriving/leaving with no matching
+  // opposite entry, silently fabricating or erasing balance. Always delete both legs
+  // together so per-account balances stay reconciled.
+  const linked=t.linkedId?S.transactions.find(x=>x.id===t.linkedId):null;
+  if(linked){
+    const entries=[t,linked].map(x=>({data:x,idx:S.transactions.indexOf(x)}));
+    _undoStack.push({type:'txns',entries});
+    const ids=[t.id,linked.id];
+    S.transactions=S.transactions.filter(x=>!ids.includes(x.id));
+    save();renderAll();
+    showUndoToast('Transfer deleted (both accounts updated)');
+    return;
+  }
   _undoStack.push({type:'txn',data:t,idx:S.transactions.indexOf(t)});
   S.transactions=S.transactions.filter(x=>x.id!==id);
   save();renderAll();
@@ -9239,10 +9262,18 @@ function bulkDelete(){
   // Matches the single-delete UX (delTxn): no confirm dialog, immediate delete backed by
   // a real 5s undo window — safer than the old "cannot be undone" modal since a mis-click
   // is now actually recoverable instead of only warned-about.
-  const entries=ids.map(id=>{const t=S.transactions.find(x=>x.id===id);return t?{data:t,idx:S.transactions.indexOf(t)}:null;}).filter(Boolean);
+  // Pull in the other leg of any selected transfer that wasn't itself checked, so a
+  // partial selection can never orphan one side of a transfer pair (see delTxn).
+  const idSet=new Set(ids);
+  ids.forEach(id=>{
+    const t=S.transactions.find(x=>x.id===id);
+    if(t&&t.linkedId&&!idSet.has(t.linkedId))idSet.add(t.linkedId);
+  });
+  const allIds=[...idSet];
+  const entries=allIds.map(id=>{const t=S.transactions.find(x=>x.id===id);return t?{data:t,idx:S.transactions.indexOf(t)}:null;}).filter(Boolean);
   if(!entries.length)return;
   _undoStack.push({type:'txns',entries});
-  S.transactions=S.transactions.filter(t=>!ids.includes(t.id));
+  S.transactions=S.transactions.filter(t=>!allIds.includes(t.id));
   save(); renderAll();
   showUndoToast(`${entries.length} transaction${entries.length>1?'s':''} deleted`);
 }
