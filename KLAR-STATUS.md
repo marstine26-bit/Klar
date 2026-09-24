@@ -1,6 +1,8 @@
 # Klar — Status Tracker
 
-*Kept up to date by Claude as work progresses. Last updated: 2026-09-10.*
+*Kept up to date by Claude as work progresses. Last updated: 2026-09-24.*
+
+*Note: there was a ~2-week session gap between 2026-09-10 and 2026-09-24. The 🔴 items below reflect state as of 09-10 and may be stale — confirm current status with the founder before assuming anything below is still accurate.*
 
 ---
 
@@ -71,9 +73,11 @@ Worth knowing before making any claim about traction: **4 total auth users, 0 su
 - **Real user count check**: only 4 total auth users, 0 subscriptions ever recorded — no evidence of real paying customers yet. This is why "Beta Testing" (not "Live with customers") was submitted on payment applications.
 - **Correction**: `klarmoney.app` is confirmed NOT the founder's domain (was a false assumption, corrected before it caused any real damage — a code change pointing at it was made and fully reverted, never reached production).
 
-**Running bug tally this review cycle (2026-09-05 → present): 16 real bugs found and fixed** across 15 specialist passes.
 
 - **XSS/injection audit — clean.** Every user-text field (transactions, accounts, debts, goals, split bills, stokvels, AI chat replies, business settings) live-tested with real payloads (`<img onerror=alert()>`, `<svg onload=>`) — all correctly escaped, nothing executed. One minor consistency note (not a bug): custom category names use a character-strip approach instead of the standard `esc()` helper used everywhere else — currently safe, just inconsistent style, low priority.
+- **Tier/plan-gating audit — 1 real revenue-leak bug found and fixed (commit `9f024b8`).** Cloud sync (push/pull to Supabase) had **zero tier check** — any signed-in free-tier user could sync their full dataset to the cloud for free, despite it being marketed Essential+. Fixed with the same `klHasTier('essential')` gate used elsewhere (server-hardened, can't be bypassed by tampering with local storage). Also flagged (not fixed — needs a product decision, not a bug fix): a handful of marketing-copy-vs-code mismatches where a few Essential/Pro-marketed features (Portfolio tracker, Spending Anomaly Detection, Receipt photos, ISA/TFSA tracker) are actually free in code, and some Pro/Family-tier marketed features (Annual tax export, Family multi-member seats) don't exist in the codebase at all.
+
+**Running bug tally this review cycle (2026-09-05 → 09-10): 17 real bugs found and fixed** across 17 specialist passes.
 
 ---
 
