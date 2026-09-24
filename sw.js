@@ -28,9 +28,9 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
-  // Don't intercept Supabase, Groq, Lemon Squeezy, Crisp, PostHog, or Salt Edge API calls
+  // Don't intercept Supabase, Groq, Dodo Payments, Crisp, PostHog, or Salt Edge API calls
   const url = new URL(e.request.url);
-  const passThrough = ['supabase.co', 'groq.com', 'lemonsqueezy.com', 'crisp.chat',
+  const passThrough = ['supabase.co', 'groq.com', 'dodopayments.com', 'crisp.chat',
                        'posthog.com', 'saltedge.com', 'frankfurter.app', 'frankfurter.dev'];
   if (passThrough.some(h => url.hostname.includes(h))) return;
 

@@ -19,11 +19,11 @@
  *
  * Optional env var (set manually in Supabase Dashboard -> Edge Functions ->
  * Secrets -- NOT auto-injected):
- *   LEMONSQUEEZY_API_KEY  -- a Lemon Squeezy API key with permission to
- *     cancel subscriptions (Dashboard -> Settings -> API). Without it,
+ *   DODO_API_KEY  -- a Dodo Payments API key with permission to cancel
+ *     subscriptions (Dashboard -> Settings -> API Keys). Without it,
  *     account deletion still wipes all app data and the auth user as
- *     before, but leaves any active subscription running on Lemon
- *     Squeezy's side undisturbed -- a warning is logged, not an error.
+ *     before, but leaves any active subscription running on Dodo's side
+ *     undisturbed -- a warning is logged, not an error.
  */
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -77,42 +77,45 @@ Deno.serve(async (req: Request) => {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 
-  // Cancel any active Lemon Squeezy subscription BEFORE wiping the row that
+  // Cancel any active Dodo Payments subscription BEFORE wiping the row that
   // names it — otherwise account deletion left billing running with no
   // record of which subscription it even was. Best-effort: a failed
   // cancellation must never block honoring the user's erasure request; it
   // just gets surfaced in the response so it can be handled manually.
-  const lsApiKey = Deno.env.get("LEMONSQUEEZY_API_KEY");
+  const dodoApiKey = Deno.env.get("DODO_API_KEY");
   let subscriptionCancelError: string | undefined;
-  if (lsApiKey) {
+  if (dodoApiKey) {
     const { data: sub } = await sb
       .from("subscriptions")
-      .select("ls_subscription_id, status")
+      .select("processor_subscription_id, processor, status")
       .eq("user_id", user.id)
       .maybeSingle();
-    if (sub?.ls_subscription_id && sub.status !== "cancelled") {
+    if (sub?.processor_subscription_id && sub.processor === "dodo" && sub.status !== "cancelled") {
       try {
-        const lsRes = await fetch(
-          `https://api.lemonsqueezy.com/v1/subscriptions/${sub.ls_subscription_id}`,
+        // PATCH /subscriptions/{id} with status:"cancelled" cancels immediately
+        // and revokes the payment mandate — no further charges can occur.
+        const dodoRes = await fetch(
+          `https://live.dodopayments.com/subscriptions/${sub.processor_subscription_id}`,
           {
-            method: "DELETE",
+            method: "PATCH",
             headers: {
-              Accept: "application/vnd.api+json",
-              Authorization: `Bearer ${lsApiKey}`,
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${dodoApiKey}`,
             },
+            body: JSON.stringify({ status: "cancelled" }),
           },
         );
-        if (!lsRes.ok) {
-          subscriptionCancelError = `Lemon Squeezy returned ${lsRes.status}`;
-          console.error("delete-account: LS cancel failed:", lsRes.status, await lsRes.text());
+        if (!dodoRes.ok) {
+          subscriptionCancelError = `Dodo Payments returned ${dodoRes.status}`;
+          console.error("delete-account: Dodo cancel failed:", dodoRes.status, await dodoRes.text());
         }
       } catch (e) {
         subscriptionCancelError = e instanceof Error ? e.message : String(e);
-        console.error("delete-account: LS cancel threw:", subscriptionCancelError);
+        console.error("delete-account: Dodo cancel threw:", subscriptionCancelError);
       }
     }
   } else {
-    console.warn("delete-account: LEMONSQUEEZY_API_KEY not set — skipping subscription cancellation");
+    console.warn("delete-account: DODO_API_KEY not set — skipping subscription cancellation");
   }
 
   const tableErrors: Record<string, string> = {};

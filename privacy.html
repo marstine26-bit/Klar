@@ -278,7 +278,7 @@
     </div>
     <div class="flag-row">
       <span class="flag-icon">💳</span>
-      <span><strong>Payments (optional — opt-in):</strong> Subscription billing is handled by Lemon Squeezy. Clicking a subscription button opens Lemon Squeezy's hosted checkout. Klar never receives or stores your payment card details. Refer to Lemon Squeezy's <a href="https://www.lemonsqueezy.com/privacy" target="_blank" rel="noopener">privacy policy</a>.</span>
+      <span><strong>Payments (optional — opt-in):</strong> Subscription billing is handled by Dodo Payments. Clicking a subscription button opens Dodo Payments' hosted checkout. Klar never receives or stores your payment card details. Refer to Dodo Payments' <a href="https://dodopayments.com/legal/privacy-policy" target="_blank" rel="noopener">privacy policy</a>.</span>
     </div>
     <div class="flag-row">
       <span class="flag-icon">💳</span>
@@ -303,7 +303,7 @@
       <tbody>
         <tr><td><strong>Supabase</strong></td><td>Cloud backup &amp; auth</td><td>Encrypted app data, email</td><td>EU / USA</td><td>Only if signed in</td></tr>
         <tr><td><strong>Groq</strong></td><td>AI Advisor responses</td><td>Financial summary; transaction/bill details for "Explain transaction" &amp; the month-end checklist</td><td>USA</td><td>Only when you query AI</td></tr>
-        <tr><td><strong>Lemon Squeezy</strong></td><td>Subscription billing</td><td>Email, payment details</td><td>Global</td><td>Only when subscribing</td></tr>
+        <tr><td><strong>Dodo Payments</strong></td><td>Subscription billing</td><td>Email, payment details</td><td>Global</td><td>Only when subscribing</td></tr>
         <tr><td><strong>Saltedge</strong></td><td>UK bank feeds</td><td>OAuth token, account list</td><td>EU</td><td>Only if bank feed connected</td></tr>
         <tr><td><strong>Frankfurter</strong></td><td>Live FX rates</td><td>Currency pair (no personal data)</td><td>EU</td><td>When FX conversion active</td></tr>
         <tr><td><strong>Crisp</strong></td><td>Support chat</td><td>Chat messages, email (optional)</td><td>EU</td><td>When chat opened</td></tr>
@@ -395,7 +395,7 @@
       <li><strong>Local data:</strong> stored in browser localStorage, accessible only to the origin serving the app. We recommend using the app PIN lock (Settings → App Lock) if you share a device.</li>
       <li><strong>Cloud data:</strong> transmitted via TLS 1.2+; stored with Supabase's encryption-at-rest (AES-256). Row Level Security ensures only you can read your data.</li>
       <li><strong>AI data:</strong> transmitted via TLS to Groq's API. General AI Advisor chat sends a financial summary only. "Explain transaction" and the month-end checklist additionally send the specific transaction description or bill name/amount you're asking about.</li>
-      <li><strong>Payments:</strong> all card data for subscriptions is handled by Lemon Squeezy's PCI-DSS-compliant infrastructure. We never see your card details. Bill Hub has no payment processor at all — it never collects card data in the first place.</li>
+      <li><strong>Payments:</strong> all card data for subscriptions is handled by Dodo Payments' PCI-DSS-compliant infrastructure. We never see your card details. Bill Hub has no payment processor at all — it never collects card data in the first place.</li>
     </ul>
     <div class="callout amber">
       <strong>Your responsibility:</strong> Keep your sign-in credentials secure. Do not share your Klar access with others on shared devices without using the PIN lock feature.
@@ -408,7 +408,7 @@
     <ul>
       <li><strong>Supabase</strong> — EU-hosted by default; may also use USA infrastructure. Supabase maintains GDPR Standard Contractual Clauses (SCCs) and is certified under the EU-US Data Privacy Framework.</li>
       <li><strong>Groq</strong> — USA. By enabling the AI Advisor, you consent to the transfer of a financial summary — and, for "Explain transaction" and the month-end checklist, the specific transaction or bill details involved — to Groq's USA servers.</li>
-      <li><strong>Lemon Squeezy</strong> — Global. Lemon Squeezy is GDPR-compliant and maintains SCCs for cross-border transfers.</li>
+      <li><strong>Dodo Payments</strong> — Global. Dodo Payments is GDPR-compliant and maintains SCCs for cross-border transfers.</li>
     </ul>
     <p>By enabling these optional features, you consent to the associated cross-border transfers described above.</p>
   </div>
