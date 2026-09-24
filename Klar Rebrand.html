@@ -7220,7 +7220,7 @@ const addMonthsClamped = (date, n) => {
 };
 const last6 = () => lastN(6);
 const lastN = (n) => { const r=[]; const now=new Date(); for(let i=n-1;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);r.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'))} return r; };
-const toMo = (amt,cyc) => { if(cyc==='annual')return amt/12; if(cyc==='weekly')return amt*52/12; if(cyc==='quarterly')return amt/3; return amt; };
+const toMo = (amt,cyc) => { if(cyc==='annual')return amt/12; if(cyc==='weekly')return amt*52/12; if(cyc==='fortnightly')return amt*26/12; if(cyc==='quarterly')return amt/3; return amt; };
 
 function popCatDDs() {
   const corp = typeof isCorp === 'function' && isCorp();
@@ -9712,18 +9712,21 @@ function detectSubscriptions() {
   expenses.forEach(t=>{
     const key=normaliseSubDesc(t.description);
     if(!key||key.length<3) return;
-    if(!groups[key]) groups[key]={rawDesc:t.description,amounts:[],dates:new Set()};
-    groups[key].amounts.push(t.amount);
-    groups[key].dates.add(t.date);
+    if(!groups[key]) groups[key]={rawDesc:t.description,byDate:{}};
+    // Keyed by date so the amount used for detection always matches the
+    // chronologically-last charge, not whichever transaction happened to be
+    // pushed into S.transactions last (import order != date order, and price
+    // increases on the most recent bill were being silently discarded).
+    groups[key].byDate[t.date]=t.amount;
   });
   // Analyse timing patterns
   const dismissed=new Set(S._dismissedSubs||[]);
   const existingKeys=new Set((S.subscriptions||[]).map(s=>normaliseSubDesc(s.name)));
   const detected=[];
   Object.entries(groups).forEach(([normKey,g])=>{
-    if(g.dates.size<2) return;
+    const sorted=Object.keys(g.byDate).sort();
+    if(sorted.length<2) return;
     if(dismissed.has(normKey)||existingKeys.has(normKey)) return;
-    const sorted=[...g.dates].sort();
     // Require the transaction history to span at least 45 days so a single
     // month's data cannot produce a false "monthly" subscription detection.
     const spanDays=Math.round((new Date(sorted[sorted.length-1])-new Date(sorted[0]))/86400000);
@@ -9748,7 +9751,7 @@ function detectSubscriptions() {
     const nextMs=new Date(lastDate).getTime()+avg*86400000;
     const nextDt=new Date(nextMs).toISOString().slice(0,10);
     detected.push({
-      key:normKey,rawDesc:g.rawDesc,amount:g.amounts[g.amounts.length-1],cycle,
+      key:normKey,rawDesc:g.rawDesc,amount:g.byDate[lastDate],cycle,
       occurrences:sorted.length,lastDate,nextDt,
     });
   });
