@@ -6066,19 +6066,24 @@ function saveCatRule() {
 const syncConnectedData = () => {
   const txns = S.transactions;
   // 1. Auto-update debt balances from tagged debt payments
+  // Note: recompute whenever originalBalance is set, even if totalPaid is currently 0 —
+  // otherwise deleting/unlinking the LAST linked payment leaves debt.balance stuck at its
+  // old (over-reduced) value instead of reverting to originalBalance.
   (S.debts||[]).forEach(debt => {
     const payments = txns.filter(t => t.debtId === debt.id && t.type === 'expense');
     const totalPaid = payments.reduce((s,t) => s + t.amount, 0);
-    if (totalPaid > 0 && debt.originalBalance) {
+    if (debt.originalBalance !== undefined) {
       debt.balance = Math.max(debt.originalBalance - totalPaid, 0);
     }
   });
   // 2. Auto-update goal progress from tagged goal contributions
+  // Same reasoning as above — must still run when totalContrib is 0 so a deleted/unlinked
+  // last contribution correctly reverts goal.saved to originalSaved instead of staying stale.
   (S.goals||[]).forEach(goal => {
     const contribs = txns.filter(t => t.goalId === goal.id);
     const totalContrib = contribs.reduce((s,t) => s + t.amount, 0);
-    if (totalContrib > 0 && goal.originalSaved !== undefined) {
-      goal.saved = Math.min(goal.originalSaved + totalContrib, goal.target);
+    if (goal.originalSaved !== undefined) {
+      goal.saved = Math.min(Math.max(goal.originalSaved + totalContrib, 0), goal.target);
     }
   });
   // 3. Update budget history for rollover
@@ -10641,6 +10646,11 @@ function addToGoal(id){
   const g=S.goals.find(g=>g.id===id);
   if(g){
     const wasDone=g.saved>=g.target;
+    // Keep originalSaved (the baseline syncConnectedData rebuilds `saved` from) in
+    // step with this manual add — otherwise the next renderAll() silently reverts
+    // this contribution back to originalSaved+linkedTxnTotal, discarding it.
+    if(g.originalSaved===undefined)g.originalSaved=g.saved;
+    g.originalSaved+=val;
     g.saved=Math.min(g.saved+val,g.target);
     save();renderAll();notify('Added '+fmt(val)+' to '+g.name,'ok');
     if(!wasDone&&g.saved>=g.target&&S.prefs.notifGoals!==false) klNotify('🎯 Goal reached: '+g.name,'You saved '+fmt(g.target)+' — goal complete!',{tag:'kl-goal-'+g.id});
@@ -10653,14 +10663,24 @@ function allocateSurplusToGoal(goalId){
   // Each goal gets its proportional 1/N slice of the surplus — not the full amount
   const share=surplus/activeGoals.length;
   const g=S.goals.find(x=>x.id===goalId);
-  if(g&&activeGoals.find(x=>x.id===goalId)){g.saved=Math.min(g.saved+share,g.target);save();renderAll();notify('Allocated '+fmt(share)+' surplus to '+g.name+' (1/'+activeGoals.length+' of total surplus)','ok');}
+  if(g&&activeGoals.find(x=>x.id===goalId)){
+    // Keep originalSaved in sync — see comment in addToGoal().
+    if(g.originalSaved===undefined)g.originalSaved=g.saved;
+    g.originalSaved+=share;
+    g.saved=Math.min(g.saved+share,g.target);save();renderAll();notify('Allocated '+fmt(share)+' surplus to '+g.name+' (1/'+activeGoals.length+' of total surplus)','ok');
+  }
 }
 function allocateSurplusAll(){
   const surplus=Math.max(avgInc()-avgExp(),0);
   const activeGoals=S.goals.filter(g=>g.saved<g.target);
   if(!surplus||!activeGoals.length){notify('No surplus or goals to allocate to','err');return;}
   const share=surplus/activeGoals.length;
-  activeGoals.forEach(g=>g.saved=Math.min(g.saved+share,g.target));
+  // Keep originalSaved in sync — see comment in addToGoal().
+  activeGoals.forEach(g=>{
+    if(g.originalSaved===undefined)g.originalSaved=g.saved;
+    g.originalSaved+=share;
+    g.saved=Math.min(g.saved+share,g.target);
+  });
   save();renderAll();notify('Surplus of '+fmt(surplus)+' allocated across '+activeGoals.length+' goals','ok');
 }
 const delGoal=id=>{const g=S.goals.find(x=>x.id===id);klConfirm('Delete goal'+(g?' "'+g.name+'"':'')+' permanently?',()=>{S.goals=S.goals.filter(x=>x.id!==id);(S.transactions||[]).forEach(t=>{if(t.goalId===id)t.goalId='';});save();renderAll();},{title:'Delete Goal',danger:true});};
