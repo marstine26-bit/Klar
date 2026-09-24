@@ -5491,6 +5491,25 @@ const save = () => {
   } catch(e){notify('Save failed — storage full. Export a backup and clear old data.','err');}
 };
 
+// Cross-tab data-loss guard: localStorage is shared by every tab on this origin, but each
+// tab keeps its own in-memory `S` loaded once at page-load. save() always does a blind
+// JSON.stringify(S) overwrite of cl_v55/BIZ_KEY, so with two tabs open, whichever tab's
+// save() runs last silently wins — the other tab's already-persisted edits vanish from
+// localStorage with no warning, no merge and no conflict toast (unlike cloud sync, which has
+// real optimistic-concurrency versioning for this exact scenario across devices). The native
+// `storage` event only fires in tabs that did NOT make the write, so it's the right hook to
+// warn a tab its in-memory copy just went stale, before its next save() clobbers the newer
+// data underneath it.
+let _klCrossTabWarned = false;
+window.addEventListener('storage', (e) => {
+  if (e.key !== 'cl_v55' && e.key !== BIZ_KEY) return;
+  if (!e.newValue || e.newValue === e.oldValue) return;
+  if (_klCrossTabWarned) return;
+  _klCrossTabWarned = true;
+  notify('Klar is open in another tab and your data changed there — refresh this tab before editing, or you risk overwriting those changes.', 'warn');
+  setTimeout(() => { _klCrossTabWarned = false; }, 15000);
+});
+
 const _mkBizS=()=>{const _isUKbiz=(typeof S!=='undefined'&&S.prefs?.region)==='uk';return{transactions:[],accounts:[{id:'biz-default',name:'Business Account',bank:_isUKbiz?'Barclays':'FNB',type:'cheque',color:'#d4a94a',creditLimit:0,openingBalance:0}],budgets:{},goals:[],debts:[],subscriptions:[],recurringTemplates:[],importWatermarks:{},importPresets:{},importHistory:[],bankConnections:{}};};
 function _loadBiz(){try{const raw=localStorage.getItem(BIZ_KEY);return Object.assign(_mkBizS(),raw?JSON.parse(raw):{});}catch{return _mkBizS();}}
 function activateBizData(){if(_bizSnap!==null)return;_bizSnap={};BIZ_SWAP.forEach(k=>_bizSnap[k]=S[k]);const biz=_loadBiz();BIZ_SWAP.forEach(k=>S[k]=biz[k]!==undefined?biz[k]:(Array.isArray(_bizSnap[k])?[]:typeof _bizSnap[k]==='object'?{}:_bizSnap[k]));}
