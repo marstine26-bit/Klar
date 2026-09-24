@@ -2288,8 +2288,8 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
   <!-- View: TAGS -->
   <div id="mv-merchants" class="mv-panel" style="display:none">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
-      <input type="text" id="merchant-search" placeholder="Filter merchant…" oninput="rMerchants()" style="width:200px">
-      <select id="merchant-type" onchange="rMerchants()" style="width:130px">
+      <input type="text" id="merchant-search" placeholder="Filter merchant…" oninput="_merchOffset=0;rMerchants()" style="width:200px">
+      <select id="merchant-type" onchange="_merchOffset=0;rMerchants()" style="width:130px">
         <option value="">All Types</option>
         <option value="expense">Expenses only</option>
         <option value="income">Income only</option>
@@ -6396,7 +6396,7 @@ function setMoneyView(view, skipNav) {
   if (view === 'recur' && typeof rRecurringTemplates === 'function') rRecurringTemplates();
   if (view === 'tags' && typeof rTaggedView === 'function') rTaggedView();
   if (view === 'today') rTodayView();
-  if (view === 'merchants') rMerchants();
+  if (view === 'merchants') { _merchOffset=0; rMerchants(); }
   // Update topbar / sub-tab highlight when triggered from a click (not redirect)
   if (!skipNav) {
     const pageId = view === 'recur' ? 'recurring' : view === 'tags' ? 'tags' : 'transactions';
@@ -8969,7 +8969,7 @@ function renderTxns(){
   });
   const fromF=document.getElementById('t-from')?.value||'';
   const toF=document.getElementById('t-to')?.value||'';
-  if(srch)txns=txns.filter(t=>(t.description||'').toLowerCase().includes(srch)||(t.note||'').toLowerCase().includes(srch)||t.amount.toFixed(2).includes(srch)||(t.category||'').toLowerCase().includes(srch));
+  if(srch)txns=txns.filter(t=>(t.description||'').toLowerCase().includes(srch)||(t.note||'').toLowerCase().includes(srch)||t.amount.toFixed(2).includes(srch)||(t.category||'').toLowerCase().includes(srch)||(t.tags||[]).some(tag=>tag.toLowerCase().includes(srch.replace(/^#/,''))));
   if(catF==='__uncat__')txns=txns.filter(t=>!t.category||t.category==='');
   else if(catF)txns=txns.filter(t=>t.category===catF);
   if(typF)txns=txns.filter(t=>t.type===typF);
@@ -14600,6 +14600,8 @@ function rWhatIf(){
 }
 
 /* ═══ TAGS VIEW ═══ */
+let _merchOffset = 0;
+const MERCH_PAGE = 100;
 function rMerchants() {
   const listEl=document.getElementById('merchant-list');
   const cntEl=document.getElementById('merchant-count');
@@ -14620,9 +14622,11 @@ function rMerchants() {
   entries.sort((a,b)=>b.total-a.total);
   if(cntEl) cntEl.textContent=entries.length+' merchant'+(entries.length!==1?'s':'');
   if(!entries.length){listEl.innerHTML='<div class="empty" style="padding:40px"><div class="empty-t">No transactions yet</div></div>';return;}
-  // Show top 100
-  const top=entries.slice(0,100);
+  // Paginate — show up to current offset, with a "show more" row (mirrors renderTxns' TXN_PAGE pattern)
+  const top=entries.slice(0,_merchOffset+MERCH_PAGE);
+  const remaining=entries.length-top.length;
   const maxTotal=top[0]?.total||1;
+  const showMoreRow=remaining>0?`<div style="text-align:center;padding:14px"><button class="btn btn-ghost btn-sm" onclick="_merchOffset+=MERCH_PAGE;rMerchants()" style="font-size:12px">Show ${remaining} more merchant${remaining!==1?'s':''}  ↓</button></div>`:'';
   listEl.innerHTML=top.map(m=>{
     const bar=Math.round((m.total/maxTotal)*100);
     const cat=catBy(m.category);
@@ -14643,7 +14647,7 @@ function rMerchants() {
       </div>
       <div style="font-size:10px;color:var(--t3)">Last: ${m.last}</div>
     </div>`;
-  }).join('');
+  }).join('')+showMoreRow;
 }
 
 function rTaggedView(){
