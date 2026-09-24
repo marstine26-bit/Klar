@@ -9484,6 +9484,30 @@ function saveTxn(){
       const type=document.getElementById('txn-ty').value;
       if(!d){notify('Please select a date','err');return;}
       if(!desc||isNaN(amt)||amt<=0){notify('Fill all required fields','err');return;}
+      // Changing a transaction's type to/from 'transfer' used to leave the paired leg
+      // (linked via linkedId) dangling: switching a transfer leg to expense/income kept
+      // its old linkedId/transferDir pointing at a leg that's no longer a real transfer
+      // (double-counting the money — once as the new expense/income, once as the
+      // still-standing transfer-in on the other account), while switching a plain
+      // expense/income to 'transfer' created a one-sided "transfer" with no linkedId or
+      // transferDir at all, which calcAccBalance treats as neutral — the amount just
+      // vanished from that account's balance with no offsetting leg ever created.
+      // Both directions are handled explicitly here, mirroring the same "always cascade
+      // both legs together" rule delTxn/bulkDelete/delAccount already use for deletion.
+      const wasTransfer=tx.type==='transfer'&&!!tx.linkedId;
+      if(wasTransfer&&type!=='transfer'){
+        const oldLinked=S.transactions.find(x=>x.id===tx.linkedId);
+        if(oldLinked) S.transactions=S.transactions.filter(x=>x.id!==oldLinked.id);
+        tx.linkedId=null; tx.transferDir=null;
+        notify('This was one leg of a transfer — the paired entry on the other account was removed','ok');
+      } else if(!wasTransfer&&type==='transfer'){
+        const toAccId=document.getElementById('txn-to-acc')?.value;
+        const fromAccId=document.getElementById('txn-acc').value||tx.accountId;
+        if(!toAccId||toAccId===fromAccId){notify('Select a different destination account','err');return;}
+        const inId=uid();
+        tx.linkedId=inId; tx.transferDir='out';
+        S.transactions.push({id:inId,date:d,time:document.getElementById('txn-tm')?.value||'',description:desc,amount:amt,type:'transfer',category:'transfer',accountId:toAccId,transferDir:'in',linkedId:tx.id});
+      }
       tx.date=d; tx.time=document.getElementById('txn-tm')?.value||'';
       tx.description=desc; tx.amount=amt; tx.type=type;
       tx.category=type==='transfer'?'transfer':document.getElementById('txn-ca').value;
@@ -9493,8 +9517,8 @@ function saveTxn(){
       tx.debtId=document.getElementById('txn-debt-link')?.value||'';
       const tagsRaw=document.getElementById('txn-tags')?.value||'';
       tx.tags=tagsRaw.split(',').map(x=>x.trim().replace(/^#/,'')).filter(Boolean);
-      // If editing a transfer, sync the linked leg too
-      if(type==='transfer'&&tx.linkedId){
+      // If editing a transfer that was already a transfer before and after, sync the linked leg too
+      if(type==='transfer'&&tx.linkedId&&wasTransfer){
         const linked=S.transactions.find(x=>x.id===tx.linkedId);
         if(linked){
           linked.date=d; linked.time=tx.time; linked.description=desc; linked.amount=amt;
