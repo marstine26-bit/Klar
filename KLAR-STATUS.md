@@ -78,7 +78,9 @@ Worth knowing before making any claim about traction: **4 total auth users, 0 su
 
 - **Error-handling/resilience audit (2026-09-24) — 2 real bugs found and fixed.** AI chat showed raw HTTP status codes / browser error strings instead of actionable messages (invalid Groq key now says exactly that and where to fix it). Cloud sync's "Sync now" button showed a false "Synced ✓" toast even when the sync had actually failed or hit a version conflict — the honest "Sync failed" toast was getting silently overwritten a moment later. Exchange-rate fallback already handled correctly, no fix needed there.
 
-**Running bug tally this review cycle (2026-09-05 → 09-25): 29 real bugs found and fixed** across 25 specialist passes.
+**Running bug tally this review cycle (2026-09-05 → 09-25): 32 real bugs found and fixed** across 26 specialist passes.
+
+**26th specialist — transfer deletion left orphaned/phantom balances (2026-09-25, commit `feae9e7`, live on `main`):** 3 real bugs found and fixed, all in how the app deletes a transfer's two paired transaction rows (linked via `linkedId`). `delTxn` and `bulkDelete` could each delete just one leg, leaving the other account with a phantom balance and no matching entry. `delAccount` was worse — deleting an account with a transfer to/from a surviving account left that account permanently stuck with money that traces to nothing. Fixed all three to always cascade to both legs together.
 
 **25th specialist — subscription auto-detection amount/cycle bugs (2026-09-25, commit `e4f0c28`, live on `main`):** 2 real bugs found and fixed. (1) `detectSubscriptions()` used the last-pushed transaction's amount instead of the chronologically-last one, silently understating price increases forever once a detected subscription was added. (2) `toMo()` had no `fortnightly` branch, so a real fortnightly subscription was treated as monthly everywhere its cost rolled up (Subscriptions tiles, Cash Flow Forecast, notifications, health-score) — roughly halving its true monthly cost.
 
