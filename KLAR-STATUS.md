@@ -84,6 +84,10 @@ Worth knowing before making any claim about traction: **4 total auth users, 0 su
 
 Startbutton still pending/unknown. Dodo Payments came back approved — this is now the active integration target. See below for build status.
 
+**Security review of the Dodo migration code (2026-09-24, commit `6e394da`, live on `main`):** found and fixed 3 real gaps — (1) `dodo-webhook` had no replay-protection window, so a captured valid webhook signature could be replayed indefinitely; added the Standard Webhooks spec's 5-minute timestamp-tolerance check. (2) `klOpenDodoCheckout()`'s `window.open(checkoutUrl, '_blank')` had no `noopener,noreferrer` — reverse-tabnabbing gap, fixed. (3) `klDeleteAccount()` silently dropped `delete-account`'s `subscriptionCancelError` response field — a user could delete their account while Dodo kept billing them and never be told; now shows a warning pointing them at customer.dodopayments.com. Everything else in the migration (HMAC signing/verification, checkout-creation input validation, CSP, delete-account's best-effort cancellation design) was reviewed and confirmed correct, no changes needed.
+
+**Dodo product creation (2026-09-24, in progress via Browser pane, founder logged in themselves):** 6 of 8 real products confirmed created — Essential Monthly/Annual GBP, Pro Monthly/Annual GBP, Essential Monthly/Annual ZAR. Product 7 (Pro Monthly ZAR, R89) was mid-submission when the browser session dropped (environment reset) — unconfirmed whether it saved. Product 8 (Pro Annual ZAR, R899) not yet started. Once all 8 exist, still need: paste product ids into `DODO_PRODUCTS` (`dodo-create-checkout`) and `DODO_PRODUCT_TO_PLAN` (`dodo-webhook`), redeploy both, register the webhook URL + secret, add `DODO_API_KEY`.
+
 ---
 
 *This file is excluded from public serving via `.assetsignore`, same as other internal docs.*
