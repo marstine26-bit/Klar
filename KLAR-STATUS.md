@@ -78,7 +78,9 @@ Worth knowing before making any claim about traction: **4 total auth users, 0 su
 
 - **Error-handling/resilience audit (2026-09-24) — 2 real bugs found and fixed.** AI chat showed raw HTTP status codes / browser error strings instead of actionable messages (invalid Groq key now says exactly that and where to fix it). Cloud sync's "Sync now" button showed a false "Synced ✓" toast even when the sync had actually failed or hit a version conflict — the honest "Sync failed" toast was getting silently overwritten a moment later. Exchange-rate fallback already handled correctly, no fix needed there.
 
-**Running bug tally this review cycle (2026-09-05 → 09-24): 19 real bugs found and fixed** across 18 specialist passes.
+**Running bug tally this review cycle (2026-09-05 → 09-24): 20 real bugs found and fixed** across 19 specialist passes.
+
+**19th specialist — month-overflow date drift (2026-09-24, commit `f70bba4`, live on `main`):** found a real, live-verified bug in recurring-transaction/subscription/reminder date advancement — native `Date.setMonth()` silently overflows into the next month when the current day doesn't exist there (Jan 31 + 1 month → Mar 3, skipping Feb). This caused permanent drift: a recurring template anchored on the 31st, after crossing a Feb boundary once, would keep firing on the 3rd of every month forever. Fixed with a shared `addMonthsClamped()` helper (clamps to the target month's last day, the standard billing-system approach) across `checkRecurringDue`, `skipRecurring`, `advanceSubDate`, `doneReminder`, and the debt-payoff calculator's month-label projection.
 
 ## 🎉 PAYMENT PROCESSOR: Dodo Payments APPROVED (2026-09-24)
 
