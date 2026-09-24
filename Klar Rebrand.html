@@ -4447,6 +4447,24 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div id="kl-pin-err" style="font-size:12px;color:var(--red);min-height:16px"></div>
   </div>
 </div>
+<script>
+  // PIN lock must engage on every fresh load/reopen (not just after backgrounding an
+  // already-open tab) — otherwise a closed+reopened tab, a full browser relaunch, or a
+  // new tab to the same URL shows all financial data with no PIN prompt at all. Runs
+  // synchronously here, before any later script renders real data into the page.
+  function _klPinEarlyLock() {
+    try {
+      if (localStorage.getItem('kl_pin_enabled') === '1' && localStorage.getItem('kl_pin_hash')) {
+        document.getElementById('kl-pin-lock').style.display = 'flex';
+      }
+    } catch(e) {}
+  }
+  _klPinEarlyLock();
+  // Also re-lock if the page is restored from the back-forward cache (e.g. the user
+  // unlocked, navigated away, then hit Back) — bfcache restores the DOM exactly as it
+  // was left (unlocked) without re-running this script, so re-check on that event too.
+  window.addEventListener('pageshow', function(e) { if (e.persisted) _klPinEarlyLock(); });
+</script>
 <div id="kl-auth-gate" role="dialog" aria-modal="true" aria-label="Sign in to Klar">
   <!-- Left: branding panel -->
   <div class="kl-ag-left">
