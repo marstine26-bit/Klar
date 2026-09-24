@@ -78,7 +78,9 @@ Worth knowing before making any claim about traction: **4 total auth users, 0 su
 
 - **Error-handling/resilience audit (2026-09-24) — 2 real bugs found and fixed.** AI chat showed raw HTTP status codes / browser error strings instead of actionable messages (invalid Groq key now says exactly that and where to fix it). Cloud sync's "Sync now" button showed a false "Synced ✓" toast even when the sync had actually failed or hit a version conflict — the honest "Sync failed" toast was getting silently overwritten a moment later. Exchange-rate fallback already handled correctly, no fix needed there.
 
-**Running bug tally this review cycle (2026-09-05 → 09-25): 34 real bugs found and fixed** across 27 specialist passes.
+**Running bug tally this review cycle (2026-09-05 → 09-25): 37 real bugs found and fixed** across 28 specialist passes.
+
+**28th specialist — dead USD-holdings feature + 2 FX math bugs (2026-09-25, commit `26e87e8`, live on `main`):** the Retirement → FX tab's "USD Holdings" tracker was permanently dead for every user — it filtered holdings by a `currency` field the Add Holding modal had no way to ever set. Making it reachable (added a Currency field) surfaced 2 more real bugs: the UK branch computed the reciprocal of the GBP/USD rate (would have overstated USD holdings by ~60%), and a first-fix attempt double-converted currency before `fmt()`'s own conversion ran. Also fixed: the FX widget's card title stayed stuck on "GBP/USD" after switching region UK→SA.
 
 **27th specialist — transfer type-change left money double-counted or vanished (2026-09-25, commit `16294bd`, live on `main`):** follow-up to the 26th pass's deletion fix, checking the same bug class in editing. Changing a transaction's type to/from 'transfer' never touched the paired leg: converting a transfer leg to expense/income double-counted the money (new expense on one side, untouched transfer-in still standing on the other); converting an expense/income to transfer created no paired leg at all, silently vanishing the amount from the source account. Fixed both directions to cascade the paired leg correctly, matching the deletion fix's convention.
 
