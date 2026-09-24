@@ -11213,7 +11213,7 @@ function importDetectedPetrolFill(txnId){
   const estPrice=prices[loc].p95;
   const estLitres=Math.round(txn.amount/estPrice*10)/10;
   if(!S.petrolFills)S.petrolFills=[];
-  S.petrolFills.push({id:uid(),date:txn.date,litres:estLitres,price:estPrice,total:txn.amount,odo:0});
+  S.petrolFills.push({id:uid(),date:txn.date,litres:estLitres,price:estPrice,total:txn.amount,odo:0,srcTxnId:txn.id});
   save();rPetrolTracker();notify('Fill-up logged from transaction','ok');
 }
 function dismissDetectedPetrol(txnId){if(!S._dismissedPetrolFills)S._dismissedPetrolFills=[];S._dismissedPetrolFills.push(txnId);save();rPetrolTracker();}
@@ -14828,7 +14828,9 @@ function rVehicleCosts(){
   const el=document.getElementById('vehicle-cost-wrap');if(!el)return;
   const mo=S.curMo;
   const txns=S.transactions.filter(t=>t.date&&t.date.startsWith(mo)&&t.type==='expense');
-  const petrol=txns.filter(t=>t.category==='petrol').reduce((s,t)=>s+t.amount,0);
+  // Exclude petrol transactions already counted via an imported fill-up (srcTxnId) to avoid double-counting
+  const importedFillTxnIds=new Set((S.petrolFills||[]).filter(f=>f.srcTxnId).map(f=>f.srcTxnId));
+  const petrol=txns.filter(t=>t.category==='petrol'&&!importedFillTxnIds.has(t.id)).reduce((s,t)=>s+t.amount,0);
   const insurance=txns.filter(t=>t.category==='insurance').reduce((s,t)=>s+t.amount,0);
   const carRepay=txns.filter(t=>t.category==='car').reduce((s,t)=>s+t.amount,0);
   const carService=txns.filter(t=>t.category==='car-service').reduce((s,t)=>s+t.amount,0);
@@ -14890,7 +14892,7 @@ function rMedGap(){
   if(hEl)hEl.innerHTML=`<div class="g3" style="margin-bottom:12px">
     <div class="stat-tile" style="padding:14px"><div class="sl">Out-of-Pocket</div><div class="sv neg" style="font-size:20px">${fmt(totalOOP)}</div></div>
     <div class="stat-tile" style="padding:14px"><div class="sl">${claimedLbl}</div><div class="sv pos" style="font-size:20px">${fmt(totalClaimed)}</div></div>
-    <div class="stat-tile" style="padding:14px"><div class="sl">Unclaimed</div><div class="sv" style="font-size:20px;color:${outstanding>0?'var(--amber)':'var(--green)'}">${fmt(outstanding)}</div></div>
+    <div class="stat-tile" style="padding:14px"><div class="sl">${outstanding>=0?'Unclaimed':'Overclaimed'}</div><div class="sv" style="font-size:20px;color:${outstanding>0?'var(--amber)':'var(--green)'}">${fmt(Math.abs(outstanding))}</div></div>
   </div>`;
   if(!expenses.length){el.innerHTML=`<div class="empty" style="padding:12px"><div class="empty-s">${emptyLbl}</div></div>`;return;}
   el.innerHTML=expenses.slice().reverse().map(e=>`<div class="li"><div class="lii"><div class="lin">${esc(e.provider)} — ${esc(e.description)}</div><div class="lis">${e.date}${e.claimed?` · Claimed: ${fmt(e.claimed)}`:' · Unclaimed'}</div></div><div style="text-align:right"><div style="font-family:var(--fm);font-size:13px;color:var(--red)">${fmt(e.oop)}</div></div><button onclick="delMedGap('${e.id}')" aria-label="Delete medical expense: ${esc(e.provider)}, ${e.date}" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px">&times;</button></div>`).join('');
@@ -14907,7 +14909,7 @@ function addMedGapExpense(){
   save();renderAll();notify('Medical expense logged','ok');
   ['mg-provider','mg-desc','mg-oop','mg-claimed'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
 }
-const delMedGap=id=>{const e=(S.medGapExpenses||[]).find(x=>x.id===id);klConfirm('Delete'+(e&&e.desc?' "'+e.desc+'"':' this medical expense')+'?',()=>{S.medGapExpenses=(S.medGapExpenses||[]).filter(x=>x.id!==id);save();renderAll();},{title:'Delete Expense',danger:true});};
+const delMedGap=id=>{const e=(S.medGapExpenses||[]).find(x=>x.id===id);klConfirm('Delete'+(e&&e.description?' "'+e.description+'"':' this medical expense')+'?',()=>{S.medGapExpenses=(S.medGapExpenses||[]).filter(x=>x.id!==id);save();renderAll();},{title:'Delete Expense',danger:true});};
 function prefillMedGap(txId,accId){
   const tx=(S.transactions||[]).find(t=>t.id===txId);
   if(!tx)return;
