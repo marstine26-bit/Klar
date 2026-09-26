@@ -1651,6 +1651,21 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 #klar-install-btn{background:linear-gradient(135deg,#7B5EA7,#5070BC);color:#fff}
 #klar-install-dismiss{background:var(--s3);color:var(--t3)}
 
+/* 8. Print Report (Class & Banking page) — printReport() calls window.print() directly on the
+   live app (no separate print-friendly window like printStatement() uses), so without this the
+   sidebar, topbar, floating add button, toasts, ambient glow/orbs and any open modal would all
+   print alongside the report content, on the dark theme's own background/text colours. This
+   scopes printing down to just the active page's content, forced to a clean light layout. */
+@media print{
+  .sidebar,.rail,.topbar,.kl-fab,.notif,.page-glow,.d-orb,.d-grain,.modal-bg,#klar-install-banner,#kl-pin-lock,button{display:none!important}
+  html,body{background:#fff!important}
+  .main{margin-left:0!important}
+  .page{padding:0!important}
+  .page.active{display:block!important}
+  .card,.stat-tile{background:#fff!important;border:1px solid #ddd!important;box-shadow:none!important;backdrop-filter:none!important;break-inside:avoid}
+  *{color:#111!important;text-shadow:none!important}
+}
+
 </style>
 
 <!-- ══ CRISP CHAT ══
@@ -12725,7 +12740,7 @@ function printStatement(){
     <div class="sm"><div class="sl">Net</div><div class="sv" style="color:${income-expenses>=0?'#27ae60':'#e74c3c'}">${cur} ${(income-expenses).toFixed(2)}</div></div>
   </div>
   <table><thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Type</th><th style="text-align:right">Amount</th><th>Note</th></tr></thead><tbody>
-  ${txns.map(t=>`<tr><td>${t.date}</td><td>${(t.description||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')}${t.tags&&t.tags.length?` <span style="font-size:10px;color:#aaa">${t.tags.map(x=>'#'+x).join(' ')}</span>`:''}</td><td>${t.category||'—'}</td><td>${t.type}</td><td style="text-align:right" class="${t.type==='income'?'pos':'neg'}">${t.type==='income'?'+':'-'}${cur} ${t.amount.toFixed(2)}</td><td class="note">${(t.note||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')}</td></tr>`).join('')}
+  ${txns.map(t=>`<tr><td>${t.date}</td><td>${(t.description||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')}${t.tags&&t.tags.length?` <span style="font-size:10px;color:#aaa">${t.tags.map(x=>'#'+x).join(' ')}</span>`:''}</td><td>${t.category||'—'}</td><td>${t.type}</td><td style="text-align:right" class="${t.type==='income'?'pos':'neg'}">${t.type==='income'?'+':'-'}${cur} ${txnAmtLocal(t).toFixed(2)}</td><td class="note">${(t.note||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')}</td></tr>`).join('')}
   </tbody></table>
   <div style="margin-top:24px;text-align:center"><button onclick="window.print()" style="padding:10px 24px;background:#e8553e;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:14px">Print / Save as PDF</button></div>
   </body></html>`);
