@@ -78,7 +78,9 @@ Worth knowing before making any claim about traction: **4 total auth users, 0 su
 
 - **Error-handling/resilience audit (2026-09-24) — 2 real bugs found and fixed.** AI chat showed raw HTTP status codes / browser error strings instead of actionable messages (invalid Groq key now says exactly that and where to fix it). Cloud sync's "Sync now" button showed a false "Synced ✓" toast even when the sync had actually failed or hit a version conflict — the honest "Sync failed" toast was getting silently overwritten a moment later. Exchange-rate fallback already handled correctly, no fix needed there.
 
-**Running bug tally this review cycle (2026-09-05 → 09-26): 44 real bugs found and fixed** across 31 specialist passes.
+**Running bug tally this review cycle (2026-09-05 → 09-26): 44 real bugs found and fixed, plus 1 feature gap closed** across 32 specialist passes.
+
+**32nd specialist — recurring template editing (2026-09-26, commit `450d659`, live on `main`):** recurring transaction templates had no way to be edited — only Pause/Resume and Delete existed, so fixing a wrong amount or category meant delete-and-recreate (losing history). Added an Edit button and modal, matching the app's established category/account-select population pattern. Explicitly only affects future postings; already-posted transactions are untouched.
 
 **31st specialist — receipt attachments silently discarded on edit (2026-09-26, commit `d9c7aae`, live on `main`):** found and fixed a real, live-verified bug — the receipt-photo feature was completely non-functional on the edit path. `openEditTxn()` always cleared the receipt UI even when a receipt already existed, and `saveTxn()`'s edit branch never wrote the receipt back to the transaction at all. Net effect: editing a transaction with a receipt looked like data loss, replacing a receipt silently kept the old one, attaching one for the first time via edit did nothing, and removing one had no effect. Fixed so add/replace/remove during edit all persist correctly.
 
