@@ -6187,6 +6187,18 @@ const catBy  = id => {
 const catLbl = id => { const c = catBy(id); const r = S.prefs?.region; return (r==='uk' && c.lbl_uk) ? c.lbl_uk : (r==='other' && c.lbl_other) ? c.lbl_other : c.lbl; };
 const catClr = id => { const c = catBy(id); return getComputedStyle(document.documentElement).getPropertyValue(c.css).trim() || '#607090'; };
 const accBy  = id => (S.accounts||[]).find(a => a.id === id) || DEF_ACCOUNT;
+// Transactions don't carry their own currency — they inherit it from their account. Any code
+// summing t.amount across transactions from potentially different accounts must convert each one
+// to the home (ZAR) currency first via its account's zarRate, exactly like calcAccBalance/toZar do
+// for account balances — otherwise a foreign-currency transaction is added at face value (e.g. a
+// $50 expense counted as R50 instead of ~R925 at an 18.5 rate). Use this instead of raw t.amount
+// wherever transactions from more than one account are combined.
+const txnAmtLocal = t => {
+  if (!t) return 0;
+  const acc = accBy(t.accountId || 'default');
+  const cur = acc.currency || 'ZAR';
+  return cur === 'ZAR' ? t.amount : t.amount * (acc.zarRate || 1);
+};
 const _fxAmt = n  => {
   // Only convert when the display region's currency actually differs from the currency
   // the user's data is recorded in — never infer this from `region` alone (that fired the
@@ -7306,8 +7318,11 @@ function popAccDDs() {
   }
 }
 
-const avgInc = () => { const ms=last6().filter(m=>S.transactions.some(t=>t.date&&t.date.startsWith(m)&&t.type==='income')); if(!ms.length)return 0; return ms.reduce((s,m)=>s+S.transactions.filter(t=>t.date&&t.date.startsWith(m)&&t.type==='income').reduce((a,t)=>a+t.amount,0),0)/ms.length; };
-const avgExp = () => { const ms=last6().filter(m=>S.transactions.some(t=>t.date&&t.date.startsWith(m)&&t.type==='expense')); if(!ms.length)return 0; return ms.reduce((s,m)=>s+S.transactions.filter(t=>t.date&&t.date.startsWith(m)&&t.type==='expense').reduce((a,t)=>a+t.amount,0),0)/ms.length; };
+// Sums via txnAmtLocal (not raw t.amount) so a foreign-currency account's transactions are
+// converted to ZAR before averaging — used app-wide (low-balance alert threshold, forecasts,
+// insights, tax estimators, etc.), so this one fix covers all of those call sites.
+const avgInc = () => { const ms=last6().filter(m=>S.transactions.some(t=>t.date&&t.date.startsWith(m)&&t.type==='income')); if(!ms.length)return 0; return ms.reduce((s,m)=>s+S.transactions.filter(t=>t.date&&t.date.startsWith(m)&&t.type==='income').reduce((a,t)=>a+txnAmtLocal(t),0),0)/ms.length; };
+const avgExp = () => { const ms=last6().filter(m=>S.transactions.some(t=>t.date&&t.date.startsWith(m)&&t.type==='expense')); if(!ms.length)return 0; return ms.reduce((s,m)=>s+S.transactions.filter(t=>t.date&&t.date.startsWith(m)&&t.type==='expense').reduce((a,t)=>a+txnAmtLocal(t),0),0)/ms.length; };
 
 /* ═══════════════════════════════════════════════════
    ACCOUNTS PAGE
@@ -8445,8 +8460,8 @@ function rDashKpiSparks(){
   const months=last6();
   const series=months.map(m=>{
     const txns=moTxns(m);
-    const income=txns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-    const expenses=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+    const income=txns.filter(t=>t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0);
+    const expenses=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
     const pct=income>0?((income-expenses)/income)*100:0;
     return {income,expenses,pct};
   });
@@ -8482,16 +8497,16 @@ function rDashCashflow(){
     for(let d=1; d<=lastDay; d++){
       const dateStr=mo+'-'+String(d).padStart(2,'0');
       const txns=S.transactions.filter(t=>t.date===dateStr&&t.type!=='transfer');
-      const income=txns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-      const expenses=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+      const income=txns.filter(t=>t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0);
+      const expenses=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
       data.push({key:mo,day:d,income,expenses});
     }
   } else {
     const months=lastN(_dCfPeriod);
     data=months.map(m=>{
       const txns=moTxns(m);
-      const income=txns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-      const expenses=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+      const income=txns.filter(t=>t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0);
+      const expenses=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
       return {key:m,income,expenses};
     });
   }
@@ -8675,8 +8690,12 @@ function rDash() {
   rDashSubs();
   rDashKpiSparks();
   const txns=moTxns();
-  const inc=txns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-  const exp=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  // Sum via txnAmtLocal, not raw t.amount — moTxns() spans every account, and a transaction's
+  // amount is in its own account's currency, so a foreign-currency account's transactions must be
+  // converted to ZAR before being added to ones from a ZAR account (same class of bug as the
+  // account-balance fix above, but for the Income/Expense/Net/Savings-rate KPIs).
+  const inc=txns.filter(t=>t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0);
+  const exp=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
   const net=inc-exp; const pct=inc>0?Math.round((net/inc)*100):0;
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
   // KPI trend arrows — compare selected month vs prior month
@@ -8684,8 +8703,8 @@ function rDash() {
   _prevD.setMonth(_prevD.getMonth()-1);
   const prevMo=_prevD.toISOString().slice(0,7);
   const prevTxns=moTxns(prevMo);
-  const prevInc=prevTxns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-  const prevExp=prevTxns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const prevInc=prevTxns.filter(t=>t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0);
+  const prevExp=prevTxns.filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
   const prevNet=prevInc-prevExp;
   const prevPct=prevInc>0?Math.round((prevNet/prevInc)*100):0;
   const incTrendEl=document.getElementById('d-inc-trend');
@@ -12467,8 +12486,8 @@ function calcUif(){
 /* ═══ SAVINGS RATE ═══ */
 function rSavingsRate(){
   const txns=moTxns();
-  const income=txns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-  const expenses=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const income=txns.filter(t=>t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0);
+  const expenses=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
   if(!income&&!expenses){
     const noDataEl=document.getElementById('sr-pct');
     if(noDataEl){noDataEl.textContent='—';noDataEl.style.color='var(--t3)';}
@@ -12495,7 +12514,7 @@ function rSavingsRate(){
   if(tEl){
     const now=new Date();const months=[];
     for(let i=5;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);months.push(d.getFullYear()+'-'+(String(d.getMonth()+1).padStart(2,'0')));}
-    const rates=months.map(mo=>{const t=moTxns(mo);const inc=t.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0);const exp=t.filter(x=>x.type==='expense').reduce((s,x)=>s+x.amount,0);return inc>0?Math.round(((inc-exp)/inc)*100):0;});
+    const rates=months.map(mo=>{const t=moTxns(mo);const inc=t.filter(x=>x.type==='income').reduce((s,x)=>s+txnAmtLocal(x),0);const exp=t.filter(x=>x.type==='expense').reduce((s,x)=>s+txnAmtLocal(x),0);return inc>0?Math.round(((inc-exp)/inc)*100):0;});
     const maxR=Math.max(...rates,1);
     const bars=rates.map((r,i)=>`<div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
       <div style="font-size:9px;font-family:var(--fm);color:${r>=20?'var(--green)':r>=10?'var(--amber)':'var(--red)'}">${r}%</div>
