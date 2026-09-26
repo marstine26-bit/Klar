@@ -14765,7 +14765,19 @@ document.addEventListener('DOMContentLoaded',()=>{
     // #kl-cmdk-modal (command palette, built by openCmdK()) uses its own
     // id-based CSS with no shared class — included by id rather than giving
     // it a class, to avoid colliding with .modal-bg's own CSS rules.
-    var MODAL_SEL='.modal-bg,.sb-modal-bg,.bp-modal-bg,#kl-cmdk-modal';
+    // #klar-onboard (first-run onboarding overlay) is included by id for the
+    // same reason — it's a full-screen role="dialog" aria-modal="true" overlay
+    // that predates this trap system and toggles an 'open' class (in addition
+    // to its own display/opacity animation) purely so this observer can see it.
+    // #kl-region-gate and #kl-plan-gate (the region-pick and plan-choice full-screen
+    // gates most new users pass through) are also role="dialog" aria-modal="true" and
+    // already toggle their own 'open' class for CSS (see #kl-region-gate.open /
+    // #kl-plan-gate.open) — they just weren't wired into this shared trap. Included by
+    // id like the others. (#kl-auth-gate is deliberately NOT added here — it already
+    // has its own bespoke focus trap a few lines below, wired up where its 'open' class
+    // gets added asynchronously after the Supabase session check; adding it here too
+    // would attach a second, redundant Tab-key listener.)
+    var MODAL_SEL='.modal-bg,.sb-modal-bg,.bp-modal-bg,#kl-cmdk-modal,#klar-onboard,#kl-region-gate,#kl-plan-gate';
     var prevFocus=null;
     function trapFocus(e){
       var modal=e.currentTarget;
@@ -14822,6 +14834,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   // querySelectorAll that would miss every re-render.
   document.querySelectorAll('.nav-item, .tab, .tsw, #corp-toggle').forEach(function(el){
     el.setAttribute('role', el.id==='corp-toggle' ? 'switch' : el.classList.contains('tab') ? 'tab' : 'button');
+    el.setAttribute('tabindex','0');
+    el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click();}});
+  });
+  // Same fix for the onboarding overlay's div-based clickable controls (skip links and
+  // platform-choice cards) — these are static markup present at page load, so a one-time
+  // querySelectorAll here is safe (nothing re-renders/rebuilds them later).
+  document.querySelectorAll('.ob-skip, .ob-platform-card').forEach(function(el){
+    el.setAttribute('role','button');
     el.setAttribute('tabindex','0');
     el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click();}});
   });
@@ -15804,6 +15824,7 @@ function showOnboarding(){
   klTrack('onboarding_started');
   el.style.display='flex';
   el.style.opacity='0';
+  el.classList.add('open'); // lets the shared modal focus-trap (see MODAL_SEL) find and contain this overlay
   requestAnimationFrame(()=>{el.style.transition='opacity .4s';el.style.opacity='1';});
   _obGoStep(1);
 }
@@ -15900,6 +15921,7 @@ function obSkip(){
     // setObRegion() (step 4's SA/International toggle) only swaps the bank-list UI — it never sets
     // S.prefs.region. Without this, every new user silently falls back to 'za' everywhere in the
     // app regardless of what they picked. klCheckRegion() opens the real 3-way region gate if unset.
+    el.classList.remove('open'); // releases the shared modal focus-trap and restores prior focus
     setTimeout(()=>{el.style.display='none';renderAll();if(typeof klCheckRegion==='function')klCheckRegion();},350);
   } else {
     renderAll();
@@ -15915,6 +15937,7 @@ function obImport(){
   if(el){
     el.style.opacity='0';
     el.style.transition='opacity .3s';
+    el.classList.remove('open'); // releases the shared modal focus-trap and restores prior focus
     setTimeout(()=>{el.style.display='none';renderAll();if(typeof klCheckRegion==='function')klCheckRegion();openImport&&openImport();},320);
   }
 }
@@ -18261,6 +18284,15 @@ document.addEventListener('click', function(e){
   let _klPgBilling = 'monthly';
 
   window.klShowPlanGate = function() {
+    // This fires on a fixed 8s timer started right after region selection (see
+    // klOnRegionReady), with no awareness of how far the user has actually gotten
+    // through the first-run onboarding carousel (#klar-onboard) — a user still naming
+    // their account or picking a bank at the 8s mark would otherwise get the pricing
+    // paywall stacked on top of (and visually replacing, it has a higher z-index)
+    // the onboarding overlay they were mid-way through. Defer and re-check shortly
+    // instead; it fires normally once onboarding actually closes (obSkip/obImport).
+    const ob = document.getElementById('klar-onboard');
+    if (ob && ob.classList.contains('open')) { setTimeout(klShowPlanGate, 1000); return; }
     klTrack('paywall_shown');
     _klPgBilling = 'annual';
     document.getElementById('kl-pg-tog').checked = true;
