@@ -3521,15 +3521,15 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       </div>
       <div class="ct">Font Size</div>
       <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px">
-        <button class="btn btn-ghost btn-sm" onclick="setFS('sm')">Small</button>
-        <button class="btn btn-ghost btn-sm" onclick="setFS('')">Default</button>
-        <button class="btn btn-ghost btn-sm" onclick="setFS('lg')">Large</button>
-        <button class="btn btn-ghost btn-sm" onclick="setFS('xl')">X-Large</button>
+        <button class="btn btn-ghost btn-sm" data-fs="sm" onclick="setFS('sm')">Small</button>
+        <button class="btn btn-ghost btn-sm" data-fs="" onclick="setFS('')">Default</button>
+        <button class="btn btn-ghost btn-sm" data-fs="lg" onclick="setFS('lg')">Large</button>
+        <button class="btn btn-ghost btn-sm" data-fs="xl" onclick="setFS('xl')">X-Large</button>
       </div>
       <div class="ct">Display Density</div>
       <div style="display:flex;gap:7px">
-        <button class="btn btn-ghost btn-sm" onclick="setDensity('')">Comfortable</button>
-        <button class="btn btn-ghost btn-sm" onclick="setDensity('compact')">Compact</button>
+        <button class="btn btn-ghost btn-sm" data-density="" onclick="setDensity('')">Comfortable</button>
+        <button class="btn btn-ghost btn-sm" data-density="compact" onclick="setDensity('compact')">Compact</button>
       </div>
     </div>
     <div class="card">
@@ -13617,6 +13617,22 @@ function modeLabel(key) {
 }
 function isCorp() { return document.documentElement.dataset.mode === 'corporate'; }
 
+// Shared by toggleCorpMode() (user clicks the switch) and applyCorpMode() (page loads already
+// in Business mode) — previously only the click handler populated these fields, so a saved
+// business profile (name/reg no/VAT/tax ref/address/entity type/financial year end) looked
+// completely wiped on every reload even though S.prefs still had it, just never painted back
+// into the inputs.
+function populateCorpFields() {
+  const n=document.getElementById('corp-name'); if(n&&S.prefs.corpName)n.value=S.prefs.corpName;
+  const vn=document.getElementById('corp-vat-num'); if(vn&&S.prefs.corpVatNum)vn.value=S.prefs.corpVatNum;
+  const vr=document.getElementById('corp-vat-rate'); if(vr&&S.prefs.corpVatRate)vr.value=S.prefs.corpVatRate;
+  const et=document.getElementById('corp-entity-type'); if(et&&S.prefs.corpEntityType)et.value=S.prefs.corpEntityType;
+  const rn=document.getElementById('corp-reg-no'); if(rn&&S.prefs.corpRegNo)rn.value=S.prefs.corpRegNo;
+  const tr=document.getElementById('corp-tax-ref'); if(tr&&S.prefs.corpTaxRef)tr.value=S.prefs.corpTaxRef;
+  const ad=document.getElementById('corp-address'); if(ad&&S.prefs.corpAddress)ad.value=S.prefs.corpAddress;
+  const fye=document.getElementById('corp-fye'); if(fye&&S.prefs.corpFYE)fye.value=S.prefs.corpFYE;
+}
+
 function toggleCorpMode() {
   const corp = !isCorp();
   document.documentElement.dataset.mode = corp ? 'corporate' : '';
@@ -13630,15 +13646,7 @@ function toggleCorpMode() {
   document.querySelectorAll('.corp-show').forEach(el => el.style.display = corp ? 'flex' : 'none');
   document.querySelectorAll('.corp-hide').forEach(el => el.style.display = corp ? 'none' : '');
   // Populate corp fields
-  if (corp) {
-    const n=document.getElementById('corp-name'); if(n&&S.prefs.corpName)n.value=S.prefs.corpName;
-    const vn=document.getElementById('corp-vat-num'); if(vn&&S.prefs.corpVatNum)vn.value=S.prefs.corpVatNum;
-    const vr=document.getElementById('corp-vat-rate'); if(vr&&S.prefs.corpVatRate)vr.value=S.prefs.corpVatRate;
-    const et=document.getElementById('corp-entity-type'); if(et&&S.prefs.corpEntityType)et.value=S.prefs.corpEntityType;
-    const rn=document.getElementById('corp-reg-no'); if(rn&&S.prefs.corpRegNo)rn.value=S.prefs.corpRegNo;
-    const tr=document.getElementById('corp-tax-ref'); if(tr&&S.prefs.corpTaxRef)tr.value=S.prefs.corpTaxRef;
-    const ad=document.getElementById('corp-address'); if(ad&&S.prefs.corpAddress)ad.value=S.prefs.corpAddress;
-  }
+  if (corp) populateCorpFields();
   if(corp)activateBizData();else deactivateBizData();
   // AI Advisor's chat transcript DOM is only (re)populated from S.chatHistory when #chat-msgs
   // is empty (see updSnap) — since the page markup itself isn't recreated on navigation, a
@@ -13661,6 +13669,7 @@ function applyCorpMode() {
   if (knob) { knob.style.left = '25px'; knob.style.background = 'var(--gold)'; }
   if (tog) tog.style.background = 'var(--gold-d)';
   document.querySelectorAll('.corp-show').forEach(el => el.style.display = 'flex');
+  populateCorpFields();
   activateBizData();
   syncModeSwitcher();
 }
@@ -13939,6 +13948,11 @@ function applyPrefsUI(){
   const accentNames={'#9B7FD4':'Iris Violet','#0F5132':'Forest Green','#A87729':'Muted Gold','#2D5BFF':'Signal Blue','#9060e0':'Purple','#177A82':'Teal','#e8553e':'Coral'};
   const accNameEl=document.getElementById('acc-name');if(accNameEl)accNameEl.textContent=accentNames[(p.accent||'#9B7FD4').toLowerCase()]||accentNames[(p.accent||'#9B7FD4')]||'Custom';
   document.querySelectorAll('[data-t]').forEach(el=>{el.style.outline=el.dataset.t===p.theme?'2px solid var(--accent)':'';});
+  // Font Size / Display Density buttons had no active-state indicator at all — a user could
+  // click "Large" or "Compact" and have no visual confirmation of which option was currently
+  // selected (unlike the Theme swatches above, which do highlight). Mirror the same convention.
+  document.querySelectorAll('[data-fs]').forEach(el=>{el.style.outline=el.dataset.fs===(p.fs||'')?'2px solid var(--accent)':'';});
+  document.querySelectorAll('[data-density]').forEach(el=>{el.style.outline=el.dataset.density===(p.density||'')?'2px solid var(--accent)':'';});
   const keyEl=document.getElementById('pref-api-key');
   if(keyEl) keyEl.placeholder=p.groqKey?'gsk_… (saved)':'gsk_…';
   const statusEl=document.getElementById('api-key-status');
@@ -14000,8 +14014,8 @@ function savePref(){
 }
 function applyCompact(v){S.prefs.compact=v;save();document.getElementById('sb')?.classList.toggle('collapsed',v);}
 function setTheme(t){S.prefs.theme=t;document.documentElement.dataset.theme=t;try{localStorage.setItem('cl-theme',t);}catch(e){}save();applyPrefsUI();}
-function setFS(s){S.prefs.fs=s;document.body.dataset.fs=s;save();}
-function setDensity(d){S.prefs.density=d;document.body.dataset.density=d;save();}
+function setFS(s){S.prefs.fs=s;document.body.dataset.fs=s;save();applyPrefsUI();}
+function setDensity(d){S.prefs.density=d;document.body.dataset.density=d;save();applyPrefsUI();}
 function setAccent(v){S.prefs.accent=v;document.documentElement.style.setProperty('--accent',v);const c2=v+'cc';document.documentElement.style.setProperty('--accent2',c2);save();}
 function applyDyslexia(v){document.body.style.letterSpacing=v?'0.05em':'';document.body.style.wordSpacing=v?'0.1em':'';}
 function applyLargeTouch(v){document.querySelectorAll('.btn,.nav-item').forEach(el=>{el.style.minHeight=v?'44px':''});}
