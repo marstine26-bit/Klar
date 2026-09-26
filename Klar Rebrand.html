@@ -5560,6 +5560,21 @@ function _loadBiz(){try{const raw=localStorage.getItem(BIZ_KEY);return Object.as
 function activateBizData(){if(_bizSnap!==null)return;_bizSnap={};BIZ_SWAP.forEach(k=>_bizSnap[k]=S[k]);const biz=_loadBiz();BIZ_SWAP.forEach(k=>S[k]=biz[k]!==undefined?biz[k]:(Array.isArray(_bizSnap[k])?[]:typeof _bizSnap[k]==='object'?{}:_bizSnap[k]));}
 function deactivateBizData(){if(_bizSnap===null)return;try{const biz={};BIZ_SWAP.forEach(k=>biz[k]=S[k]);localStorage.setItem(BIZ_KEY,JSON.stringify(biz));}catch(e){notify('Could not switch mode — storage may be full','err');}BIZ_SWAP.forEach(k=>S[k]=_bizSnap[k]);_bizSnap=null;}
 
+// Cloud sync helpers: regardless of which mode (Personal/Business) happens to be active in S
+// at the moment save()/sbPushSync() fires, cloud sync must carry BOTH modes' data every time —
+// otherwise (as previously) whichever mode was active at push time silently overwrote the
+// other mode's data in the single per-user cloud row, since both modes use the exact same
+// field names (transactions/accounts/budgets/...). These mirror the same _bizSnap/BIZ_KEY
+// convention save() already uses to keep the two modes' data apart on disk.
+function _personalSnapshotForSync(){
+  if(_bizSnap===null) return S; // Personal mode is already active in S
+  const pers=Object.assign({},S); BIZ_SWAP.forEach(k=>pers[k]=_bizSnap[k]); return pers;
+}
+function _bizSnapshotForSync(){
+  if(_bizSnap!==null){ const biz={}; BIZ_SWAP.forEach(k=>biz[k]=S[k]); return biz; } // Business mode active in S
+  return _loadBiz(); // Personal mode active — Business data lives on disk in BIZ_KEY
+}
+
 /* ═══════════════════════════════════════════════════
    CATEGORIES & HELPERS
 ═══════════════════════════════════════════════════ */
@@ -16360,7 +16375,12 @@ async function sbPushSync(){
   if(_rls){_rls.textContent='Syncing…';_rls.style.display='block';}
   try {
     const _safePrefs = Object.assign({}, S.prefs, { groqKey: undefined });
-    const _safeS = Object.assign({}, S, { prefs: _safePrefs });
+    // Always push the Personal-mode data at the top level and the Business-mode data under
+    // `_biz`, regardless of which mode happens to be active right now — see
+    // _personalSnapshotForSync/_bizSnapshotForSync above. Previously this pushed S as-is, so
+    // whichever mode was active when the debounced push fired overwrote the *other* mode's
+    // data in the cloud (both modes share the same field names, and there's one row per user).
+    const _safeS = Object.assign({}, _personalSnapshotForSync(), { prefs: _safePrefs, _biz: _bizSnapshotForSync() });
     const expectedVersion = S._syncVersion||0;
     // push_klar_sync (see migration add_sync_optimistic_concurrency) only writes if the server's
     // current version still matches what we last saw — otherwise another device pushed since our
@@ -16409,9 +16429,32 @@ async function sbPullAndMerge(){
       const cloudVer = data.version || 0;
       const localVer = S._syncVersion || 0;
       if(cloudVer > localVer){
-        // Cloud is newer — merge, preferring cloud for most keys but keep local prefs
+        // Cloud is newer — merge, preferring cloud for most keys but keep local prefs.
+        // `cloud`'s top-level BIZ_SWAP fields (transactions/accounts/...) are always the
+        // PERSONAL-mode snapshot (see sbPushSync/_personalSnapshotForSync) and `cloud._biz`
+        // is always the Business-mode snapshot — regardless of which mode this device
+        // happens to be sitting in right now. Previously this did a blind Object.assign(S,
+        // cloud), so whichever mode was active locally received the cloud's PERSONAL data
+        // unconditionally — if this device was in Business mode, or if the cloud row's last
+        // writer had left it holding the other mode's data, that data would silently land in
+        // the wrong mode's transactions/accounts on screen.
         const localPrefs = S.prefs;
-        Object.assign(S, cloud);
+        const cloudBiz = cloud._biz || null;
+        const cloudPersonal = Object.assign({}, cloud); delete cloudPersonal._biz;
+        if(_bizSnap!==null){
+          // Business mode is active in S right now — the cloud's personal fields belong in
+          // the parked personal snapshot, not live S; the cloud's business fields go live.
+          BIZ_SWAP.forEach(k=>{ if(cloudPersonal[k]!==undefined) _bizSnap[k]=cloudPersonal[k]; });
+          Object.keys(cloudPersonal).forEach(k=>{ if(!BIZ_SWAP.includes(k)) S[k]=cloudPersonal[k]; });
+          if(cloudBiz) BIZ_SWAP.forEach(k=>{ if(cloudBiz[k]!==undefined) S[k]=cloudBiz[k]; });
+        } else {
+          // Personal mode is active in S right now — apply the cloud's personal fields live,
+          // and park the cloud's business fields straight to BIZ_KEY on disk (never into live
+          // S), so they're there next time Business mode is switched on but never leak into
+          // the Personal view in the meantime.
+          Object.assign(S, cloudPersonal);
+          if(cloudBiz){ try{ localStorage.setItem(BIZ_KEY, JSON.stringify(cloudBiz)); }catch(e){} }
+        }
         // Tier fields are deliberately NOT taken from the cloud blob — klar_syncs is written by
         // the client's own JWT, so a tampered local S.prefs.tier (e.g. via devtools) would
         // otherwise round-trip through the cloud and persist across devices/sessions forever.
@@ -16420,9 +16463,9 @@ async function sbPullAndMerge(){
         // pre-merge local value here just means "unknown yet" until that check lands, not a
         // real security boundary on its own, but it stops cloud sync from being the mechanism
         // that makes a tampered tier durable.
-        S.prefs = Object.assign({}, cloud.prefs || {}, { accent: localPrefs?.accent, theme: localPrefs?.theme, groqKey: localPrefs?.groqKey, tier: localPrefs?.tier, _tierStatus: localPrefs?._tierStatus, _tierExpires: localPrefs?._tierExpires });
+        S.prefs = Object.assign({}, cloudPersonal.prefs || {}, { accent: localPrefs?.accent, theme: localPrefs?.theme, groqKey: localPrefs?.groqKey, tier: localPrefs?.tier, _tierStatus: localPrefs?._tierStatus, _tierExpires: localPrefs?._tierExpires, mode: localPrefs?.mode });
         S._syncVersion = cloudVer;
-        try { localStorage.setItem('cl_v55', JSON.stringify(S)); } catch(e){}
+        save();
         renderAll();
         notify('Data synced from cloud ✓', 'ok');
       } else {
