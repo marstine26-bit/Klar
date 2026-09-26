@@ -7370,13 +7370,18 @@ function rAccounts() {
     const totalLiquid = accs.filter(a=>a.type!=='credit').reduce((s,a)=>s+toZar(a),0);
     const totalCreditOwed = accs.filter(a=>a.type==='credit').reduce((s,a)=>s+Math.abs(toZar(a)),0);
     sumEl.innerHTML = accs.map(a => {
-      const bal = calcAccBalance(a.id);
       const isCc = a.type==='credit';
-      const displayBal = isCc ? Math.abs(bal) : bal;
-      const color = isCc ? (displayBal>0?'var(--red)':'var(--green)') : (bal>=0?'var(--green)':'var(--red)');
+      const isForex = (a.currency||'ZAR')!=='ZAR';
+      // Use the ZAR-equivalent (converted) balance here so each row is consistent with the
+      // Liquid Total/Credit Owed/Net Liquid figures below, which are always converted. Showing
+      // the raw native-currency amount for a forex account previously made this row disagree
+      // with the totals (and mislabeled the amount with the home-currency symbol).
+      const zarBal = toZar(a);
+      const displayBal = isCc ? Math.abs(zarBal) : zarBal;
+      const color = isCc ? (displayBal>0?'var(--red)':'var(--green)') : (zarBal>=0?'var(--green)':'var(--red)');
       return `<div class="sr">
         <span class="lbl" style="display:flex;align-items:center;gap:6px">
-          <span class="acc-dot" style="background:${a.color}"></span>${esc(a.name)}${isCc?' <span style="font-size:9px;color:var(--blue)">(CC)</span>':''}
+          <span class="acc-dot" style="background:${a.color}"></span>${esc(a.name)}${isCc?' <span style="font-size:9px;color:var(--blue)">(CC)</span>':''}${isForex?` <span style="font-size:9px;color:var(--blue)">${esc(a.currency)}</span>`:''}
         </span>
         <span class="val" style="color:${color}">${isCc&&displayBal>0?'Owes ':''}${fmt(displayBal)}</span>
       </div>`;
@@ -8691,7 +8696,12 @@ function rDash() {
   if(savTrendEl)savTrendEl.innerHTML=_kpiDelta(pct,prevPct,false);
   // Total balance (hero + KPI) — plain white/t1 text, matching the mockup (color-coding lives in
   // the card tint and trend pill, not the number itself)
-  const totalBal=(S.accounts||[]).reduce((s,a)=>s+calcAccBalance(a.id),0);
+  // Convert any foreign-currency account to the home currency via zarRate before summing —
+  // matches the convention used by the Accounts page summary and Net Worth totals. Previously
+  // this summed raw native-currency balances directly, so a USD/GBP/etc account's balance was
+  // added to the ZAR total at face value instead of its converted value (e.g. a $250 account
+  // counted as R250 instead of ~R4,625 at an 18.5 rate) — the app's single most visible number.
+  const totalBal=(S.accounts||[]).reduce((s,a)=>{const b=calcAccBalance(a.id);const cur=a.currency||'ZAR';return s+(cur==='ZAR'?b:b*(a.zarRate||1));},0);
   const heroBalEl=document.getElementById('d-hero-bal');
   if(heroBalEl)animateNum(heroBalEl,totalBal,v=>(v<0?'-':'')+fmt(Math.abs(v)));
   set('d-hero-balsub','Across '+(S.accounts||[]).length+' account'+((S.accounts||[]).length===1?'':'s')+' · '+(net>=0?'+':'-')+fmt(Math.abs(net))+' net this month');
@@ -9737,14 +9747,22 @@ function rNetWorth(){
         const bal=calcAccBalance(acc.id);
         const isCc=acc.type==='credit';
         const limit=acc.creditLimit||0;
+        const isForex=(acc.currency||'ZAR')!=='ZAR';
+        // `bal`/`limit` stay in the account's native currency for the progress-bar math (both
+        // sides are native so the ratio is unaffected), but the headline figure is converted to
+        // the home currency via zarRate — this card previously showed the raw native amount with
+        // no conversion at all, disagreeing with the (correctly-converted) totals above it.
+        const zarBal=isForex?bal*(acc.zarRate||1):bal;
         const displayBal=isCc?Math.abs(bal):bal;
+        const displayZarBal=isCc?Math.abs(zarBal):zarBal;
         const balColor=isCc?(displayBal>0?'var(--red)':'var(--green)'):(bal>=0?'var(--green)':'var(--red)');
         const txnCount=S.transactions.filter(t=>t.accountId===acc.id).length;
         return`<div style="background:var(--s2);border-radius:var(--rsm);padding:14px;border-top:3px solid ${acc.color}">
-          <div style="font-size:9px;color:var(--t3);font-family:var(--fm);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:4px">${esc(acc.bank)} · ${isCc?'Credit Card':esc(acc.type)}</div>
+          <div style="font-size:9px;color:var(--t3);font-family:var(--fm);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:4px">${esc(acc.bank)} · ${isCc?'Credit Card':esc(acc.type)}${isForex?` · <span style="color:var(--blue)">${esc(acc.currency)}</span>`:''}</div>
           <div style="font-weight:700;font-size:13px;margin-bottom:6px">${esc(acc.name)}</div>
           <div style="font-size:9px;color:var(--t4);font-family:var(--fm);letter-spacing:0.5px;margin-bottom:2px">${isCc?'AMOUNT OWED':'BALANCE'}</div>
-          <div style="font-family:var(--fs);font-size:22px;font-weight:700;color:${balColor}">${fmt(displayBal)}</div>
+          <div style="font-family:var(--fs);font-size:22px;font-weight:700;color:${balColor}">${isForex?esc(acc.currency)+' ':''}${fmt(displayBal)}</div>
+          ${isForex?`<div style="font-size:11px;color:var(--t3);font-family:var(--fm);margin-top:2px">≈ ${fmt(displayZarBal)}</div>`:''}
           ${isCc&&limit>0?`<div style="margin-top:6px"><div class="prt" style="height:4px"><div class="prf" style="width:${Math.min((displayBal/limit)*100,100)}%;background:${displayBal/limit>0.8?'var(--red)':displayBal/limit>0.5?'var(--amber)':'var(--green)'}"></div></div><div style="font-size:10px;color:var(--green);margin-top:3px">Available: ${fmt(Math.max(limit-displayBal,0))}</div></div>`:''}
           <div style="font-size:9.5px;color:var(--t4);font-family:var(--fm);margin-top:4px">${txnCount} transactions · ${isCc?'liability':'asset'}</div>
         </div>`;
