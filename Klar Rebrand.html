@@ -6130,7 +6130,7 @@ const syncConnectedData = () => {
   // old (over-reduced) value instead of reverting to originalBalance.
   (S.debts||[]).forEach(debt => {
     const payments = txns.filter(t => t.debtId === debt.id && t.type === 'expense');
-    const totalPaid = payments.reduce((s,t) => s + t.amount, 0);
+    const totalPaid = payments.reduce((s,t) => s + txnAmtLocal(t), 0);
     if (debt.originalBalance !== undefined) {
       debt.balance = Math.max(debt.originalBalance - totalPaid, 0);
     }
@@ -6140,7 +6140,7 @@ const syncConnectedData = () => {
   // last contribution correctly reverts goal.saved to originalSaved instead of staying stale.
   (S.goals||[]).forEach(goal => {
     const contribs = txns.filter(t => t.goalId === goal.id);
-    const totalContrib = contribs.reduce((s,t) => s + t.amount, 0);
+    const totalContrib = contribs.reduce((s,t) => s + txnAmtLocal(t), 0);
     if (goal.originalSaved !== undefined) {
       goal.saved = Math.min(Math.max(goal.originalSaved + totalContrib, 0), goal.target);
     }
@@ -6150,7 +6150,7 @@ const syncConnectedData = () => {
   if (!S.budgetHistory) S.budgetHistory = {};
   if (!S.budgetHistory[curMo]) S.budgetHistory[curMo] = {};
   Object.keys(S.budgets).forEach(cat => {
-    const spent = txns.filter(t=>t.date&&t.date.startsWith(curMo)&&t.category===cat&&t.type==='expense').reduce((s,t)=>s+t.amount,0);
+    const spent = txns.filter(t=>t.date&&t.date.startsWith(curMo)&&t.category===cat&&t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
     S.budgetHistory[curMo][cat] = { budgeted: S.budgets[cat], spent };
   });
   // 4. Flag negative account balances for dashboard alert
@@ -6163,18 +6163,18 @@ const getBudgetHistory = (catId, months=3) => {
   return last6().slice(-months).map(mo => ({
     mo,
     budgeted: (hist[mo]||{})[catId]?.budgeted || S.budgets[catId] || 0,
-    spent: (hist[mo]||{})[catId]?.spent || S.transactions.filter(t=>t.date&&t.date.startsWith(mo)&&t.category===catId&&t.type==='expense').reduce((s,t)=>s+t.amount,0)
+    spent: (hist[mo]||{})[catId]?.spent || S.transactions.filter(t=>t.date&&t.date.startsWith(mo)&&t.category===catId&&t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0)
   }));
 };
 
 // Get total contributed to a goal via linked transactions
 const getGoalContributions = (goalId) => {
-  return (S.transactions||[]).filter(t=>t.goalId===goalId).reduce((s,t)=>s+t.amount,0);
+  return (S.transactions||[]).filter(t=>t.goalId===goalId).reduce((s,t)=>s+txnAmtLocal(t),0);
 };
 
 // Get total paid toward a debt via linked transactions  
 const getDebtPayments = (debtId) => {
-  return (S.transactions||[]).filter(t=>t.debtId===debtId&&t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  return (S.transactions||[]).filter(t=>t.debtId===debtId&&t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
 };
 
 const catBy  = id => {
@@ -6523,8 +6523,8 @@ function rCatBreakdown(sort, tabEl) {
     const txns = moTxns(m).filter(t=>t.type==='expense');
     txns.forEach(t => {
       if (!allCats[t.category]) allCats[t.category] = { total:0, months:{} };
-      allCats[t.category].total += t.amount;
-      allCats[t.category].months[m] = (allCats[t.category].months[m]||0) + t.amount;
+      allCats[t.category].total += txnAmtLocal(t);
+      allCats[t.category].months[m] = (allCats[t.category].months[m]||0) + txnAmtLocal(t);
     });
   });
   let entries = Object.entries(allCats);
@@ -6625,7 +6625,7 @@ function rHodPattern() {
   S.transactions.filter(t=>t.type==='expense').forEach(t => {
     // Use hash of transaction id as synthetic hour since we don't store time
     const h = t.id ? Math.abs(t.id.charCodeAt(0) + (t.id.charCodeAt(2)||0)) % 24 : 12;
-    hours[h] += t.amount;
+    hours[h] += txnAmtLocal(t);
   });
   const max = Math.max(...hours, 1);
   const labels = ['12a','','2a','','4a','','6a','','8a','','10a','','12p','','2p','','4p','','6p','','8p','','10p',''];
@@ -6649,7 +6649,7 @@ function rWeeklyAvg() {
     txns.forEach(t => {
       const day = new Date(t.date).getDate();
       const week = Math.min(Math.floor((day-1)/7), 4);
-      weekTotals[week] += t.amount;
+      weekTotals[week] += txnAmtLocal(t);
       weekCounts[week]++;
     });
   });
@@ -7229,11 +7229,11 @@ async function autoMoSummary(mo){
   if(!apiKey)return;
   const txns=S.transactions.filter(t=>t.date&&t.date.startsWith(mo)&&t.type!=='transfer');
   if(!txns.length)return;
-  const inc=txns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-  const exp=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const inc=txns.filter(t=>t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0);
+  const exp=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
   const net=inc-exp;
   if(inc===0&&exp===0)return;
-  const cats={};txns.filter(t=>t.type==='expense').forEach(t=>{cats[t.category]=(cats[t.category]||0)+t.amount;});
+  const cats={};txns.filter(t=>t.type==='expense').forEach(t=>{cats[t.category]=(cats[t.category]||0)+txnAmtLocal(t);});
   const topCat=Object.entries(cats).sort((a,b)=>b[1]-a[1])[0];
   const moName=new Date(mo+'-01').toLocaleString('default',{month:'long',year:'numeric'});
   const savRate=inc>0?Math.round((net/inc)*100):0;
@@ -8794,7 +8794,7 @@ function rDashRing(){
   const keys=Object.keys(budgets);
   const totalBudget=keys.reduce((s,k)=>s+budgets[k],0);
   const txns=moTxns();
-  const spent=txns.filter(t=>t.type==='expense'&&budgets[t.category]!=null).reduce((s,t)=>s+t.amount,0);
+  const spent=txns.filter(t=>t.type==='expense'&&budgets[t.category]!=null).reduce((s,t)=>s+txnAmtLocal(t),0);
   const R=54,C=2*Math.PI*R;
   const ctaEl=document.getElementById('d-ring-cta');
   const legendEl=document.getElementById('d-ring-legend');
@@ -8898,7 +8898,7 @@ function rDonut(txns,elId){
   const el=document.getElementById(elId||'donut-wrap');if(!el)return;
   const expT=txns.filter(t=>t.type==='expense');
   if(!expT.length){el.innerHTML='<div class="empty" style="padding:16px"><div class="empty-i">○</div><div class="empty-t" style="font-size:13px">No expenses this month</div></div>';return;}
-  const tots={};expT.forEach(t=>{tots[t.category]=(tots[t.category]||0)+t.amount;});
+  const tots={};expT.forEach(t=>{tots[t.category]=(tots[t.category]||0)+txnAmtLocal(t);});
   const total=Object.values(tots).reduce((s,v)=>s+v,0);
   const all=Object.entries(tots).sort((a,b)=>b[1]-a[1]);
   const TOP=7;
@@ -9031,8 +9031,8 @@ function renderLedgerHero(){
     const[y,m]=moF.split('-').map(Number);
     label=new Date(y,m-1,1).toLocaleString('default',{month:'long',year:'numeric'});
   }
-  const inc=txns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-  const exp=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const inc=txns.filter(t=>t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0);
+  const exp=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
   const net=inc-exp;
   const incCount=txns.filter(t=>t.type==='income').length;
   const expCount=txns.filter(t=>t.type==='expense').length;
@@ -10086,7 +10086,7 @@ function getRolloverBonus(catId){
   const prevMo = m===1 ? `${y-1}-12` : `${y}-${String(m-1).padStart(2,'0')}`;
   const prevTxns = moTxns(prevMo);
   const prevLim = S.budgets[catId]||0;
-  const prevAct = prevTxns.filter(t=>t.category===catId&&t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const prevAct = prevTxns.filter(t=>t.category===catId&&t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
   const raw = Math.max(prevLim - prevAct, 0);
   const capPct = S.prefs.rolloverCap ?? 200;
   if(capPct >= 200) return raw;
@@ -10120,7 +10120,7 @@ function rBudget(){
       const baseLim=S.budgets[catId];
       const rollover=getRolloverBonus(catId);
       const lim=baseLim+rollover;
-      const act=txns.filter(t=>t.category===catId&&t.type==='expense').reduce((s,t)=>s+t.amount,0);
+      const act=txns.filter(t=>t.category===catId&&t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
       const pct=lim>0?Math.min((act/lim)*100,100):0;
       const over=act>lim;
       const clr=over?'var(--red)':pct>80?'var(--amber)':catClr(catId);
@@ -10139,8 +10139,8 @@ function rBudget(){
     }).join('');
   }
   const totB=keys.reduce((s,k)=>s+((S.budgets[k]||0)+getRolloverBonus(k)),0);
-  const totA=keys.reduce((s,c)=>s+txns.filter(t=>t.category===c&&t.type==='expense').reduce((a,t)=>a+t.amount,0),0);
-  const ov=keys.filter(c=>{const lim=S.budgets[c]+getRolloverBonus(c);return txns.filter(t=>t.category===c&&t.type==='expense').reduce((s,t)=>s+t.amount,0)>lim;}).length;
+  const totA=keys.reduce((s,c)=>s+txns.filter(t=>t.category===c&&t.type==='expense').reduce((a,t)=>a+txnAmtLocal(t),0),0);
+  const ov=keys.filter(c=>{const lim=S.budgets[c]+getRolloverBonus(c);return txns.filter(t=>t.category===c&&t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0)>lim;}).length;
   if(ov>0&&typeof klCheckBudgetNotif==='function') klCheckBudgetNotif();
   const rem=totB-totA;
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
@@ -10166,10 +10166,10 @@ function rBudget(){
       ubTxns.forEach(t=>{
         const cid=t.category||'other';
         if(!ubBycat[cid]){ubBycat[cid]={total:0,count:0};}
-        ubBycat[cid].total+=t.amount;
+        ubBycat[cid].total+=txnAmtLocal(t);
         ubBycat[cid].count++;
       });
-      const ubTotal=ubTxns.reduce((s,t)=>s+t.amount,0);
+      const ubTotal=ubTxns.reduce((s,t)=>s+txnAmtLocal(t),0);
       const ubRows=Object.entries(ubBycat).sort((a,b)=>b[1].total-a[1].total).map(([cid,d])=>{
         return`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--b2)"><div style="width:30px;height:30px;border-radius:8px;background:var(--amber-d,#3a2e0a);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">${catIconSvg(cid)}</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--t1)">${esc(catLbl(cid))}</div><div style="font-size:11px;color:var(--t3)">${d.count} transaction${d.count===1?'':'s'}</div></div><div style="font-family:var(--fm);font-size:13px;font-weight:700;color:var(--amber)">${fmt(d.total)}</div></div>`;
       }).join('');
@@ -10182,7 +10182,7 @@ function rBudget(){
   }
 }
 const BMETA={manual:{c:'b',tag:'Manual',h:'Set your own limits',b:'Manually define spending limits per category.'},'502030':{c:'',tag:'50/30/20',h:'50% Needs · 30% Wants · 20% Savings',b:'Half your income to necessities, 30% lifestyle, 20% savings/debt.'},zero:{c:'a',tag:'Zero-Based',h:(S.prefs.region==='uk'?'Every Pound has a job':'Every Rand has a job'),b:(S.prefs.region==='uk'?'Assign every pound to a category until income minus expenses equals zero.':'Assign every rand to a category until income minus expenses equals zero.')},envelope:{c:'p',tag:'Envelope',h:'Cash envelope budgeting',b:'Divide monthly income into virtual envelopes per category.'}};
-function applyBudgetMethod(){const m=document.getElementById('bud-method').value;const meta=BMETA[m];const el=document.getElementById('bud-method-info');if(el){el.className='ic '+meta.c;el.innerHTML=`<div class="it">${meta.tag}</div><div class="ih">${meta.h}</div><div class="ib">${meta.b}</div>`;}if(m==='502030'){const income=moTxns().filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);if(income>0){klConfirm('Apply 50/30/20 based on '+fmt(income)+'?',function(){Object.assign(S.budgets,{housing:income*0.30,food:income*0.10,transport:income*0.10,entertainment:income*0.10,shopping:income*0.10,utilities:income*0.05,savings:income*0.20});save();renderAll();notify('50/30/20 budget applied','ok');},{okLabel:'Apply Budget'});}else notify('Add income transactions first','err');}}
+function applyBudgetMethod(){const m=document.getElementById('bud-method').value;const meta=BMETA[m];const el=document.getElementById('bud-method-info');if(el){el.className='ic '+meta.c;el.innerHTML=`<div class="it">${meta.tag}</div><div class="ih">${meta.h}</div><div class="ib">${meta.b}</div>`;}if(m==='502030'){const income=moTxns().filter(t=>t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0);if(income>0){klConfirm('Apply 50/30/20 based on '+fmt(income)+'?',function(){Object.assign(S.budgets,{housing:income*0.30,food:income*0.10,transport:income*0.10,entertainment:income*0.10,shopping:income*0.10,utilities:income*0.05,savings:income*0.20});save();renderAll();notify('50/30/20 budget applied','ok');},{okLabel:'Apply Budget'});}else notify('Add income transactions first','err');}}
 function openAddBudget(){popCatDDs();document.getElementById('m-add-bud').classList.add('open');}
 function saveBudget(){const cat=document.getElementById('bud-cat').value;const lim=parseFloat(document.getElementById('bud-lim').value);if(!cat||isNaN(lim)||lim<=0){notify('Fill all fields','err');return;}S.budgets[cat]=lim;save();closeModal('m-add-bud');renderAll();notify('Budget limit saved','ok');}
 const delBudget=catId=>{klConfirm('Remove budget limit for '+catLbl(catId)+'?',()=>{delete S.budgets[catId];save();renderAll();},{title:'Remove Budget',danger:true});};
@@ -10797,7 +10797,7 @@ function rSavings(){
       </div>
     </div>`;
   }).join('');
-  const txns=moTxns();const inc=txns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);const exp=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);const net=inc-exp;const pct=inc>0?Math.max(0,Math.round((net/inc)*100)):0;
+  const txns=moTxns();const inc=txns.filter(t=>t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0);const exp=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);const net=inc-exp;const pct=inc>0?Math.max(0,Math.round((net/inc)*100)):0;
   const rEl=document.getElementById('sav-rate-big');if(rEl){rEl.textContent=pct+'%';rEl.style.color=pct>=20?'var(--green)':pct>=10?'var(--amber)':'var(--red)';}
   const bEl=document.getElementById('sav-rate-bar');if(bEl){bEl.innerHTML=`<div class="prt" style="height:7px"><div class="prf" style="width:${pct}%;background:${pct>=20?'var(--green)':pct>=10?'var(--amber)':'var(--red)'}"></div></div>`;animateBars(bEl);}
   const aEl=document.getElementById('sav-rate-txt');if(aEl){if(!inc)aEl.textContent='Add income & expense data to calculate.';else if(pct<10)aEl.textContent='Below 10% minimum. Focus on cutting discretionary spending.';else if(pct<20)aEl.textContent='Good progress! Aim for 20% to accelerate wealth building.';else aEl.textContent='Well done — saving '+pct+'%, real margin to work with.';}
@@ -10812,7 +10812,7 @@ function rSavings(){
     const rem=Math.max(g.target-g.saved,0);
     const mos=g.monthly>0?Math.ceil(rem/g.monthly):null;
     const linkedTxns=(S.transactions||[]).filter(t=>t.goalId===g.id);
-    const linkedTotal=linkedTxns.reduce((s,t)=>s+t.amount,0);
+    const linkedTotal=linkedTxns.reduce((s,t)=>s+txnAmtLocal(t),0);
     const onTrack=g.monthly>0&&g.targetDt?(()=>{const _now=new Date();const _tgt=new Date(g.targetDt);const _monthsLeft=(_tgt.getFullYear()-_now.getFullYear())*12+(_tgt.getMonth()-_now.getMonth());return Math.ceil(rem/g.monthly)<=_monthsLeft;})():null;
     const isDone=g.saved>=g.target;
     return`<div style="background:var(--s2);border-radius:11px;padding:13px;margin-bottom:10px;border:1px solid ${isDone?'var(--gold)':'var(--b1)'}${isDone?';box-shadow:0 0 0 1px var(--gold)22':''}">
@@ -10937,7 +10937,7 @@ function rDebt(){
   const icons={credit_card:'ki-credit-card',personal_loan:'ki-file-text',home_loan:'ki-home2',car_loan:'ki-car',student_loan:'ki-cat-book',other:'ki-grid'};
   el.innerHTML=S.debts.map(d=>{
     const linkedPmts=(S.transactions||[]).filter(t=>t.debtId===d.id&&t.type==='expense');
-    const totalPaid=linkedPmts.reduce((s,t)=>s+t.amount,0);
+    const totalPaid=linkedPmts.reduce((s,t)=>s+txnAmtLocal(t),0);
     const effectiveBal=totalPaid>0&&d.originalBalance?Math.max(d.originalBalance-totalPaid,0):d.balance;
     const pct=d.originalBalance?Math.min((totalPaid/d.originalBalance)*100,100):0;
     const dIcon=icons[d.type]||'ki-grid';
@@ -11143,9 +11143,9 @@ function rYoY() {
     const y=t.date.slice(0,4);
     const m=parseInt(t.date.slice(5,7))-1;
     if(!yearData[y]||m<0||m>11) return;
-    if(type==='expense'&&t.type==='expense') yearData[y][m]+=t.amount;
-    else if(type==='income'&&t.type==='income') yearData[y][m]+=t.amount;
-    else if(type==='net') yearData[y][m]+=(t.type==='income'?t.amount:-t.amount);
+    if(type==='expense'&&t.type==='expense') yearData[y][m]+=txnAmtLocal(t);
+    else if(type==='income'&&t.type==='income') yearData[y][m]+=txnAmtLocal(t);
+    else if(type==='net') yearData[y][m]+=(t.type==='income'?txnAmtLocal(t):-txnAmtLocal(t));
   });
   // SVG bar chart: grouped by month, one bar per year
   const COLORS=['var(--accent)','var(--blue)','var(--gold)','var(--green)','var(--red)'];
@@ -11179,8 +11179,8 @@ function rYoY() {
   // Summary table
   if(tableEl){
     const rows=years.map(y=>{
-      const inc=(S.transactions||[]).filter(t=>t.date?.startsWith(y)&&t.type==='income').reduce((s,t)=>s+t.amount,0);
-      const exp=(S.transactions||[]).filter(t=>t.date?.startsWith(y)&&t.type==='expense').reduce((s,t)=>s+t.amount,0);
+      const inc=(S.transactions||[]).filter(t=>t.date?.startsWith(y)&&t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0);
+      const exp=(S.transactions||[]).filter(t=>t.date?.startsWith(y)&&t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
       const net=inc-exp;
       return`<tr><td class="mono">${y}</td><td class="mono pos">${fmt(inc)}</td><td class="mono neg">${fmt(exp)}</td><td class="mono ${net>=0?'pos':'neg'}">${fmt(net)}</td></tr>`;
     }).join('');
@@ -11191,8 +11191,8 @@ function rYoY() {
 function rTrendsYtd(){
   const yr=new Date().getFullYear();
   const ytdTxns=S.transactions.filter(t=>t.date&&t.date.startsWith(yr+'')&&t.type!=='transfer');
-  const ytdInc=ytdTxns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-  const ytdExp=ytdTxns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const ytdInc=ytdTxns.filter(t=>t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0);
+  const ytdExp=ytdTxns.filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
   const ytdNet=ytdInc-ytdExp;
   const ytdPct=ytdInc>0?Math.round((ytdNet/ytdInc)*100):0;
   const curMoName=new Date().toLocaleString('default',{month:'short'});
@@ -11205,14 +11205,14 @@ function rTrendsYtd(){
   set('trends-ytd-exp-sub','Jan–'+curMoName+' '+yr);
   set('trends-ytd-net-sub',ytdPct+(isCorp()?'% YTD margin':'% YTD savings rate'));
 }
-function rTrends(){if(typeof setTrendsView==='function'&&document.getElementById('tv-categories')?.style.display===''){rCatBreakdown('total');return;}rTrendsYtd();rDonut(moTxns(),'trend-donut');const months=last6();const data=months.map(m=>{const txns=moTxns(m);const income=txns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);const expenses=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);return{m,income,expenses,net:income-expenses};});rBarChart(data);rCatTrend(months);rRecurring();rMoSum(data);rDowHeatmap();}
+function rTrends(){if(typeof setTrendsView==='function'&&document.getElementById('tv-categories')?.style.display===''){rCatBreakdown('total');return;}rTrendsYtd();rDonut(moTxns(),'trend-donut');const months=last6();const data=months.map(m=>{const txns=moTxns(m);const income=txns.filter(t=>t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0);const expenses=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);return{m,income,expenses,net:income-expenses};});rBarChart(data);rCatTrend(months);rRecurring();rMoSum(data);rDowHeatmap();}
 function rDowHeatmap(){
   const el=document.getElementById('dow-heatmap');if(!el)return;
   const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   const totals=new Array(7).fill(0);const counts=new Array(7).fill(0);
   S.transactions.filter(t=>t.type==='expense'&&t.date).forEach(t=>{
     const d=new Date(t.date);let dow=d.getDay()-1;if(dow<0)dow=6;
-    totals[dow]+=t.amount;counts[dow]++;
+    totals[dow]+=txnAmtLocal(t);counts[dow]++;
   });
   const avgs=totals.map((t,i)=>counts[i]>0?t/counts[i]:0);
   const maxAvg=Math.max(...avgs,1);
@@ -11229,8 +11229,8 @@ function rDowHeatmap(){
     }).join('')+'</div>';
 }
 function rBarChart(data){const el=document.getElementById('trend-bar');if(!el)return;const hasD=data.some(d=>d.income>0||d.expenses>0);if(!hasD){el.innerHTML='<div class="empty" style="padding:20px"><div class="empty-t" style="font-size:13px">No trend data yet</div></div>';return;}const W=680,H=205,pad={l:58,r:16,t:16,b:36};const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;const maxV=Math.max(...data.map(d=>Math.max(d.income,d.expenses)),1);const bgW=cW/6,bw=Math.min(bgW*0.28,19);const labels=data.map(d=>{const[y,m]=d.m.split('-');return new Date(+y,+m-1,1).toLocaleString('default',{month:'short'});});const gridL=[0,.25,.5,.75,1].map(p=>{const y=pad.t+cH-p*cH;return`<line x1="${pad.l}" x2="${W-pad.r}" y1="${y}" y2="${y}" stroke="var(--b1)" stroke-width="0.5"/><text x="${pad.l-6}" y="${y+4}" text-anchor="end" fill="var(--t4)" font-family="monospace" font-size="9">${fmtK(p*maxV)}</text>`;}).join('');const bars=data.map((d,i)=>{const cx=pad.l+i*bgW+bgW/2;const iH=(d.income/maxV)*cH,eH=(d.expenses/maxV)*cH;return`<rect x="${cx-bw-2}" y="${pad.t+cH-iH}" width="${bw}" height="${Math.max(iH,0)}" fill="var(--green)" rx="2.5" opacity="0.82"/><rect x="${cx+2}" y="${pad.t+cH-eH}" width="${bw}" height="${Math.max(eH,0)}" fill="var(--red)" rx="2.5" opacity="0.72"/><text x="${cx}" y="${pad.t+cH+15}" text-anchor="middle" fill="var(--t4)" font-family="monospace" font-size="9">${labels[i]}</text>`;}).join('');const netPts=data.map((d,i)=>{const cx=pad.l+i*bgW+bgW/2;return cx+','+(pad.t+cH-Math.max(0,(d.net/maxV))*cH);}).join(' ');el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="overflow:visible">${gridL}<line x1="${pad.l}" x2="${pad.l}" y1="${pad.t}" y2="${pad.t+cH}" stroke="var(--b2)" stroke-width="0.5"/><line x1="${pad.l}" x2="${W-pad.r}" y1="${pad.t+cH}" y2="${pad.t+cH}" stroke="var(--b2)" stroke-width="0.5"/>${bars}<polyline points="${netPts}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="4,3"/></svg>`;}
-function rCatTrend(months){const el=document.getElementById('cat-trend');if(!el)return;const catT={};S.transactions.filter(t=>t.type==='expense').forEach(t=>{catT[t.category]=(catT[t.category]||0)+t.amount;});const topC=Object.entries(catT).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([id])=>id);if(!topC.length){el.innerHTML='<div class="empty" style="padding:12px"><div class="empty-s">No expense data</div></div>';return;}const W=360,H=185,pad={l:44,r:9,t:9,b:26};const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;const mD=months.map(m=>{const txns=S.transactions.filter(t=>t.date&&t.date.startsWith(m)&&t.type==='expense');const tots={};topC.forEach(cat=>{tots[cat]=txns.filter(t=>t.category===cat).reduce((s,t)=>s+t.amount,0);});return tots;});const maxV=Math.max(...mD.flatMap(d=>Object.values(d)),1);const lines=topC.map(catId=>{const clr=catClr(catId);const pts=mD.map((d,i)=>{const x=pad.l+(i/(months.length-1||1))*cW;const y=pad.t+cH-(d[catId]/maxV)*cH;return x+','+y;}).join(' ');return`<polyline points="${pts}" fill="none" stroke="${clr}" stroke-width="1.7" opacity="0.87"/>`;}).join('');const mLbls=months.map((m,i)=>{const[y,mo]=m.split('-');const x=pad.l+(i/(months.length-1||1))*cW;return`<text x="${x}" y="${H-3}" text-anchor="middle" fill="var(--t4)" font-family="monospace" font-size="9">${new Date(+y,+mo-1,1).toLocaleString('default',{month:'short'})}</text>`;}).join('');el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%">${lines}${mLbls}${topC.map((catId,i)=>`<rect x="${pad.l}" y="${pad.t+i*16}" width="6" height="6" fill="${catClr(catId)}" rx="1"/><text x="${pad.l+9}" y="${pad.t+i*16+6}" fill="var(--t2)" font-size="9" font-family="monospace">${catLbl(catId)}</text>`).join('')}</svg>`;}
-function rRecurring(){const el=document.getElementById('recur-list');if(!el)return;const months=last6();const freq={};S.transactions.filter(t=>t.type==='expense').forEach(t=>{const key=(t.description||'').toLowerCase().slice(0,20);const m=months.find(m=>t.date&&t.date.startsWith(m));if(m){if(!freq[key])freq[key]={desc:t.description,months:new Set(),total:0};freq[key].months.add(m);freq[key].total+=t.amount;}});const recurring=Object.values(freq).filter(f=>f.months.size>=2).sort((a,b)=>b.months.size-a.months.size).slice(0,8);if(!recurring.length){el.innerHTML='<div class="empty" style="padding:12px"><div class="empty-s">Import 2+ months of data to detect recurring charges</div></div>';return;}el.innerHTML=recurring.map(r=>`<div class="li"><div class="lic" style="background:var(--s3);font-size:12px">↻</div><div class="lii"><div class="lin" style="font-size:12px">${esc((r.desc||'').slice(0,28))}</div><div class="lis">${r.months.size} months detected</div></div><div style="font-family:var(--fm);font-size:11px;color:var(--t2)">${fmt(r.total/r.months.size)}/mo</div></div>`).join('');}
+function rCatTrend(months){const el=document.getElementById('cat-trend');if(!el)return;const catT={};S.transactions.filter(t=>t.type==='expense').forEach(t=>{catT[t.category]=(catT[t.category]||0)+txnAmtLocal(t);});const topC=Object.entries(catT).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([id])=>id);if(!topC.length){el.innerHTML='<div class="empty" style="padding:12px"><div class="empty-s">No expense data</div></div>';return;}const W=360,H=185,pad={l:44,r:9,t:9,b:26};const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;const mD=months.map(m=>{const txns=S.transactions.filter(t=>t.date&&t.date.startsWith(m)&&t.type==='expense');const tots={};topC.forEach(cat=>{tots[cat]=txns.filter(t=>t.category===cat).reduce((s,t)=>s+txnAmtLocal(t),0);});return tots;});const maxV=Math.max(...mD.flatMap(d=>Object.values(d)),1);const lines=topC.map(catId=>{const clr=catClr(catId);const pts=mD.map((d,i)=>{const x=pad.l+(i/(months.length-1||1))*cW;const y=pad.t+cH-(d[catId]/maxV)*cH;return x+','+y;}).join(' ');return`<polyline points="${pts}" fill="none" stroke="${clr}" stroke-width="1.7" opacity="0.87"/>`;}).join('');const mLbls=months.map((m,i)=>{const[y,mo]=m.split('-');const x=pad.l+(i/(months.length-1||1))*cW;return`<text x="${x}" y="${H-3}" text-anchor="middle" fill="var(--t4)" font-family="monospace" font-size="9">${new Date(+y,+mo-1,1).toLocaleString('default',{month:'short'})}</text>`;}).join('');el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%">${lines}${mLbls}${topC.map((catId,i)=>`<rect x="${pad.l}" y="${pad.t+i*16}" width="6" height="6" fill="${catClr(catId)}" rx="1"/><text x="${pad.l+9}" y="${pad.t+i*16+6}" fill="var(--t2)" font-size="9" font-family="monospace">${catLbl(catId)}</text>`).join('')}</svg>`;}
+function rRecurring(){const el=document.getElementById('recur-list');if(!el)return;const months=last6();const freq={};S.transactions.filter(t=>t.type==='expense').forEach(t=>{const key=(t.description||'').toLowerCase().slice(0,20);const m=months.find(m=>t.date&&t.date.startsWith(m));if(m){if(!freq[key])freq[key]={desc:t.description,months:new Set(),total:0};freq[key].months.add(m);freq[key].total+=txnAmtLocal(t);}});const recurring=Object.values(freq).filter(f=>f.months.size>=2).sort((a,b)=>b.months.size-a.months.size).slice(0,8);if(!recurring.length){el.innerHTML='<div class="empty" style="padding:12px"><div class="empty-s">Import 2+ months of data to detect recurring charges</div></div>';return;}el.innerHTML=recurring.map(r=>`<div class="li"><div class="lic" style="background:var(--s3);font-size:12px">↻</div><div class="lii"><div class="lin" style="font-size:12px">${esc((r.desc||'').slice(0,28))}</div><div class="lis">${r.months.size} months detected</div></div><div style="font-family:var(--fm);font-size:11px;color:var(--t2)">${fmt(r.total/r.months.size)}/mo</div></div>`).join('');}
 function rMoSum(data){const el=document.getElementById('mo-sum-table');if(!el)return;const rows=data.map(d=>{const lbl=new Date(d.m.split('-')[0],parseInt(d.m.split('-')[1])-1,1).toLocaleString('default',{month:'short',year:'numeric'});const pct=d.income>0?Math.round((d.net/d.income)*100):0;return`<tr><td class="mono">${lbl}</td><td class="mono pos">${fmt(d.income)}</td><td class="mono neg">${fmt(d.expenses)}</td><td class="mono ${d.net>=0?'pos':'neg'}">${fmt(d.net)}</td><td class="mono" style="color:${pct>=20?'var(--green)':pct>=10?'var(--amber)':'var(--red)'}">${pct}%</td></tr>`;}).join('');el.innerHTML=`<div class="tw"><table><thead><tr><th>Month</th><th>Income</th><th>Expenses</th><th>Net</th><th>Savings %</th></tr></thead><tbody>${rows}</tbody></table></div>`;}
 
 /* CALENDAR */
@@ -11341,7 +11341,7 @@ function detectBudgetSuggestions(){
   const byCat={};
   const moCount={};
   (S.transactions||[]).filter(t=>t.type==='expense'&&t.date&&new Date(t.date)>=cutoff&&t.category).forEach(t=>{
-    byCat[t.category]=(byCat[t.category]||0)+t.amount;
+    byCat[t.category]=(byCat[t.category]||0)+txnAmtLocal(t);
     const mo=t.date.slice(0,7);
     if(!moCount[t.category])moCount[t.category]=new Set();
     moCount[t.category].add(mo);
@@ -11612,7 +11612,7 @@ function addCalBill(){const name=document.getElementById('bl-name').value.trim()
 const delCalBill=id=>{const b=(S.calBills||[]).find(x=>x.id===id);klConfirm('Remove'+(b?' "'+b.name+'"':'')+' from calendar?',()=>{S.calBills=(S.calBills||[]).filter(x=>x.id!==id);save();rCalendar();},{title:'Remove Bill',danger:true});};
 
 /* FORECAST */
-function getFcBase(){const months=last6();const withD=months.filter(m=>S.transactions.some(t=>t.date&&t.date.startsWith(m)&&t.type!=='transfer'));const n=withD.length||1;let tI=0,tE=0;withD.forEach(m=>{const txns=moTxns(m);tI+=txns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);tE+=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);});return{avgI:tI/n,avgE:tE/n,mos:withD.length};}
+function getFcBase(){const months=last6();const withD=months.filter(m=>S.transactions.some(t=>t.date&&t.date.startsWith(m)&&t.type!=='transfer'));const n=withD.length||1;let tI=0,tE=0;withD.forEach(m=>{const txns=moTxns(m);tI+=txns.filter(t=>t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0);tE+=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);});return{avgI:tI/n,avgE:tE/n,mos:withD.length};}
 let _fcWrapDefaultHTML=null;
 function renderForecast(){
   const fcWrap=document.getElementById('fc-wrap');
@@ -12073,12 +12073,12 @@ function itr12AutoFill(){
   const txYrStart=`${taxYr}-03-01`;
   const txYrEnd=`${taxYr+1}-03-01`;
   const taxYrTxns=S.transactions.filter(t=>t.date>=txYrStart&&t.date<txYrEnd);
-  const income=taxYrTxns.filter(t=>t.type==='income'&&!['rental','interest'].includes(t.category)).reduce((s,t)=>s+t.amount,0);
-  const rental=taxYrTxns.filter(t=>t.type==='income'&&t.category==='rental').reduce((s,t)=>s+t.amount,0);
-  const interest=taxYrTxns.filter(t=>t.type==='income'&&t.category==='interest').reduce((s,t)=>s+t.amount,0);
-  const paye=taxYrTxns.filter(t=>t.type==='expense'&&(t.category==='tax'||t.category==='paye')).reduce((s,t)=>s+t.amount,0);
-  const ra=taxYrTxns.filter(t=>t.type==='expense'&&(t.category==='retirement'||t.category==='ra'||t.category==='pension')).reduce((s,t)=>s+t.amount,0);
-  const med=taxYrTxns.filter(t=>t.type==='expense'&&(t.category==='medical'||t.category==='medical_aid'||t.category==='health')).reduce((s,t)=>s+t.amount,0);
+  const income=taxYrTxns.filter(t=>t.type==='income'&&!['rental','interest'].includes(t.category)).reduce((s,t)=>s+txnAmtLocal(t),0);
+  const rental=taxYrTxns.filter(t=>t.type==='income'&&t.category==='rental').reduce((s,t)=>s+txnAmtLocal(t),0);
+  const interest=taxYrTxns.filter(t=>t.type==='income'&&t.category==='interest').reduce((s,t)=>s+txnAmtLocal(t),0);
+  const paye=taxYrTxns.filter(t=>t.type==='expense'&&(t.category==='tax'||t.category==='paye')).reduce((s,t)=>s+txnAmtLocal(t),0);
+  const ra=taxYrTxns.filter(t=>t.type==='expense'&&(t.category==='retirement'||t.category==='ra'||t.category==='pension')).reduce((s,t)=>s+txnAmtLocal(t),0);
+  const med=taxYrTxns.filter(t=>t.type==='expense'&&(t.category==='medical'||t.category==='medical_aid'||t.category==='health')).reduce((s,t)=>s+txnAmtLocal(t),0);
   if(income>0||rental>0){
     const _set=(id,v)=>{if(v>0&&document.getElementById(id))document.getElementById(id).value=Math.round(v);};
     _set('itr-salary',income);_set('itr-rental',rental);_set('itr-interest',interest);_set('itr-paye',paye);_set('itr-ra',ra);_set('itr-medoop',med);
@@ -12089,7 +12089,7 @@ function itr12AutoFill(){
 /* ═══ CASHFLOW FORECAST ═══ */
 function _incomeStdDev(){
   const months=last6();
-  const incomes=months.map(mo=>moTxns(mo).filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0));
+  const incomes=months.map(mo=>moTxns(mo).filter(t=>t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0));
   const mean=incomes.reduce((a,b)=>a+b,0)/incomes.length;
   const variance=incomes.reduce((s,x)=>s+Math.pow(x-mean,2),0)/incomes.length;
   return{stdDev:Math.sqrt(variance),mean};
@@ -12097,7 +12097,10 @@ function _incomeStdDev(){
 function rCashflow(){
   const months=parseInt(document.getElementById('cf-months')?.value)||6;
   const avgI=avgInc();const avgE=avgExp();
-  const balance=(S.accounts||[]).reduce((s,a)=>s+(a.openingBalance||0),0)+(S.transactions||[]).filter(t=>t.type!=='transfer').reduce((s,t)=>s+(t.type==='income'?t.amount:-t.amount),0);
+  // Sum via calcAccBalance (correctly handles transfers) + zarRate conversion per account —
+  // not a hand-rolled opening-balance-plus-raw-transactions sum, which double-ignored both
+  // transfers and foreign-currency accounts. Mirrors calcCurrentNW's toZar convention.
+  const balance=(S.accounts||[]).reduce((s,a)=>{const b=calcAccBalance(a.id);const cur=(a.currency||'ZAR')==='ZAR'?b:b*(a.zarRate||1);return s+cur;},0);
   const hasData=avgI>0||avgE>0;
   // Empty state
   const el=document.getElementById('cf-chart');
@@ -12192,10 +12195,10 @@ function rTfsa(){
   const TFSA_KW=['easy equities','easyequities','sygnia','10x invest','allan gray','satrix','tfsa','tax free','tax-free'];
   const autoYear=(S.transactions||[])
     .filter(t=>t.date&&t.date>=taxYrStart&&t.type==='expense'&&(TFSA_KW.some(k=>(t.description||'').toLowerCase().includes(k))||t.category==='investments'))
-    .reduce((s,t)=>s+t.amount,0);
+    .reduce((s,t)=>s+txnAmtLocal(t),0);
   const autoLife=(S.transactions||[])
     .filter(t=>t.type==='expense'&&(TFSA_KW.some(k=>(t.description||'').toLowerCase().includes(k))||t.category==='investments'))
-    .reduce((s,t)=>s+t.amount,0);
+    .reduce((s,t)=>s+txnAmtLocal(t),0);
   // Show auto-calc hint if there are matching transactions and user hasn't manually entered a value
   const hintEl=document.getElementById('tfsa-auto-hint');
   if(hintEl){
@@ -12600,7 +12603,7 @@ function exportCsv(type){
   } else if(type==='budget'){
     filename=`Klar_Budget_${S.curMo}.csv`;
     const txns=moTxns();
-    rows=[['Category','Budget Limit','Actual Spent','Remaining','Status'],...Object.entries(S.budgets||{}).map(([cat,lim])=>{const act=txns.filter(t=>t.category===cat&&t.type==='expense').reduce((s,t)=>s+t.amount,0);return[cat,lim.toFixed(2),act.toFixed(2),(lim-act).toFixed(2),act>lim?'Over':'OK'];})];
+    rows=[['Category','Budget Limit','Actual Spent','Remaining','Status'],...Object.entries(S.budgets||{}).map(([cat,lim])=>{const act=txns.filter(t=>t.category===cat&&t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);return[cat,lim.toFixed(2),act.toFixed(2),(lim-act).toFixed(2),act>lim?'Over':'OK'];})];
   } else if(type==='networth'){
     filename='Klar_NetWorth_History.csv';
     rows=[['Month','Net Worth'],...(S.nwHistory||[]).sort((a,b)=>a.k.localeCompare(b.k)).map(h=>[h.k,h.v.toFixed(2)])];
@@ -12633,8 +12636,8 @@ function printStatement(){
   const mo=S.curMo;const cur=S.prefs?.cur||'R';
   const locale=S.prefs?.region==='uk'?'en-GB':'en-ZA';
   const txns=moTxns().sort((a,b)=>a.date.localeCompare(b.date));
-  const income=txns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-  const expenses=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const income=txns.filter(t=>t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0);
+  const expenses=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
   const accName=(S.accounts&&S.accounts.length===1)?S.accounts[0].name:'All Accounts';
   const w=window.open('','_blank');
   if(!w){notify('Popup blocked — allow popups for this site to print statements','warn');return;}
@@ -13267,7 +13270,7 @@ function rInsights(){
   const insights=[];
   if(inc>0&&net/inc<0.1) insights.push({type:'r',icon:'⚠',title:'Savings Rate Below 10%',body:`You're saving ${Math.round((net/inc)*100)}% of income. Financial experts recommend at least 20%. Try cutting ${fmt(inc*0.1-net)} of discretionary spending.`});
   if(inc>0&&net/inc>=0.2){const _isrRegion=S.prefs&&S.prefs.region;const _isrTip=isCorp()?'a money market fund or fixed deposit.':_isrRegion==='uk'?'a Stocks & Shares ISA or SIPP.':_isrRegion==='other'?'a tax-advantaged retirement account or low-cost index fund.':'a TFSA or RA.';const _isrTitle=isCorp()?'Strong Margin':'Strong Savings Rate';insights.push({type:'g',icon:'✓',title:_isrTitle,body:`You're ${isCorp()?'retaining':'saving'} ${Math.round((net/inc)*100)}% of ${isCorp()?'revenue':'income'} — faithful with what's in your hand. Consider investing your surplus in ${_isrTip}`});}
-  {const _l6=last6();const _l6moCount=Math.max(_l6.filter(m=>S.transactions.some(t=>t.date&&t.date.startsWith(m))).length,1);const _l6txns=S.transactions.filter(t=>t.type==='expense'&&_l6.some(m=>t.date&&t.date.startsWith(m)));const cats6={};_l6txns.forEach(t=>{cats6[t.category]=(cats6[t.category]||0)+t.amount;});const topCat6=Object.entries(cats6).sort((a,b)=>b[1]-a[1])[0];if(topCat6) insights.push({type:'b',icon:'ki-bar-chart-2',title:'Top Spending Category',body:`Your largest expense category is <strong>${catLbl(topCat6[0])}</strong> at ${fmt(topCat6[1]/_l6moCount)}/mo average over the last ${_l6moCount} month${_l6moCount>1?'s':''}. Review if this aligns with your priorities.`});
+  {const _l6=last6();const _l6moCount=Math.max(_l6.filter(m=>S.transactions.some(t=>t.date&&t.date.startsWith(m))).length,1);const _l6txns=S.transactions.filter(t=>t.type==='expense'&&_l6.some(m=>t.date&&t.date.startsWith(m)));const cats6={};_l6txns.forEach(t=>{cats6[t.category]=(cats6[t.category]||0)+txnAmtLocal(t);});const topCat6=Object.entries(cats6).sort((a,b)=>b[1]-a[1])[0];if(topCat6) insights.push({type:'b',icon:'ki-bar-chart-2',title:'Top Spending Category',body:`Your largest expense category is <strong>${catLbl(topCat6[0])}</strong> at ${fmt(topCat6[1]/_l6moCount)}/mo average over the last ${_l6moCount} month${_l6moCount>1?'s':''}. Review if this aligns with your priorities.`});
     const _giveAvg=(cats6['church']||0)/_l6moCount;
     if(inc>0&&_giveAvg>0){const _giveRate=Math.round((_giveAvg/inc)*100);const _giveTitle=_giveRate>=10?'Consistent Generosity':'Growing in Generosity';const _giveBody=_giveRate>=10?`You're giving ${fmt(_giveAvg)}/mo (~${_giveRate}% of income) — a steady, faithful rhythm. Well done.`:`You're giving ${fmt(_giveAvg)}/mo (~${_giveRate}% of income). A small, steady rhythm compounds over time — even more than the amount.`;insights.push({type:'g',icon:'ki-cat-gift',title:_giveTitle,body:_giveBody});}}
   const subMo=(S.subscriptions||[]).reduce((s,sub)=>s+toMo(sub.amount,sub.cycle),0);
@@ -13276,15 +13279,15 @@ function rInsights(){
   if(!(S.goals||[]).length) insights.push({type:'a',icon:'ki-target',title:'No Savings Goals Set',body:'Goals give your savings purpose. Gather in the season of plenty for the season of need — add an emergency fund goal (3-6 months of expenses = '+fmt(exp*4)+') as your first target.'});
   {const _insRegion=S.prefs?.region||'za';const _isUKi=_insRegion==='uk';const _isOtherI=_insRegion==='other';const _fv10=(pmt,rAnn)=>Math.round(pmt*((Math.pow(1+rAnn/12,120)-1)/(rAnn/12)));const _insCur=S.prefs.cur||(_isUKi?'£':_isOtherI?'$':'R');const _invTip=isCorp()?`With a monthly surplus of ${fmt(Math.max(net,0))}, consider a money market fund for liquidity or a fixed deposit for surplus you won't need short-term, rather than leaving it idle in a current account.`:_isUKi?`With a monthly surplus of ${fmt(Math.max(net,0))}, consider opening a Stocks &amp; Shares ISA via Vanguard or Hargreaves Lansdown. ${_insCur}500/mo into a global index ETF (e.g. FTSE All-World) could grow to ${fmt(_fv10(500,0.10))} in 10 years at 10% p.a.`:_isOtherI?`With a monthly surplus of ${fmt(Math.max(net,0))}, consider opening a brokerage account via Vanguard or Fidelity International. ${_insCur}500/mo into a global index fund could grow to ${fmt(_fv10(500,0.10))} in 10 years at 10% p.a.`:`With a monthly surplus of ${fmt(Math.max(net,0))}, consider opening a TFSA via Easy Equities. ${_insCur}500/mo into an index ETF could grow to ${fmt(_fv10(500,0.10))} in 10 years at 10% p.a.`;if(inc>0&&!Object.values(S.invAllocations||{}).some(v=>v>0)&&!(S.holdings||[]).length) insights.push({type:'b',icon:'ki-chart-up',title:isCorp()?'Put Surplus Cash to Work':'Start Investing',body:_invTip});}
   const months=last6();const hasData=months.filter(m=>S.transactions.some(t=>t.date&&t.date.startsWith(m))).length;
-  if(hasData>=2){const recent=moTxns(months[5]),prev=moTxns(months[4]);const rExp=recent.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);const pExp=prev.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);if(rExp>pExp*1.15) insights.push({type:'a',icon:'↑',title:'Spending Up This Month',body:`Expenses are ${Math.round(((rExp-pExp)/pExp)*100)}% higher than last month (${fmt(rExp)} vs ${fmt(pExp)}). Review recent transactions for any unusual spend.`});}
+  if(hasData>=2){const recent=moTxns(months[5]),prev=moTxns(months[4]);const rExp=recent.filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);const pExp=prev.filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);if(rExp>pExp*1.15) insights.push({type:'a',icon:'↑',title:'Spending Up This Month',body:`Expenses are ${Math.round(((rExp-pExp)/pExp)*100)}% higher than last month (${fmt(rExp)} vs ${fmt(pExp)}). Review recent transactions for any unusual spend.`});}
   // Weekly spending pace
   const today=new Date();const dayOfMo=today.getDate();const daysInMo=new Date(today.getFullYear(),today.getMonth()+1,0).getDate();
-  const spentSoFar=moTxns().filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const spentSoFar=moTxns().filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
   const projectedMo=dayOfMo>0?Math.round((spentSoFar/dayOfMo)*daysInMo):0;
   if(spentSoFar>0&&exp>0){if(projectedMo>exp*1.2) insights.push({type:'r',icon:'ki-calendar',title:'Spending Pace Warning',body:`At your current rate you'll spend ${fmt(projectedMo)} this month — ${Math.round(((projectedMo-exp)/exp)*100)}% above your average of ${fmt(exp)}. Day ${dayOfMo} of ${daysInMo}.`});else if(projectedMo<exp*0.8) insights.push({type:'g',icon:'ki-calendar',title:'Well Below Spending Pace',body:`On track to spend only ${fmt(projectedMo)} this month — ${Math.round(((exp-projectedMo)/exp)*100)}% below your average. Day ${dayOfMo} of ${daysInMo}.`});}
   // Day-of-week spending pattern
   const dayTotals=[0,0,0,0,0,0,0];const dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  (S.transactions||[]).filter(t=>t.type==='expense'&&t.date).forEach(t=>{const d=new Date(t.date);if(!isNaN(d))dayTotals[d.getDay()]+=t.amount;});
+  (S.transactions||[]).filter(t=>t.type==='expense'&&t.date).forEach(t=>{const d=new Date(t.date);if(!isNaN(d))dayTotals[d.getDay()]+=txnAmtLocal(t);});
   const maxDay=dayTotals.indexOf(Math.max(...dayTotals));
   if(Math.max(...dayTotals)>0) insights.push({type:'b',icon:'ki-calendar',title:'Peak Spending Day',body:`You spend most on <strong>${dayNames[maxDay]}days</strong> (${fmt(dayTotals[maxDay])} total). If that's not intentional, consider reviewing your ${dayNames[maxDay]} habits.`});
   if(!insights.length) insights.push({type:'g',icon:'✓',title:'Looking Good!',body:'Add more transaction history for personalised insights. <button class="btn btn-ghost btn-xs" onclick="goPg(\'transactions\')" style="margin-left:6px">+ Add Transactions</button>'});
@@ -13297,8 +13300,8 @@ function rInsightsReport() {
   const months = last6();
   const rows = months.map(m => {
     const txns = moTxns(m);
-    const inc = txns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-    const exp = txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+    const inc = txns.filter(t=>t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0);
+    const exp = txns.filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
     const net = inc - exp; const sr = inc > 0 ? Math.round((net/inc)*100) : 0;
     const date = new Date(m+'-01');
     const label = date.toLocaleString('default',{month:'short',year:'2-digit'});
@@ -13339,7 +13342,7 @@ function rInsightsReport() {
   if (catEl) {
     const txns = moTxns();
     const cats = {};
-    txns.filter(t=>t.type==='expense').forEach(t=>{cats[t.category]=(cats[t.category]||0)+t.amount;});
+    txns.filter(t=>t.type==='expense').forEach(t=>{cats[t.category]=(cats[t.category]||0)+txnAmtLocal(t);});
     const sorted = Object.entries(cats).sort((a,b)=>b[1]-a[1]);
     const total = sorted.reduce((s,[,v])=>s+v,0);
     catEl.innerHTML = sorted.length ? sorted.map(([c,v])=>{
@@ -13365,8 +13368,8 @@ function rInsightsAnomalies() {
     const cur = moTxns(m); const prev = moTxns(months[i-1]);
     const cats = [...new Set([...cur,...prev].map(t=>t.category))];
     cats.forEach(c => {
-      const cAmt = cur.filter(t=>t.category===c&&t.type==='expense').reduce((s,t)=>s+t.amount,0);
-      const pAmt = prev.filter(t=>t.category===c&&t.type==='expense').reduce((s,t)=>s+t.amount,0);
+      const cAmt = cur.filter(t=>t.category===c&&t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
+      const pAmt = prev.filter(t=>t.category===c&&t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
       if (pAmt > 200 && cAmt > pAmt * 1.5) {
         const pct = Math.round(((cAmt-pAmt)/pAmt)*100);
         const date = new Date(m+'-01');
@@ -13670,10 +13673,10 @@ function resetRoutineProgress(routineId){
 /* ═══ VISUAL BUDGET ═══ */
 function rVisualBudget(){
   const inc=avgInc(),txns=moTxns();
-  const exp=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
-  const needs=txns.filter(t=>['housing','food','utilities','transport','medical-aid','insurance','car','education'].includes(t.category)).reduce((s,t)=>s+t.amount,0);
-  const wants=txns.filter(t=>['eating-out','entertainment','clothing','beauty','shopping','subscriptions'].includes(t.category)).reduce((s,t)=>s+t.amount,0);
-  const savings=txns.filter(t=>['savings','investments'].includes(t.category)).reduce((s,t)=>s+t.amount,0);
+  const exp=txns.filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
+  const needs=txns.filter(t=>['housing','food','utilities','transport','medical-aid','insurance','car','education'].includes(t.category)).reduce((s,t)=>s+txnAmtLocal(t),0);
+  const wants=txns.filter(t=>['eating-out','entertainment','clothing','beauty','shopping','subscriptions'].includes(t.category)).reduce((s,t)=>s+txnAmtLocal(t),0);
+  const savings=txns.filter(t=>['savings','investments'].includes(t.category)).reduce((s,t)=>s+txnAmtLocal(t),0);
   const JARS=[
     {lbl:'Necessities',icon:'ki-home2',pct:50,actual:needs,color:'var(--blue)'},
     {lbl:'Wants',icon:'ki-cat-film',pct:30,actual:wants,color:'var(--purple)'},
@@ -14486,8 +14489,8 @@ async function explainTxn(id){
 async function generateMonthChecklist(){
   if(!klHasTier('essential')){ notify('AI features require the Essential plan — upgrade in Settings → Plan','ok'); return; }
   const mo=S.curMo;
-  const inc=moTxns().filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-  const exp=moTxns().filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const inc=moTxns().filter(t=>t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0);
+  const exp=moTxns().filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
   const debts=(S.debts||[]).reduce((s,d)=>s+d.minPmt,0);
   const cur=S.prefs.cur||'R';
   const bills=(S.calBills||[]).filter(b=>b.day).map(b=>`${b.name} ${cur}${b.amount} day ${b.day}`).join(', ');
@@ -14523,7 +14526,7 @@ async function sendChat(){
   const _amd=new Date();const thisMonth=_amd.getFullYear()+'-'+String(_amd.getMonth()+1).padStart(2,'0');
   const catSpend = {};
   (S.transactions||[]).filter(t=>t.type==='expense'&&(t.date||'').startsWith(thisMonth))
-    .forEach(t=>{ catSpend[t.category||'other']=(catSpend[t.category||'other']||0)+_fxAmt(Math.abs(t.amount)); });
+    .forEach(t=>{ catSpend[t.category||'other']=(catSpend[t.category||'other']||0)+_fxAmt(Math.abs(txnAmtLocal(t))); });
   const topCats = Object.entries(catSpend).sort((a,b)=>b[1]-a[1]).slice(0,3)
     .map(([k,v])=>`${k}:${cur}${Math.round(v)}`).join(', ');
   // Deliberately anonymised — the privacy disclosure shown to the user promises "account & debt
@@ -14828,7 +14831,7 @@ function rBudgetHistory(){
     cats.map(cat=>{
       const c=catBy(cat);
       const cells=mos.map(m=>{
-        const d=(hist[m]||{})[cat]||{budgeted:S.budgets[cat]||0,spent:S.transactions.filter(t=>t.date&&t.date.startsWith(m)&&t.category===cat&&t.type==='expense').reduce((s,t)=>s+t.amount,0)};
+        const d=(hist[m]||{})[cat]||{budgeted:S.budgets[cat]||0,spent:S.transactions.filter(t=>t.date&&t.date.startsWith(m)&&t.category===cat&&t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0)};
         const diff=d.budgeted-d.spent;
         return`<td class="mono" style="font-size:11px;color:${d.spent>d.budgeted?'var(--red)':'var(--t2)'}">${fmt(d.spent)}</td><td class="mono" style="font-size:10px;color:${diff>=0?'var(--green)':'var(--red)'}">${diff>=0?'+':''}${fmt(diff)}</td>`;
       }).join('');
@@ -14844,7 +14847,7 @@ function rWhatIf(){
   const direction=document.getElementById('wi-dir')?.value||'cut';
   if(!cat||!change){el.innerHTML='';return;}
   const months_with_cat=last6().filter(mo=>S.transactions.some(t=>t.date&&t.date.startsWith(mo)&&t.category===cat&&t.type==='expense')).length;
-  const avgExp_cat=months_with_cat>0?last6().reduce((s,m)=>s+S.transactions.filter(t=>t.date&&t.date.startsWith(m)&&t.category===cat&&t.type==='expense').reduce((a,t)=>a+t.amount,0),0)/months_with_cat:0;
+  const avgExp_cat=months_with_cat>0?last6().reduce((s,m)=>s+S.transactions.filter(t=>t.date&&t.date.startsWith(m)&&t.category===cat&&t.type==='expense').reduce((a,t)=>a+txnAmtLocal(t),0),0)/months_with_cat:0;
   const monthlyDelta=direction==='cut'?change:-change;
   const annualDelta=monthlyDelta*12;
   const newSavRate=avgInc()>0?Math.round(((avgInc()-(avgExp()-monthlyDelta))/avgInc())*100):0;
@@ -14882,7 +14885,7 @@ function rMerchants() {
     const key=(t.description||'?').toLowerCase().replace(/\s+\d{4,}/g,'').replace(/\s+(ref|inv|#)[a-z0-9\-]+$/,'').trim().slice(0,40);
     if(!map[key]) map[key]={name:(t.description||'?').slice(0,40),count:0,total:0,last:'',type:t.type,category:t.category};
     map[key].count++;
-    map[key].total+=t.amount;
+    map[key].total+=txnAmtLocal(t);
     if(!map[key].last||t.date>map[key].last) map[key].last=t.date;
   });
   let entries=Object.values(map).filter(m=>!srch||m.name.toLowerCase().includes(srch));
@@ -14920,7 +14923,7 @@ function rMerchants() {
 function rTaggedView(){
   const el=document.getElementById('tags-list');if(!el)return;
   const allTags={};
-  (S.transactions||[]).forEach(t=>{(t.tags||[]).forEach(tag=>{if(!allTags[tag])allTags[tag]={count:0,total:0};allTags[tag].count++;allTags[tag].total+=t.amount;});});
+  (S.transactions||[]).forEach(t=>{(t.tags||[]).forEach(tag=>{if(!allTags[tag])allTags[tag]={count:0,total:0};allTags[tag].count++;allTags[tag].total+=txnAmtLocal(t);});});
   if(!Object.keys(allTags).length){el.innerHTML='<div class="empty" style="padding:40px"><div class="empty-i">#</div><div class="empty-t">No tags yet</div><div class="empty-s">Add <span class="mono" style="color:var(--accent)">#hashtags</span> when creating a transaction. They\'ll cluster here for cross-category reporting (e.g. <span class="mono">#holiday2025</span>, <span class="mono">#shared</span>).</div></div>';return;}
   const sorted=Object.entries(allTags).sort((a,b)=>b[1].total-a[1].total);
   el.innerHTML='<div class="tag-cloud">'+sorted.map(([tag,d])=>`
@@ -14944,11 +14947,11 @@ function rVehicleCosts(){
   const txns=S.transactions.filter(t=>t.date&&t.date.startsWith(mo)&&t.type==='expense');
   // Exclude petrol transactions already counted via an imported fill-up (srcTxnId) to avoid double-counting
   const importedFillTxnIds=new Set((S.petrolFills||[]).filter(f=>f.srcTxnId).map(f=>f.srcTxnId));
-  const petrol=txns.filter(t=>t.category==='petrol'&&!importedFillTxnIds.has(t.id)).reduce((s,t)=>s+t.amount,0);
-  const insurance=txns.filter(t=>t.category==='insurance').reduce((s,t)=>s+t.amount,0);
-  const carRepay=txns.filter(t=>t.category==='car').reduce((s,t)=>s+t.amount,0);
-  const carService=txns.filter(t=>t.category==='car-service').reduce((s,t)=>s+t.amount,0);
-  const toll=txns.filter(t=>t.category==='toll').reduce((s,t)=>s+t.amount,0);
+  const petrol=txns.filter(t=>t.category==='petrol'&&!importedFillTxnIds.has(t.id)).reduce((s,t)=>s+txnAmtLocal(t),0);
+  const insurance=txns.filter(t=>t.category==='insurance').reduce((s,t)=>s+txnAmtLocal(t),0);
+  const carRepay=txns.filter(t=>t.category==='car').reduce((s,t)=>s+txnAmtLocal(t),0);
+  const carService=txns.filter(t=>t.category==='car-service').reduce((s,t)=>s+txnAmtLocal(t),0);
+  const toll=txns.filter(t=>t.category==='toll').reduce((s,t)=>s+txnAmtLocal(t),0);
   const fills=(S.petrolFills||[]).filter(f=>f.date&&f.date.startsWith(mo));
   const fillTotal=fills.reduce((s,f)=>s+f.total,0);
   const totalVehicle=petrol+fillTotal+insurance+carRepay+carService+toll;
@@ -15323,8 +15326,8 @@ function rTodayView() {
   // Daily velocity
   const velEl = document.getElementById('today-velocity');
   if (velEl) {
-    const totalOut = txns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
-    const totalIn = txns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+    const totalOut = txns.filter(t=>t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
+    const totalIn = txns.filter(t=>t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0);
     // daily allowance: monthly expense budget / days in month
     const [yr,mo] = today.split('-').map(Number);
     const daysInMonth = new Date(yr, mo, 0).getDate();
@@ -15370,8 +15373,8 @@ function rTodayView() {
   let runBalance = 0;
   // Build running balance (income adds, expense subtracts)
   const withBalance = sorted.map(t => {
-    if (t.type==='income') runBalance += t.amount;
-    else runBalance -= t.amount;
+    if (t.type==='income') runBalance += txnAmtLocal(t);
+    else runBalance -= txnAmtLocal(t);
     return {...t, _runBal: runBalance};
   });
   const catMap = {};
@@ -17456,7 +17459,7 @@ document.addEventListener('click', function(e){
     const txns = moTxns();
     Object.keys(S.budgets || {}).forEach(catId => {
       const lim = (S.budgets[catId] || 0) + (typeof getRolloverBonus === 'function' ? getRolloverBonus(catId) : 0);
-      const act = txns.filter(t=>t.category===catId&&t.type==='expense').reduce((s,t)=>s+t.amount,0);
+      const act = txns.filter(t=>t.category===catId&&t.type==='expense').reduce((s,t)=>s+txnAmtLocal(t),0);
       if (act > lim && lim > 0 && !_klBudgetAlerted.has(catId)) {
         _klBudgetAlerted.add(catId);
         const cat = catBy(catId);
@@ -18610,7 +18613,7 @@ function rGrocery(){
     const foodCatId=foodCat.id;
     const budgetAmt=(S.budgets||{})[foodCatId]||0;
     const _fod=new Date();const mo=_fod.getFullYear()+'-'+String(_fod.getMonth()+1).padStart(2,'0');
-    const spent=moTxns(mo).filter(t=>t.type==='expense'&&t.category===foodCatId).reduce((s,t)=>s+t.amount,0);
+    const spent=moTxns(mo).filter(t=>t.type==='expense'&&t.category===foodCatId).reduce((s,t)=>s+txnAmtLocal(t),0);
     const activeLists=lists.filter(l=>l.status==='active');
     const estimatedCarts=activeLists.reduce((s,l)=>s+_groceryListTotal(l),0);
     if(budgetAmt>0||spent>0||estimatedCarts>0){
