@@ -2455,7 +2455,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       </div>
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
         <span style="font-size:11px;color:var(--t3)" id="rollover-lbl">Off — Fresh each month</span>
-        <div onclick="toggleRollover()" id="rollover-toggle" style="width:40px;height:22px;border-radius:11px;background:var(--s3);border:var(--bw) solid var(--b2);cursor:pointer;position:relative;transition:background .2s">
+        <div onclick="toggleRollover()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleRollover();}" id="rollover-toggle" role="switch" aria-checked="false" aria-label="Budget rollover" tabindex="0" style="width:40px;height:22px;border-radius:11px;background:var(--s3);border:var(--bw) solid var(--b2);cursor:pointer;position:relative;transition:background .2s">
           <div id="rollover-knob" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--t3);transition:all .2s"></div>
         </div>
       </label>
@@ -9448,6 +9448,13 @@ function bulkDelete(){
   _undoStack.push({type:'txns',entries});
   S.transactions=S.transactions.filter(t=>!allIds.includes(t.id));
   save(); renderAll();
+  // renderTxns() rebuilds fresh (unchecked) row checkboxes, but the bulk-bar itself is
+  // only shown/hidden and its count only updated by onBulkCb() on a checkbox change event
+  // — nothing calls that after a bulk action re-renders, so the toolbar was left stuck
+  // showing the pre-delete "N selected" count and staying keyboard/click-reachable with
+  // no rows left for it to act on. clearBulkSel() re-syncs it to the real (now empty)
+  // selection state, which hides it.
+  clearBulkSel();
   showUndoToast(`${entries.length} transaction${entries.length>1?'s':''} deleted`);
 }
 function bulkRecategorise(){
@@ -9456,7 +9463,7 @@ function bulkRecategorise(){
   if(!ids.length){notify('Select transactions first','err');return;}
   if(!cat){notify('Choose a category','err');return;}
   S.transactions.forEach(t=>{if(ids.includes(t.id))t.category=cat;});
-  save(); renderAll(); notify(`${ids.length} transactions re-categorised to ${catLbl(cat)}`,'ok');
+  save(); renderAll(); clearBulkSel(); notify(`${ids.length} transactions re-categorised to ${catLbl(cat)}`,'ok');
 }
 function bulkChangeType(){
   const ids=getCheckedIds();
@@ -9464,7 +9471,7 @@ function bulkChangeType(){
   if(!ids.length){notify('Select transactions first','err');return;}
   if(!type){notify('Choose a type','err');return;}
   S.transactions.forEach(t=>{if(ids.includes(t.id))t.type=type;});
-  save(); renderAll(); notify(`${ids.length} transaction${ids.length>1?'s':''} set to ${type}`,'ok');
+  save(); renderAll(); clearBulkSel(); notify(`${ids.length} transaction${ids.length>1?'s':''} set to ${type}`,'ok');
 }
 
 /* ═══════════════════════════════════════════════════
@@ -10156,7 +10163,7 @@ function applyRolloverUI(){
   const capRow = document.getElementById('rollover-cap-row');
   const capLbl = document.getElementById('rollover-cap-lbl');
   const capSl = document.getElementById('rollover-cap-sl');
-  if(tog) tog.style.background = on ? 'var(--green)' : 'var(--s3)';
+  if(tog) { tog.style.background = on ? 'var(--green)' : 'var(--s3)'; tog.setAttribute('aria-checked', on ? 'true' : 'false'); }
   if(knob) { knob.style.left = on ? '23px' : '3px'; knob.style.background = on ? '#fff' : 'var(--t3)'; }
   if(lbl) lbl.textContent = on ? 'On — Unspent carries forward' : 'Off — Fresh each month';
   if(desc) desc.textContent = on ? 'Unspent budget in a category adds to next month\'s limit' : 'Each month starts with your set limit, regardless of last month';
@@ -14798,7 +14805,17 @@ document.addEventListener('DOMContentLoaded',()=>{
             if(isOpen&&!el._klFocusActive){
               el._klFocusActive=true;
               prevFocus=document.activeElement;
-              requestAnimationFrame(function(){var f=el.querySelector(FOCUSABLE);if(f)f.focus();});
+              // Skip hidden focusables (e.g. a native <select> visually replaced by a
+              // custom .kl-select dropdown, left in the DOM as the real underlying form
+              // control) — querySelector() returns DOM order regardless of visibility,
+              // so an unfiltered pick here can select an element .focus() silently no-ops
+              // on, leaving keyboard focus stuck in the page behind an open modal with no
+              // visible indication anything is wrong. Same offsetParent filter trapFocus
+              // already uses below, applied to the initial focus-on-open too.
+              requestAnimationFrame(function(){
+                var cands=[].slice.call(el.querySelectorAll(FOCUSABLE)).filter(function(f){return f.offsetParent!==null;});
+                if(cands.length)cands[0].focus();
+              });
               el.addEventListener('keydown',trapFocus);
             } else if(!isOpen&&el._klFocusActive){
               el._klFocusActive=false;
@@ -14873,7 +14890,10 @@ document.addEventListener('DOMContentLoaded',()=>{
           if(e.shiftKey){if(document.activeElement===first){e.preventDefault();last.focus();}}
           else{if(document.activeElement===last){e.preventDefault();first.focus();}}
         });
-        requestAnimationFrame(function(){const f=gate.querySelector(FOCUSABLE);if(f)f.focus();});
+        requestAnimationFrame(function(){
+          const cands=[].slice.call(gate.querySelectorAll(FOCUSABLE)).filter(function(f){return f.offsetParent!==null;});
+          if(cands.length)cands[0].focus();
+        });
       } else {
         klCheckRegion();
       }
@@ -18293,6 +18313,7 @@ document.addEventListener('click', function(e){
     // instead; it fires normally once onboarding actually closes (obSkip/obImport).
     const ob = document.getElementById('klar-onboard');
     if (ob && ob.classList.contains('open')) { setTimeout(klShowPlanGate, 1000); return; }
+    S.prefs.planGateSeen = true; save();
     klTrack('paywall_shown');
     _klPgBilling = 'annual';
     document.getElementById('kl-pg-tog').checked = true;
@@ -18383,8 +18404,16 @@ document.addEventListener('click', function(e){
         klFetchAndApplyFx('ZAR', 'GBP');
       }
     }
-    // Show plan gate after user has a moment to see the app
-    if(!S.prefs.tier){
+    // Show plan gate after user has a moment to see the app.
+    // Guarded on planGateSeen (not just tier) — klOnRegionReady runs on EVERY page
+    // load/reload once a region is set (see klCheckRegion), not just the first one.
+    // Without this guard, any guest who didn't explicitly click a plan card (e.g.
+    // closed the tab during the 8s window, or force-quit the PWA) would get this
+    // full-screen, undismissable-except-by-choosing paywall shoved back over their
+    // real dashboard data 8s into every single future session, forever — even though
+    // an unset tier already behaves identically to 'free' everywhere else in the app
+    // (see klHasTier), so the repeat nag serves no functional gating purpose.
+    if(!S.prefs.tier && !S.prefs.planGateSeen){
       klPlanGateComplete(); // run onboarding/privacy flows first
       setTimeout(klShowPlanGate, 8000); // give user 8s to see the dashboard
       return;
