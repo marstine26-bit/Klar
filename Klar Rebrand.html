@@ -1056,6 +1056,13 @@ tbody tr:hover td{background:var(--s2)}
 
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:100;align-items:center;justify-content:center;padding:20px}
 .modal-bg.open{display:flex}
+/* klConfirm()/klPrompt() can be invoked while another .modal-bg is already open (e.g.
+   confirming a delete from inside a management list nested in a form modal). All
+   .modal-bg share z-index:100, so equal stacking falls back to DOM order — since these
+   two are declared early in the document, an already-open modal painted later in the
+   DOM would otherwise cover them completely, making the confirm dialog invisible (but
+   still focus-trapped) and the page look stuck. Keep them above ordinary modals. */
+#m-confirm,#m-prompt{z-index:110}
 .modal{background:var(--s1);border:var(--bw) solid var(--b2);border-radius:var(--r);padding:32px;width:100%;max-width:490px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow);animation:mIn .2s var(--ease)}
 
 /* Command palette (⌘K) — top-anchored rather than centered, so it doesn't jump around as the
@@ -7266,11 +7273,16 @@ const toMo = (amt,cyc) => { if(cyc==='annual')return amt/12; if(cyc==='weekly')r
 function popCatDDs() {
   const corp = typeof isCorp === 'function' && isCorp();
   const catList = corp ? [...CORP_CATS.income, ...CORP_CATS.expense] : CATS;
+  // Only offer "+ New category…" on selects where creating one makes sense (a category
+  // you're actually assigning to something) — not on the transaction-list filter (t-cat,
+  // which needs its "All Categories" placeholder to stay selectable) or the What-If
+  // forecast adjuster (wi-cat, whose onchange runs a calculation, not a category-pick).
+  const NEW_CAT_IDS=new Set(['txn-ca','bud-cat','rec-edit-cat']);
   ['txn-ca','bud-cat','t-cat','wi-cat','rec-edit-cat'].forEach(id => {
     const el=document.getElementById(id); if(!el) return;
     const isF=id==='t-cat';
     const cur=el.value;
-    const _catRegionRaw=(S.prefs?.region||'za');const _isUKcat=_catRegionRaw==='uk';el.innerHTML=(isF?'<option value="">All Categories</option><option value="__uncat__">Uncategorised</option>':'')+catList.filter(c=>!c.region||c.region===_catRegionRaw).map(c=>'<option value="'+c.id+'">'+(_isUKcat&&c.lbl_uk?c.lbl_uk:_catRegionRaw==='other'&&c.lbl_other?c.lbl_other:c.lbl)+'</option>').join('');
+    const _catRegionRaw=(S.prefs?.region||'za');const _isUKcat=_catRegionRaw==='uk';el.innerHTML=(isF?'<option value="">All Categories</option><option value="__uncat__">Uncategorised</option>':'')+catList.filter(c=>!c.region||c.region===_catRegionRaw).map(c=>'<option value="'+c.id+'">'+(_isUKcat&&c.lbl_uk?c.lbl_uk:_catRegionRaw==='other'&&c.lbl_other?c.lbl_other:c.lbl)+'</option>').join('')+(NEW_CAT_IDS.has(id)?'<option value="__new_cat__" style="color:var(--accent);font-weight:700">＋ New category…</option>':'');
     if(cur) el.value=cur;
     klEnhanceCatSelect(id);
   });
@@ -15438,9 +15450,11 @@ function rVehicleCostsPage(){
 /* ═══ CUSTOM CATEGORIES ═══ */
 let _customCatTargetSel=null;
 let _selectedCatColor='#6fa3c8';
+let _editingCustomCatId=null;
 
 function openAddCustomCat(targetSel){
   _customCatTargetSel=targetSel||null;
+  _editingCustomCatId=null;
   _selectedCatColor='#6fa3c8';
   const ICONS=['🎯','💡','🎮','🎵','🎨','🏃','🐕','🌍','🎁','🧘','🍷','🛒','🚴','🎪','🔧','🧴','🏄','🎲'];
   const COLORS=['#6fa3c8','#d4a94a','#9c84c4','#5a9c6e','#c46a5b','#5fb0b5','#b87bb8','#c8869f','#d4925c','#7d7dc0','#8eb456','#5b85bd'];
@@ -15450,6 +15464,9 @@ function openAddCustomCat(targetSel){
   if(colorEl) colorEl.innerHTML=COLORS.map(c=>`<div class="cat-color-swatch${c===_selectedCatColor?' selected':''}" style="background:${c}" data-color="${c}" onclick="selectCustomCatColor('${c}')"></div>`).join('');
   if(document.getElementById('cc-icon'))document.getElementById('cc-icon').value='⭐';
   if(document.getElementById('cc-name'))document.getElementById('cc-name').value='';
+  const titleEl=document.getElementById('m-custom-cat-title');if(titleEl)titleEl.textContent='New Category';
+  const saveBtn=document.getElementById('cc-save-btn');if(saveBtn)saveBtn.textContent='Add Category';
+  rCustomCatMgmtList();
   openModal('m-custom-cat');
 }
 
@@ -15461,11 +15478,95 @@ function selectCustomCatColor(c){
   });
 }
 
+/* Renders the "Your custom categories" management list inside the New/Edit Category
+   modal — the only place custom categories can be renamed or removed, since none of
+   this existed before (they could only ever be added, never edited or deleted). */
+function rCustomCatMgmtList(){
+  const wrap=document.getElementById('cc-existing-wrap');
+  const list=document.getElementById('cc-existing-list');
+  if(!wrap||!list)return;
+  const cats=S.customCats||[];
+  if(!cats.length){wrap.style.display='none';return;}
+  wrap.style.display='';
+  list.innerHTML=cats.map(c=>`<div class="li" style="padding:7px 0;display:flex;align-items:center;justify-content:space-between;gap:8px">
+    <div class="lii" style="display:flex;align-items:center;gap:8px;min-width:0">
+      <span style="font-size:16px">${esc(c.icon||'⭐')}</span>
+      <span class="lin" style="font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.lbl)}</span>
+    </div>
+    <div style="display:flex;gap:6px;flex-shrink:0">
+      <button class="btn btn-ghost btn-sm" onclick="editCustomCatStart('${c.id}')">Edit</button>
+      <button class="btn btn-sm" style="background:var(--red-d);color:var(--red);border:1px solid var(--red)40" onclick="delCustomCat('${c.id}')">Delete</button>
+    </div>
+  </div>`).join('');
+}
+
+function editCustomCatStart(id){
+  const c=(S.customCats||[]).find(x=>x.id===id);
+  if(!c)return;
+  _editingCustomCatId=id;
+  _selectedCatColor=c.color||'#6fa3c8';
+  const iconEl=document.getElementById('cc-icon');if(iconEl)iconEl.value=c.icon||'⭐';
+  const nameEl=document.getElementById('cc-name');if(nameEl)nameEl.value=c.lbl||'';
+  document.querySelectorAll('#cc-color-swatches .cat-color-swatch').forEach(el=>{
+    el.classList.toggle('selected',el.dataset.color===_selectedCatColor);
+  });
+  document.querySelectorAll('.cat-icon-preset').forEach(el=>el.classList.remove('selected'));
+  const titleEl=document.getElementById('m-custom-cat-title');if(titleEl)titleEl.textContent='Edit Category';
+  const saveBtn=document.getElementById('cc-save-btn');if(saveBtn)saveBtn.textContent='Save Changes';
+  const nameInput=document.getElementById('cc-name');if(nameInput)nameInput.focus();
+}
+
+/* Deleting a custom category doesn't touch the transactions/budget/rules that
+   reference it — matching delAccount's convention of counting affected records and
+   warning up front, but re-categorising (never deleting) transactions to "Other" so
+   no spending history is lost, same as CSV-import's uncategorised fallback. */
+function delCustomCat(id){
+  const c=(S.customCats||[]).find(x=>x.id===id);
+  if(!c)return;
+  const txnCount=(S.transactions||[]).filter(t=>t.category===id).length;
+  const hasBudget=!!(S.budgets&&S.budgets[id]);
+  const parts=[];
+  if(txnCount>0)parts.push(`${txnCount} transaction${txnCount>1?'s':''} will be moved to "Other"`);
+  if(hasBudget)parts.push('its budget limit will be removed');
+  const msg=`Delete "${c.lbl}"?`+(parts.length?' '+parts.join(' and ')+'.':'');
+  klConfirm(msg,function(){
+    (S.transactions||[]).forEach(t=>{if(t.category===id)t.category='other';});
+    (S.recurringTemplates||[]).forEach(t=>{if(t.category===id)t.category='other';});
+    if(S.budgets)delete S.budgets[id];
+    Object.values(S.budgetHistory||{}).forEach(mo=>{if(mo&&mo[id])delete mo[id];});
+    if(S.customCatRules){
+      Object.keys(S.customCatRules).forEach(k=>{if(S.customCatRules[k]===id)delete S.customCatRules[k];});
+    }
+    S.customCats=(S.customCats||[]).filter(x=>x.id!==id);
+    const idx=CATS.findIndex(x=>x.id===id);if(idx>-1)CATS.splice(idx,1);
+    save();
+    _cachedCatOpts='';
+    rCustomCatMgmtList();
+    renderAll();
+    notify(`"${c.lbl}" deleted`,'ok');
+  },{title:'Delete Category',danger:true});
+}
+
 function saveCustomCat(){
   const icon=(document.getElementById('cc-icon')?.value||'').trim()||'⭐';
   const lbl=(document.getElementById('cc-name')?.value||'').trim().replace(/[<>]/g,'');
   if(!lbl){notify('Enter a category name','err');return;}
   if(!S.customCats)S.customCats=[];
+  if(_editingCustomCatId){
+    const existing=S.customCats.find(x=>x.id===_editingCustomCatId);
+    if(!existing){notify('Category no longer exists','err');_editingCustomCatId=null;return;}
+    existing.lbl=lbl;existing.icon=icon;existing.color=_selectedCatColor;
+    const catEntry=CATS.find(x=>x.id===_editingCustomCatId);
+    if(catEntry){catEntry.lbl=lbl;catEntry.icon=icon;catEntry.color=_selectedCatColor;}
+    initCustomCats();
+    save();
+    closeModal('m-custom-cat');
+    notify(`"${lbl}" updated`,'ok');
+    _editingCustomCatId=null;
+    _cachedCatOpts='';
+    renderAll();
+    return;
+  }
   const slug=lbl.toLowerCase().replace(/[^a-z0-9]/g,'_').slice(0,20);
   const id='custom_'+slug+'_'+Date.now().toString(36);
   const newCat={id,lbl,icon,color:_selectedCatColor};
@@ -17628,8 +17729,12 @@ document.addEventListener('click', function(e){
       <div id="cc-color-swatches" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px"></div>
     </div>
     <div class="mf">
-      <button class="btn btn-ghost" onclick="closeModal('m-custom-cat')">Cancel</button>
-      <button class="btn btn-gold" onclick="saveCustomCat()">Add Category</button>
+      <button class="btn btn-ghost" id="cc-cancel-btn" onclick="closeModal('m-custom-cat')">Cancel</button>
+      <button class="btn btn-gold" id="cc-save-btn" onclick="saveCustomCat()">Add Category</button>
+    </div>
+    <div id="cc-existing-wrap" style="display:none;margin-top:18px;padding-top:16px;border-top:1px solid var(--bd)">
+      <label style="display:block;margin-bottom:8px">Your custom categories</label>
+      <div id="cc-existing-list"></div>
     </div>
   </div>
 </div>
