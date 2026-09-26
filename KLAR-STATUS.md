@@ -78,7 +78,9 @@ Worth knowing before making any claim about traction: **4 total auth users, 0 su
 
 - **Error-handling/resilience audit (2026-09-24) — 2 real bugs found and fixed.** AI chat showed raw HTTP status codes / browser error strings instead of actionable messages (invalid Groq key now says exactly that and where to fix it). Cloud sync's "Sync now" button showed a false "Synced ✓" toast even when the sync had actually failed or hit a version conflict — the honest "Sync failed" toast was getting silently overwritten a moment later. Exchange-rate fallback already handled correctly, no fix needed there.
 
-**Running bug tally this review cycle (2026-09-05 → 09-26): 60 real bugs found and fixed, plus 2 feature gaps closed** across 41 specialist passes.
+**Running bug tally this review cycle (2026-09-05 → 09-26): 62 real bugs found and fixed, plus 2 feature gaps closed** across 42 specialist passes.
+
+**42nd specialist — PWA offline sync + iOS install nudge (2026-09-26, commit `2caea11`, live on `main`):** 2 real bugs found and fixed. The "Back online — syncing..." toast on reconnect was purely cosmetic — nothing actually re-triggered a sync, so offline edits could sit unsynced in the cloud indefinitely until the user happened to make another edit. Also: iOS Safari never fires `beforeinstallprompt` (Apple-specific), so the entire install-banner flow silently never showed for any iOS user — a real chunk of the target audience. Both fixed.
 
 **41st specialist — Settings page completeness (2026-09-26, commit `daf1353`, live on `main`):** 2 real bugs found, both live-verified. Business Profile fields (company name, reg number, VAT, entity type, financial year end, etc.) only ever got restored into their inputs by the mode-toggle click handler — reloading the page while already in Business mode left every field looking wiped, even though the data was safe in `S.prefs` underneath. Also fixed: Font Size and Display Density settings had zero visual indicator of which option was active, unlike Theme swatches which already highlight correctly.
 
