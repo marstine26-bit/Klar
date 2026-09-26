@@ -4478,8 +4478,35 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     try {
       if (localStorage.getItem('kl_pin_enabled') === '1' && localStorage.getItem('kl_pin_hash')) {
         document.getElementById('kl-pin-lock').style.display = 'flex';
+        _klPinFocusTrap();
       }
     } catch(e) {}
+  }
+  // #kl-pin-lock toggles via style.display (not the shared .modal-bg/'open'-class trap
+  // system further down the page), and — unlike every other gate — had NO focus handling
+  // of its own at all: no initial focus and no Tab-key trap. Live-verified this is a real
+  // security bypass, not just an inconvenience: with the lock visibly covering the entire
+  // screen, pressing Tab from a fresh load walked through its own 11 keypad buttons and
+  // then straight out into the live dashboard sidebar hidden behind it — a keyboard-only
+  // user could Tab past the lock and operate the unlocked app (view/edit real financial
+  // data) without ever entering the correct PIN. Wires up a self-contained trap (idempotent
+  // — safe to call every time the lock is shown) plus focuses the first keypad button.
+  function _klPinFocusTrap() {
+    var lock = document.getElementById('kl-pin-lock');
+    if (!lock) return;
+    if (!lock._klPinTrapWired) {
+      lock._klPinTrapWired = true;
+      lock.addEventListener('keydown', function(e) {
+        if (e.key !== 'Tab') return;
+        var els = [].slice.call(lock.querySelectorAll('button:not([disabled])'));
+        if (!els.length) return;
+        var first = els[0], last = els[els.length - 1];
+        if (e.shiftKey) { if (document.activeElement === first) { e.preventDefault(); last.focus(); } }
+        else { if (document.activeElement === last) { e.preventDefault(); first.focus(); } }
+      });
+    }
+    var firstKey = lock.querySelector('.kl-pin-key');
+    if (firstKey) firstKey.focus();
   }
   _klPinEarlyLock();
   // Also re-lock if the page is restored from the back-forward cache (e.g. the user
@@ -14784,7 +14811,22 @@ document.addEventListener('DOMContentLoaded',()=>{
     // has its own bespoke focus trap a few lines below, wired up where its 'open' class
     // gets added asynchronously after the Supabase session check; adding it here too
     // would attach a second, redundant Tab-key listener.)
-    var MODAL_SEL='.modal-bg,.sb-modal-bg,.bp-modal-bg,#kl-cmdk-modal,#klar-onboard,#kl-region-gate,#kl-plan-gate';
+    // #kl-pricing-modal (the subscription plan-picker, reachable from the dashboard
+    // "Upgrade" banner, Settings "Change Plan"/"View Plans", and the plan-limit-reached
+    // card) is a full-screen role="dialog" aria-modal="true" overlay with its own
+    // klShowPricing()/klHidePricing() toggling the same 'open' class convention as the
+    // others — it was simply never added to this list. Without it, opening the modal set
+    // no initial focus at all (activeElement stayed on <body>) and Tab walked straight
+    // through the modal's opaque/blurred backdrop into the dashboard sidebar/page behind
+    // it, completely invisible to the user. Live-verified before this fix.
+    // #kl-privacy-gate (the mandatory first-launch "Your data. Your control." consent
+    // screen almost every new user sees) and #kl-policy-modal (its "Read the full Privacy
+    // Policy" sub-view, also reachable from Settings/AI chat/Bill Hub) have the exact same
+    // full-screen-overlay + 'open'-class toggle shape as the others but were likewise never
+    // added. Live-verified: opening the privacy gate set no initial focus, and Tab escaped
+    // it after 2 presses straight onto the floating "+" action button on the dashboard
+    // hidden behind its opaque backdrop.
+    var MODAL_SEL='.modal-bg,.sb-modal-bg,.bp-modal-bg,#kl-cmdk-modal,#klar-onboard,#kl-region-gate,#kl-plan-gate,#kl-pricing-modal,#kl-privacy-gate,#kl-policy-modal';
     var prevFocus=null;
     function trapFocus(e){
       var modal=e.currentTarget;
@@ -17552,6 +17594,10 @@ document.addEventListener('click', function(e){
     const err = document.getElementById('kl-pin-err');
     if (err) err.textContent = '';
     document.getElementById('kl-pin-lock').style.display = 'flex';
+    // Same initial-focus + Tab-trap wiring as the early/synchronous lock path
+    // (_klPinFocusTrap, defined right after #kl-pin-lock's markup) — this is the
+    // background-timer re-lock path (60s hidden), which needs it just as much.
+    if (typeof _klPinFocusTrap === 'function') _klPinFocusTrap();
   }
 
   // Lock after 60 seconds in background
