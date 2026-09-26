@@ -6992,7 +6992,10 @@ function _cmdKRender(){
   items = items.slice(0, 8);
   let html = items.map((e,i) => `<div class="kl-cmdk-item${i===0?' sel':''}" data-id="${e.id}" role="option" aria-selected="${i===0}"><span class="kl-cmdk-item-label">${esc(e.label)}</span><span class="kl-cmdk-item-hub">${esc(e.hub)}</span></div>`).join('');
   if (q) {
-    html += `<div class="kl-cmdk-item kl-cmdk-search-fallback" data-search="1" role="option"><span class="kl-cmdk-item-label">⌕ Search transactions for "${esc(input.value.trim())}"</span></div>`;
+    // When no page matches the query, this fallback row is the only option shown —
+    // it must get 'sel' itself (matching the i===0 case above) or Enter does nothing
+    // until the user first presses an arrow key, since _cmdKActivate only acts on '.sel'.
+    html += `<div class="kl-cmdk-item kl-cmdk-search-fallback${items.length===0?' sel':''}" data-search="1" role="option" aria-selected="${items.length===0}"><span class="kl-cmdk-item-label">⌕ Search transactions for "${esc(input.value.trim())}"</span></div>`;
   }
   results.innerHTML = html || `<div class="kl-cmdk-empty">No matches — try a different search</div>`;
 }
@@ -7039,7 +7042,7 @@ window.openCmdK = function(){
       if (e.key === 'ArrowDown') { e.preventDefault(); _cmdKMove(1); }
       else if (e.key === 'ArrowUp') { e.preventDefault(); _cmdKMove(-1); }
       else if (e.key === 'Enter') { e.preventDefault(); _cmdKActivate(document.querySelector('#kl-cmdk-results .sel')); }
-      else if (e.key === 'Escape') { closeCmdK(); }
+      else if (e.key === 'Escape') { e.stopPropagation(); closeCmdK(); }
     });
     modal.querySelector('#kl-cmdk-results').addEventListener('click', e => { _cmdKActivate(e.target.closest('[role="option"]')); });
   }
@@ -15042,7 +15045,7 @@ function klShowShortcuts() {
         <tbody>
           <tr><td style="padding:6px 0;color:var(--t3);font-family:var(--fm)"><kbd style="background:var(--s1);border:1px solid var(--b1);border-radius:4px;padding:2px 6px;font-size:11px">N</kbd></td><td style="padding:6px 0">New transaction</td></tr>
           <tr><td style="padding:6px 0;color:var(--t3);font-family:var(--fm)"><kbd style="background:var(--s1);border:1px solid var(--b1);border-radius:4px;padding:2px 6px;font-size:11px">/</kbd></td><td style="padding:6px 0">Search transactions</td></tr>
-          <tr><td style="padding:6px 0;color:var(--t3);font-family:var(--fm)"><kbd style="background:var(--s1);border:1px solid var(--b1);border-radius:4px;padding:2px 6px;font-size:11px">Ctrl K</kbd></td><td style="padding:6px 0">Jump to transaction search</td></tr>
+          <tr><td style="padding:6px 0;color:var(--t3);font-family:var(--fm)"><kbd style="background:var(--s1);border:1px solid var(--b1);border-radius:4px;padding:2px 6px;font-size:11px">Ctrl K</kbd></td><td style="padding:6px 0">Search & jump to any page</td></tr>
           <tr><td style="padding:6px 0;color:var(--t3);font-family:var(--fm)"><kbd style="background:var(--s1);border:1px solid var(--b1);border-radius:4px;padding:2px 6px;font-size:11px">Esc</kbd></td><td style="padding:6px 0">Close modal / panel</td></tr>
           <tr><td style="padding:6px 0;color:var(--t3);font-family:var(--fm)"><kbd style="background:var(--s1);border:1px solid var(--b1);border-radius:4px;padding:2px 6px;font-size:11px">g d</kbd></td><td style="padding:6px 0">Go to Dashboard</td></tr>
           <tr><td style="padding:6px 0;color:var(--t3);font-family:var(--fm)"><kbd style="background:var(--s1);border:1px solid var(--b1);border-radius:4px;padding:2px 6px;font-size:11px">g t</kbd></td><td style="padding:6px 0">Go to Transactions</td></tr>
