@@ -5166,6 +5166,20 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="mf"><button class="btn btn-ghost" onclick="closeModal('m-add-sub')">Cancel</button><button class="btn btn-gold" onclick="saveSub()">Save</button></div>
   </div>
 </div>
+<div class="modal-bg" id="m-edit-rec" role="dialog" aria-modal="true" aria-labelledby="m-edit-rec-title">
+  <div class="modal">
+    <div class="mt" id="m-edit-rec-title">Edit Recurring Template</div>
+    <div class="fr"><label for="rec-edit-desc">Description</label><input type="text" id="rec-edit-desc" required></div>
+    <div class="fg2">
+      <div class="fr"><label for="rec-edit-amt">Amount (<span class="kl-cur-sym">R</span>)</label><input type="number" id="rec-edit-amt" min="0" step="0.01" required></div>
+      <div class="fr"><label for="rec-edit-freq">Frequency</label><select id="rec-edit-freq"><option value="monthly">Monthly</option><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="annual">Annual</option></select></div>
+      <div class="fr"><label for="rec-edit-cat">Category</label><select id="rec-edit-cat"></select></div>
+      <div class="fr"><label for="rec-edit-acc">Account</label><select id="rec-edit-acc"></select></div>
+    </div>
+    <div style="font-size:11px;color:var(--t3);margin-bottom:10px">Changes apply from the next posting onward — transactions already posted from this template are not affected.</div>
+    <div class="mf"><button class="btn btn-ghost" onclick="closeModal('m-edit-rec')">Cancel</button><button class="btn btn-gold" onclick="saveRecTemplate()">Save</button></div>
+  </div>
+</div>
 <div class="modal-bg" id="m-add-bud" role="dialog" aria-modal="true" aria-labelledby="m-add-bud-title">
   <div class="modal">
     <div class="mt" id="m-add-bud-title">Set Budget Limit</div>
@@ -7148,6 +7162,7 @@ function rRecurringTemplates(){
       <div class="rec-card-desc">${esc(t.description)}</div>
       <div class="rec-card-meta" style="text-transform:none;letter-spacing:.02em">Last posted ${esc(t.lastDate||'—')} · <span style="color:${t.active?'var(--accent)':'var(--t3)'};font-weight:600">${t.active?'Active':'Paused'}</span></div>
       <div class="rec-card-actions">
+        <button onclick="openEditRecTemplate('${t.id}')" class="btn btn-ghost btn-sm">Edit</button>
         <button onclick="toggleRecTemplate('${t.id}')" class="btn btn-ghost btn-sm">${t.active?'Pause':'Resume'}</button>
         <button onclick="delRecTemplate('${t.id}')" class="btn btn-sm" style="background:var(--red-d);color:var(--red);border:1px solid var(--red)40">Delete</button>
       </div>
@@ -7156,6 +7171,31 @@ function rRecurringTemplates(){
 }
 const toggleRecTemplate=id=>{const t=(S.recurringTemplates||[]).find(x=>x.id===id);if(t){t.active=!t.active;save();renderAll();}};
 const delRecTemplate=id=>{const t=(S.recurringTemplates||[]).find(x=>x.id===id);klConfirm('Delete recurring template'+(t?' "'+t.description+'"':'')+' permanently?',()=>{S.recurringTemplates=(S.recurringTemplates||[]).filter(x=>x.id!==id);save();renderAll();},{title:'Delete Template',danger:true});};
+let _editingRecTemplateId=null;
+function openEditRecTemplate(id){
+  const t=(S.recurringTemplates||[]).find(x=>x.id===id);if(!t)return;
+  _editingRecTemplateId=id;
+  popCatDDs();popAccDDs();
+  const descEl=document.getElementById('rec-edit-desc');if(descEl)descEl.value=t.description||'';
+  const amtEl=document.getElementById('rec-edit-amt');if(amtEl)amtEl.value=t.amount||'';
+  const freqEl=document.getElementById('rec-edit-freq');if(freqEl)freqEl.value=t.freq||'monthly';
+  const catEl=document.getElementById('rec-edit-cat');if(catEl){catEl.value=t.category||'';klEnhanceCatSelect('rec-edit-cat');}
+  const accEl=document.getElementById('rec-edit-acc');if(accEl)accEl.value=t.accountId||'';
+  document.getElementById('m-edit-rec').classList.add('open');
+}
+function saveRecTemplate(){
+  const t=(S.recurringTemplates||[]).find(x=>x.id===_editingRecTemplateId);if(!t)return;
+  const desc=document.getElementById('rec-edit-desc').value.trim();
+  const amt=parseFloat(document.getElementById('rec-edit-amt').value);
+  if(!desc||isNaN(amt)||amt<=0){notify('Fill all required fields','err');return;}
+  t.description=desc;
+  t.amount=amt;
+  t.freq=document.getElementById('rec-edit-freq').value||'monthly';
+  t.category=document.getElementById('rec-edit-cat').value||t.category;
+  t.accountId=document.getElementById('rec-edit-acc').value||t.accountId;
+  save();closeModal('m-edit-rec');renderAll();notify('Recurring template updated — future postings only','ok');
+  _editingRecTemplateId=null;
+}
 
 function chMo(d) {
   const prevMo=S.curMo;
@@ -7226,7 +7266,7 @@ const toMo = (amt,cyc) => { if(cyc==='annual')return amt/12; if(cyc==='weekly')r
 function popCatDDs() {
   const corp = typeof isCorp === 'function' && isCorp();
   const catList = corp ? [...CORP_CATS.income, ...CORP_CATS.expense] : CATS;
-  ['txn-ca','bud-cat','t-cat','wi-cat'].forEach(id => {
+  ['txn-ca','bud-cat','t-cat','wi-cat','rec-edit-cat'].forEach(id => {
     const el=document.getElementById(id); if(!el) return;
     const isF=id==='t-cat';
     const cur=el.value;
@@ -7238,7 +7278,7 @@ function popCatDDs() {
 
 function popAccDDs() {
   const accs = S.accounts||[];
-  ['txn-acc','txn-to-acc','t-acc','recon-acc-sel'].forEach(id => {
+  ['txn-acc','txn-to-acc','t-acc','recon-acc-sel','rec-edit-acc'].forEach(id => {
     const el=document.getElementById(id); if(!el) return;
     const isF=(id==='t-acc');
     const cur=el.value;
