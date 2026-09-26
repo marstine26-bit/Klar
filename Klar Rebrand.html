@@ -18705,13 +18705,29 @@ function completeGroceryList(listId){
   klConfirm(`Mark "${list.name}" as complete and log ${cur}${total.toFixed(2)} as a grocery expense?`,()=>{
     list.status='completed';
     const foodCat=CATS.find(c=>c.id==='food')||{id:'food'};
-    const acc=(S.accounts||[]).find(a=>a.type!=='transfer')||(S.accounts||[])[0];
+    // _groceryListTotal() is always computed in the app's home/region currency
+    // (R for SA, £ for UK, S.prefs.cur for other), matching non-forex accounts.
+    // Logging it straight onto a foreign-currency account would silently mislabel
+    // e.g. "R25.00" as "$25.00", then get re-converted (~18.5x here) everywhere
+    // else in the app (budgets, dashboard, net worth) that reads txn amounts via
+    // the account's own currency/zarRate — same bug class as the currency-
+    // aggregation sweep found elsewhere. Prefer a same-currency account, and if
+    // only foreign-currency accounts exist, convert into that account's own units.
+    const region=S.prefs.region||'za';
+    const homeCur=region==='uk'?'GBP':region==='other'?(S.prefs.dataCurrency||CUR_SYM_TO_CODE[S.prefs.cur]||'USD'):'ZAR';
+    const accs=(S.accounts||[]).filter(a=>a.type!=='transfer');
+    const acc=accs.find(a=>(a.currency||'ZAR')===homeCur)||accs[0]||(S.accounts||[])[0];
+    let amount=total;
+    if(acc&&(acc.currency||'ZAR')!==homeCur){
+      const rate=acc.zarRate||1; // raw account-currency amount * rate = home-currency amount
+      amount=rate?total/rate:total;
+    }
     if(acc){
       S.transactions.push({
         id:uid(),
         date:list.date||localDateStr(),
         description:`${list.name} — ${_groceryStoreName(list.store)}`,
-        amount:total,
+        amount,
         type:'expense',
         category:foodCat.id,
         accountId:acc.id,
