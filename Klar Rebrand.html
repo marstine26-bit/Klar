@@ -14916,9 +14916,17 @@ document.addEventListener('DOMContentLoaded',()=>{
     }
   });
 
-  // Offline / online connectivity notifications
+  // Offline / online connectivity notifications.
+  // The 'online' handler used to only show a "syncing..." toast with nothing behind it:
+  // sbPushSync() is only ever scheduled from the save() patch (on the next local write) and
+  // is never retried on its own, so any edits made while offline — which push once, fail
+  // silently on the network error, and set the sync dot to 'err' — stayed unsynced until the
+  // user happened to make another edit after reconnecting. Reopening the app after being
+  // offline a while (PWA cold-start scenario) never synced at all until an edit was made.
+  // Call sbPullAndMerge() here so reconnecting actually resolves the pending sync: it compares
+  // versions and either pulls newer cloud data or pushes the local changes made while offline.
   window.addEventListener('offline', () => notify('You are offline — changes will sync when reconnected', 'warn'));
-  window.addEventListener('online',  () => notify('Back online — syncing...', 'ok'));
+  window.addEventListener('online',  () => { notify('Back online — syncing...', 'ok'); if(typeof sbPullAndMerge==='function') sbPullAndMerge(); });
 });
 
 // Keyboard chord state
@@ -18536,9 +18544,28 @@ document.addEventListener('click', function(e){
     _installPrompt = null;
   };
   // Hide banner if already running as installed PWA
-  if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone){
+  var _klStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  if(_klStandalone){
     var banner = document.getElementById('klar-install-banner');
     if(banner) banner.style.display = 'none';
+  }
+  // iOS Safari (and iOS Chrome/Firefox, which are WebKit under the hood) never fires
+  // 'beforeinstallprompt' at all — Apple only exposes install via the Share sheet's "Add to
+  // Home Screen" — so without this, iOS users never saw the install banner or any nudge to
+  // install the PWA, while Android/desktop Chrome users did. Show the same banner with static
+  // instructions instead of the (non-functional, since there's no captured prompt) Install button.
+  var _klIsIOS = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase()) && !window.MSStream;
+  if(_klIsIOS && !_klStandalone){
+    setTimeout(function(){
+      if(_installPrompt) return; // beforeinstallprompt somehow fired — let that flow own the banner
+      var banner = document.getElementById('klar-install-banner');
+      if(!banner) return;
+      var label = banner.querySelector('span');
+      if(label) label.textContent = 'Install Klar: tap Share, then "Add to Home Screen"';
+      var btn = document.getElementById('klar-install-btn');
+      if(btn) btn.style.display = 'none';
+      banner.classList.add('show');
+    }, 30000);
   }
 })();
 
