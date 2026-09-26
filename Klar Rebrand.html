@@ -4301,7 +4301,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <button class="sb-btn" id="sb-submit-btn" onclick="sbSubmit()">Sign in</button>
       <div class="sb-toggle">
         <span id="sb-toggle-txt">Don't have an account?</span>
-        <a onclick="sbToggleMode()">Create one</a>
+        <a id="sb-toggle-link" onclick="sbToggleMode()">Create one</a>
         &nbsp;·&nbsp;<a onclick="sbCloseAuth()">Cancel</a>
       </div>
     </div>
@@ -16306,6 +16306,7 @@ function sbToggleMode(){
   _sbMode = _sbMode === 'signin' ? 'signup' : 'signin';
   const btn = document.getElementById('sb-submit-btn');
   const tog = document.getElementById('sb-toggle-txt');
+  const togLink = document.getElementById('sb-toggle-link');
   const nameF = document.getElementById('sb-name-field');
   const passEl = document.getElementById('sb-pass');
   const sbMsg = document.getElementById('sb-msg');
@@ -16313,11 +16314,13 @@ function sbToggleMode(){
   if(_sbMode === 'signup'){
     btn.textContent = 'Create account';
     tog.textContent = 'Already have an account?';
+    if(togLink) togLink.textContent = 'Sign in';
     nameF.style.display = 'block';
     document.getElementById('sb-pass').autocomplete = 'new-password';
   } else {
     btn.textContent = 'Sign in';
     tog.textContent = "Don't have an account?";
+    if(togLink) togLink.textContent = 'Create one';
     nameF.style.display = 'none';
     if(passEl) passEl.autocomplete = 'current-password';
   }
@@ -16345,11 +16348,20 @@ async function sbSubmit(){
     }
     if(res.error) throw res.error;
     if(_sbMode === 'signup' && !res.data?.session){
-      _sbShowMsg('Account created! You can sign in immediately — no email confirmation needed.','ok');
-      // Auto sign-in after signup (_sbPendingSignup is still true from above, so the
-      // SIGNED_IN handler correctly attributes this as signed_up, not signed_in)
+      // No session back from signUp() usually means email confirmation is required —
+      // try an immediate sign-in to cover the "confirmation off" case, but only claim
+      // success once that sign-in actually succeeds (a prior version of this code
+      // announced success unconditionally here, then silently did nothing if the
+      // sign-in failed with "Email not confirmed", leaving the modal open with no
+      // explanation).
+      // (_sbPendingSignup is still true from above, so the SIGNED_IN handler correctly
+      // attributes this as signed_up, not signed_in)
       const si = await _sb.auth.signInWithPassword({ email, password:pass });
-      if(!si.error){ sbCloseAuth(); notify('Signed in — syncing your data…','ok'); }
+      if(!si.error){
+        sbCloseAuth(); notify('Signed in — syncing your data…','ok');
+      } else {
+        _sbShowMsg('Account created! Check your email to confirm, then sign in.','ok');
+      }
     } else {
       sbCloseAuth();
       notify('Signed in — syncing your data…', 'ok');
