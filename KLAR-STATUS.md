@@ -78,7 +78,9 @@ Worth knowing before making any claim about traction: **4 total auth users, 0 su
 
 - **Error-handling/resilience audit (2026-09-24) — 2 real bugs found and fixed.** AI chat showed raw HTTP status codes / browser error strings instead of actionable messages (invalid Groq key now says exactly that and where to fix it). Cloud sync's "Sync now" button showed a false "Synced ✓" toast even when the sync had actually failed or hit a version conflict — the honest "Sync failed" toast was getting silently overwritten a moment later. Exchange-rate fallback already handled correctly, no fix needed there.
 
-**Running bug tally this review cycle (2026-09-05 → 09-26): 69 real bugs found and fixed, plus 2 feature gaps closed** across 46 specialist passes.
+**Running bug tally this review cycle (2026-09-05 → 09-27): 73 real bugs found and fixed, plus 2 feature gaps closed** across 47 specialist passes.
+
+**47th specialist — first-run onboarding keyboard accessibility (2026-09-27, commit `8891b77`, live on `main`):** ran a real live keyboard-only walkthrough (Tab/Shift+Tab/Enter/Space, no mouse) of the auth→region→onboarding→paywall flow — the exact gap the repo's own static accessibility audit admitted it couldn't cover. Found 4 real bugs: the onboarding carousel had zero focus containment (Tab skipped it entirely, landing on a hidden FAB underneath that opened a stacked modal); every "Skip" link and the Personal/Business platform-choice cards were 100% keyboard-unreachable; the region and plan/paywall gates had the same missing-from-focus-trap gap; and — found independently along the way — the paywall's fixed 8-second timer had no awareness of onboarding still being open, so it could visually stack on top of and replace the onboarding overlay mid-flow. All fixed.
 
 **46th specialist — UK print gap (2026-09-26, commit `5d88c1e`, live on `main`):** small, fast follow-up to the 45th pass — the Class & Banking page's "Print Report" button was gated SA-only despite the page having an equally complete UK content block, a plain oversight rather than an intentional decision. One-line fix widening the region gate.
 
