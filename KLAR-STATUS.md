@@ -78,7 +78,9 @@ Worth knowing before making any claim about traction: **4 total auth users, 0 su
 
 - **Error-handling/resilience audit (2026-09-24) — 2 real bugs found and fixed.** AI chat showed raw HTTP status codes / browser error strings instead of actionable messages (invalid Groq key now says exactly that and where to fix it). Cloud sync's "Sync now" button showed a false "Synced ✓" toast even when the sync had actually failed or hit a version conflict — the honest "Sync failed" toast was getting silently overwritten a moment later. Exchange-rate fallback already handled correctly, no fix needed there.
 
-**Running bug tally this review cycle (2026-09-05 → 09-26): 68 real bugs found and fixed, plus 2 feature gaps closed** across 45 specialist passes.
+**Running bug tally this review cycle (2026-09-05 → 09-26): 69 real bugs found and fixed, plus 2 feature gaps closed** across 46 specialist passes.
+
+**46th specialist — UK print gap (2026-09-26, commit `5d88c1e`, live on `main`):** small, fast follow-up to the 45th pass — the Class & Banking page's "Print Report" button was gated SA-only despite the page having an equally complete UK content block, a plain oversight rather than an intentional decision. One-line fix widening the region gate.
 
 **45th specialist — Print/Report correctness (2026-09-26, commit `f466166`, live on `main`):** 2 real bugs found and fixed, no backend deploy needed this round (also audited all deployed Supabase edge functions — the one previously-unreviewed one, `bootstrap-tester`, is a harmless retired stub). The "Print Report" button had zero print stylesheet anywhere in the app, so printing produced the full dark-theme sidebar/topbar/chrome instead of a report — fixed with a proper `@media print` block, which fixes `Ctrl+P` on every page, not just that one button. Also fixed a per-row currency mismatch in the Monthly Statement print view (same bug class as the currency-aggregation sweep, a call site that sweep missed).
 
