@@ -8198,6 +8198,29 @@ function parseCSV(file) {
 }
 
 function splitRow(line,sep){const res=[];let cur='',inQ=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){inQ=!inQ;continue}if(c===sep&&!inQ){res.push(cur.trim());cur='';continue}cur+=c}res.push(cur.trim());return res;}
+// Parses a CSV amount cell that may use either style of decimal separator.
+// Bank exports vary: "1,234.56" (comma=thousands, dot=decimal — ZA/UK/US) vs
+// "1.234,56" / "45,32" (dot=thousands, comma=decimal — most of continental Europe).
+// Blindly stripping every comma (the old behaviour) turns a European "45,32" into
+// 4532 — a silent 100x amount inflation. Decide per-value from the punctuation
+// actually present instead of assuming one convention.
+function parseAmt(raw){
+  let s=(raw||'0').replace(/[R£$\s]/g,'');
+  if(!s) return NaN;
+  const hasComma=s.indexOf(',')!==-1, hasDot=s.indexOf('.')!==-1;
+  if(hasComma&&hasDot){
+    // Both present: whichever separator appears last is the decimal point.
+    if(s.lastIndexOf(',')>s.lastIndexOf('.')) s=s.replace(/\./g,'').replace(',','.');
+    else s=s.replace(/,/g,'');
+  } else if(hasComma){
+    // Only commas: a single comma followed by exactly 1-2 digits at the end is a
+    // decimal separator ("45,32"); anything else (multiple commas, or 3+ trailing
+    // digits like "12,000") is thousands grouping and gets stripped.
+    if(/,\d{1,2}$/.test(s)&&(s.match(/,/g)||[]).length===1) s=s.replace(',','.');
+    else s=s.replace(/,/g,'');
+  }
+  return parseFloat(s);
+}
 function parseDate(raw){
   if(!raw)return localDateStr();
   const s=raw.trim();
@@ -8220,7 +8243,23 @@ function toggleSplitMode(on){
   if(sp)sp.style.display=on?'':'none';
 }
 
-function doImport() {
+// Runs fn over arr in chunks, yielding to the browser between chunks so a large
+// import (thousands of rows) doesn't freeze the tab for several seconds with no
+// feedback — large CSVs (the app advertises up to ~100,000 rows) were measured
+// taking ~10s fully synchronous, during which the UI looked hung.
+function processInChunks(arr,chunkSize,fn){
+  return new Promise(resolve=>{
+    let i=0;
+    const step=()=>{
+      const end=Math.min(i+chunkSize,arr.length);
+      for(;i<end;i++) fn(arr[i]);
+      if(i<arr.length) setTimeout(step,0);
+      else resolve();
+    };
+    step();
+  });
+}
+async function doImport() {
   if (!csvData) return;
   const accId=importAccId||'default';
   let added=0, skipped=0;
@@ -8229,6 +8268,16 @@ function doImport() {
   const preImportIds=new Set(preImportPool.map(t=>t.id));
   const skipOld=document.getElementById('imp-skip-old')?.checked;
   const wmDate=(S.importWatermarks||{})[accId]?.lastDate||null;
+  const impBtn=document.getElementById('imp-btn');
+  const impBtnOrigText=impBtn?impBtn.textContent:null;
+  const showImportingState=async n=>{
+    if(!impBtn||n<300) return;
+    impBtn.disabled=true;
+    impBtn.textContent=`Importing ${n} transactions…`;
+    // Yield twice so the browser actually paints the label before the heavy loop starts
+    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+  };
+  try{
 
   // ── OFX / QIF direct path ──────────────────────────────────────────
   if(csvData.directTxns){
@@ -8237,7 +8286,8 @@ function doImport() {
     const toImport=skipOld&&wmDate
       ? csvData.directTxns.filter(t=>t.date>wmDate)
       : csvData.directTxns;
-    toImport.forEach(t=>{
+    await showImportingState(toImport.length);
+    await processInChunks(toImport,500,t=>{
       const amount=Math.abs(t.amount);
       if(!t.date||amount===0) return;
       const type=t.amount>=0?'income':'expense';
@@ -8297,12 +8347,13 @@ function doImport() {
     ? csvData.rows.filter(r=>parseDate(r[di]||'')>wmDate)
     : csvData.rows;
 
-  rowsToImport.forEach(row=>{
+  await showImportingState(rowsToImport.length);
+  await processInChunks(rowsToImport,500,row=>{
     let rawNum, amount, type;
     if(splitMode){
       // Separate debit/credit columns: debit = expense (always positive values), credit = income
-      const dv=debitN!==null?parseFloat((row[debitN]||'0').replace(/[R£$ ,\s]/g,''))||0:0;
-      const cv=creditN!==null?parseFloat((row[creditN]||'0').replace(/[R£$ ,\s]/g,''))||0:0;
+      const dv=debitN!==null?parseAmt(row[debitN])||0:0;
+      const cv=creditN!==null?parseAmt(row[creditN])||0:0;
       if(dv===0&&cv===0) return;
       if(dv>0&&cv===0){ amount=dv; type='expense'; rawNum=-dv; }
       else if(cv>0&&dv===0){ amount=cv; type='income'; rawNum=cv; }
@@ -8311,8 +8362,7 @@ function doImport() {
         else{ amount=cv-dv; type='income'; rawNum=cv-dv; }
       }
     } else {
-      const rawA=(row[aiN]||'0').replace(/[R£$ ,\s]/g,'');
-      rawNum=parseFloat(rawA);
+      rawNum=parseAmt(row[aiN]);
       if(isNaN(rawNum)||rawNum===0) return;
       amount=Math.abs(rawNum);
       type='expense';
@@ -8397,6 +8447,12 @@ function doImport() {
       <span style="font-weight:700;color:var(--blue)">Import complete:</span> Calculated balance for <strong>${esc(acc.name)}</strong> is now <strong>${fmt(calcBal)}</strong>. If this doesn't match your bank statement, update the <em>Opening Balance</em> or use <button class="btn btn-ghost btn-xs" onclick="openReconForAcc('${accId}')">⚖ Reconcile</button> to log the difference.${driftHtml}
     </div>`;
     setTimeout(()=>{const b=document.getElementById('transfer-detect-banner');if(b&&b.innerHTML.includes('Import complete'))b.innerHTML='';},24000);
+  }
+  }finally{
+    // Always restore the button — the modal is normally closed by this point, but a
+    // thrown error (or a validation `return` before any rows were processed) must not
+    // leave it stuck reading "Importing…" and disabled next time the modal opens.
+    if(impBtn){impBtn.disabled=false;impBtn.textContent=impBtnOrigText||'Import Transactions';}
   }
 }
 
