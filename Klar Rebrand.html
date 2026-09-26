@@ -5506,7 +5506,12 @@ let S = (() => {
 })();
 
 const BIZ_KEY='klar_biz_v1';
-const BIZ_SWAP=['transactions','accounts','budgets','goals','debts','subscriptions','recurringTemplates','importWatermarks','importPresets','importHistory','bankConnections'];
+// chatHistory is swapped along with the rest — otherwise the AI Advisor's conversation
+// (both the rendered transcript and the prior-turns context actually sent to Groq) leaks
+// across the Personal/Business boundary in both directions: switching to Business mode would
+// still show/send personal chat messages (and personal financial detail mentioned in them) as
+// "context", and vice versa switching back.
+const BIZ_SWAP=['transactions','accounts','budgets','goals','debts','subscriptions','recurringTemplates','importWatermarks','importPresets','importHistory','bankConnections','chatHistory'];
 let _bizSnap=null;
 
 const save = () => {
@@ -13620,6 +13625,13 @@ function toggleCorpMode() {
     const ad=document.getElementById('corp-address'); if(ad&&S.prefs.corpAddress)ad.value=S.prefs.corpAddress;
   }
   if(corp)activateBizData();else deactivateBizData();
+  // AI Advisor's chat transcript DOM is only (re)populated from S.chatHistory when #chat-msgs
+  // is empty (see updSnap) — since the page markup itself isn't recreated on navigation, a
+  // stale personal/business transcript would otherwise stay on screen after a mode switch even
+  // though S.chatHistory has now correctly swapped underneath it. Clear it so the next visit to
+  // the AI page re-renders from the now-current mode's history.
+  const _chatMsgsEl=document.getElementById('chat-msgs');
+  if(_chatMsgsEl) _chatMsgsEl.innerHTML='';
   save();
   syncModeSwitcher();
   renderAll();
