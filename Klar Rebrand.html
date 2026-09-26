@@ -14113,7 +14113,41 @@ window.klPromptOk=function(){
     }
   }).observe(el,{attributes:true,attributeFilter:['class']});
 })();
-function confirmReset(){klConfirm('Reset ALL data? This cannot be undone.',function(){klConfirm('Final confirmation: all transactions, accounts, budgets, goals, and settings will be permanently deleted from this device.',function(){Object.assign(S,DEF());save();renderAll();notify('All data reset');},{okLabel:'Yes, delete everything',okClass:'btn-red'});},{okLabel:'Reset Everything',okClass:'btn-red'});}
+function confirmReset(){klConfirm('Reset ALL data? This cannot be undone.',function(){klConfirm('Final confirmation: all transactions, accounts, budgets, goals, and settings will be permanently deleted from this device.',function(){
+  // Personal and Business mode data live under two separate localStorage keys
+  // (cl_v55 / BIZ_KEY, see save()/activateBizData()/deactivateBizData()) and
+  // save() only ever persists whichever one ISN'T the currently-active mode's
+  // in-memory snapshot. A plain Object.assign(S,DEF())+save() here only ever
+  // wiped the currently-active mode's data — the other mode's full dataset
+  // (transactions, accounts, budgets, goals, debts, subscriptions, etc.)
+  // survived completely intact in localStorage despite the "all ... will be
+  // permanently deleted from this device" promise. Force out of Business
+  // mode first (without persisting its current, about-to-be-wiped contents)
+  // and remove both storage keys directly so neither side can be preserved.
+  _bizSnap = null;
+  document.documentElement.dataset.mode = '';
+  S.prefs.mode = 'personal';
+  try{ localStorage.removeItem(BIZ_KEY); }catch(e){}
+  // The PIN lock and a handful of small local prefs live in their own
+  // standalone localStorage keys outside `S`/DEF() entirely (set directly by
+  // klPinSave/klPinToggle etc.), so the Object.assign(S,DEF())+save() below
+  // never touched them. Worse than ordinary residue: kl_pin_enabled/kl_pin_hash
+  // surviving means a "Reset Everything" done specifically to escape a
+  // forgotten PIN still leaves the freshly-wiped app locked behind that same
+  // PIN on next load — live-verified this permanently re-locks the app.
+  ['kl_pin_hash','kl_pin_enabled','kl_sb_col','kl_guest','kl_ref_code','kl_referred_by','kl_notif_dismissed'].forEach(k=>{
+    try{ localStorage.removeItem(k); }catch(e){}
+  });
+  Object.assign(S,DEF());
+  save();
+  const knob=document.getElementById('corp-knob'),tog=document.getElementById('corp-toggle');
+  if(knob){knob.style.left='3px';knob.style.background='var(--t3)';}
+  if(tog)tog.style.background='var(--s3)';
+  document.querySelectorAll('.corp-show').forEach(el=>el.style.display='none');
+  document.querySelectorAll('.corp-hide').forEach(el=>el.style.display='');
+  if(typeof syncModeSwitcher==='function')syncModeSwitcher();
+  renderAll();notify('All data reset');
+},{okLabel:'Yes, delete everything',okClass:'btn-red'});},{okLabel:'Reset Everything',okClass:'btn-red'});}
 function printReport(){window.print();}
 
 /* ═══ TAX CALCULATOR ═══ */
