@@ -9366,6 +9366,20 @@ function klReceiptClear() {
   if (name) { name.textContent = ''; name.style.display = 'none'; }
   if (fileInput) fileInput.value = '';
 }
+// Loads an existing transaction's receipt (data URL) into the Add/Edit Transaction
+// form's preview UI so editing a transaction that already has a receipt doesn't show
+// the empty "Attach receipt" state as if it had none.
+function klReceiptLoad(dataUrl) {
+  window._klReceiptData = dataUrl;
+  const img = document.getElementById('txn-receipt-img');
+  const preview = document.getElementById('txn-receipt-preview');
+  const label = document.getElementById('txn-receipt-label');
+  const name = document.getElementById('txn-receipt-name');
+  if (img) img.src = dataUrl;
+  if (preview) preview.style.display = '';
+  if (label) label.style.display = 'none';
+  if (name) { name.textContent = 'Existing receipt'; name.style.display = ''; }
+}
 
 function klReceiptZoom() {
   if (!window._klReceiptData) return;
@@ -9470,7 +9484,12 @@ function openEditTxn(id){
   toggleRecurringUI(false);
   const sw=document.getElementById('split-wrap');if(sw)sw.style.display='none';
   const sr=document.getElementById('split-rows');if(sr)sr.innerHTML='';
-  klReceiptClear();
+  // Load the transaction's existing receipt (if any) into the preview instead of
+  // unconditionally clearing it — previously this always showed "Attach receipt" as if
+  // no receipt existed, even when one was already attached, and saveTxn's edit branch
+  // never wrote window._klReceiptData back to the transaction at all, so any receipt
+  // attached or replaced while editing was silently discarded.
+  if (t.receipt) klReceiptLoad(t.receipt); else klReceiptClear();
   const titleEl=document.getElementById('m-add-txn-title');if(titleEl)titleEl.textContent='Edit Transaction';
   const saveBtn=document.querySelector('#m-add-txn .btn-gold');if(saveBtn)saveBtn.textContent='Update Transaction';
   document.getElementById('m-add-txn').classList.add('open');
@@ -9518,6 +9537,12 @@ function saveTxn(){
       tx.debtId=document.getElementById('txn-debt-link')?.value||'';
       const tagsRaw=document.getElementById('txn-tags')?.value||'';
       tx.tags=tagsRaw.split(',').map(x=>x.trim().replace(/^#/,'')).filter(Boolean);
+      // Persist receipt add/replace/remove — the edit form's receipt UI is preloaded by
+      // openEditTxn via klReceiptLoad(), so window._klReceiptData reflects the current
+      // state (unchanged, replaced, or cleared) at save time. Previously this branch
+      // never touched tx.receipt at all, so any receipt attached or changed during an
+      // edit was silently discarded.
+      if (window._klReceiptData) tx.receipt = window._klReceiptData; else delete tx.receipt;
       // If editing a transfer that was already a transfer before and after, sync the linked leg too
       if(type==='transfer'&&tx.linkedId&&wasTransfer){
         const linked=S.transactions.find(x=>x.id===tx.linkedId);
