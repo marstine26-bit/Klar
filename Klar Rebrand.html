@@ -15570,7 +15570,29 @@ function setTaxView(view, tab) {
   if(view==='trust') { calcTrustTax(); renderTrustCompliance(); }
 }
 
+function renderCitDates() {
+  const el = document.getElementById('cit-dates'); if(!el) return;
+  const fyeMonth = parseInt(document.getElementById('cit-fye')?.value)||12; // 1=Jan..12=Dec
+  const _M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const now=new Date(); const _today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const _lastDayOf=(y,m0)=>new Date(y,m0+1,0); // last day of month m0 (0-11) in year y
+  const fyeIdx0=fyeMonth-1;
+  let fyeYear=now.getFullYear();
+  let fyeDate=_lastDayOf(fyeYear,fyeIdx0);
+  if(fyeDate<_today){ fyeYear++; fyeDate=_lastDayOf(fyeYear,fyeIdx0); }
+  const totalFye=fyeYear*12+fyeIdx0;
+  const mkDate=total=>{const y=Math.floor(total/12); const m0=((total%12)+12)%12; return _lastDayOf(y,m0);};
+  const fmtD=d=>d.getDate()+' '+_M[d.getMonth()]+' '+d.getFullYear();
+  const prov1Date=mkDate(totalFye-6), topUpDate=mkDate(totalFye+6), itr14Date=mkDate(totalFye+12);
+  const row=(lbl,val,color)=>`<div class="sr"><span class="lbl">${lbl}</span><span class="val" style="color:${color||'var(--t1)'}">${val}</span></div>`;
+  el.innerHTML = row('1st Provisional (IRP6)', fmtD(prov1Date), 'var(--amber)')
+    + row('2nd Provisional (IRP6)', fmtD(fyeDate), 'var(--amber)')
+    + row('Top-Up Payment', fmtD(topUpDate), 'var(--green)')
+    + row('ITR14 Return Due', fmtD(itr14Date), 'var(--blue)');
+}
+
 function calcCIT() {
+  renderCitDates();
   const income = parseFloat(document.getElementById('cit-income')?.value)||0;
   const type = document.getElementById('cit-type')?.value||'normal';
   const el = document.getElementById('cit-result'); if(!el||!income) return;
@@ -15627,7 +15649,7 @@ function calcTrustTax() {
     else if(income<=1878600){tax=259783+(income-887000)*0.41;}
     else{tax=666339+(income-1878600)*0.45;}
     tax=Math.max(0,tax-17820);
-    note=`Special Trust applies individual tax rates. Primary rebate (R17,820) applied for Type A.`;
+    note=`Special Trust (${type==='special-b'?'Type B — deceased estate':'Type A — disability'}) applies individual tax rates. Primary rebate (R17,820) applied.`;
   }
   const effRate=income>0?(tax/income*100).toFixed(1):0;
   el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px"><div style="background:var(--s2);border-radius:var(--rsm);padding:12px;text-align:center"><div style="font-size:10px;color:var(--t3);margin-bottom:4px">TAXABLE INCOME</div><div style="font-family:var(--fs);font-size:16px;font-weight:700">${fmt(income)}</div></div><div style="background:var(--red-d);border-radius:var(--rsm);padding:12px;text-align:center"><div style="font-size:10px;color:var(--t3);margin-bottom:4px">TAX</div><div style="font-family:var(--fs);font-size:16px;font-weight:700;color:var(--red)">${fmt(tax)}</div></div><div style="background:var(--green-d);border-radius:var(--rsm);padding:12px;text-align:center"><div style="font-size:10px;color:var(--t3);margin-bottom:4px">EFFECTIVE RATE</div><div style="font-family:var(--fs);font-size:16px;font-weight:700;color:var(--t1)">${effRate}%</div></div></div><div class="ic b" style="margin-top:0"><div class="it">Calculation basis</div><div class="ib">${note}</div></div>`;
@@ -17708,23 +17730,32 @@ document.addEventListener('click', function(e){
     // actually selected (S.prefs.cur), so a genuinely USD/EUR/etc-denominated user who later
     // switches to SA or UK region gets correctly detected as a mismatch, not silently treated
     // as ZAR-native and wrongly converted.
-    if (!S.prefs.dataCurrency) {
-      const _inferRegionCur = r => r === 'uk' ? 'GBP' : r === 'za' ? 'ZAR' : (CUR_SYM_TO_CODE[S.prefs.cur] || 'USD');
+    const _inferRegionCur = r => r === 'uk' ? 'GBP' : r === 'za' ? 'ZAR' : (CUR_SYM_TO_CODE[S.prefs.cur] || 'USD');
+    // Someone who skipped onboarding, or whose account predates the region-gate, can already
+    // have real transactions/accounts entered under the implicit default (DEF()'s cur:'R').
+    // Inferring dataCurrency from a region (rather than from what their EXISTING data is
+    // actually in) silently mislabeled a real ZAR-native user's whole history as GBP/USD/etc,
+    // permanently disabling conversion for them (srcCur===destCur skip) or — worse — locking in
+    // a phantom source currency that multiplies every future amount (including numbers freshly
+    // typed into a calculator) by a live FX rate forever.
+    const _hasExistingData = (S.transactions&&S.transactions.length>0) || (S.accounts||[]).some(a=>a.name&&a.name!=='Default Account');
+    if (!_hasExistingData) {
+      // A genuinely empty account has nothing to protect a baseline for — always track the
+      // CURRENT region so re-picking a region (even repeatedly, even before ever entering data)
+      // never leaves a stale dataCurrency from an earlier, data-free region pick locked in and
+      // triggering a phantom conversion the moment real numbers get typed in.
+      S.prefs.dataCurrency = _inferRegionCur(region);
+    } else if (!S.prefs.dataCurrency) {
+      // Real data exists but no baseline has ever been locked yet — lock it in once now, and
+      // never overwrite it again above (that's what the `else if` on this branch guarantees:
+      // once _hasExistingData is true, later region switches skip straight past this whole
+      // block). Deriving this from the immediately-previous region (rather than a fixed
+      // baseline) caused a round-trip bug: SA→UK→SA left a phantom GBP→ZAR conversion active,
+      // multiplying every already-native-ZAR amount a second time.
       if (prevRegion) {
         S.prefs.dataCurrency = _inferRegionCur(prevRegion);
       } else {
-        // No region was ever explicitly chosen before (prevRegion is '') — but that does NOT
-        // mean this is a brand-new user with no data. Someone who skipped onboarding, or whose
-        // account predates the region-gate, can already have real transactions/accounts entered
-        // under the implicit default (DEF()'s cur:'R'). Inferring dataCurrency from the NEW
-        // region they're now picking (rather than from what their EXISTING data is actually in)
-        // silently mislabeled a real ZAR-native user's whole history as GBP/USD/etc the instant
-        // they picked a different region for the first time, permanently disabling conversion
-        // for them (srcCur===destCur skip) and showing every raw ZAR number with the new symbol
-        // slapped on unconverted. Only trust "infer from the region being picked" for a truly
-        // empty account — otherwise infer from the currency symbol that was already showing.
-        const _hasExistingData = (S.transactions&&S.transactions.length>0) || (S.accounts||[]).some(a=>a.name&&a.name!=='Default Account');
-        S.prefs.dataCurrency = _hasExistingData ? (CUR_SYM_TO_CODE[_origCur] || 'ZAR') : _inferRegionCur(region);
+        S.prefs.dataCurrency = CUR_SYM_TO_CODE[_origCur] || 'ZAR';
       }
     }
     const srcCurCode = S.prefs.dataCurrency;
