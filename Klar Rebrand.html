@@ -14969,7 +14969,20 @@ document.addEventListener('DOMContentLoaded',()=>{
     // Esc → close topmost modal/overlay
     if (e.key === 'Escape') {
       const modalBgs = [...document.querySelectorAll('.modal-bg.open')];
-      if(modalBgs.length){ const top=modalBgs[modalBgs.length-1]; closeModal(top.id); return; }
+      if(modalBgs.length){
+        // #m-confirm/#m-prompt are pinned to z-index:110 (see CSS) specifically so they always
+        // paint above every other modal, since klConfirm()/klPrompt() can be invoked from inside
+        // any other modal regardless of where that modal happens to sit in DOM order (e.g. the
+        // "Delete" button inside the custom-category manager, itself nested in m-custom-cat).
+        // Picking modalBgs[modalBgs.length-1] assumes DOM order == visual stacking order, which
+        // breaks for exactly this case: m-confirm/m-prompt are declared early in the document, so
+        // a later-declared modal opened underneath them would be (wrongly) treated as topmost and
+        // get silently closed — discarding any unsaved input in it — while the confirm/prompt
+        // dialog the user is actually looking at stays open, unaffected. Always prefer them.
+        const pinned = document.querySelector('#m-confirm.open, #m-prompt.open');
+        const top = pinned || modalBgs[modalBgs.length-1];
+        closeModal(top.id); return;
+      }
       const txnPanel = document.getElementById('add-txn-panel');
       if (txnPanel?.classList.contains('open')) { txnPanel.classList.remove('open'); return; }
       return;
