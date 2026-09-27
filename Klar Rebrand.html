@@ -845,8 +845,8 @@ body[data-density="compact"] .card{padding:18px}
   display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform .16s var(--ease);
 }
 .d-promo:hover{transform:translateY(-1px)}
-.d-promo::before{content:'';position:absolute;top:0;left:-40%;width:35%;height:100%;background:linear-gradient(115deg,transparent,rgba(255,255,255,.10),transparent);transform:skewX(-16deg);animation:dPromoShimmer 5s ease-in-out infinite;pointer-events:none}
-@keyframes dPromoShimmer{0%{left:-40%}55%,100%{left:130%}}
+.d-promo::before{content:'';position:absolute;top:0;left:-40%;width:35%;height:100%;background:linear-gradient(115deg,transparent,rgba(255,255,255,.10),transparent);transform:translateX(0) skewX(-16deg);animation:dPromoShimmer 5s ease-in-out infinite;pointer-events:none;will-change:transform}
+@keyframes dPromoShimmer{0%{transform:translateX(0) skewX(-16deg)}55%,100%{transform:translateX(486%) skewX(-16deg)}}
 .d-promo-ico{width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--blue));display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;position:relative;z-index:1;box-shadow:inset 0 1.5px 1px rgba(255,255,255,.4),inset 0 -4px 8px rgba(0,0,0,.2),0 6px 16px rgba(123,94,167,.45)}
 .d-promo-ico svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .d-promo-title{font-size:13px;font-weight:700;margin-bottom:2px;color:var(--t1);position:relative;z-index:1}
