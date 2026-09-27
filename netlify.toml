@@ -27,13 +27,6 @@
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
 
-# Redirect bare domain to www (optional — remove if not using www)
-# [[redirects]]
-#   from = "https://klarmoney.netlify.app/*"
-#   to = "https://www.klarmoney.app/:splat"
-#   status = 301
-#   force = true
-
 # Landing page at root — app accessible at /app
 [[redirects]]
   from = "/"
