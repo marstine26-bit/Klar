@@ -9871,8 +9871,9 @@ function rNetWorth(){
   const propVal=(S.properties||[]).reduce((s,p)=>s+p.marketValue,0);
   const propBond=(S.properties||[]).reduce((s,p)=>s+p.bondBalance,0);
   const farVal=(S.farAssets||[]).reduce((s,a)=>s+Math.max(a.cost-calcAccumDepr(a),a.residual||0),0);
+  const bizLoanTotal=(S.bizLoans||[]).reduce((s,l)=>s+(l.balance||0),0);
   const totA=assets.reduce((s,a)=>s+a.value,0)+liveTotalPos+holdingsVal+propVal+farVal;
-  const totL=liabs.reduce((s,a)=>s+a.value,0)+ccTotal+debtTotal+propBond+liveNegTotal;
+  const totL=liabs.reduce((s,a)=>s+a.value,0)+ccTotal+debtTotal+propBond+liveNegTotal+bizLoanTotal;
   const nw=totA-totL;
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
   set('nw-assets',fmt(totA));set('nw-liab',fmt(totL));set('nw-tot',fmt(nw));
@@ -9881,7 +9882,7 @@ function rNetWorth(){
   const ratioEl=document.getElementById('nw-ratio');
   if(ratioEl){const ratio=totA>0?Math.round((totL/totA)*100):0;ratioEl.textContent=ratio+'%';ratioEl.style.color=ratio>50?'var(--red)':ratio>25?'var(--amber)':'var(--green)';}
   const nassEl=document.getElementById('nw-assets-sub');if(nassEl)nassEl.textContent='Accounts + manual assets'+(holdingsVal>0?' + portfolio':'')+(propVal>0?' + property':'')+(farVal>0?' + fixed assets':'');
-  const _nwIsSA=(S.prefs?.region||'za')==='za';const nliabEl=document.getElementById('nw-liab-sub');if(nliabEl)nliabEl.textContent='CC + liabilities'+(debtTotal>0?' + debts':'')+(propBond>0?(_nwIsSA?' + bonds':' + mortgage'):'');
+  const _nwIsSA=(S.prefs?.region||'za')==='za';const nliabEl=document.getElementById('nw-liab-sub');if(nliabEl)nliabEl.textContent='CC + liabilities'+(debtTotal>0?' + debts':'')+(propBond>0?(_nwIsSA?' + bonds':' + mortgage'):'')+(bizLoanTotal>0?' + business loans':'');
   const nwEl=document.getElementById('nw-tot');if(nwEl)nwEl.className='sv '+(nw>=0?'pos':'neg');
 
   // Live Account Balances section
@@ -11787,7 +11788,8 @@ function calcCurrentNW() {
   const propVal=(S.properties||[]).reduce((s,p)=>s+(p.marketValue||0),0);
   const propBond=(S.properties||[]).reduce((s,p)=>s+(p.bondBalance||p.mortgage||0),0);
   const farVal=(S.farAssets||[]).reduce((s,a)=>s+Math.max(a.cost-calcAccumDepr(a),a.residual||0),0);
-  return liquid - ccOwed + assets - liabs - debts + holdings + propVal - propBond + farVal;
+  const bizLoanTotal=(S.bizLoans||[]).reduce((s,l)=>s+(l.balance||0),0);
+  return liquid - ccOwed + assets - liabs - debts + holdings + propVal - propBond + farVal - bizLoanTotal;
 }
 function takeNwSnapshot(auto=false) {
   if (!S.nwHistory) S.nwHistory = [];
