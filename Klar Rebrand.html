@@ -401,7 +401,7 @@ body[data-density="compact"] .card{padding:18px}
   font-family:var(--fm);font-size:10px;color:var(--t3);font-weight:600;
 }
 .tb-icon-btn{
-  width:32px;height:32px;border-radius:8px;border:var(--bw) solid var(--b1);
+  width:32px;height:32px;flex-shrink:0;border-radius:8px;border:var(--bw) solid var(--b1);
   background:var(--s1);color:var(--t2);font-size:13px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;transition:all var(--dur);
 }
@@ -540,9 +540,16 @@ body[data-density="compact"] .card{padding:18px}
   /* Form grids */
   .g2,.fg2,.fg3{gap:10px}
 
-  /* Modal: full width on mobile */
-  .modal{padding:20px;border-radius:12px 12px 0 0;margin-bottom:0;max-height:85vh}
-  .modal-bg{align-items:flex-end;padding:0}
+  /* Modal: full width on mobile — !important needed: the unconditional .modal{padding:32px}
+     and .modal-bg{padding:20px;align-items:center} rules further down the file have equal
+     specificity and later source order, so without it this bottom-sheet override never
+     actually applied at any viewport width (same cascade-order bug already fixed for
+     .money-tabs/.notif/.kl-fab above). Modals were rendering as small centered desktop
+     dialogs with 32px padding on every phone, which starved footer button rows of width —
+     e.g. Add Transaction's Cancel/Split/Save row overflowed and clipped "Cancel" off the
+     left edge, unreachable by scrolling since scrollLeft can't go negative. */
+  .modal{padding:20px!important;border-radius:12px 12px 0 0;margin-bottom:0;max-height:85vh}
+  .modal-bg{align-items:flex-end!important;padding:0!important}
 
   /* KPI strip */
   .d-kpis{grid-template-columns:1fr 1fr}
@@ -1342,7 +1349,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 .sync-dot.err{background:var(--red)}
 @keyframes syncPulse{0%,100%{opacity:1}50%{opacity:.35}}
 
-#sb-auth-btn{display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:7px;background:var(--s2);border:1px solid var(--b1);cursor:pointer;font-size:11px;font-weight:600;color:var(--t2);transition:background var(--dur),border-color var(--dur)}
+#sb-auth-btn{display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:7px;background:var(--s2);border:1px solid var(--b1);cursor:pointer;font-size:11px;font-weight:600;color:var(--t2);transition:background var(--dur),border-color var(--dur);flex-shrink:0}
 #sb-auth-btn:hover{background:var(--s3);border-color:var(--b2);color:var(--t1)}
 #sb-auth-btn .sb-avatar{width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#7B5EA7,#5070BC);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0}
 
