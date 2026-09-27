@@ -16154,10 +16154,12 @@ function calcDeprYear(a,year){
   const age=year-(new Date(a.date).getFullYear());
   if(age<0)return 0;
   const depreciableBase=a.cost-a.residual;
-  if(a.method==='sl'){return Math.min(depreciableBase/a.life,depreciableBase);}
+  if(a.method==='sl'){if(age>=a.life)return 0;return Math.min(depreciableBase/a.life,depreciableBase);}
   if(a.method==='rb'){const safeResidual=Math.max(a.residual,a.cost*0.01);const rate=1-Math.pow(safeResidual/Math.max(a.cost,1),1/Math.max(a.life,1));return a.cost*Math.pow(1-rate,age)*rate;}
   const SARS_LIFE={vehicle:5,plant:5,equipment:3,furniture:6,building:20,ip:0,other:5};
-  return depreciableBase/(SARS_LIFE[a.type]||5);
+  const sarsLife=SARS_LIFE[a.type]||5;
+  if(age>=sarsLife)return 0;
+  return depreciableBase/sarsLife;
 }
 
 function calcAccumDepr(a){
