@@ -24,3 +24,10 @@
 
 /sw.js
   Cache-Control: no-cache, no-store, must-revalidate
+
+# .md files (investor docs, competitive brief, pitch materials) were served with no
+# charset, so browsers guessed a non-UTF-8 encoding and double-decoded multi-byte
+# characters (em dashes, £) into garbage (e.g. "â€”"). Files themselves are correctly
+# UTF-8 -- this was purely a missing header at serve time.
+/*.md
+  Content-Type: text/markdown; charset=utf-8
