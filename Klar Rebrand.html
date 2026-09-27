@@ -567,6 +567,22 @@ body[data-density="compact"] .card{padding:18px}
   .fb input,.fb select{flex:1;min-width:120px}
 }
 
+/* Tablet (761-900px): the rail stays a full desktop sidebar here (only
+   collapses to a bottom bar under 760px, above), but the topbar's
+   unconditional 28px side padding plus a long page title (e.g. "Fixed
+   Asset Register" with a Corporate badge) left too little room for the
+   full-width .tb-search box + 6 icon buttons + Sign in, pushing
+   .tb-actions past the viewport edge and the whole page into horizontal
+   scroll — live-measured on /far at 768px: docWidth 825 vs innerWidth 768.
+   Same scrollable-strip + reduced-padding treatment as the phone media
+   query above, applied over a wider range since it's needed well past
+   760px on longer-titled pages. */
+@media (max-width:900px) and (min-width:761px){
+  .topbar{padding:0 16px}
+  .tb-actions{min-width:0;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 16px),transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 16px),transparent 100%)}
+  .tb-actions::-webkit-scrollbar{display:none}
+}
+
 /* Very small phones ≤400px */
 @media(max-width:400px){
   .ledger-hero{grid-template-columns:1fr}
