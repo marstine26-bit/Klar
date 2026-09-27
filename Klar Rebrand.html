@@ -1538,7 +1538,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
 .kl-rg-logo-txt{font-size:20px;font-weight:800;letter-spacing:-.04em;color:#F0F0EE}
 .kl-rg-title{font-size:28px;font-weight:800;letter-spacing:-.04em;color:#F0F0EE;margin-bottom:10px}
 .kl-rg-sub{font-size:14px;color:#52525E;margin-bottom:36px;line-height:1.65;max-width:440px;margin-left:auto;margin-right:auto}
-.kl-rg-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px}
+.kl-rg-cards{display:grid;grid-template-columns:1fr;max-width:220px;gap:14px;margin:0 auto 28px}
 .kl-rg-card{background:#0B0B10;border:2px solid #1E1E2E;border-radius:16px;padding:28px 16px 24px;cursor:pointer;transition:all .2s;position:relative;text-align:center}
 .kl-rg-card:hover{border-color:#9B7FD4;background:rgba(123,94,167,.08);transform:translateY(-3px);box-shadow:0 8px 32px rgba(123,94,167,.2)}
 .kl-rg-flag{margin-bottom:12px;line-height:1;display:flex;justify-content:center;align-items:center}
@@ -3578,7 +3578,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     </div>
     <div class="card">
       <div class="ct">Display Preferences</div>
-      <div class="cr"><div><div class="cl">Region</div><div class="cs">Changes currency, tax tools, and bill providers</div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button id="pref-region-za" class="btn btn-xs" onclick="klSelectRegion('za',{fromSettings:true});applyPrefsUI();renderAll()" style="padding:5px 12px">🇿🇦 South Africa</button><button id="pref-region-uk" class="btn btn-xs" onclick="klSelectRegion('uk',{fromSettings:true});applyPrefsUI();renderAll()" style="padding:5px 12px">🇬🇧 United Kingdom</button><button id="pref-region-other" class="btn btn-xs" onclick="klSelectRegion('other',{fromSettings:true});applyPrefsUI();renderAll()" style="padding:5px 12px;display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="#ki-globe"/></svg>Other</button></div></div>
+      <div class="cr"><div><div class="cl">Region</div><div class="cs">South Africa — UK and other regions launch in a future update</div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button id="pref-region-za" class="btn btn-xs" onclick="klSelectRegion('za',{fromSettings:true});applyPrefsUI();renderAll()" style="padding:5px 12px">🇿🇦 South Africa</button></div></div>
       <div class="cr"><div><div class="cl">Amounts look wrong after switching region?</div><div class="cs">Resets the currency conversion baseline to match your current region — use this if your numbers look multiplied or divided by an exchange rate incorrectly</div></div><button class="btn btn-ghost btn-xs" onclick="klFixCurrencyBaseline()">Fix currency conversion</button></div>
       <div class="cr"><div><div class="cl">Compact sidebar</div></div><label class="toggle"><input type="checkbox" id="pref-compact" onchange="applyCompact(this.checked)"><span class="tsl"></span></label></div>
       <div class="cr"><div><div class="cl">Currency symbol</div></div><select id="pref-cur" onchange="savePref()" style="width:110px"><option value="R">R (ZAR)</option><option value="$">$ (USD)</option><option value="€">€ (EUR)</option><option value="£">£ (GBP)</option><option value="₦">₦ (NGN)</option><option value="A$">A$ (AUD)</option><option value="C$">C$ (CAD)</option><option value="₹">₹ (INR)</option><option value="¥">¥ (JPY)</option><option value="CHF">CHF (CHF)</option><option value="kr">kr (SEK/NOK/DKK)</option><option value="NZ$">NZ$ (NZD)</option><option value="S$">S$ (SGD)</option><option value="HK$">HK$ (HKD)</option><option value="AED">AED (AED)</option><option value="CN¥">CN¥ (CNY)</option><option value="KSh">KSh (KES)</option><option value="GH₵">GH₵ (GHS)</option><option value="Mex$">Mex$ (MXN)</option><option value="R$">R$ (BRL)</option></select></div>
@@ -4463,7 +4463,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <!-- Plan cards — rendered by JS -->
     <div class="kl-pm-cards" id="kl-pm-cards"></div>
     <div class="kl-pm-footer">
-      All plans include a 14-day free trial &nbsp;·&nbsp; Cancel anytime &nbsp;·&nbsp; Prices in GBP incl. VAT<br>
+      All plans include a 14-day free trial &nbsp;·&nbsp; Cancel anytime &nbsp;·&nbsp; Prices in ZAR incl. VAT<br>
       <a href="#" onclick="klHidePricing();goPg('settings');return false">Manage subscription in Settings</a>
     </div>
   </div>
@@ -4559,7 +4559,7 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <li>POPIA &amp; GDPR compliant by design</li>
       <li>Local-first: your data never leaves without you</li>
     </ul>
-    <div class="kl-ag-flags">🇿🇦 South Africa &nbsp;·&nbsp; 🇬🇧 United Kingdom &nbsp;·&nbsp; 🌍 Global</div>
+    <div class="kl-ag-flags">🇿🇦 South Africa · Personal &amp; Business</div>
   </div>
   <!-- Right: form panel -->
   <div class="kl-ag-right">
@@ -4620,34 +4620,9 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
         <div class="kl-rg-name">South Africa</div>
         <div class="kl-rg-detail">ZAR · R symbol<br>SARS tax · SA banks<br>Load shedding tracker</div>
       </div>
-      <div class="kl-rg-card" onclick="klSelectRegion('uk')" role="button" tabindex="0">
-        <div class="kl-rg-badge">NEW</div>
-        <span class="kl-rg-flag">
-          <!-- United Kingdom: Union Jack -->
-          <svg width="52" height="52" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
-            <defs><clipPath id="kl-clip-gb"><circle cx="26" cy="26" r="26"/></clipPath></defs>
-            <g clip-path="url(#kl-clip-gb)">
-              <rect width="52" height="52" fill="#012169"/>
-              <line x1="0" y1="0" x2="52" y2="52" stroke="#fff" stroke-width="14"/>
-              <line x1="52" y1="0" x2="0" y2="52" stroke="#fff" stroke-width="14"/>
-              <line x1="0" y1="0" x2="52" y2="52" stroke="#C8102E" stroke-width="8"/>
-              <line x1="52" y1="0" x2="0" y2="52" stroke="#C8102E" stroke-width="8"/>
-              <rect x="22" width="8" height="52" fill="#fff"/>
-              <rect y="22" width="52" height="8" fill="#fff"/>
-              <rect x="23" width="6" height="52" fill="#C8102E"/>
-              <rect y="23" width="52" height="6" fill="#C8102E"/>
-            </g>
-            <circle cx="26" cy="26" r="25.5" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
-          </svg>
-        </span>
-        <div class="kl-rg-name">United Kingdom</div>
-        <div class="kl-rg-detail">GBP · £ symbol<br>HMRC · ISA tracker<br>Student loan · UK banks</div>
-      </div>
-      <div class="kl-rg-card" onclick="klSelectRegion('other')" role="button" tabindex="0">
-        <span class="kl-rg-flag" style="font-size:40px;line-height:1">🌍</span>
-        <div class="kl-rg-name">Other</div>
-        <div class="kl-rg-detail">Choose your currency<br>in Settings<br>Universal features</div>
-      </div>
+      <!-- UK and Other region cards removed for the v1 SA-only launch (see git history
+           to restore for the planned v2 rollout; klSelectRegion also guards against
+           either value being set directly). -->
     </div>
     <div style="margin-top:16px;padding:14px 16px;background:rgba(155,127,212,.07);border:1px solid rgba(155,127,212,.2);border-radius:10px">
       <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:12px;color:var(--t2);line-height:1.55">
@@ -17168,11 +17143,11 @@ const KL_PLANS = [
   { id:'essential', name:'Essential',
     gbpMonthly:3.99, gbpAnnual:34.99, zarMonthly:49,  zarAnnual:499,
     monthlyKey:'essential_monthly', annualKey:'essential_annual',
-    features:['Everything in Free','Cloud sync across all devices','AI Financial Advisor (Groq/LLaMA)','Net Worth & Health Score','Cash Flow Forecast','Bank Feeds (UK, via Salt Edge)','One-tap bill payment portal links','ISA / TFSA tracker','Unlimited history','Receipt photo attachments'] },
+    features:['Everything in Free','Cloud sync across all devices','AI Financial Advisor (Groq/LLaMA)','Net Worth & Health Score','Cash Flow Forecast','One-tap bill payment portal links','TFSA tracker','Unlimited history','Receipt photo attachments'] },
   { id:'pro',       name:'Pro',
     gbpMonthly:7.99, gbpAnnual:64.99, zarMonthly:89,  zarAnnual:899,
     monthlyKey:'pro_monthly', annualKey:'pro_annual', recommended:true,
-    features:['Everything in Essential','UK Student Loan tracker (Plans 1/2/4/5)','Spending anomaly detection','Multi-currency portfolio tracker','Priority support (24h response)'] },
+    features:['Everything in Essential','Spending anomaly detection','Multi-currency portfolio tracker','Priority support (24h response)'] },
   { id:'family',    name:'Family', comingSoon:true,
     gbpMonthly:11.99,gbpAnnual:99.00, zarMonthly:129, zarAnnual:1299,
     monthlyKey:'family_monthly', annualKey:'family_annual',
@@ -17938,9 +17913,10 @@ document.addEventListener('click', function(e){
     <div class="ob-q">Name your main bank account</div>
     <div class="ob-hint">Choose your region then pick your bank. You can add more accounts later.</div>
     <input class="ob-input" id="ob-acc-name" type="text" placeholder="e.g. FNB Cheque / Chase Checking" onkeydown="if(event.key==='Enter')obNext(4)">
+    <!-- International onboarding option removed for the v1 SA-only launch (see git
+         history to restore for v2) -->
     <div class="ob-region-toggle">
       <button class="ob-region-btn active" data-region="sa" onclick="setObRegion('sa');klSelectRegion('za')">🇿🇦 South Africa</button>
-      <button class="ob-region-btn" data-region="intl" onclick="setObRegion('intl');klSelectRegion('uk')">🌍 International</button>
     </div>
     <div class="ob-select-group">
       <select class="ob-select" id="ob-acc-bank">
@@ -18226,6 +18202,11 @@ document.addEventListener('click', function(e){
 
   window.klSelectRegion = function(region, opts) {
     opts = opts || {};
+    // v1 launch is SA-only -- UK/Other are hidden pending a v2 release, not deleted.
+    // Force any uk/other request back to za as a defense-in-depth guard, since the
+    // region-gate/Settings/onboarding entry points are hidden but this function is
+    // still reachable directly (e.g. a stale bookmark, an old localStorage value).
+    if (region === 'uk' || region === 'other') region = 'za';
     // Only enforce privacy consent check when the region gate is actually visible
     const gate = document.getElementById('kl-region-gate');
     const gateOpen = gate && gate.classList.contains('open');
@@ -18517,6 +18498,10 @@ document.addEventListener('click', function(e){
   };
 
   window.klApplyRegion = function() {
+    // v1 launch is SA-only -- self-heal any stale saved region (uk/other) from before
+    // this restriction existed, e.g. a returning tester's old localStorage, rather than
+    // just guarding the selection entry points and leaving already-saved data broken.
+    if (S.prefs.region === 'uk' || S.prefs.region === 'other') { S.prefs.region = 'za'; save(); }
     const region = S.prefs.region || 'za';
     document.documentElement.dataset.region = region;
     // Show/hide elements tagged with data-region-only="za,uk" or data-region-hide="za"
