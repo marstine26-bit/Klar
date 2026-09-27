@@ -393,8 +393,14 @@ body[data-density="compact"] .card{padding:18px}
 }
 /* Hidden on desktop (the full .tb-search box above covers it); the mobile media query flips
    this to display:flex, since .tb-search itself is hidden on mobile (no room for the full box)
-   — previously mobile had NO way to search or jump to a page at all. */
-.tb-search-mobile-btn{display:none}
+   — previously mobile had NO way to search or jump to a page at all. !important needed: the
+   unconditional .tb-icon-btn{display:flex} rule below has equal specificity and later source
+   order, so without it this button never actually hid outside the mobile media query — it
+   rendered as a redundant duplicate search icon next to the full .tb-search box on every
+   desktop and tablet width (same cascade-order bug class already fixed for .money-tabs/
+   .notif/.kl-fab/.modal/.modal-bg). At 768px (tablet) the extra ~40px it added was what
+   tipped .tb-actions into overflow, dragging the whole page into horizontal scroll. */
+.tb-search-mobile-btn{display:none!important}
 .tb-search:hover{border-color:var(--b2);color:var(--t2)}
 .tb-search kbd{
   margin-left:auto;background:var(--s3);padding:1px 5px;border-radius:3px;
@@ -428,7 +434,7 @@ body[data-density="compact"] .card{padding:18px}
   .main{margin-left:0;padding-bottom:64px}
   .topbar{padding:0 16px}
   .tb-search{display:none}
-  .tb-search-mobile-btn{display:flex}
+  .tb-search-mobile-btn{display:flex!important}
   /* "More" panel becomes a full-width bottom sheet above the 60px tab bar, rather than the
      small anchored desktop dropdown — same content, touch-sized targets. */
   .rail-more-panel{
