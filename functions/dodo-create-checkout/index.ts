@@ -118,7 +118,7 @@ Deno.serve(async (req: Request) => {
   // Where the app should live — used both as the checkout's return_url and
   // to keep the redirect same-origin (never trust an origin passed by the
   // client for this).
-  const appOrigin = "https://klar.marcelmoyo.workers.dev";
+  const appOrigin = "https://klarfinance.co.za";
 
   try {
     const dodoRes = await fetch("https://live.dodopayments.com/checkouts", {
