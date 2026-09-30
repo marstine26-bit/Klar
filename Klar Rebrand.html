@@ -7412,7 +7412,7 @@ function rAccounts() {
       </div>
       <div style="font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--t4);margin-bottom:3px">${isCc?'AMOUNT OWED':'BALANCE'}</div>
       <div style="font-family:var(--fs);font-size:26px;font-weight:700;color:${isCc?(Math.abs(bal)>0?'var(--red)':'var(--green)'):(bal>=0?'var(--green)':'var(--red)')}">
-        ${isForex?esc(cur)+' ':''}<span style="font-size:${isForex?'20px':'26px'}">${fmt(Math.abs(bal))}</span>
+        ${isForex?esc(cur)+' ':''}${!isCc&&bal<0?'−':''}<span style="font-size:${isForex?'20px':'26px'}">${fmt(Math.abs(bal))}</span>
       </div>
       ${isForex?`<div style="font-size:11px;color:var(--t3);font-family:var(--fm);margin-top:2px">≈ ${fmt(Math.abs(zarBal))}</div>`:''}
       <div style="font-size:10px;color:var(--t3);margin-top:4px;font-family:var(--fm)">${txnCount} transactions</div>
@@ -7451,7 +7451,7 @@ function rAccounts() {
         <span class="lbl" style="display:flex;align-items:center;gap:6px">
           <span class="acc-dot" style="background:${a.color}"></span>${esc(a.name)}${isCc?' <span style="font-size:9px;color:var(--blue)">(CC)</span>':''}${isForex?` <span style="font-size:9px;color:var(--blue)">${esc(a.currency)}</span>`:''}
         </span>
-        <span class="val" style="color:${color}">${isCc&&displayBal>0?'Owes ':''}${fmt(displayBal)}</span>
+        <span class="val" style="color:${color}">${isCc&&displayBal>0?'Owes ':(!isCc&&displayBal<0?'−':'')}${fmt(displayBal)}</span>
       </div>`;
     }).join('')
     + `<div class="dv"></div>
@@ -13404,10 +13404,10 @@ function rInsights(){
   const projectedMo=dayOfMo>0?Math.round((spentSoFar/dayOfMo)*daysInMo):0;
   if(spentSoFar>0&&exp>0){if(projectedMo>exp*1.2) insights.push({type:'r',icon:'ki-calendar',title:'Spending Pace Warning',body:`At your current rate you'll spend ${fmt(projectedMo)} this month — ${Math.round(((projectedMo-exp)/exp)*100)}% above your average of ${fmt(exp)}. Day ${dayOfMo} of ${daysInMo}.`});else if(projectedMo<exp*0.8) insights.push({type:'g',icon:'ki-calendar',title:'Well Below Spending Pace',body:`On track to spend only ${fmt(projectedMo)} this month — ${Math.round(((exp-projectedMo)/exp)*100)}% below your average. Day ${dayOfMo} of ${daysInMo}.`});}
   // Day-of-week spending pattern
-  const dayTotals=[0,0,0,0,0,0,0];const dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const dayTotals=[0,0,0,0,0,0,0];const dayNames=['Sundays','Mondays','Tuesdays','Wednesdays','Thursdays','Fridays','Saturdays'];
   (S.transactions||[]).filter(t=>t.type==='expense'&&t.date).forEach(t=>{const d=new Date(t.date);if(!isNaN(d))dayTotals[d.getDay()]+=txnAmtLocal(t);});
   const maxDay=dayTotals.indexOf(Math.max(...dayTotals));
-  if(Math.max(...dayTotals)>0) insights.push({type:'b',icon:'ki-calendar',title:'Peak Spending Day',body:`You spend most on <strong>${dayNames[maxDay]}days</strong> (${fmt(dayTotals[maxDay])} total). If that's not intentional, consider reviewing your ${dayNames[maxDay]} habits.`});
+  if(Math.max(...dayTotals)>0) insights.push({type:'b',icon:'ki-calendar',title:'Peak Spending Day',body:`You spend most on <strong>${dayNames[maxDay]}</strong> (${fmt(dayTotals[maxDay])} total). If that's not intentional, consider reviewing your ${dayNames[maxDay].slice(0,-1)} habits.`});
   if(!insights.length) insights.push({type:'g',icon:'✓',title:'Looking Good!',body:'Add more transaction history for personalised insights. <button class="btn btn-ghost btn-xs" onclick="goPg(\'transactions\')" style="margin-left:6px">+ Add Transactions</button>'});
   const _iIcon=ic=>ic.startsWith('ki-')?`<svg width="20" height="20" viewBox="0 0 16 16" fill="none"><use href="#${ic}"/></svg>`:ic;
   el.innerHTML=insights.map(i=>`<div class="ic ${i.type}" style="margin-bottom:12px"><div style="display:flex;align-items:flex-start;gap:10px"><div style="font-size:20px;flex-shrink:0">${_iIcon(i.icon)}</div><div><div class="ih">${i.title}</div><div class="ib">${i.body}</div></div></div></div>`).join('');
