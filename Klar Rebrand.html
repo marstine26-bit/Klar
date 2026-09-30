@@ -3125,9 +3125,6 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="it">Data disclosure</div>
     <div class="ib">When you send a message, a financial summary (average income, expenses, account &amp; debt counts) is sent to Groq's servers in the USA. Raw transactions, names, and account numbers are never included. <button class="btn btn-ghost btn-xs" onclick="klShowPolicy()" style="margin-left:6px">Privacy Policy</button></div>
   </div>
-  <div id="ai-key-warning" style="display:none;background:var(--amber-d);border:1px solid var(--amber)40;border-radius:var(--rsm);padding:12px 16px;margin-bottom:16px;font-size:12.5px;color:var(--amber);line-height:1.6">
-    ⚠ <strong>No API key configured.</strong> Go to <button class="btn btn-ghost btn-xs" onclick="goPg('settings')" style="color:var(--amber);border-color:var(--amber)60;margin:0 4px">Settings → AI Advisor</button> and paste your Groq API key to enable AI features.
-  </div>
   <div class="ai-layout">
     <div class="card" style="display:flex;flex-direction:column;height:580px">
       <div id="chat-msgs" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:9px;padding:2px 0;margin-bottom:14px"></div>
@@ -3602,15 +3599,8 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       </div>
     </div>
     <div class="card">
-
-      <div class="ct">AI Advisor — Groq API Key</div>
-      <div style="font-size:12px;color:var(--t3);margin-bottom:10px;line-height:1.6">Required to use the AI Advisor and AI month summaries. Get a free key from <strong style="color:var(--t2)">console.groq.com</strong> and paste it below. Your key is stored locally in your browser only and sent directly to Groq.</div>
-      <div class="fr"><label for="pref-api-key">API Key</label><input type="password" id="pref-api-key" placeholder="gsk_…" autocomplete="off" style="font-family:var(--fm);letter-spacing:.05em"></div>
-      <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-        <button class="btn btn-ghost btn-sm" onclick="saveApiKey()">Save Key</button>
-        <button class="btn btn-ghost btn-sm" onclick="clearApiKey()">Clear Key</button>
-        <span id="api-key-status" style="font-size:11px;color:var(--t3)"></span>
-      </div>
+      <div class="ct">AI Advisor</div>
+      <div style="font-size:12px;color:var(--t3);line-height:1.6">✓ Included with your Essential/Pro plan — no setup needed. Ask Klar's AI Advisor from the nav anytime.</div>
     </div>
     <div class="card" id="kl-pin-settings-card">
       <div class="ct">App Lock</div>
@@ -7294,8 +7284,6 @@ function chMo(d) {
 }
 async function autoMoSummary(mo){
   if(!klHasTier('essential'))return;
-  const apiKey=S.prefs?.groqKey||'';
-  if(!apiKey)return;
   const txns=S.transactions.filter(t=>t.date&&t.date.startsWith(mo)&&t.type!=='transfer');
   if(!txns.length)return;
   const inc=txns.filter(t=>t.type==='income').reduce((s,t)=>s+txnAmtLocal(t),0);
@@ -7317,7 +7305,8 @@ async function autoMoSummary(mo){
   }
   try{
     const region=S.prefs.region==='uk'?'British':'South African';
-    const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:200,messages:[{role:'system',content:`You are a concise ${region} personal finance advisor.`},{role:'user',content:prompt}]})});
+    const _h=await _sbFnHeaders();
+    const res=await fetch(SB_FN+'/groq-chat',{method:'POST',headers:_h,body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:200,messages:[{role:'system',content:`You are a concise ${region} personal finance advisor.`},{role:'user',content:prompt}]})});
     if(!res.ok){document.getElementById('ai-mo-summary')?.remove();notify('AI summary unavailable ('+res.status+')','warn');return;}
     const data=await res.json();
     const summary=data.choices?.[0]?.message?.content||'';
@@ -14607,9 +14596,6 @@ function updSnap(){
   if(aiLock) aiLock.remove();
   const inc=avgInc(),exp=avgExp(),net=inc-exp;
   const el=document.getElementById('zen-amount');if(el)el.textContent=fmt(Math.abs(net));
-  // Show/hide API key warning on AI page
-  const warn=document.getElementById('ai-key-warning');
-  if(warn) warn.style.display=S.prefs?.groqKey?'none':'block';
   // Restore chat history into UI
   const msgs=document.getElementById('chat-msgs');
   if(msgs && msgs.children.length===0){
@@ -14695,11 +14681,6 @@ async function sendChat(){
   const inp=document.getElementById('chat-in');const btn=document.getElementById('chat-btn');
   const msg=(inp?.value.trim()||'').slice(0,2000);if(!msg)return;
   const msgs=document.getElementById('chat-msgs');if(!msgs)return;
-  const apiKey=S.prefs?.groqKey||'';
-  if(!apiKey){
-    msgs.innerHTML+=`<div class="chat-ai" style="color:var(--amber)">⚠ No API key set. Go to <strong>Settings → AI Advisor</strong> and paste your Groq API key to enable AI features.</div>`;
-    msgs.scrollTop=msgs.scrollHeight;return;
-  }
   klTrack('ai_advisor_used');
   msgs.innerHTML+=`<div class="chat-user">${esc(msg)}</div>`;
   inp.value='';if(btn)btn.disabled=true;
@@ -14740,19 +14721,21 @@ async function sendChat(){
   const histMsgs=S.chatHistory.slice(-20).map(h=>({role:h.role,content:h.content}));
   try{
     const _ac=new AbortController();const _acTimer=setTimeout(()=>_ac.abort(),30000);
-    const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{signal:_ac.signal,method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:1000,messages:[{role:'system',content:systemContent},...histMsgs,{role:'user',content:msg}]})});
+    const _chH=await _sbFnHeaders();
+    const res=await fetch(SB_FN+'/groq-chat',{signal:_ac.signal,method:'POST',headers:_chH,body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:1000,messages:[{role:'system',content:systemContent},...histMsgs,{role:'user',content:msg}]})});
     clearTimeout(_acTimer);
     if(!res.ok){
-      // 401/403 from Groq almost always means a missing/expired/revoked API key — tell the
-      // user exactly where to fix it instead of surfacing a bare HTTP status code, which
-      // previously left "AI service error 401" with no indication of what to do next.
-      if(res.status===401||res.status===403) throw new Error('Your Groq API key was rejected (invalid or expired). Update it in Settings → AI Advisor.');
+      // Server-managed key now (groq-chat Edge Function) — 401/403 here means the user's own
+      // Supabase session was rejected, not a personal Groq key (that concept no longer exists
+      // client-side), so point at re-signing in rather than the old "update your API key" copy.
+      if(res.status===401||res.status===403) throw new Error('Your session has expired — please sign in again.');
       if(res.status===429) throw new Error('Groq API rate limit reached — please wait a moment and try again.');
+      if(res.status===503) throw new Error('AI Advisor is temporarily unavailable — please try again shortly.');
       if(res.status>=500) throw new Error('Groq\'s AI service is temporarily unavailable (error '+res.status+'). Please try again shortly.');
       throw new Error('AI service error '+res.status);
     }
     const data=await res.json();
-    const reply=data.choices?.[0]?.message?.content||(data.error?.message||'No response — check your API key in Settings.');
+    const reply=data.choices?.[0]?.message?.content||(data.error?.message||'No response — please try again.');
     document.getElementById(loadingId)?.remove();
     msgs.innerHTML+=`<div class="chat-ai">${esc(reply).replace(/\n/g,'<br>')}</div>`;
     // Persist this exchange to history (cap at 20 entries)
@@ -18920,6 +18903,11 @@ function _groceryListTotal(list){
 }
 
 async function _groceryFetchMissingPrices(listId){
+  // Previously silently no-op'd for anyone without their own pasted Groq key (the natural,
+  // if accidental, gate). Now that this hits Klar's own server-managed key (groq-chat Edge
+  // Function), it needs the same explicit Essential-tier check as the other two AI call
+  // sites (sendChat, autoMoSummary) so Free-tier/guest users can't run up AI API cost.
+  if(!klHasTier('essential'))return;
   const list=(S.groceryLists||[]).find(l=>l.id===listId);
   if(!list)return;
   const store=list.store;
@@ -18941,14 +18929,13 @@ async function _groceryFetchMissingPrices(listId){
   fromCache.forEach(({item,price})=>{item.estimatedPrice=price;});
   if(fromCache.length){save();rGrocery();}
   if(!stillNeeded.length)return;
-  const key=S.prefs.groqKey;
-  if(!key)return;
   const itemList=stillNeeded.map(i=>`${i.qty||1}${i.unit?' '+i.unit:''} ${i.name}`).join(', ');
   const prompt=`You are a ${isUK?'UK':isOtherGr?'general international':'South African'} supermarket pricing assistant. Estimate the typical retail price in ${currency} for each of the following grocery items at ${storeName}. Return ONLY a JSON array like: [{"name":"item","price":1.99}]. Use current typical ${storeName} prices. Items: ${itemList}`;
   try{
-    const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+    const _grH=await _sbFnHeaders();
+    const res=await fetch(SB_FN+'/groq-chat',{
       method:'POST',
-      headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},
+      headers:_grH,
       body:JSON.stringify({
         model:'llama3-8b-8192',
         messages:[{role:'user',content:prompt}],
