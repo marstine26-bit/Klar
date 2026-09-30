@@ -4695,7 +4695,6 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
       <tr><td><strong>Supabase</strong></td><td>Cloud backup &amp; sync</td><td>USA / EU</td><td>Only if signed in</td></tr>
       <tr><td><strong>Groq</strong></td><td>AI Advisor responses</td><td>USA</td><td>Only when queried</td></tr>
       <tr><td><strong>Dodo Payments</strong></td><td>Subscription payments</td><td>Global</td><td>Only when subscribing</td></tr>
-      <tr><td><strong>Saltedge</strong></td><td>UK bank feeds</td><td>EU</td><td>Only if bank feed connected</td></tr>
       <tr><td><strong>Frankfurter</strong></td><td>Live FX rates</td><td>EU</td><td>When FX conversion active</td></tr>
       <tr><td><strong>Crisp</strong></td><td>Support chat</td><td>EU</td><td>When chat opened</td></tr>
       <tr><td><strong>PostHog</strong></td><td>Product analytics (anonymised)</td><td>EU</td><td>Always (anonymised)</td></tr>
@@ -4895,10 +4894,8 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
     <div class="fg2">
       <div class="fr" id="acc-bank-group" data-region-group="acc-bank-group">
         <label>Bank</label>
-        <div class="acc-region-toggle">
-          <button class="acc-region-btn active" data-region="sa" onclick="setAccRegion('sa','acc-bank','acc-bank-group')">🇿🇦 South Africa</button>
-          <button class="acc-region-btn" data-region="intl" onclick="setAccRegion('intl','acc-bank','acc-bank-group')">🌍 International</button>
-        </div>
+        <!-- International bank option removed for the v1 SA-only launch (see git history
+             to restore for v2) -->
         <select id="acc-bank">
           <option value="FNB">FNB</option><option value="Capitec">Capitec</option>
           <option value="ABSA">ABSA</option><option value="Nedbank">Nedbank</option>
@@ -5026,10 +5023,8 @@ option[value="__new_cat__"]{color:var(--accent);font-weight:700}
             <div class="fr"><label for="imp-new-name">Account Name</label><input type="text" id="imp-new-name" placeholder="e.g. FNB Cheque"></div>
             <div class="fr" id="imp-bank-group" data-region-group="imp-bank-group">
               <label>Bank</label>
-              <div class="acc-region-toggle">
-                <button class="acc-region-btn active" data-region="sa" onclick="setAccRegion('sa','imp-new-bank','imp-bank-group')">🇿🇦 SA</button>
-                <button class="acc-region-btn" data-region="intl" onclick="setAccRegion('intl','imp-new-bank','imp-bank-group')">🌍 International</button>
-              </div>
+              <!-- International bank option removed for the v1 SA-only launch (see git
+                   history to restore for v2) -->
               <select id="imp-new-bank">
                 <option value="FNB">FNB</option><option value="Capitec">Capitec</option>
                 <option value="ABSA">ABSA</option><option value="Nedbank">Nedbank</option>
@@ -16732,8 +16727,8 @@ function rSettingsPlanTiles(){
 
   const el = document.getElementById('kl-settings-plan-tiles'); if(!el) return;
   const plans = [
-    {id:'essential', name:'Essential', mo: isUK?'3.99':'49',  yr: isUK?'34.99':'499', blurb:'AI advisor + net worth + bank feeds'},
-    {id:'pro',       name:'Pro',       mo: isUK?'7.99':'89',   yr: isUK?'64.99':'899', blurb:'+ UK loan tools + priority support'},
+    {id:'essential', name:'Essential', mo: isUK?'3.99':'49',  yr: isUK?'34.99':'499', blurb:'AI advisor + net worth + TFSA tracker'},
+    {id:'pro',       name:'Pro',       mo: isUK?'7.99':'89',   yr: isUK?'64.99':'899', blurb:'+ multi-currency tracking + priority support'},
     {id:'family',    name:'Family',    mo: isUK?'11.99':'129', yr: isUK?'99':'1,299',  blurb:'Up to 5 family members'},
   ];
   el.innerHTML = plans.map(p=>{
