@@ -11,16 +11,16 @@
 <meta name="apple-mobile-web-app-title" content="Klar">
 <meta name="mobile-web-app-capable" content="yes">
 <title>Klar — Clear Money</title>
-<meta name="description" content="Klar is the personal finance app that makes your money legible. Track spending, budgets, goals, subscriptions, and get AI-powered insights. Built for South Africa, the UK, and the rest of the world.">
+<meta name="description" content="Klar is the personal finance app that makes your money legible. Track spending, budgets, goals, subscriptions, and get AI-powered insights. Built for South Africa — Personal and Business.">
 <meta property="og:title" content="Klar — Clear Money">
-<meta property="og:description" content="The personal finance app that makes your money legible. Budgets, goals, AI advisor, bank feeds. Built for South Africa, the UK, and the rest of the world.">
+<meta property="og:description" content="The personal finance app that makes your money legible. Budgets, goals, AI advisor. Built for South Africa — Personal and Business.">
 <meta property="og:image" content="https://klarfinance.co.za/og-image.png">
 <meta property="og:url" content="https://klarfinance.co.za/app">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Klar">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Klar — Clear Money">
-<meta name="twitter:description" content="The personal finance app that makes your money legible. Budgets, goals, AI advisor, bank feeds.">
+<meta name="twitter:description" content="The personal finance app that makes your money legible. Budgets, goals, AI advisor. Built for South Africa.">
 <meta name="twitter:image" content="https://klarfinance.co.za/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -8860,8 +8860,7 @@ function rDash() {
     if(!upgradeBanner){
       upgradeBanner=document.createElement('div');upgradeBanner.id='upgrade-banner';
       upgradeBanner.style.cssText='background:linear-gradient(135deg,rgba(123,94,167,.15),rgba(79,142,247,.08));border:1px solid rgba(123,94,167,.3);border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;';
-      const _isUKdb=(S.prefs?.region||'za')==='uk';
-      upgradeBanner.innerHTML=`<div><div style="font-weight:700;font-size:14px;color:var(--t1)">✨ Unlock Klar Essential</div><div style="font-size:12px;color:var(--t2);margin-top:2px">AI advisor · Cloud sync · Bank feeds · from ${_isUKdb?'£3.99':'R49'}/mo</div></div><div style="display:flex;gap:8px;flex-shrink:0"><button class="btn btn-gold" onclick="klSelectPlan('essential')" style="padding:8px 16px;font-size:13px">Upgrade</button><button onclick="document.getElementById('upgrade-banner').style.display='none'" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:18px;line-height:1;padding:4px">×</button></div>`;
+      upgradeBanner.innerHTML=`<div><div style="font-weight:700;font-size:14px;color:var(--t1)">✨ Unlock Klar Essential</div><div style="font-size:12px;color:var(--t2);margin-top:2px">AI advisor · Cloud sync · Net worth &amp; Health Score · from R49/mo</div></div><div style="display:flex;gap:8px;flex-shrink:0"><button class="btn btn-gold" onclick="klSelectPlan('essential')" style="padding:8px 16px;font-size:13px">Upgrade</button><button onclick="document.getElementById('upgrade-banner').style.display='none'" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:18px;line-height:1;padding:4px">×</button></div>`;
       const heroRow=document.querySelector('#pg-dashboard .d-hero-row');
       if(heroRow)heroRow.parentNode.insertBefore(upgradeBanner,heroRow);
     }
