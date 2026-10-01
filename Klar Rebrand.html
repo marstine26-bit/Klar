@@ -13003,14 +13003,18 @@ function syncModeSwitcher(){
   });
   const logoSub=document.querySelector('.logo-sub');
   const _smRegionLbl=S.prefs.region==='uk'?'United Kingdom':S.prefs.region==='other'?'Global':'South Africa';
-  if(logoSub)logoSub.textContent=(corp?'Business · ':'Pro · ')+_smRegionLbl;
+  // Was hardcoded 'Pro' regardless of actual plan -- every Personal-mode user (free, essential,
+  // paid or not) saw "Pro · South Africa" in the sidebar, a misleading label unrelated to real
+  // entitlement (paywalls elsewhere correctly gate on S.prefs.tier; this was purely cosmetic).
+  const _smTierLbl=S.prefs.tier?S.prefs.tier.charAt(0).toUpperCase()+S.prefs.tier.slice(1):'Free';
+  if(logoSub)logoSub.textContent=(corp?'Business · ':_smTierLbl+' · ')+_smRegionLbl;
 }
 
 /* ═══ BANK FEEDS (Saltedge) ═══ */
 const SB_FN = 'https://msaktocpuidvqtohpqqn.supabase.co/functions/v1';
 
 async function _sbFnHeaders(){
-  const sess = _sbClient ? (await _sbClient.auth.getSession()).data.session : null;
+  const sess = _sb ? (await _sb.auth.getSession()).data.session : null;
   return { 'Content-Type':'application/json', 'apikey': SB_KEY, 'Authorization': sess ? 'Bearer '+sess.access_token : 'Bearer '+SB_KEY };
 }
 
