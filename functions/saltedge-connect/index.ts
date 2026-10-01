@@ -10,9 +10,10 @@ const SALTEDGE_BASE = 'https://www.saltedge.com/api/v5';
 // an origin with none of their session data, so the '?bank_connected=1' handler on the
 // real production app never ran and the sync-after-connect flow silently never fired.
 // Now on the permanent custom domain (klarfinance.co.za, live via Cloudflare Worker
-// custom domain as of the 2026-09-27 DNS migration) -- update this again if the app's
-// origin ever changes.
-const RETURN_BASE = 'https://klarfinance.co.za/Klar%20Rebrand.html';
+// custom domain as of the 2026-09-27 DNS migration), pointed at the clean /app path
+// (the app file was later renamed to app/index.html, served natively -- no filename
+// in this URL to go stale again). Update this again if the app's origin ever changes.
+const RETURN_BASE = 'https://klarfinance.co.za/app';
 
 const seHeaders = {
   'App-id': SALTEDGE_APP_ID,

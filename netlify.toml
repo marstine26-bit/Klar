@@ -36,18 +36,12 @@
   [headers.values]
     Content-Type = "text/markdown; charset=utf-8"
 
-# Landing page at root — app accessible at /app
-[[redirects]]
-  from = "/"
-  to = "/klarmoney-landing.html"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/app"
-  to = "/Klar Rebrand.html"
-  status = 200
-  force = true
+# Landing page and app are served natively as index.html at their own paths
+# (/ -> index.html, /app -> app/index.html) -- no redirect rules needed.
+# Previously rewrote to klarmoney-landing.html / "Klar Rebrand.html" here;
+# removed when those files were renamed to the standard index.html
+# convention (see also _redirects, which had the equivalent Cloudflare rules
+# and the same reasoning for why they were removed there).
 
 # Icon assets — copy klar-assets/png files into an /icons/ folder at deploy root
 # Required files: klar-128.png, klar-180.png, klar-256.png, klar-512.png

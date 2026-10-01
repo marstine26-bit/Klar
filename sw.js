@@ -1,12 +1,16 @@
-const CACHE = 'klar-v5';
+const CACHE = 'klar-v6';
 const OFFLINE_PAGE = '/';
+// '/' and '/app' are now served natively as index.html at their own paths
+// (see _redirects) -- the old '/klarmoney-landing.html' entry here is gone
+// since that file no longer exists post-rename; caching.addAll() fails the
+// whole install step on any single 404, so a stale entry here would have
+// silently broken offline precaching for everyone.
 const PRECACHE = [
   '/',
   '/app',
   '/manifest.json',
   '/icons/klar-256.png',
   '/icons/klar-512.png',
-  '/klarmoney-landing.html',
   '/klar-financial-model.html'
 ];
 

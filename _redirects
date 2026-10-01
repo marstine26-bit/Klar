@@ -1,9 +1,8 @@
-# Cloudflare Pages redirects config — same format Netlify uses, ported from
-# netlify.toml's [[redirects]] blocks (not replacing netlify.toml).
-# Note: the target filename has a literal space, which must be URL-encoded
-# here since this plain-text format uses whitespace as the field separator
-# (unlike netlify.toml, where it's just a quoted TOML string).
-
-# Landing page at root — app accessible at /app
-/     /klarmoney-landing.html   200
-/app  /Klar%20Rebrand.html      200
+# Landing page and app are now served natively as index.html at their own
+# paths (/ -> index.html, /app -> app/index.html) -- no redirect/rewrite
+# rules needed. The previous "200 rewrite" rules here actually issued real
+# 307 redirects on Cloudflare Workers static assets (unlike classic Pages,
+# where a 200-status _redirects rule means rewrite) -- confirmed live via
+# curl, every visit showed /klarmoney-landing or /Klar%20Rebrand in the
+# address bar instead of the clean / or /app. Renaming the files to the
+# standard index.html convention fixes this with zero redirect rules.
