@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#9B7FD4">
 <link rel="apple-touch-icon" href="/icons/klar-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -6747,6 +6747,7 @@ const HUBS = {
     {id:'transactions', label:'Transactions', primary:true},
     {id:'accounts',     label:'Accounts',     primary:true},
     {id:'trends',       label:'Trends',       primary:true},
+    {id:'bankfeeds',    label:'Bank Feeds',   region:'za'},
     {id:'recurring',    label:'Recurring'},
     {id:'tags',         label:'Tags'},
     {id:'subs',         label:'Subscriptions'},
@@ -8967,6 +8968,7 @@ function rEmptyState(){
   const el=document.getElementById('d-empty-state');if(!el)return;
   if((S.transactions||[]).length>0){el.innerHTML='';return;}
   const isUK=S.prefs.region==='uk';
+  const isSA=S.prefs.region==='za';
   el.innerHTML=`<div class="card" style="margin-bottom:20px;border:1.5px dashed var(--b2)">
     <div class="ct" style="margin-bottom:6px">Get started with Klar</div>
     <div style="font-size:12px;color:var(--t3);margin-bottom:16px;line-height:1.7">Your dashboard is empty. Here's what to do first:</div>
@@ -8983,7 +8985,12 @@ function rEmptyState(){
         <div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:3px">3 · Create a budget</div>
         <div style="font-size:11px;color:var(--t3);line-height:1.5">Set monthly limits by category to stay on top of spending</div>
       </button>
-      ${isUK
+      ${isSA
+        ? `<button class="ic" style="text-align:left;cursor:pointer;border:1px solid var(--b2);background:var(--s2);border-radius:var(--rsm);padding:12px 14px" onclick="goPg('bankfeeds')">
+             <div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:3px">4 · Connect your bank</div>
+             <div style="font-size:11px;color:var(--t3);line-height:1.5">Auto-import transactions from your SA bank account via Banklink</div>
+           </button>`
+        : isUK
         ? `<button class="ic" style="text-align:left;cursor:pointer;border:1px solid var(--b2);background:var(--s2);border-radius:var(--rsm);padding:12px 14px" onclick="goPg('bankfeeds')">
              <div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:3px">4 · Connect your bank</div>
              <div style="font-size:11px;color:var(--t3);line-height:1.5">Auto-import transactions from your UK bank account via Salt Edge</div>
@@ -13078,18 +13085,85 @@ async function klBankSync(){
   }
 }
 
+/* ═══ BANK FEEDS (Banklink — SA) ═══
+   Separate from the Salt Edge (UK) functions above rather than a shared/parameterised
+   version: the two providers' data shapes genuinely differ (banklink_id vs saltedge_id
+   dedup tag, account_number/bank vs provider/name, no category field from Banklink at
+   all yet) and keeping them as two small, obviously-named functions is clearer than one
+   function branching on provider internally — same reasoning as banklink-sync's own
+   comment on why it doesn't share code with saltedge-sync despite solving the same
+   shape of problem. */
+async function klBankLinkConnect(){
+  if(!klHasTier('essential')){ notify('Bank Feeds require the Essential plan — upgrade in Settings → Plan','ok'); return; }
+  if(!_sbUser){ notify('Sign in first to connect your bank','err'); return; }
+  const btn = document.getElementById('kl-bf-connect-btn');
+  if(btn){ btn.disabled=true; btn.textContent='Connecting…'; }
+  try{
+    const h = await _sbFnHeaders();
+    const res = await fetch(SB_FN+'/banklink-connect', { method:'POST', headers:h });
+    const data = await res.json();
+    if(!data.url){ notify(data.error||'Could not start connection','err'); return; }
+    window.open(data.url,'_blank','noopener,width=520,height=720');
+    notify('Complete bank link in the new window — then tap Sync Now','ok');
+  } catch(e){
+    notify('Connection error: '+e.message,'err');
+  } finally {
+    if(btn){ btn.disabled=false; btn.textContent='+ Connect Bank'; }
+  }
+}
+
+let _blSyncing = false;
+async function klBankLinkSync(){
+  if(!klHasTier('essential')){ notify('Bank Feeds require the Essential plan — upgrade in Settings → Plan','ok'); return; }
+  if(!_sbUser){ notify('Sign in to sync your bank','err'); return; }
+  if(_blSyncing){ notify('Sync already in progress…','ok'); return; }
+  _blSyncing = true;
+  const btn = document.getElementById('kl-bf-sync-btn');
+  if(btn){ btn.disabled=true; btn.textContent='Syncing…'; }
+  try{
+    const h = await _sbFnHeaders();
+    const res = await fetch(SB_FN+'/banklink-sync', { method:'POST', headers:h });
+    const data = await res.json();
+    if(!res.ok){ notify(data.error||'Sync failed','err'); return; }
+    const { transactions=[] } = data;
+    if(!transactions.length){ notify('No new transactions found','ok'); rBankFeeds(); return; }
+    // Merge into S.transactions — skip duplicates by banklink_id tag (mirrors the
+    // saltedge_id dedup pattern in klBankSync() above, separate tag since the two
+    // providers' transaction ids live in different namespaces)
+    const existing = new Set((S.transactions||[]).map(t=>t.banklink_id).filter(Boolean));
+    let added = 0;
+    for(const t of transactions){
+      if(existing.has(t.banklink_id)) continue;
+      const accMatch = (S.accounts||[]).find(a=>a.name===t.bank) || S.accounts?.[0];
+      S.transactions.push({
+        id: uid(), banklink_id: t.banklink_id,
+        date: t.date, description: t.description,
+        amount: t.amount, type: t.type,
+        category: 'other', accountId: accMatch?.id||'',
+        note: 'Auto-imported · '+t.bank,
+      });
+      added++;
+    }
+    if(added){ save(); renderAll(); }
+    notify(added ? added+' transaction'+(added>1?'s':'')+' imported from your bank' : 'All transactions already up to date','ok');
+    rBankFeeds();
+  } catch(e){
+    notify('Sync error: '+e.message,'err');
+  } finally {
+    _blSyncing = false;
+    if(btn){ btn.disabled=false; btn.textContent='↻ Sync Now'; }
+  }
+}
+
 async function rBankFeeds(){
   const el = document.getElementById('kl-bf-body'); if(!el) return;
   const _bfRegion=S.prefs?.region||'za';
-  // SA/Other users: bank feeds not yet available
-  if(_bfRegion!=='uk'){
-    const _bfIsSA=_bfRegion==='za';
-    const _bfTitle=_bfIsSA?'SA Bank Feeds — Coming Soon':'Bank Feeds — Not Yet Available';
-    const _bfBody=_bfIsSA?'We are integrating with South African banks via Stitch. Automated transaction imports will be available once the partnership is verified.':'Automated bank feed integration isn\'t available for your region yet. In the meantime, import your transactions from a CSV statement below.';
+  // "Other" region: no bank-feed provider at all yet
+  if(_bfRegion!=='uk' && _bfRegion!=='za'){
     el.innerHTML=`<div class="card" style="text-align:center;padding:40px 24px">
       <div style="font-size:36px;margin-bottom:16px">🏦</div>
-      <div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:8px">${_bfTitle}</div>
-      <div style="font-size:13px;color:var(--t3);max-width:340px;margin:0 auto;line-height:1.7">${_bfBody}</div>
+      <div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:8px">Bank Feeds — Not Yet Available</div>
+      <div style="font-size:13px;color:var(--t3);max-width:340px;margin:0 auto;line-height:1.7">Automated bank feed integration isn't available for your region yet. In the meantime, import your transactions from a CSV statement below.</div>
       <div style="margin-top:20px;display:flex;flex-direction:column;gap:10px;align-items:center">
         <button class="btn btn-gold" onclick="goPg('transactions');setTimeout(openImport,300)">↑ Import Bank Statement (CSV)</button>
         <div style="font-size:11px;color:var(--t4)">Download your statement from your bank's app or website, then import it here.</div>
@@ -13098,6 +13172,17 @@ async function rBankFeeds(){
     const syncBtn=document.getElementById('kl-bf-sync-btn');if(syncBtn)syncBtn.style.display='none';
     return;
   }
+  const _bfIsSA=_bfRegion==='za';
+  const _bfConnectFn=_bfIsSA?'klBankLinkConnect':'klBankConnect';
+  const _bfSyncFn=_bfIsSA?'klBankLinkSync':'klBankSync';
+  const _bfFn=_bfIsSA?'banklink-sync':'saltedge-sync';
+  const _bfIdTag=_bfIsSA?'banklink_id':'saltedge_id';
+  // The page header's "Sync Now" button lives outside #kl-bf-body (static markup,
+  // not re-rendered below), so its handler has to be wired up here instead of via
+  // a hardcoded onclick= in the HTML, which could only ever call one provider's
+  // sync function regardless of region.
+  const _bfSyncBtnEl=document.getElementById('kl-bf-sync-btn');
+  if(_bfSyncBtnEl) _bfSyncBtnEl.onclick=()=>window[_bfSyncFn]();
   if(!klHasTier('essential')){
     el.innerHTML = klLockedBanner('Bank Feeds','essential'); return;
   }
@@ -13112,11 +13197,16 @@ async function rBankFeeds(){
   el.innerHTML = `<div style="text-align:center;padding:32px;color:var(--t3);font-size:13px">Loading connections…</div>`;
   try{
     const h = await _sbFnHeaders();
-    const res = await fetch(SB_FN+'/saltedge-sync', { method:'POST', headers:h });
+    const res = await fetch(SB_FN+'/'+_bfFn, { method:'POST', headers:h });
     const data = await res.json();
     const { accounts=[], transactions=[], connection_count=0 } = data;
-    const lastImported = (S.transactions||[]).filter(t=>t.saltedge_id).length;
-    const lastSync = S.prefs._bfLastSync ? new Date(S.prefs._bfLastSync).toLocaleString() : 'Never';
+    const lastImported = (S.transactions||[]).filter(t=>t[_bfIdTag]).length;
+    // Banklink's account shape (account_id/account_number/bank) has no balance field
+    // (confirmed from its live API reference — GET /accounts/{id}/balance is a
+    // separate, not-yet-called endpoint) and no 'provider' key (Salt Edge's grouping
+    // key) — group by `bank` instead, with provider as a fallback so this one render
+    // path still works unmodified for the Salt Edge (UK) branch.
+    const groupKey = a => a.bank || a.provider || 'Bank';
     el.innerHTML = `
       <div class="card" style="margin-bottom:16px">
         <div class="ct">Connected Banks</div>
@@ -13125,19 +13215,19 @@ async function rBankFeeds(){
             <div style="font-size:40px;margin-bottom:12px">🏦</div>
             <div style="font-weight:700;font-size:15px;color:var(--t1);margin-bottom:8px">No banks connected yet</div>
             <div style="font-size:13px;color:var(--t3);margin-bottom:20px">Connect your bank to auto-import transactions</div>
-            <button id="kl-bf-connect-btn" class="btn btn-gold" onclick="klBankConnect()">+ Connect Bank</button>
+            <button id="kl-bf-connect-btn" class="btn btn-gold" onclick="${_bfConnectFn}()">+ Connect Bank</button>
           </div>` : `
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
             <span style="font-size:13px;color:var(--t3)">${connection_count} bank${connection_count>1?'s':''} connected · ${lastImported} transactions imported</span>
-            <button id="kl-bf-connect-btn" class="btn btn-ghost btn-sm" onclick="klBankConnect()">+ Add Bank</button>
+            <button id="kl-bf-connect-btn" class="btn btn-ghost btn-sm" onclick="${_bfConnectFn}()">+ Add Bank</button>
           </div>
           <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px">
-            ${[...new Set(accounts.map(a=>a.provider))].map(p=>{
-              const accs = accounts.filter(a=>a.provider===p);
+            ${[...new Set(accounts.map(groupKey))].map(p=>{
+              const accs = accounts.filter(a=>groupKey(a)===p);
               return `<div style="background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:14px">
                 <div style="font-weight:700;font-size:13px;color:var(--t1);margin-bottom:6px">🏦 ${esc(p)}</div>
                 ${accs.map(a=>`<div style="font-size:12px;color:var(--t3);display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--b1)">
-                  <span>${esc(a.name)}</span><span style="font-family:var(--fm)">${fmt(a.balance)}</span>
+                  <span>${esc(a.name||a.account_number||'Account')}</span>${a.balance!=null?`<span style="font-family:var(--fm)">${fmt(a.balance)}</span>`:''}
                 </div>`).join('')}
               </div>`;
             }).join('')}
@@ -13151,7 +13241,7 @@ async function rBankFeeds(){
           <div class="li">
             <div class="lii">
               <div class="lin">${esc(t.description)}</div>
-              <div class="lis">${t.date} · ${esc(t.provider)} · <span style="text-transform:capitalize">${t.category}</span></div>
+              <div class="lis">${t.date} · ${esc(t.bank||t.provider||'')}${t.category?` · <span style="text-transform:capitalize">${t.category}</span>`:''}</div>
             </div>
             <span style="font-family:var(--fm);font-size:13px;color:${t.type==='income'?'var(--green)':'var(--red)'};white-space:nowrap">${t.type==='income'?'+':'−'}${fmt(t.amount)}</span>
           </div>`).join('')}
@@ -13171,6 +13261,27 @@ async function rBankFeeds(){
   } else if(p.get('bank_error')==='1'){
     history.replaceState({},'',location.pathname);
     setTimeout(()=>{ notify('Bank connection failed — please try again','err'); goPg('bankfeeds'); },600);
+  }
+})();
+
+// Handle redirect back from Banklink's hosted link-request flow. Per Banklink's
+// docs, redirect_url gets banklink_status (success, cancelled, expired, revoked,
+// already_completed) and banklink_reference appended -- "treat it as a UI hint;
+// the signed webhook is the source of truth" (banklink-webhook's link_request.
+// completed handler is what actually marks the connection 'linked' in the DB;
+// this just gives the user immediate feedback and kicks off a sync attempt,
+// which will correctly find nothing linked yet if the webhook hasn't landed).
+(function(){
+  const p = new URLSearchParams(location.search);
+  const blStatus = p.get('banklink_status');
+  if(!blStatus) return;
+  history.replaceState({},'',location.pathname);
+  if(blStatus==='success'){
+    setTimeout(()=>{ goPg('bankfeeds'); notify('Bank connected — syncing transactions…','ok'); setTimeout(klBankLinkSync,1200); },600);
+  } else if(blStatus==='already_completed'){
+    setTimeout(()=>{ goPg('bankfeeds'); notify('Bank already connected','ok'); },600);
+  } else {
+    setTimeout(()=>{ notify('Bank connection '+blStatus+' — you can try again anytime','ok'); goPg('bankfeeds'); },600);
   }
 })();
 
@@ -14762,7 +14873,7 @@ function klClearChatHistory(){
 document.addEventListener('DOMContentLoaded',()=>{
   // Register PWA service worker
   if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('sw.js').catch(()=>{});
+    navigator.serviceWorker.register('/sw.js').catch(()=>{});
   }
   // Apply saved prefs — fall back to OS dark mode if no theme saved yet
   if(S.prefs.theme) document.documentElement.dataset.theme=S.prefs.theme;
@@ -18659,7 +18770,7 @@ document.addEventListener('click', function(e){
 <!-- ═══════════════════════════════════════════════════════════════════════
      Klar server-side tier enforcement — must load AFTER all app scripts
      ══════════════════════════════════════════════════════════════════════ -->
-<script src="klar-tier-enforcement.js"></script>
+<script src="/klar-tier-enforcement.js"></script>
 
 <!-- ═══ PWA INSTALL BANNER ═══ -->
 <div id="klar-install-banner" role="complementary" aria-label="Install Klar">

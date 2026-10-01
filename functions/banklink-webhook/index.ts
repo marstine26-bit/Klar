@@ -1,13 +1,20 @@
 /**
  * Klar — banklink-webhook Edge Function
  *
- * Receives webhook deliveries from Banklink (https://banklink.co.za), the South
- * African open-banking aggregator being evaluated as the SA replacement for the
- * UK-only, currently non-functional Salt Edge integration (see saltedge-connect/
- * saltedge-sync — kept in place but unreachable from the UI since the SA-only v1
- * launch). Specifically handles the "pulse.delivered" event, sent each time a
- * scheduled Pulse (Banklink's name for a recurring bank-data sync job) runs and
- * delivers transactions.
+ * Receives signed webhook deliveries from Banklink (https://banklink.co.za), the
+ * South African open-banking aggregator being evaluated as the SA replacement
+ * for the UK-only, currently non-functional Salt Edge integration (see
+ * saltedge-connect/saltedge-sync — kept in place but unreachable from the UI
+ * since the SA-only v1 launch). Handles two events:
+ *   - link_request.completed — a user finished (or cancelled) the hosted
+ *     "Connect Bank" flow started by banklink-connect. Resolves their
+ *     banklink_connections row from 'pending' to 'linked' (or 'cancelled'),
+ *     looking up the account's id via GET /accounts since the webhook payload
+ *     only carries account_number, not the id banklink-sync needs.
+ *   - pulse.delivered — a scheduled Pulse (manually configured in Banklink's
+ *     own dashboard, not yet created programmatically per-user) ran and
+ *     delivered transactions. Stored in the banklink_deliveries staging table,
+ *     unattributed to a user — Pulses aren't part of the self-serve flow yet.
  *
  * verify_jwt is deliberately false: Banklink's servers call this directly with no
  * Supabase user session to present. Authenticity is instead established by
@@ -21,31 +28,11 @@
  * for 24h after a secret rotation — both must be accepted, either match is valid).
  *
  * ── SETUP NOTE ────────────────────────────────────────────────────────────────
- * Requires TWO separate secrets (Supabase Dashboard -> Edge Functions -> Secrets):
- *   BANKLINK_API_KEY          — already set; this function doesn't call the
- *                                Banklink API directly, but shares the secret
- *                                namespace with whatever eventually calls
- *                                GET/POST /accounts etc.
- *   BANKLINK_WEBHOOK_SECRET   — Banklink dashboard -> Settings -> Webhook signing.
- *                                THIS is what verifies incoming deliveries. Not
- *                                set yet as of this function's first deploy --
- *                                until it is, every delivery is rejected (401)
- *                                rather than silently trusted with no signature
- *                                check at all.
- *
- * ── KNOWN GAP, NOT SILENTLY ASSUMED AWAY ────────────────────────────────────
- * Banklink's webhook payload identifies a delivery by pulse_id / account_number /
- * reference -- it does NOT carry a Klar user_id, because there is currently no
- * self-serve "Connect Bank" flow that would create that mapping (Pulses are being
- * created manually in Banklink's own dashboard right now, one at a time, for
- * manual testing -- not through Banklink's POST /link-requests hosted-link flow,
- * which is what a real multi-user "Connect Bank" button would need). So every
- * verified delivery is stored in the banklink_deliveries staging table with
- * user_id left null, NOT merged into any user's S.transactions. Wiring that up
- * (building the actual Connect Bank flow via /link-requests, verifying the org
- * with Banklink, mapping a Pulse's reference back to a specific Supabase user)
- * is a separate, larger follow-up -- this function's job is just to correctly and
- * safely receive and verify what Banklink sends today.
+ * Requires TWO separate secrets (Supabase Dashboard -> Edge Functions -> Secrets),
+ * both already set: BANKLINK_API_KEY (also used directly by banklink-connect and
+ * banklink-sync) and BANKLINK_WEBHOOK_SECRET (Banklink dashboard -> Settings ->
+ * Webhook signing — THIS is what verifies incoming deliveries; until it's set,
+ * every delivery is rejected with 500 rather than silently trusted unverified).
  */
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -85,25 +72,79 @@ Deno.serve(async (req: Request) => {
   }
 
   const event = (payload.event as string) ?? eventHeader ?? "";
-  if (event !== "pulse.delivered") {
-    // link_request.completed / access_request.completed share the same signed
-    // envelope but aren't relevant until the real Connect Bank flow is built —
-    // acknowledge so Banklink doesn't retry, but don't store or process them.
-    console.log(`banklink-webhook: received "${event}", not handled yet — acknowledging only`);
-    return new Response("OK", { status: 200 });
-  }
 
   if (!deliveryId) {
     return new Response("Bad Request: missing Banklink-Delivery header", { status: 400 });
   }
-
-  const transactions = Array.isArray(payload.transactions) ? payload.transactions : [];
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
   const sb = createClient(supabaseUrl, serviceRoleKey, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
+
+  // link_request.completed is how a self-serve "Connect Bank" attempt
+  // (banklink-connect) resolves — reference is the Supabase user_id we set when
+  // creating the link request, and link_request_id lets us find the exact
+  // pending row (a user could in principle have more than one pending request).
+  // account_number is in this payload, but the account's id (needed for
+  // /accounts/{id}/sync and /accounts/{id}/transactions in banklink-sync) is
+  // NOT — Banklink's webhook schema only exposes account_number here, so it
+  // must be resolved separately via GET /accounts and matched.
+  if (event === "link_request.completed") {
+    const linkRequestId = payload.link_request_id as string | undefined;
+    const accountNumber = payload.account_number as string | null | undefined;
+    const reference = payload.reference as string | undefined;
+
+    if (!linkRequestId || !reference) {
+      console.error("banklink-webhook: link_request.completed missing link_request_id or reference", { linkRequestId, reference });
+      return new Response("OK", { status: 200 }); // ack anyway — nothing we can do with this delivery, don't make Banklink retry forever
+    }
+
+    let accountId: string | null = null;
+    const banklinkApiKey = Deno.env.get("BANKLINK_API_KEY");
+    if (accountNumber && banklinkApiKey) {
+      try {
+        const accRes = await fetch("https://api.banklink.co.za/v1/accounts", {
+          headers: { Authorization: `Bearer ${banklinkApiKey}` },
+        });
+        const accData = await accRes.json();
+        const match = (accData.data || []).find((a: { account_number?: string }) => a.account_number === accountNumber);
+        accountId = match?.id ?? null;
+      } catch (e) {
+        console.error("banklink-webhook: failed to resolve account_id from account_number", e);
+      }
+    }
+
+    const { error } = await sb
+      .from("banklink_connections")
+      .update({
+        status: accountNumber ? "linked" : "cancelled",
+        account_number: accountNumber ?? null,
+        account_id: accountId,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("link_request_id", linkRequestId)
+      .eq("user_id", reference);
+
+    if (error) {
+      console.error("banklink-webhook: failed to update connection", error);
+      return new Response("Internal Server Error", { status: 500 });
+    }
+
+    console.log(`banklink-webhook: link_request ${linkRequestId} completed for user ${reference}, account_id=${accountId ?? "unresolved"}`);
+    return new Response("OK", { status: 200 });
+  }
+
+  if (event !== "pulse.delivered") {
+    // access_request.completed shares the same signed envelope but isn't used
+    // by this flow (access requests are one-time, non-persistent — Klar only
+    // uses persistent link requests) — acknowledge so Banklink doesn't retry.
+    console.log(`banklink-webhook: received "${event}", not handled — acknowledging only`);
+    return new Response("OK", { status: 200 });
+  }
+
+  const transactions = Array.isArray(payload.transactions) ? payload.transactions : [];
 
   try {
     // Upsert on banklink_delivery_id so a retried delivery (Banklink retries on
